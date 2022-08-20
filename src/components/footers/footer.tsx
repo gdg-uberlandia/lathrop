@@ -4,19 +4,20 @@ import LogoGDG from "../../assets/images/LogoGDG";
 // reactstrap components
 import { Nav, NavItem, NavLink } from "reactstrap";
 import styles from "../../styles/Footer.module.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {  faSquareFacebook, faInstagram, faGithub } from '@fortawesome/free-brands-svg-icons';
 interface FooterProps {}
 
 const Footer: React.FC<FooterProps> = ({}) => {
   return (
     <>
-          <div className={styles.container}>
-          
-        <Nav className={styles.footer_content}>
-          <NavItem>
-            <NavLink active href="#">
+      <Nav className={styles.footer_content}>
+        <NavItem>
+          <NavLink active href="#">
             <LogoGDG />
-            </NavLink>
-          </NavItem>
+          </NavLink>
+        </NavItem>
+        {/*
           <NavItem>
             <NavLink href="#">Palestrantes</NavLink>
           </NavItem>
@@ -31,9 +32,20 @@ const Footer: React.FC<FooterProps> = ({}) => {
           </NavItem>
           <NavItem className={styles.footer_register}>
             <NavLink href="#">Se cadastrar</NavLink>
-          </NavItem>
-        </Nav>
-      </div>
+          </NavItem>*/}
+        <NavItem>
+          <NavLink className={styles.footer_content_social} href="https://www.facebook.com/gdg.uberlandia/">
+            <FontAwesomeIcon className={styles.footer_content_social_icon} icon={faSquareFacebook} />Facebook</NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink className={styles.footer_content_social} href="https://www.instagram.com/gdguberlandia/">
+            <FontAwesomeIcon className={styles.footer_content_social_icon} icon={faInstagram} />Instagram</NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink className={styles.footer_content_social} href="https://github.com/gdg-uberlandia/">
+            <FontAwesomeIcon className={styles.footer_content_social_icon} icon={faGithub} /> Github</NavLink>
+        </NavItem>
+      </Nav>
     </>
   );
 };
