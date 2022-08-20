@@ -34,15 +34,15 @@ const Footer: React.FC<FooterProps> = ({}) => {
             <NavLink href="#">Se cadastrar</NavLink>
           </NavItem>*/}
         <NavItem>
-          <NavLink className={styles.footer_content_social} href="https://www.facebook.com/gdg.uberlandia/">
+          <NavLink className={styles.footer_content_social} href="https://www.facebook.com/gdg.uberlandia/" target="_blank">
             <FontAwesomeIcon className={styles.footer_content_social_icon} icon={faSquareFacebook} />Facebook</NavLink>
         </NavItem>
         <NavItem>
-          <NavLink className={styles.footer_content_social} href="https://www.instagram.com/gdguberlandia/">
+          <NavLink className={styles.footer_content_social} href="https://www.instagram.com/gdguberlandia/" target="_blank">
             <FontAwesomeIcon className={styles.footer_content_social_icon} icon={faInstagram} />Instagram</NavLink>
         </NavItem>
         <NavItem>
-          <NavLink className={styles.footer_content_social} href="https://github.com/gdg-uberlandia/">
+          <NavLink className={styles.footer_content_social} href="https://github.com/gdg-uberlandia/" target="_blank">
             <FontAwesomeIcon className={styles.footer_content_social_icon} icon={faGithub} /> Github</NavLink>
         </NavItem>
       </Nav>
