@@ -1,49 +1,17 @@
 {
   "hosting": {
-    "public": "out",
+    "source": ".",
     "ignore": [
+      ".firebase/iwd-uberlandia-2022/functions",
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "/api/v1/**",
-        "function": "webApi"
-      },
-      {
-        "source": "/home",
-        "function": "hostOgReplacement"
-      }
-    ],
-    "headers": [
-      {
-        "source": "**",
-        "headers": [
-          {
-            "key": "X-Content-Type-Options",
-            "value": "nosniff"
-          },
-          {
-            "key": "X-Frame-Options",
-            "value": "sameorigin"
-          },
-          {
-            "key": "X-XSS-Protection",
-            "value": "1; mode=block"
-          },
-          {
-            "key": "Referrer-Policy",
-            "value": "same-origin"
-          }
-        ]
-      }
     ]
   },
   "functions": [
     {
-      "source": "functions",
-      "codebase": "default",
+      "runtime": "nodejs14",
+      "source": ".",
       "ignore": [
         "node_modules",
         ".git",
@@ -51,8 +19,8 @@
         "firebase-debug.*.log"
       ],
       "predeploy": [
-        "npm --prefix \"$RESOURCE_DIR\" run lint",
-        "npm --prefix \"$RESOURCE_DIR\" run build"
+        "npm run lint",
+        "npm run build"
       ]
     }
   ]
