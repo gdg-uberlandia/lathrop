@@ -14,6 +14,9 @@ import { getSchedule } from 'front-features/schedule'
 import { SponsorLevel } from 'models/sponsor-level';
 
 
+import styles from 'styles/Home.module.css';
+
+
 
 
 
@@ -24,9 +27,6 @@ interface HomePageProps {
 }
 
 const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
-  const sectionStyle = {
-    marginTop: '60px'
-  }
 
   const reveal = () => {
     var reveals = document.querySelectorAll("section");
@@ -51,19 +51,19 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
       <div>
         <HomeHeader></HomeHeader>
 
-        <section style={sectionStyle}>
+        <section className={styles.Section}>
           <OlderEvenstsSection />
         </section>
-        <section style={sectionStyle}>
+        {/*<section className={styles.Section}>
           <SpeakersSection speakers={speakers} />
         </section>
-        <section style={sectionStyle}>
+        <section className={styles.Section}>
           <TicketsSection />
         </section>
-        <section style={sectionStyle}>
+        <section className={styles.Section}>
           <ScheduleSection speakers={speakers} schedule={schedule} />
-        </section>
-        <section style={sectionStyle}>
+  </section>*/}
+        <section className={styles.Section}>
           <SponsorsSection sponsors={sponsors} />
         </section>
 

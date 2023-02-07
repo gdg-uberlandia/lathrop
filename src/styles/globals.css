@@ -7,10 +7,11 @@
   --orange: #E59F38;
   --white: #FFF;
   --black: #1A1D1C;
+  --green: #09ccb1;
+  --soft-blue: #46b3dc;
+  --pink: #E41AE1;
 }
 
-
-html,
 body {
   padding: 0;
   margin: 0;

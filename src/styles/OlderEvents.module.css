@@ -1,3 +1,7 @@
+.Title {
+    text-align: center;
+}
+
 .Description {
     padding-right: 100px;
     text-align: justify;
@@ -75,11 +79,11 @@
 }
 
 .ConstructItem:nth-child(3n+0) {
-    background-color: var(--orange);
+    background-color: var(--soft-blue);
 }
 
 .ConstructItem:nth-child(3n+1) {
-    background-color: var(--red);
+    background-color: var(--green);
 }
 
 .ConstructItem:nth-child(3n+2) {

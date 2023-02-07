@@ -6,7 +6,6 @@ import {
     Row,
 } from "reactstrap";
 
-import Image from 'next/image';
 import styles from 'styles/OlderEvents.module.css';
 
 const OlderEvenstsSection: React.FC = ({ }) => {
@@ -15,16 +14,28 @@ const OlderEvenstsSection: React.FC = ({ }) => {
         <>
             <Container id="about">
                 <Row>
-                    <Col lg={6} sm={12}>
-                        <h1> O que é o Devfest? </h1>
+                    <Col lg={8} sm={12}>
+                        <h1 className={styles.Title}> O que é o IWD? </h1>
 
                         <p className={styles.Description}>
 
-                            O DevFest é um evento organizado por comunidades do Google Developers Group (GDG), para a troca de conhecimento e fomento tecnológico das regiões. A conferência é preparada para profissionais, estudiosos, pessoas desenvolvedoras e demais pessoas com interesse em aprendizado, ambiente de troca de experiências e networking.
+                            Desde 2013 o programa Women Techmakers reuniu mais de 200 eventos globais em 52 países para receber a visibilidade, a comunidade e os recursos para as
+                            mulheres em tecnologia em homenagem ao Dia Internacional da Mulher. Em 2021 WTMs de todo Brasil se uniram e irão realizar uma edição única deste evento, IWD Brasil 2021!
+                            <br />
+                            <br />
+                            Este é um evento online e gratuito onde teremos 100% de palestrantes mulheres (Cis e Trans) organizadas por líderes da comunidade WTM em todo Brasil.
+                            Alguns dos assuntos que serão observados são:
+                            Alguns dos temas: Carreira na TI, Ciência de Dados, Mulheres na Computação, UX, Desenvolvimento pessoal,
+                            Back-End, Front-End, Inteligência Artificial, Machine Learning, APIs do Google, Segurança da Informação (LGPD).
                         </p>
                     </Col>
-                    <Col lg={6} sm={12}>
-                        <div className={styles.VideoContainer}><iframe src='https://www.youtube.com/embed/8VbKty9jtdM' allowFullScreen></iframe></div>
+                    <Col lg={3} sm={12} style={{ display: 'flex', justifyContent: 'center' }}>
+                        <img
+                            src={'/dare-to-be-square-new.gif'}
+
+                            height="400px"
+                            width="400px"
+                        />
 
                     </Col>
                 </Row>
@@ -34,13 +45,15 @@ const OlderEvenstsSection: React.FC = ({ }) => {
             <div className={styles.MarqueeOuter}>
                 <div className={styles.MarqueeInner}>
                     <div className={styles.ConstructItems}>
-                        <div className={styles.ConstructItem}>Construa seu app em Flutter</div>
-                        <div className={styles.ConstructItem}>Construa seu app em Angular</div>
-                        <div className={styles.ConstructItem}>Fez o deploy usando Google Cloud?</div>
-                        <div className={styles.ConstructItem}>Já utilizou Tensor Flow?</div>
-                        <div className={styles.ConstructItem}>Construa seu app em Android</div>
-                        <div className={styles.ConstructItem}>Já criou sua action para o Google Assistant?</div>
-                        <div className={styles.ConstructItem}>Integrou as APIs do Maps?</div>
+                        <div className={styles.ConstructItem}>Dare to be BOLD</div>
+                        <div className={styles.ConstructItem}>Dare to be innovative</div>
+                        <div className={styles.ConstructItem}>Dare to be resilient</div>
+                        <div className={styles.ConstructItem}>Dare to be creative</div>
+                        <div className={styles.ConstructItem}>Dare to be first</div>
+                        <div className={styles.ConstructItem}>Dare to be a dreamer</div>
+                        <div className={styles.ConstructItem}>Dare to be unique</div>
+                        <div className={styles.ConstructItem}>Dare to be happy</div>
+                        <div className={styles.ConstructItem}>Dare to be fearless</div>
                     </div>
                 </div>
             </div>

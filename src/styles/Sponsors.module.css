@@ -1,3 +1,5 @@
+.SponsorSection {}
+
 .SponsorWrapper {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -18,16 +20,16 @@
         grid-template-columns: repeat(4, 1fr);
     }
 
-    .StaffWrapper{
+    .StaffWrapper {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
 
-    .StaffCardBody{
+    .StaffCardBody {
         width: 130px;
     }
 }
 
-.StaffWrapper{
+.StaffWrapper {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     grid-gap: 8px;
@@ -35,7 +37,7 @@
     margin: 0px 5px;
 }
 
-.StaffCardBody{
+.StaffCardBody {
     position: relative;
     width: 100px;
     height: 90px;

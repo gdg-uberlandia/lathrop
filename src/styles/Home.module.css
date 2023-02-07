@@ -3,6 +3,7 @@
   height: 100vh;
   width: 100%;
   z-index: -1;
+  margin-top: 80px;
 }
 
 .BgWrap2 {
@@ -12,45 +13,8 @@
   z-index: -1;
 }
 
-.HappyFaceImg {
-  position: absolute;
-  right: 2%;
-  top: 1%;
-}
-
-.ContentImg {
-  position: absolute;
-  right: 50%;
-  top: 35%;
-}
-
-.CommunityImg {
-  position: absolute;
-  right: 35%;
-  top: 10%;
-}
-
-.BellImg {
-  position: absolute;
-  right: 10%;
-  top: 10%;
-}
-
-.GlobalImg {
-  position: absolute;
-  right: 1%;
-  top: 30%;
-}
-
-.ComplexImg {
-  position: absolute;
-  right: 20%;
-  top: 18%;
-}
-
-
 .BgImageFull {
-  background: url('/Header.svg');
+  background: url('/header-dare-to-be.png');
   background-position: left top;
   background-repeat: no-repeat;
   background-size: contain;
@@ -63,27 +27,16 @@
 
 .MainInnerFull {
   width: 100%;
-  height: 65vh;
-  text-align: right;
+  height: 70vh;
+  text-align: left;
   padding-top: 10%;
-  padding-right: 8%;
+  padding-left: 5%;
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: flex-end;
+  text-shadow: 1px 1px 1px var(--white);
 }
 
-.MainInnerFullContent {
-  background: white;
-  background-image: radial-gradient(#4385F3 2px, transparent 0);
-  background-size: 26px 26px;
-  background-position: -12px -12px;
-  padding: 30px
-}
-
-.MainInnerFullDescription {
-  background: white;
-  padding: 20px 20px;
-}
 
 .Counter {
   align-items: center;
@@ -180,17 +133,8 @@
 }
 
 @media only screen and (max-width: 1026px) {
-  .BgImageFull {
-    display: none;
-  }
-
-  .BgImageMin {
-    display: block;
-    background: url('/Header.svg');
-    background-position: left top;
-    background-repeat: no-repeat;
-    background-size: cover;
-    height: 100vh;
+  .MainInnerFull {
+    height: 35vh;
   }
 
   .MainInnerFullContent {
@@ -199,16 +143,12 @@
 
   .MainDescriptionMinWrapper {
     display: block;
-    background-color: var(--white);
     padding: 25px 10px;
   }
 
   .MainDescriptionMin {
     padding: 30px 30px;
     text-align: center;
-    background-image: radial-gradient(var(--blue) 2px, transparent 0);
-    background-size: 26px 26px;
-    background-position: -10px -10px;
   }
 
   .cardCounter {
@@ -241,7 +181,7 @@
 
 .RegisterButton {
   padding: 15px 15px;
-  background-color: var(--red);
+  background-color: var(--pink);
   color: white;
   width: 164px;
   height: 33px;
@@ -250,9 +190,9 @@
 }
 
 .RegisterButton:hover {
-  border: 3px var(--red) solid;
-  color: var(--red);
-  background-color: var(--white);
+  border: 3px var(--pink) solid;
+  color: var(--pink);
+  background-color: transparent;
 }
 
 .ScrollDown {
@@ -297,5 +237,15 @@
 
   100% {
     transform: translate(0, 0)
+  }
+}
+
+.Section {
+  margin-top: 180px;
+}
+
+@media only screen and (max-width: 1026px) {
+  .Section {
+    margin-top: 80px;
   }
 }

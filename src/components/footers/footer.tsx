@@ -23,9 +23,9 @@ const Footer: React.FC<FooterProps> = ({ }) => {
               <LogoGDG />
             </NavLink>
           </NavItem>
-          <NavItem>
+          {/*<NavItem>
             <NavLink href={generateRef("#speakers")}>Palestrantes</NavLink>
-          </NavItem>
+  </NavItem>*/}
           <NavItem>
             <NavLink href={generateRef("#sponsors")}>Patrocinadores</NavLink>
           </NavItem>
