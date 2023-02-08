@@ -1,12 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  target: 'serverless',
   reactStrictMode: true,
   swcMinify: true,
   trailingSlash: true,
   images: {
     loader: 'akamai',
-    path: '',
+    path: '/',
     domains: ['firebasestorage.googleapis.com'],
   },
   exportPathMap: async function (

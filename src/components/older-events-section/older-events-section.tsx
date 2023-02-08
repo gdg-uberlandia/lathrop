@@ -19,14 +19,16 @@ const OlderEvenstsSection: React.FC = ({ }) => {
 
                         <p className={styles.Description}>
 
-                            Desde 2013 o programa Women Techmakers reuniu mais de 200 eventos globais em 52 países para receber a visibilidade, a comunidade e os recursos para as
-                            mulheres em tecnologia em homenagem ao Dia Internacional da Mulher. Em 2021 WTMs de todo Brasil se uniram e irão realizar uma edição única deste evento, IWD Brasil 2021!
+                            O que é o IWD?
+
+                            Desde 2013, embaixadoras Women Techmakers ao redor de todo o mundo realizam o IWD (International Women’s Day), já são mais de 1.000 eventos em mais de 75 países celebrando as incríveis realizações das mulheres na tecnologia e atuando também como um apelo à equidade de gênero em todo o mundo.
+                            O IWD é um evento que promove a troca de conhecimento, networking, mentorias e principalmente o protagonismo	da mulher em tecnologia.
                             <br />
+                            Todos os anos o IWD é celebrado em torno de um tema, e em 2023 nosso tema é #DareToBe.
+                            O que significa Dare To Be? Ouse ser!
                             <br />
-                            Este é um evento online e gratuito onde teremos 100% de palestrantes mulheres (Cis e Trans) organizadas por líderes da comunidade WTM em todo Brasil.
-                            Alguns dos assuntos que serão observados são:
-                            Alguns dos temas: Carreira na TI, Ciência de Dados, Mulheres na Computação, UX, Desenvolvimento pessoal,
-                            Back-End, Front-End, Inteligência Artificial, Machine Learning, APIs do Google, Segurança da Informação (LGPD).
+                            A beleza de “Dare To Be” é que a frase faz parte de algo maior: você pode ousar ser ousada, ser inovadora, ser resiliente, entre tantas outras coisas.
+                            Reconhecemos que cada uma de nós tem algo único para oferecer, e quando nós, como comunidade, somos capazes de aproveitar a diversidade de todas então podemos contribuir com a construção de um mundo onde todas as mulheres possam prosperar na tecnologia.
                         </p>
                     </Col>
                     <Col lg={3} sm={12} style={{ display: 'flex', justifyContent: 'center' }}>
@@ -54,6 +56,10 @@ const OlderEvenstsSection: React.FC = ({ }) => {
                         <div className={styles.ConstructItem}>Dare to be unique</div>
                         <div className={styles.ConstructItem}>Dare to be happy</div>
                         <div className={styles.ConstructItem}>Dare to be fearless</div>
+                        <div className={styles.ConstructItem}>Dare to be BOLD</div>
+                        <div className={styles.ConstructItem}>Dare to be innovative</div>
+                        <div className={styles.ConstructItem}>Dare to be resilient</div>
+                        <div className={styles.ConstructItem}>Dare to be creative</div>
                     </div>
                 </div>
             </div>

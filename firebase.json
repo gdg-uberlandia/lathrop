@@ -7,21 +7,5 @@
       "**/.*",
       "**/node_modules/**"
     ]
-  },
-  "functions": [
-    {
-      "runtime": "nodejs14",
-      "source": ".",
-      "ignore": [
-        "node_modules",
-        ".git",
-        "firebase-debug.log",
-        "firebase-debug.*.log"
-      ],
-      "predeploy": [
-        "npm run lint",
-        "npm run build"
-      ]
-    }
-  ]
+  }
 }

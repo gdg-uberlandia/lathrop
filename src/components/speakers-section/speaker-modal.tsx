@@ -42,8 +42,7 @@ const SpeakerModal: React.FC<ModalProps> = ({
             className={styles.card_image}
             src={speaker.photo ? speaker.photo : ""}
             alt={`Foto ${speaker.name}`}
-            width="100%"
-            height="100%"
+            fill
           />
           <div className={styles.modal_speaker_info_content}>
             <h1>{speaker.name}</h1>
