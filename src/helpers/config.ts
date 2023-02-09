@@ -14,7 +14,10 @@ const resolveURL = () => {
     finalUrl = process.env.NEXT_PUBLIC_SITE_URL;
   } else if (process.env.NEXT_PUBLIC_VERCEL_URL) {
     finalUrl += `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
+  } else {
+    finalUrl += `https://wtmuberlandia.com.br`
   }
+
 
   return finalUrl;
 

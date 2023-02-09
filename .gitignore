@@ -43,3 +43,5 @@ functions/index.html
 .firebase/
 firebase-debug.lo
 hosting.*
+
+serviceAccount.json
