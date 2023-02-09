@@ -63,15 +63,6 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ sponsors }) => {
 
                 <Container style={{ marginBottom: '100px', marginTop: '30px' }}>
                     <div id="sponsors">
-                        {/*<h1>Patrocínio</h1>
-                    <p style={{ margin: '30px 0px' }}>
-                    Estas são as empresas que nos ajudaram a fazer este evento acontecer!
-                </p>*/}
-
-                        <h4>
-                            Patrocinador oficial
-                        </h4>
-
                         {SPONSORS_LIST.map((el) => mapSponsorLevel(sponsors[el], el === "staff"))}
 
                         <h4>
