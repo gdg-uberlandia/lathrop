@@ -5,14 +5,10 @@ const OlderSpeakerSection: React.FC = ({}) => {
   return (
     <div className={styles.Container}>
       <header className={styles.Header}>
-        <img
-          className={styles.ConectorImage}
-          width="400px"
-          src="/connector.png"
-        />
+        <img className={styles.ConectorImage} src="/connector.png" />
         <h1 className={styles.Title}>Palestrantes</h1>
       </header>
-      <body className={styles.Body}>
+      <div className={styles.Body}>
         <SpeakerCard
           name={"Nome do palestrante"}
           instagram={"@instagram_aqui"}
@@ -61,7 +57,7 @@ const OlderSpeakerSection: React.FC = ({}) => {
              feugiat neque. Suspendisse sagittis cursus tortor, sed 
              congue lacus gravida ut. Nulla commodo eros sit amet sagittis rutrum. Nunc consectetur pellentesque molestie.`}
         />
-      </body>
+      </div>
     </div>
   );
 };
