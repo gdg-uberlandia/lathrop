@@ -14,48 +14,42 @@ const OlderSpeakerSection: React.FC = ({}) => {
           instagram={"@instagram_aqui"}
           description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mi purus, bibendum ac ultricies
              et, aliquam eu ex. Vestibulum posuere 
-             feugiat neque. Suspendisse sagittis cursus tortor, sed 
-             congue lacus gravida ut. Nulla commodo eros sit amet sagittis rutrum. Nunc consectetur pellentesque molestie.`}
+             feugiat neque.`}
         />
         <SpeakerCard
           name={"Nome do palestrante"}
           instagram={"@instagram_aqui"}
           description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mi purus, bibendum ac ultricies
              et, aliquam eu ex. Vestibulum posuere 
-             feugiat neque. Suspendisse sagittis cursus tortor, sed 
-             congue lacus gravida ut. Nulla commodo eros sit amet sagittis rutrum. Nunc consectetur pellentesque molestie.`}
+             feugiat neque.`}
         />
         <SpeakerCard
           name={"Nome do palestrante"}
           instagram={"@instagram_aqui"}
           description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mi purus, bibendum ac ultricies
              et, aliquam eu ex. Vestibulum posuere 
-             feugiat neque. Suspendisse sagittis cursus tortor, sed 
-             congue lacus gravida ut. Nulla commodo eros sit amet sagittis rutrum. Nunc consectetur pellentesque molestie.`}
+             feugiat neque.`}
         />
         <SpeakerCard
           name={"Nome do palestrante"}
           instagram={"@instagram_aqui"}
           description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mi purus, bibendum ac ultricies
              et, aliquam eu ex. Vestibulum posuere 
-             feugiat neque. Suspendisse sagittis cursus tortor, sed 
-             congue lacus gravida ut. Nulla commodo eros sit amet sagittis rutrum. Nunc consectetur pellentesque molestie.`}
+             feugiat neque.`}
         />
         <SpeakerCard
           name={"Nome do palestrante"}
           instagram={"@instagram_aqui"}
           description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mi purus, bibendum ac ultricies
              et, aliquam eu ex. Vestibulum posuere 
-             feugiat neque. Suspendisse sagittis cursus tortor, sed 
-             congue lacus gravida ut. Nulla commodo eros sit amet sagittis rutrum. Nunc consectetur pellentesque molestie.`}
+             feugiat neque.`}
         />
         <SpeakerCard
           name={"Nome do palestrante"}
           instagram={"@instagram_aqui"}
           description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mi purus, bibendum ac ultricies
              et, aliquam eu ex. Vestibulum posuere 
-             feugiat neque. Suspendisse sagittis cursus tortor, sed 
-             congue lacus gravida ut. Nulla commodo eros sit amet sagittis rutrum. Nunc consectetur pellentesque molestie.`}
+             feugiat neque.`}
         />
       </div>
     </div>
