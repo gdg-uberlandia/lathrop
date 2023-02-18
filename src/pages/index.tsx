@@ -13,6 +13,7 @@ import { getSponsors } from 'front-features/sponsors';
 import { getSchedule } from 'front-features/schedule'
 import { SponsorLevel } from 'models/sponsor-level';
 import styles from 'styles/Home.module.css';
+import OlderSpeakerSection from 'components/older-speaker-section/older-speaker-section';
 
 // https://alvarotrigo.com/blog/css-animations-scroll/
 
@@ -47,6 +48,9 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
 
         <section className={`${styles.Section} Section`}>
           <OlderEvenstsSection />
+        </section>
+        <section className={styles.Section}>
+          <OlderSpeakerSection />
         </section>
         {/*<section className={styles.Section}>
           <SpeakersSection speakers={speakers} />
