@@ -53,14 +53,14 @@ const HomeHeader: React.FC = ({ }) => {
             <div className={styles.MainInnerFull}>
                 {/**/}
                 <div className={styles.MainInnerFullContent}>
-                    <Col className={styles.MainInnerFullDescription}>
+                    <Row className={styles.MainInnerFullDescription}>
                         <h1>
                             {configValues.placeCity}, {configValues.formattedDate}
                         </h1>
                         <h4>
                             {configValues.place}
                         </h4>
-                    </Col>
+                    </Row>
                     <Row style={{ marginTop: '40px', textAlign: 'center' }}>
                         <Col> <a className={styles.RegisterButton} href={configValues.eventLinkRegistrationUrl}>Inscreva-se</a> </Col>
                     </Row>
@@ -68,16 +68,15 @@ const HomeHeader: React.FC = ({ }) => {
             </div >
             <section>
                 <div className={styles.MainDescriptionMinWrapper}>
-
                     <div className={styles.MainDescriptionMin}>
-                        <Col className={styles.MainInnerFullDescription}>
+                        <Row className={styles.MainInnerFullDescription}>
                             <h4>
                                 {configValues.placeCity}, {configValues.formattedDate}
                             </h4>
                             <p>
                                 {configValues.place}
                             </p>
-                        </Col>
+                        </Row>
                         <Row style={{ marginTop: '15px' }}>
                             <Col> <a className={styles.RegisterButton} href={configValues.eventLinkRegistrationUrl}>Inscreva-se</a> </Col>
                         </Row>

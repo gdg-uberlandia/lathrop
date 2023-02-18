@@ -52,14 +52,18 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ sponsors }) => {
     return (
         <>
             <div className={styles.SponsorSection}>
+                <Container style={{
+                    marginLeft
+                        : '0px'
+                }}>
+                    <Row >
+                        <Col height="10px" lg={4} sm={22} style={{ paddingLeft: '0px' }}
+                        ><img style={{ marginTop: '15px' }} width="400px" src="/connector.png" />
+                        </Col>
 
-                <Row>
-                    <Col height="10px" lg={4} sm={22}
-                    ><img style={{ marginTop: '15px' }} width="400px" src="/connector.png" />
-                    </Col>
-
-                    <Col lg={4} sm={12}><h1 style={{ paddingLeft: '10px' }}>Patrocinadores</h1></Col>
-                </Row>
+                        <Col lg={4} sm={12}><h1 style={{ paddingLeft: '10px' }}>Patrocinadores</h1></Col>
+                    </Row>
+                </Container>
 
                 <Container style={{ marginBottom: '100px', marginTop: '30px' }}>
                     <div id="sponsors">

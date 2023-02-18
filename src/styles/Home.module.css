@@ -27,7 +27,7 @@
 
 .MainInnerFull {
   width: 100%;
-  height: 62vh;
+  height: 80vh;
   text-align: left;
   padding-top: 10%;
   padding-left: 5%;
@@ -37,6 +37,9 @@
   text-shadow: 1px 1px 1px var(--white);
 }
 
+.MainInnerFullContent {
+  margin-bottom: 10vh;
+}
 
 .Counter {
   align-items: center;
