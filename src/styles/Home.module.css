@@ -33,12 +33,12 @@
   padding-left: 5%;
   display: flex;
   justify-content: flex-start;
-  align-items: flex-end;
+  align-items: center;
   text-shadow: 1px 1px 1px var(--white);
 }
 
 .MainInnerFullContent {
-  margin-bottom: 10vh;
+  margin-top: 220px;
 }
 
 .Counter {

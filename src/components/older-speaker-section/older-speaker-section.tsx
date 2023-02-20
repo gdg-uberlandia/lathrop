@@ -1,7 +1,14 @@
+import { Speaker } from "models/speaker";
 import React from "react";
 import styles from "styles/OlderSpeakerSection.module.css";
 import SpeakerCard from "./speaker-card";
-const OlderSpeakerSection: React.FC = ({}) => {
+
+
+interface SpeakersSectionProps {
+  speakers: Array<Speaker>,
+}
+
+const OlderSpeakerSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
   return (
     <div className={styles.Container}>
       <header className={styles.Header}>
@@ -9,48 +16,13 @@ const OlderSpeakerSection: React.FC = ({}) => {
         <h1 className={styles.Title}>Palestrantes</h1>
       </header>
       <div className={styles.Body}>
-        <SpeakerCard
-          name={"Nome do palestrante"}
-          instagram={"@instagram_aqui"}
-          description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mi purus, bibendum ac ultricies
-             et, aliquam eu ex. Vestibulum posuere 
-             feugiat neque.`}
-        />
-        <SpeakerCard
-          name={"Nome do palestrante"}
-          instagram={"@instagram_aqui"}
-          description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mi purus, bibendum ac ultricies
-             et, aliquam eu ex. Vestibulum posuere 
-             feugiat neque.`}
-        />
-        <SpeakerCard
-          name={"Nome do palestrante"}
-          instagram={"@instagram_aqui"}
-          description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mi purus, bibendum ac ultricies
-             et, aliquam eu ex. Vestibulum posuere 
-             feugiat neque.`}
-        />
-        <SpeakerCard
-          name={"Nome do palestrante"}
-          instagram={"@instagram_aqui"}
-          description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mi purus, bibendum ac ultricies
-             et, aliquam eu ex. Vestibulum posuere 
-             feugiat neque.`}
-        />
-        <SpeakerCard
-          name={"Nome do palestrante"}
-          instagram={"@instagram_aqui"}
-          description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mi purus, bibendum ac ultricies
-             et, aliquam eu ex. Vestibulum posuere 
-             feugiat neque.`}
-        />
-        <SpeakerCard
-          name={"Nome do palestrante"}
-          instagram={"@instagram_aqui"}
-          description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mi purus, bibendum ac ultricies
-             et, aliquam eu ex. Vestibulum posuere 
-             feugiat neque.`}
-        />
+        {speakers && speakers.map((speaker) => {
+          return <SpeakerCard
+
+            key={speaker.slug}
+            speaker={speaker}
+          />
+        })}
       </div>
     </div>
   );

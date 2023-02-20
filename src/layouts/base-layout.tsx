@@ -1,7 +1,5 @@
 import React, { ReactNode } from "react";
 import Head from 'next/head'
-// reactstrap components
-import { Container } from "reactstrap";
 import Footer from '../components/footers/footer'
 import NavbarHome from '../components/navbar/home-navbar'
 import configValues from "helpers/config";

@@ -16,12 +16,12 @@ const Footer: React.FC<FooterProps> = ({ }) => {
 
   return (
     <>
-      <Container fluid>
+      <Container>
         <Nav className={styles.FooterContent}>
           <NavItem>
             <NavLink active href={generateRef("#")}>
 
-              <LogoWTM height={30} />
+              <LogoWTM width={250} />
             </NavLink>
           </NavItem>
           {/*<NavItem>

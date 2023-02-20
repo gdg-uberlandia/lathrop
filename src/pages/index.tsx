@@ -50,7 +50,7 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           <OlderEvenstsSection />
         </section>
         <section className={styles.Section}>
-          <OlderSpeakerSection />
+          <OlderSpeakerSection speakers={speakers} />
         </section>
         {/*<section className={styles.Section}>
           <SpeakersSection speakers={speakers} />

@@ -51,7 +51,7 @@ const OlderEvenstsSection: React.FC = ({ }) => {
                         <div className={styles.ConstructItem}>Dare to be innovative</div>
                         <div className={styles.ConstructItem}>Dare to be resilient</div>
                         <div className={styles.ConstructItem}>Dare to be creative</div>
-                        <div className={styles.ConstructItem}>Dare to be first</div>
+                        <div className={styles.ConstructItem}>Dare to be the first</div>
                         <div className={styles.ConstructItem}>Dare to be a dreamer</div>
                         <div className={styles.ConstructItem}>Dare to be unique</div>
                         <div className={styles.ConstructItem}>Dare to be happy</div>
