@@ -56,33 +56,33 @@ const SpeakerModal: React.FC<ModalProps> = ({
         <p>{speaker.content}</p>
 
         <h2>Mini bio</h2>
-        <p>{speaker.mini_bio}</p>
+        <p>{speaker.miniBio}</p>
       </ModalBody>
       <ModalFooter className={styles.modal_footer}>
-        {speaker.social_media && (
+        {speaker.socialMedia && (
           <>
-            {speaker.social_media.twitter && (
-              <a target="_blank" href={speaker.social_media.twitter}>
+            {speaker.socialMedia.twitter && (
+              <a target="_blank" href={speaker.socialMedia.twitter}>
                 <FontAwesomeIcon icon={faTwitter} size="2x" />
               </a>
             )}
-            {speaker.social_media.instagram && (
-              <a target="_blank" href={speaker.social_media.instagram}>
+            {speaker.socialMedia.instagram && (
+              <a target="_blank" href={speaker.socialMedia.instagram}>
                 <FontAwesomeIcon icon={faInstagram} size="2x" />
               </a>
             )}
-            {speaker.social_media.github && (
-              <a target="_blank" href={speaker.social_media.github}>
+            {speaker.socialMedia.github && (
+              <a target="_blank" href={speaker.socialMedia.github}>
                 <FontAwesomeIcon icon={faGithub} size="2x" />
               </a>
             )}
-            {speaker.social_media.linkedIn && (
-              <a target="_blank" href={speaker.social_media.linkedIn}>
+            {speaker.socialMedia.linkedIn && (
+              <a target="_blank" href={speaker.socialMedia.linkedIn}>
                 <FontAwesomeIcon icon={faLinkedin} size="2x" />
               </a>
             )}
-            {speaker.social_media.website && (
-              <a target="_blank" href={speaker.social_media.website}>
+            {speaker.socialMedia.website && (
+              <a target="_blank" href={speaker.socialMedia.website}>
                 <FontAwesomeIcon icon={faArrowPointer} size="2x" />
               </a>
             )}

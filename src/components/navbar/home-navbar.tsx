@@ -18,6 +18,7 @@ const NavbarHome = () => {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolling, setScrolling] = useState(false);
+  const [showLogo, setShowLogo] = useState(false);
 
 
   const menu = [
@@ -41,9 +42,11 @@ const NavbarHome = () => {
   useEffect(() => {
     const onScroll = () => {
       if (window.pageYOffset === 0) {
-        setScrolling(false);
+        setScrolling(true);
+        setShowLogo(false);
       } else {
         setScrolling(true);
+        setShowLogo(true);
       }
     };
     // clean up code
@@ -55,7 +58,7 @@ const NavbarHome = () => {
   return (
     <div className={isScrolling ? styles.navbar_fixed_scrolling : styles.navbar_fixed}>
       <Navbar className={styles.main_navbar} color="faded" light expand="lg">
-        <NavbarBrand className={styles.nav_brand}>{isScrolling ? <LogoWTM width={153} height={45} color="white" /> : ''}</NavbarBrand>
+        <NavbarBrand className={styles.nav_brand}>{isScrolling && showLogo ? <LogoWTM width={153} height={45} color="white" /> : ''}</NavbarBrand>
         <NavbarToggler onClick={toggle} className={["mr-2", styles.toggler_btn, isScrolling ? styles.shadow_scrolling : ''].join(' ')}><LogoMenu color={isScrolling ? "white" : "rgba(0,0,0,.55)"} /></NavbarToggler>
         <Collapse className={[styles.collapse_menu, isOpen ? styles.opened_menu : ""].join(' ')} isOpen={isOpen} navbar>
           <Nav className="ms-auto" navbar>

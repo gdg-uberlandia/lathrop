@@ -10,7 +10,7 @@ import {
 
 import styles from "../../styles/Schedule.module.css";
 
-interface ScheduleCardProps extends Speaker {
+interface ScheduleCardProps extends Partial<Speaker> {
     lgValue: number;
 }
 

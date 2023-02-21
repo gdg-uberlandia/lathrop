@@ -11,7 +11,6 @@
  * topic: titulo da Palestra
  * content: texto curto sobre a palestra
  * socials: [{url: "" , type: "linkedin|instagram" }
- *
  */
 
 const spaker = {

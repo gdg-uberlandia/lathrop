@@ -39,7 +39,7 @@ const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, schedule })
                           console.log("speaker: " + JSON.stringify(speaker))
                           if (speech?.topic) {
                             return (
-                              <ScheduleCard key={`speech-${schedule.start}-${schedule.end}-${index}`} lgValue={12 / schedule.speeches.length} {...speaker} topic={speech.topic} />
+                              <ScheduleCard key={`speech-${schedule.start}-${schedule.end}-${index}`} lgValue={12 / schedule.speeches.length} {...speaker} topic={speech.topic!} />
                             )
                           } else {
                             return (

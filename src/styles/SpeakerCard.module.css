@@ -16,8 +16,8 @@
   padding: 20px;
   margin: 7.5px;
   text-align: center;
-  max-height: 500px;
-  height: 500px
+  max-height: 550px;
+  height: 550px
 }
 
 .SpeakerName {
@@ -41,7 +41,7 @@
   font-weight: 400;
   font-size: 15px;
   text-align: left;
-  height: 200px;
+  height: 250px;
   text-overflow: ellipsis;
   overflow-y: scroll;
 }
