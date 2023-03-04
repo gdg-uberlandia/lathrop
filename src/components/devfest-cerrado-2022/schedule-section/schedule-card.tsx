@@ -8,7 +8,7 @@ import {
     Row
 } from "reactstrap";
 
-import styles from "../../styles/Schedule.module.css";
+import styles from "./Schedule.module.css";
 
 interface ScheduleCardProps extends Partial<Speaker> {
     lgValue: number;

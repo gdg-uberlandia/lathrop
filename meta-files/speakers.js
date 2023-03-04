@@ -10,7 +10,7 @@
  * miniBio: Biografia
  * topic: titulo da Palestra
  * content: texto curto sobre a palestra
- * socials: [{url: "" , type: "linkedin|instagram" }
+ * socialMedia: {linkedIn, instagram}
  */
 
 const spaker = {
@@ -25,5 +25,7 @@ const spaker = {
     "tech": "",
     "topic": "",
     "miniBio": "",
-    "socials": []
+    "socialMedia": {
+        "linkedIn": ""
+    }
 };

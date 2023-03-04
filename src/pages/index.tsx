@@ -1,11 +1,9 @@
 import React, { useEffect } from 'react';
 import HomeHeader from '../components/headers/home-header';
 import BaseLayout from '../layouts/base-layout';
-import SpeakersSection from '../components/speakers-section/speakers-section';
-import OlderEvenstsSection from 'components/older-events-section/older-events-section';
+import OlderEvenstsSection from 'components/iwd-2023/older-events-section/older-events-section';
 import SponsorsSection from 'components/sponsors-section/sponsors-section';
-import TicketsSection from 'components/tickets-section/tickets-section';
-import ScheduleSection from 'components/schedule-section/schedule-section';
+import ScheduleSection from 'components/iwd-2023/schedule-section/schedule-section';
 import { Speaker } from 'models/speaker';
 import { Schedule } from 'models/schedule';
 import { getSpeakers } from 'front-features/speakers';
@@ -13,7 +11,7 @@ import { getSponsors } from 'front-features/sponsors';
 import { getSchedule } from 'front-features/schedule'
 import { SponsorLevel } from 'models/sponsor-level';
 import styles from 'styles/Home.module.css';
-import OlderSpeakerSection from 'components/older-speaker-section/older-speaker-section';
+import SpeakerSection from 'components/iwd-2023/speaker-section/speaker-section';
 
 // https://alvarotrigo.com/blog/css-animations-scroll/
 
@@ -50,17 +48,11 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           <OlderEvenstsSection />
         </section>
         <section className={styles.Section}>
-          <OlderSpeakerSection speakers={speakers} />
-        </section>
-        {/*<section className={styles.Section}>
-          <SpeakersSection speakers={speakers} />
-        </section>
-        <section className={styles.Section}>
-          <TicketsSection />
+          <SpeakerSection speakers={speakers} />
         </section>
         <section className={styles.Section}>
           <ScheduleSection speakers={speakers} schedule={schedule} />
-  </section>*/}
+        </section>
         <section className={`${styles.Section} Section`}>
           <SponsorsSection sponsors={sponsors} />
         </section>

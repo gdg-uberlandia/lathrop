@@ -9,7 +9,7 @@ import ScheduleCard from "./schedule-card"
 import ScheduleTime from "./schedule-time"
 import { Speaker } from "models/speaker";
 
-import styles from "../../styles/Schedule.module.css";
+import styles from "./Schedule.module.css";
 import { Schedule } from "models/schedule";
 
 interface SpeakersSectionProps {
@@ -30,12 +30,12 @@ const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, schedule })
             schedule.map((schedule, index) => {
               return (
                 <Row key={`schedule-${index}`} className={styles.row_content}>
-                  <ScheduleTime initialTime={schedule.start} endTime={schedule.end} />
+                  <ScheduleTime initialTime={schedule.start} endTime={''} />
                   <Col xxl={11} sm={12}>
                     <Row className={styles.height100p}>
                       {
                         schedule.speeches?.map((speech, index) => {
-                          const speaker = speakers.find(speakerObj => speakerObj.id === speech.speaker_id);
+                          const speaker = speakers.find(speakerObj => speakerObj.slug === speech.speakerSlug);
                           console.log("speaker: " + JSON.stringify(speaker))
                           if (speech?.topic) {
                             return (

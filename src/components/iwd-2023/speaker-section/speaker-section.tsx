@@ -1,6 +1,6 @@
 import { Speaker } from "models/speaker";
 import React from "react";
-import styles from "styles/OlderSpeakerSection.module.css";
+import styles from "./SpeakerSection.module.css";
 import SpeakerCard from "./speaker-card";
 
 
@@ -8,7 +8,7 @@ interface SpeakersSectionProps {
   speakers: Array<Speaker>,
 }
 
-const OlderSpeakerSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
+const SpeakerSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
   return (
     <div className={styles.Container}>
       <header className={styles.Header}>
@@ -27,4 +27,4 @@ const OlderSpeakerSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
     </div>
   );
 };
-export default OlderSpeakerSection;
+export default SpeakerSection;

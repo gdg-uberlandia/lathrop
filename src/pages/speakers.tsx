@@ -2,7 +2,7 @@ import React from "react";
 import BaseLayout from '../layouts/base-layout';
 import { Col, Row, Container } from 'reactstrap';
 import styles from '../styles/Speakers.module.css'
-import SpeakerCard from 'components/speakers-section/speaker-card';
+import SpeakerCard from 'components/devfest-cerrado-2022/speakers-section/speaker-card';
 import { Speaker } from 'models/speaker';
 import { getSpeakers } from "front-features/speakers";
 
