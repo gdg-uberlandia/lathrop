@@ -1,7 +1,7 @@
 /*eslint-disable*/
 import { Sponsor } from "models/sponsor";
 import React, { useState } from "react";
-import styles from '../../styles/Sponsors.module.css'
+import styles from './Sponsors.module.css'
 import Image from 'next/image'
 
 

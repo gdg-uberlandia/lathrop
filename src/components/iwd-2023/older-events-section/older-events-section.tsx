@@ -6,7 +6,7 @@ import {
     Row,
 } from "reactstrap";
 
-import styles from 'styles/OlderEvents.module.css';
+import styles from './OlderEvents.module.css';
 
 const OlderEvenstsSection: React.FC = ({ }) => {
 
@@ -35,8 +35,7 @@ const OlderEvenstsSection: React.FC = ({ }) => {
                         <img
                             src={'/dare-to-be-square-new.gif'}
 
-                            height="400px"
-                            width="400px"
+                            className={styles.SupportImage}
                         />
 
                     </Col>

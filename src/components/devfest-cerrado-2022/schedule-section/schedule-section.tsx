@@ -36,7 +36,7 @@ const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, schedule })
                       {
                         schedule.speeches?.map((speech, index) => {
                           const speaker = speakers.find(speakerObj => speakerObj.slug === speech.speakerSlug);
-                          console.log("speaker: " + JSON.stringify(speaker))
+                          // console.log("speaker: " + JSON.stringify(speaker))
                           if (speech?.topic) {
                             return (
                               <ScheduleCard key={`speech-${schedule.start}-${schedule.end}-${index}`} lgValue={12 / schedule.speeches.length} {...speaker} topic={speech.topic!} />

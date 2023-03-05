@@ -14,6 +14,22 @@
   --pink: #E41AE1;
 }
 
+.bg-blue2 {
+  background-color: var(--blue2);
+}
+
+.bg-soft-green {
+  background-color: var(--soft-green);
+}
+
+.bg-soft-blue {
+  background-color: var(--soft-blue);
+}
+
+.bg-pink {
+  background-color: var(--soft-pink);
+}
+
 body {
   padding: 0;
   margin: 0;

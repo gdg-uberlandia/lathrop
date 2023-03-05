@@ -21,7 +21,7 @@ const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, schedule })
     const getPillColor = (tech: string) => {
         switch (tech) {
             case "Carreira":
-                return "primary"
+                return "blue2"
             case "Machine Learning":
                 return "secondary"
             case "Web":
@@ -30,6 +30,10 @@ const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, schedule })
                 return "info"
             case "Infra/Devops":
                 return "warning"
+            case "Qualidade de Software":
+                return "soft-blue";
+            case "Android":
+                return "soft-green";
             default:
                 return "success"
         }
@@ -45,7 +49,7 @@ const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, schedule })
                 }}>
                     <Row >
                         <Col height="10px" lg={4} sm={22} style={{ paddingLeft: '0px' }}
-                        ><img style={{ marginTop: '15px' }} width="400px" src="/connector.png" />
+                        ><img className={styles.ConectorImage} style={{ marginTop: '15px' }} width="400px" src="/connector.png" />
                         </Col>
 
                         <Col lg={4} sm={12}><h1 style={{ paddingLeft: '10px' }}>Programação</h1></Col>
@@ -68,7 +72,7 @@ const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, schedule })
                                                         {
                                                             schedule.speeches?.map((speech, index) => {
                                                                 const speaker = speakers.find(speakerObj => speakerObj.slug === speech.speakerSlug);
-                                                                console.log("speaker: " + JSON.stringify(speaker))
+                                                                //console.log("speaker: " + JSON.stringify(speaker))
                                                                 if (speech?.topic) {
                                                                     return <><Row>
                                                                         <Col>

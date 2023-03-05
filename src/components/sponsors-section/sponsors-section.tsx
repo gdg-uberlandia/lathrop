@@ -8,7 +8,7 @@ import {
 import _supports from '../../hooks/userSupports';
 
 
-import styles from '../../styles/Sponsors.module.css'
+import styles from './Sponsors.module.css'
 import SponsorCard from "./sponsor-card";
 import { SponsorLevel } from "models/sponsor-level";
 
@@ -58,7 +58,7 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ sponsors }) => {
                 }}>
                     <Row >
                         <Col height="10px" lg={4} sm={22} style={{ paddingLeft: '0px' }}
-                        ><img style={{ marginTop: '15px' }} width="400px" src="/connector.png" />
+                        ><img className={styles.ConectorImage} style={{ marginTop: '15px' }} width="400px" src="/connector.png" />
                         </Col>
 
                         <Col lg={4} sm={12}><h1 style={{ paddingLeft: '10px' }}>Patrocinadores</h1></Col>
