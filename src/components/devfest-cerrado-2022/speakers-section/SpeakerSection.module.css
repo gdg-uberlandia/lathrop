@@ -1,0 +1,43 @@
+.Container {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(180deg,
+      rgba(62, 131, 252, 0.2) 0%,
+      rgba(255, 255, 255, 0) 100%);
+}
+
+.Header {
+  padding-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ConectorImage {
+  left: 0;
+  width: 400px;
+  position: absolute;
+}
+
+.Body {
+  margin-top: 60px;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 40px;
+  row-gap: 40px;
+  padding: 0 100px;
+}
+
+@media only screen and (max-width: 580px) {
+  .Body {
+    grid-template-columns: 1fr;
+    padding: 0 20px;
+  }
+
+  .ConectorImage {
+    width: 0px;
+  }
+}
