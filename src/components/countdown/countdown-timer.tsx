@@ -7,10 +7,10 @@ const CountdownTimer: React.FC = ({}) => {
   const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
-    const target = new Date("03/25/2023 18:00:00");
+    const target = new Date("03/25/2023 08:00:00");
     const interval = setInterval(() => {
       const now = new Date();
-      const difference = target.getTime() - now.getTime();
+      const difference = target.getTime() - now.getTime()>0?target.getTime() - now.getTime():0;
       const d = Math.floor(difference / (1000 * 60 * 60 * 24));
       const h = Math.floor(
         (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
@@ -27,39 +27,71 @@ const CountdownTimer: React.FC = ({}) => {
 
   return (
     <div className={styles.timer_wrapper}>
-      <div className={styles.days_wrapper}>
+      <div>
         <div className={styles.number_wrapper}>
-          <div className={styles.days_tens_wrapper}>
-            {Math.floor(days / 10)}
+          <div className={styles.outer_wrapper}>
+            <div className={styles.inbetween_wrapper}>
+              <div className={styles.inner_days_wrapper}>
+                {Math.floor(days / 10)}
+              </div>
+            </div>
           </div>
-          <div className={styles.days_ones_wrapper}>{days % 10}</div>
+          <div className={styles.outer_wrapper}>
+            <div className={styles.inbetween_wrapper}>
+              <div className={styles.inner_days_wrapper}>{days % 10}</div>
+            </div>
+          </div>
         </div>
         <p className={styles.time_text}>Dias</p>
       </div>
-      <div className={styles.hours_wrapper}>
+      <div>
         <div className={styles.number_wrapper}>
-          <div className={styles.hours_tens_wrapper}>
-            {Math.floor(hours / 10)}
+          <div className={styles.outer_wrapper}>
+            <div className={styles.inbetween_wrapper}>
+              <div className={styles.inner_hours_wrapper}>
+              {Math.floor(hours / 10)}
+              </div>
+            </div>
           </div>
-          <div className={styles.hours_ones_wrapper}>{hours % 10}</div>
+          <div className={styles.outer_wrapper}>
+            <div className={styles.inbetween_wrapper}>
+              <div className={styles.inner_hours_wrapper}>{hours % 10}</div>
+            </div>
+          </div>
         </div>
         <p className={styles.time_text}>Horas</p>
       </div>
-      <div className={styles.minutes_wrapper}>
+      <div>
         <div className={styles.number_wrapper}>
-          <div className={styles.minutes_tens_wrapper}>
-            {Math.floor(minutes / 10)}
+          <div className={styles.outer_wrapper}>
+            <div className={styles.inbetween_wrapper}>
+              <div className={styles.inner_minutes_wrapper}>
+              {Math.floor(minutes / 10)}
+              </div>
+            </div>
           </div>
-          <div className={styles.minutes_ones_wrapper}>{minutes % 10}</div>
+          <div className={styles.outer_wrapper}>
+            <div className={styles.inbetween_wrapper}>
+              <div className={styles.inner_minutes_wrapper}>{minutes % 10}</div>
+            </div>
+          </div>
         </div>
         <p className={styles.time_text}>Minutos</p>
       </div>
-      <div className={styles.seconds_wrapper}>
+      <div>
         <div className={styles.number_wrapper}>
-          <div className={styles.seconds_tens_wrapper}>
-            {Math.floor(seconds / 10)}
+          <div className={styles.outer_wrapper}>
+            <div className={styles.inbetween_wrapper}>
+              <div className={styles.inner_seconds_wrapper}>
+              {Math.floor(seconds / 10)}
+              </div>
+            </div>
           </div>
-          <div className={styles.seconds_ones_wrapper}>{seconds % 10}</div>
+          <div className={styles.outer_wrapper}>
+            <div className={styles.inbetween_wrapper}>
+              <div className={styles.inner_seconds_wrapper}>{seconds % 10}</div>
+            </div>
+          </div>
         </div>
         <p className={styles.time_text}>Segundos</p>
       </div>

@@ -12,7 +12,7 @@ class MyDocument extends Document {
           <link rel="apple-touch-icon" sizes="76x76" />
           {/* Fonts and icons */}
           <link
-            href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans&family=Nunito:wght@400;800&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Delius&family=Nunito:wght@400;800&display=swap"
             rel="stylesheet"
           />
           <link
