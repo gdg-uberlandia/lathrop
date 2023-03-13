@@ -1,0 +1,68 @@
+.timer_wrapper {
+  background-color: #ffff;
+  font-family: "Nunito", "Open Sans", sans-serif;
+    padding: 10rem 0;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4rem;
+  background: linear-gradient(180deg,
+  rgba(62, 131, 252, 0.2) 0%,
+  rgba(255, 255, 255, 0) 100%);
+
+}
+.number_wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  font-weight: 700;
+  text-shadow: 2px 2px rgb(154, 63, 187);
+  color: white;
+  font-size: 4rem;
+}
+.days_wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.time_text {
+  font-family: "Balsamiq Sans", cursive;
+  font-size: 2rem;
+  margin-top: .5rem;
+}
+
+.days_tens_wrapper {
+  background-color: rgb(44, 151, 151);
+  padding: 0.5rem 1.5rem;
+}
+.days_ones_wrapper {
+  background-color: rgb(44, 151, 151);
+  padding: 0.5rem 1.5rem;
+}
+.hours_tens_wrapper {
+  background-color: rgb(75, 221, 208);
+  padding: 0.5rem 1.5rem;
+}
+.hours_ones_wrapper {
+  background-color: rgb(75, 221, 208);
+  padding: 0.5rem 1.5rem;
+}
+.minutes_tens_wrapper {
+  background-color: rgb(142, 209, 226);
+  padding: 0.5rem 1.5rem;
+}
+.minutes_ones_wrapper {
+  background-color: rgb(142, 209, 226);
+  padding: 0.5rem 1.5rem;
+}
+.seconds_tens_wrapper {
+  background-color: rgb(82, 193, 219);
+  padding: 0.5rem 1.5rem;
+}
+.seconds_ones_wrapper {
+  background-color: rgb(82, 193, 219);
+  padding: 0.5rem 1.5rem;
+}
