@@ -45,6 +45,9 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
     <>
       <div>
         <HomeHeader></HomeHeader>
+        <section>
+          <CountdownTimer />
+        </section>
 
         <section className={`${styles.Section} Section`}>
           <OlderEvenstsSection />
@@ -58,9 +61,7 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
         <section className={`${styles.Section} Section`}>
           <SponsorsSection sponsors={sponsors} />
         </section>
-        <section>
-          <CountdownTimer />
-        </section>
+
       </div>
     </>
   );
