@@ -1,0 +1,153 @@
+.timer_wrapper {
+  background-color: #ffff;
+  font-family: "Nunito", "Open Sans", sans-serif;
+  padding: 10rem 0;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4rem;
+ 
+}
+.number_wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  font-weight: 700;
+  text-shadow: 2px 2px rgb(154, 63, 187);
+  color: white;
+  font-size: 4rem;
+}
+.outer_wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 6rem;
+  height: 7rem;
+  overflow: hidden;
+}
+.outer_wrapper:before {
+  content: "";
+  width: 10rem;
+  height: 10rem;
+  position: absolute;
+  background-image: conic-gradient(
+    transparent,
+    transparent,
+    transparent,
+    rgb(70, 136, 244)
+  );
+  animation: animate 3s ease-in-out infinite;
+}
+.outer_wrapper:after {
+  content: "";
+  width: 10rem;
+  height: 10rem;
+  position: absolute;
+  background-image: conic-gradient(
+    transparent,
+    transparent,
+    transparent,
+    rgb(234, 67, 53)
+  );
+  animation: animate 3s ease-in-out infinite;
+  animation-delay: 0.2s;
+}
+
+.time_text {
+  font-family: "Open Sans", cursive;
+  font-size: 2rem;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+}
+
+.inbetween_wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem 1.5rem;
+  width: 6rem;
+  height: 7rem;
+  overflow: hidden;
+}
+.inbetween_wrapper:before {
+  content: "";
+  width: 10rem;
+  height: 10rem;
+  position: absolute;
+  background-image: conic-gradient(
+    transparent,
+    transparent,
+    transparent,
+    rgb(251, 188, 4)
+  );
+  animation: animate 3s ease-in-out infinite;
+  animation-delay: 0.25s;
+}
+.inbetween_wrapper:after {
+  content: "";
+  width: 10rem;
+  height: 10rem;
+  position: absolute;
+  background-image: conic-gradient(
+    transparent,
+    transparent,
+    transparent,
+    rgb(15, 157, 88)
+  );
+  animation: animate 3s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
+
+@keyframes animate {
+  0% {
+    transform: rotate(140deg);
+  }
+  100% {
+    transform: rotate(500deg);
+  }
+}
+
+.inner_days_wrapper {
+  position: absolute;
+  inset: 5px;
+  background-color: rgb(44, 151, 151);
+  z-index: 1;
+}
+.inner_hours_wrapper {
+  position: absolute;
+  inset: 5px;
+  background-color: rgb(75, 221, 208);
+  z-index: 1;
+}
+.inner_minutes_wrapper {
+  position: absolute;
+  inset: 5px;
+  background-color: rgb(142, 209, 226);
+  z-index: 1;
+}
+.inner_seconds_wrapper {
+  position: absolute;
+  inset: 5px;
+  background-color: rgb(82, 193, 219);
+  z-index: 1;
+}
+
+@media (max-width: 992px) {
+  .timer_wrapper {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .number_wrapper {
+    gap: 0.5rem;
+  }
+
+  .timer_wrapper {
+    gap: 2rem;
+  }
+}
