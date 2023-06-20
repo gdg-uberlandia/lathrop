@@ -1,0 +1,19 @@
+rules_version = '2';
+service firebase.storage {
+
+  match /b/{bucket}/o {
+
+  	match /speakers/{allPaths=**} {
+      allow read;
+    }
+    match /sponsors/{allPaths=**} {
+      allow read;
+    }
+    match /tags/{allPaths=**} {
+      allow read;
+    }
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

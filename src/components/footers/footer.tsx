@@ -1,11 +1,11 @@
 /*eslint-disable*/
 import React from "react";
 import { useRouter } from 'next/router'
-import LogoGDG from "../../assets/images/LogoGDG";
 // reactstrap components
 import { Nav, NavItem, NavLink, Container } from "reactstrap";
 import styles from "../../styles/Footer.module.css";
 import configValues from '../../helpers/config'
+import LogoWTM from "assets/images/LogoWTM";
 interface FooterProps { }
 
 const Footer: React.FC<FooterProps> = ({ }) => {
@@ -16,16 +16,17 @@ const Footer: React.FC<FooterProps> = ({ }) => {
 
   return (
     <>
-      <Container fluid>
+      <Container>
         <Nav className={styles.FooterContent}>
           <NavItem>
             <NavLink active href={generateRef("#")}>
-              <LogoGDG />
+
+              <LogoWTM width={250} />
             </NavLink>
           </NavItem>
-          <NavItem>
+          {/*<NavItem>
             <NavLink href={generateRef("#speakers")}>Palestrantes</NavLink>
-          </NavItem>
+  </NavItem>*/}
           <NavItem>
             <NavLink href={generateRef("#sponsors")}>Patrocinadores</NavLink>
           </NavItem>

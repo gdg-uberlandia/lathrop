@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/router'
 import BaseLayout from '../layouts/base-layout';
 import { Col, Row, Container } from 'reactstrap';
-import Image from 'next/image'
 
 const CampaignPage = ({ }) => {
     const router = useRouter()

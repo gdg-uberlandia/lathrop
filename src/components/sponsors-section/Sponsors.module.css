@@ -1,0 +1,75 @@
+.SponsorSection {}
+
+.SponsorWrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-gap: 8px;
+    padding: 20px 0px;
+    margin: 0px 5px;
+}
+
+@media (min-width: 812px) {
+    .SponsorWrapper {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+
+@media (min-width: 640px) {
+    .SponsorWrapper {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .StaffWrapper {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+
+    .StaffCardBody {
+        width: 130px;
+    }
+}
+
+.StaffWrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-gap: 8px;
+    padding: 20px 0px;
+    margin: 0px 5px;
+}
+
+.StaffCardBody {
+    position: relative;
+    width: 100px;
+    height: 90px;
+}
+
+.SponsorCard {
+    background-color: var(--default-background-color);
+    box-shadow: 0 0 2px 0 rgb(0 0 0 / 7%), 0 2px 2px 0 rgb(0 0 0 / 15%);
+    transition: box-shadow var(--animation);
+    cursor: pointer;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.SponsorCardBody {
+    position: relative;
+    width: 200px;
+    height: 90px;
+}
+
+.SponsorCardBodyImage {
+    padding: 0px 10px !important;
+}
+
+#sponsors {
+    margin: 10px 0px;
+}
+
+@media only screen and (max-width: 580px) {
+
+    .ConectorImage {
+        width: 0px;
+    }
+}

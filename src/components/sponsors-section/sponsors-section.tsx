@@ -8,7 +8,7 @@ import {
 import _supports from '../../hooks/userSupports';
 
 
-import styles from '../../styles/Sponsors.module.css'
+import styles from './Sponsors.module.css'
 import SponsorCard from "./sponsor-card";
 import { SponsorLevel } from "models/sponsor-level";
 
@@ -51,35 +51,41 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ sponsors }) => {
 
     return (
         <>
-            <Container style={{ marginBottom: '60px' }}>
-                <div id="sponsors">
-                    {/*<h1>Patrocínio</h1>
-                    <p style={{ margin: '30px 0px' }}>
-                        Estas são as empresas que nos ajudaram a fazer este evento acontecer!
-                    </p>*/}
+            <div className={styles.SponsorSection}>
+                <Container style={{
+                    marginLeft
+                        : '0px'
+                }}>
+                    <Row >
+                        <Col height="10px" lg={4} sm={22} style={{ paddingLeft: '0px' }}
+                        ><img className={styles.ConectorImage} style={{ marginTop: '15px' }} width="400px" src="/connector.png" />
+                        </Col>
 
-                    <h4>
-                        Patrocinador oficial
-                    </h4>
+                        <Col lg={4} sm={12}><h1 style={{ paddingLeft: '10px' }}>Patrocinadores</h1></Col>
+                    </Row>
+                </Container>
 
-                    {SPONSORS_LIST.map((el) => mapSponsorLevel(sponsors[el], el === "staff"))}
+                <Container style={{ marginBottom: '100px', marginTop: '30px' }}>
+                    <div id="sponsors">
+                        {SPONSORS_LIST.map((el) => mapSponsorLevel(sponsors[el], el === "staff"))}
 
-                    <h4>
-                        Organização
-                    </h4>
+                        <h4>
+                            Organização
+                        </h4>
 
-                    <div>
-                        <Row>
+                        <div>
+                            <Row>
 
-                            <div className={styles.SponsorWrapper}>
-                                {
-                                    supports.items.map((item: Sponsor) => mapSponsorCard(item, false))
-                                }
-                            </div>
-                        </Row>
+                                <div className={styles.SponsorWrapper}>
+                                    {
+                                        supports.items.map((item: Sponsor) => mapSponsorCard(item, false))
+                                    }
+                                </div>
+                            </Row>
+                        </div>
                     </div>
-                </div>
-            </Container>
+                </Container>
+            </div>
         </>
     );
 }

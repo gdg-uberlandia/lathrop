@@ -25,8 +25,8 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# local env files
-.env*.local
+#  env files
+.env*
 
 # vercel
 .vercel
@@ -39,3 +39,9 @@ next-env.d.ts
 .firebaserc
 
 functions/index.html
+
+.firebase/
+firebase-debug.lo
+hosting.*
+
+serviceAccount.json

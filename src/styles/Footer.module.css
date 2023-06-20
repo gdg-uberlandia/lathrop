@@ -32,8 +32,24 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #fdd46d;
+  background-color: var(--pink);
   width: 164px;
   height: 33px;
   border-radius: 10px;
+  border: 3px var(--pink) solid;
+}
+
+.FooterRegister a {
+  text-decoration: none;
+  transition: none;
+  color: #FFF;
+}
+
+.FooterRegister:hover {
+  color: var(--pink);
+  background-color: transparent;
+}
+
+.FooterRegister:hover a {
+  color: var(--pink);
 }

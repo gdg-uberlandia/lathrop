@@ -1,4 +1,5 @@
 import admin from 'firebase-admin';
+const serviceAccount = require('../../../serviceAccount.json');
 
 
 interface Database extends admin.firestore.Firestore {
@@ -6,14 +7,13 @@ interface Database extends admin.firestore.Firestore {
 
 let db: Database;
 if (!admin.apps.length) {
-    if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
-        throw new Error('FIREBASE_SERVICE_ACCOUNT is not defined');
+    if (!process.env.FIREBASE_CONFIG) {
+        throw new Error('FIREBASE_CONFIG is not defined');
     }
 
-    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-    admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount)
-    });
+    const adminConfig = JSON.parse(process.env.FIREBASE_CONFIG);
+    adminConfig.credential = admin.credential.cert(serviceAccount);
+    admin.initializeApp(adminConfig);
 
     db = admin.firestore();
 

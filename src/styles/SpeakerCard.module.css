@@ -1,0 +1,75 @@
+.CardBorder {
+  background: linear-gradient(180deg,
+      rgb(25, 182, 236) 0%,
+      rgb(1, 250, 181) 100%);
+  border-radius: 10px;
+
+}
+
+.CardWrapper {
+  background: #ffffff;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  margin: 7.5px;
+  text-align: center;
+  max-height: 550px;
+  height: 550px
+}
+
+.SpeakerName {
+  margin-top: 140px;
+  color: #4285f4;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.Instagram {
+  font-weight: 400;
+  font-size: 10px;
+  font-family: "Open Sans", sans-serif;
+}
+
+.Description {
+  font-family: "Open Sans", sans-serif;
+  color: #000000;
+  font-weight: 400;
+  font-size: 15px;
+  text-align: left;
+  height: 250px;
+  text-overflow: ellipsis;
+  overflow-y: scroll;
+}
+
+.SpeakerImgWrapper {
+  position: relative;
+  width: 200px;
+  height: 300px;
+}
+
+.SpeakerImg {
+  width: 150px;
+  height: 180px;
+  position: absolute;
+  top: 40px;
+  left: 15px;
+  clip-path: ellipse();
+  /*
+  filter: brightness(0.5) sepia(1) saturate(1000%) hue-rotate(270deg);
+  -webkit-filter: brightness(0.5) sepia(1) saturate(1000%) hue-rotate(270deg);
+  */
+}
+
+.SpeakerImgFrame {
+  width: 200px;
+  height: 285px;
+  z-index: 3;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
