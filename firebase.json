@@ -2,7 +2,7 @@
   "hosting": {
     "source": ".",
     "ignore": [
-      ".firebase/iwd-uberlandia-2022/functions",
+      ".firebase/**/functions",
       "firebase.json",
       "**/.*",
       "**/node_modules/**"

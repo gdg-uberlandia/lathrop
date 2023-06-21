@@ -1,10 +1,10 @@
 const configValues = {
-  name: 'IWD Uberlândia 2023',
-  eventDate: '2023-03-25T08:00:00',
-  eventLinkRegistrationUrl: 'https://doity.com.br/iwd-uberlandia',
+  name: 'IO Extended Brasil',
+  eventDate: '2023-07-15T08:00:00',
+  eventLinkRegistrationUrl: 'https://www.sympla.com.br/evento-online/io-extended-brasil-2023/2026630',
   place: '',
-  placeCity: 'Uberlândia',
-  formattedDate: '25 Março',
+  placeCity: '',
+  formattedDate: '15 Julho',
   email: 'gdg.uberlandia@gmail.com',
 }
 
