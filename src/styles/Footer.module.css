@@ -32,11 +32,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--pink);
+  background-color: var(--black);
   width: 164px;
   height: 33px;
   border-radius: 10px;
-  border: 3px var(--pink) solid;
+  border: 3px var(--black) solid;
 }
 
 .FooterRegister a {
@@ -46,10 +46,10 @@
 }
 
 .FooterRegister:hover {
-  color: var(--pink);
+  color: var(--black);
   background-color: transparent;
 }
 
 .FooterRegister:hover a {
-  color: var(--pink);
+  color: var(--black);
 }

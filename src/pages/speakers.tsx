@@ -2,9 +2,10 @@ import React from "react";
 import BaseLayout from '../layouts/base-layout';
 import { Col, Row, Container } from 'reactstrap';
 import styles from '../styles/Speakers.module.css'
-import SpeakerCard from 'components/devfest-cerrado-2022/speakers-section/speaker-card';
+import SpeakerCard from 'components/speakers-section/speaker-card';
 import { Speaker } from 'models/speaker';
 import { getSpeakers } from "front-features/speakers";
+import configValues from "helpers/config";
 
 
 interface SpeakersPageProps {
@@ -37,7 +38,7 @@ const SpeakersPage = ({ speakers }: SpeakersPageProps) => {
                     <h1>Palestrantes</h1>
 
                     <p style={{ marginTop: '60px' }}>
-                        As pessoas palestrantes do Devfest possuem uma variedade de experiências, que vão desde pessoas desenvolvedoras experientes à lideres de comunidades. As pessoas que palestram com frenquência se engajam em conversas técnicas em suas empresas, cidades e países. No Devfest você pode esperar palestras de Google Developer Experts, Tech Leads, pessoas desenvolvedoras e resolvedores de problemas.
+                        As pessoas palestrantes do {configValues.name} possuem uma variedade de experiências, que vão desde pessoas desenvolvedoras experientes à lideres de comunidades. As pessoas que palestram com frenquência se engajam em conversas técnicas em suas empresas, cidades e países. No Devfest você pode esperar palestras de Google Developer Experts, Tech Leads, pessoas desenvolvedoras e resolvedores de problemas.
                     </p>
                     <section style={sectionStyle}>
                         <Row style={_center}>

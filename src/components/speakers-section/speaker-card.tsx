@@ -3,7 +3,7 @@ import { Speaker } from "models/speaker";
 import Image from "next/image";
 import React, { useState } from "react";
 
-import styles from "../../../styles/Speakers.module.css";
+import styles from "./styles/Speakers.module.css";
 import SpeakerModal from "./speaker-modal";
 
 interface SpeakerCardProps extends Speaker { }

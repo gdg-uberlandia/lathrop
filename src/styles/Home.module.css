@@ -1,23 +1,15 @@
 .BgWrap {
   position: absolute;
-  height: 100vh;
-  width: 100%;
-  z-index: -1;
-}
-
-.BgWrap2 {
-  position: absolute;
-  height: 100vh;
+  height: 80vh;
   width: 100%;
   z-index: -1;
 }
 
 .BgImageFull {
-  background: url('/header-dare-to-be.png');
   background-position: left top;
   background-repeat: no-repeat;
   background-size: contain;
-  height: 100vh;
+  height: 100%;
 }
 
 .BgImageMin {
@@ -27,6 +19,7 @@
 .MainInnerFull {
   width: 100%;
   height: 80vh;
+  position: relative;
   text-align: left;
   padding-top: 10%;
   padding-left: 5%;
@@ -183,7 +176,7 @@
 
 .RegisterButton {
   padding: 15px 15px;
-  background-color: var(--pink);
+  background-color: var(--black);
   color: white;
   width: 164px;
   height: 33px;
@@ -192,8 +185,8 @@
 }
 
 .RegisterButton:hover {
-  border: 3px var(--pink) solid;
-  color: var(--pink);
+  border: 3px var(--black) solid;
+  color: var(--black);
   background-color: transparent;
 }
 

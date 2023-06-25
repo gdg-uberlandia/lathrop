@@ -1,6 +1,6 @@
 import { Speaker } from "models/speaker";
 import React from "react";
-import styles from "styles/SpeakerCard.module.css";
+import styles from "./styles/SpeakerCard.module.css";
 
 const SpeakerCard: React.FC<{
   speaker: Speaker;

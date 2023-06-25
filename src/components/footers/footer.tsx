@@ -6,6 +6,7 @@ import { Nav, NavItem, NavLink, Container } from "reactstrap";
 import styles from "../../styles/Footer.module.css";
 import configValues from '../../helpers/config'
 import LogoWTM from "assets/images/LogoWTM";
+import Logo from "components/logo";
 interface FooterProps { }
 
 const Footer: React.FC<FooterProps> = ({ }) => {
@@ -21,7 +22,7 @@ const Footer: React.FC<FooterProps> = ({ }) => {
           <NavItem>
             <NavLink active href={generateRef("#")}>
 
-              <LogoWTM width={250} />
+              {Logo({ height: 120 })}
             </NavLink>
           </NavItem>
           {/*<NavItem>

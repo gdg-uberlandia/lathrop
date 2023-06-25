@@ -1,0 +1,102 @@
+.Title {
+    text-align: center;
+}
+
+.Description {
+    padding-right: 100px;
+    text-align: justify;
+    margin-top: 60px;
+}
+
+.SupportImage {
+    height: 400px;
+}
+
+@media only screen and (max-width: 580px) {
+
+    .SupportImage {
+        height: 300px;
+    }
+}
+
+
+@media only screen and (max-width: 1026px) {
+    .Description {
+        padding: 10px;
+    }
+}
+
+.VideoContainer {
+    position: relative;
+    padding-bottom: 56.25%;
+    padding-top: 30px;
+    height: 0;
+    overflow: hidden;
+}
+
+.VideoContainer iframe,
+.VideoContainer object,
+.VideoContainer embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+.MarqueeOuter {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.5rem;
+    overflow: hidden;
+}
+
+.MarqueeInner {
+    animation-name: marquee;
+    animation-duration: 10s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    position: relative;
+    z-index: -1;
+}
+
+@keyframes marquee {
+    0% {
+        left: -20%;
+    }
+
+    50% {
+        left: -1%;
+    }
+
+    100% {
+        left: -20%
+    }
+}
+
+
+
+.ConstructItems {
+    display: flex;
+    align-items: center;
+    margin-top: 60px;
+}
+
+.ConstructItem {
+    padding: 20px 30px;
+    white-space: nowrap;
+    color: var(--white)
+}
+
+.ConstructItem:nth-child(3n+0) {
+    background-color: var(--red);
+}
+
+.ConstructItem:nth-child(3n+1) {
+    background-color: var(--orange);
+}
+
+.ConstructItem:nth-child(3n+2) {
+    background-color: var(--blue);
+}

@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/base-layout';
 import { Col, Row, Container } from 'reactstrap';
 import { getSponsors } from 'front-features/sponsors';
 import { SponsorLevel } from 'models/sponsor-level';
+import configValues from 'helpers/config';
 
 
 interface SponsorsPageProps {
@@ -37,7 +38,7 @@ const SponsorsPage = ({ sponsors }: SponsorsPageProps) => {
                         </p>
                         <p>
                             Fale conosco pelo e-mail:
-                            <a href="mailto:gdg.uberlandia@gmail.com" target="_blank" rel="noreferrer">gdg.uberlandia@gmail.com</a>
+                            <a href={`mailto:${configValues.email}`} target="_blank" rel="noreferrer">{configValues.email}</a>
                         </p>
                     </Row>
                 </div>

@@ -1,0 +1,222 @@
+.cards {
+  width: 100%;
+  height: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  margin: 2rem 0 0 0;
+}
+
+.carousel_prev a {
+  background-color: transparent !important;
+  left: -7rem !important;
+}
+
+.carousel_next a {
+  background-color: transparent !important;
+  right: -6rem !important;
+}
+
+.carousel_prev a span {
+  background-image: url(https://cdn-icons-png.flaticon.com/512/154/154692.png?w=826&t=st=1664232308~exp=1664232908~hmac=2292da8fee0559a1696c89ed327b6769c6b24bac5ad9cd7c16a17fa9187041cc) !important;
+}
+
+.carousel_next a span {
+  background-image: url(https://cdn-icons-png.flaticon.com/512/154/154697.png?w=826&t=st=1664232307~exp=1664232907~hmac=9d79e104c8814a8c9d283e222ca1301e876c0626b93e926dedb5b9bc430c4808) !important;
+}
+
+.card_container {
+  border: 1px solid #dedede;
+  border-radius: 5%;
+  height: 18rem;
+  width: 15rem;
+  padding: 1rem 1rem;
+  margin-right: 1rem;
+  cursor: pointer;
+}
+
+.card_content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.card_image {
+  width: 100%;
+  height: 100%;
+  border: 0px solid #000;
+  border-radius: 50%;
+  background: #dedede;
+  margin: 0 0 3rem 0;
+}
+
+.card_name {
+  width: 100%;
+  font-size: 16px;
+  margin: 1.5rem 0 0 0;
+}
+
+.card_location {
+  width: 100%;
+  font-size: 14px;
+  margin: 0 0 0.8rem 0;
+}
+
+.card_topic {
+  width: 100%;
+  font-size: 14px;
+  margin: 0;
+}
+
+.card_profile {
+  width: 100%;
+  font-size: 14px;
+  margin: 0.8rem 0 0 0;
+  text-decoration: none;
+  color: #298ae4;
+}
+
+.carousel_indicators {
+  margin-top: 1rem;
+}
+
+.carousel {
+  width: 100%;
+}
+
+.carousel_indicators button {
+  opacity: none !important;
+  background-color: #298ae4 !important;
+  width: 0.6rem !important;
+  height: 0.6rem !important;
+  border-radius: 50% !important;
+}
+
+.carousel_inner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.button_container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.button_container a {
+  background: #298ae4;
+  color: #fff;
+  font-size: 1.2rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.7rem;
+  border: 3px solid #298ae4;
+}
+
+.button_container a:hover {
+  background: transparent;
+  color: #298ae4;
+  border: 3px solid #298ae4;
+}
+
+.modal_header {
+  padding: 1rem 1.5rem 0 1.5rem;
+}
+
+.modal_header button {
+  margin: 0 0 4rem 0 !important;
+}
+
+.modal_header .card_image img {
+  min-width: 110% !important;
+  min-height: 110% !important;
+  background: #dedede;
+}
+
+.modal_speaker_info_container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal_speaker_info_content {
+  width: 80%;
+  margin-left: 1rem;
+}
+
+.modal_speaker_info_content h1 {
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+.modal_speaker_info_content p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.modal_body {
+  padding: 1rem 1.5rem 0 1.5rem;
+}
+
+.modal_body h2 {
+  font-size: 1.35rem;
+}
+
+.modal_footer {
+  padding: 1rem 1.5rem 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal_footer a {
+  padding: 1rem;
+  cursor: pointer;
+}
+
+.modal_footer a svg {
+  color: #000 !important;
+}
+
+@media (max-width: 360px) {
+  .carousel_prev a {
+    background-color: transparent !important;
+    left: -2.5rem !important;
+  }
+
+  .carousel_next a {
+    background-color: transparent !important;
+    right: -1.8rem !important;
+  }
+
+  .modal_footer a {
+    padding: 0.5rem;
+    cursor: pointer;
+  }
+}
+
+@media (max-width: 414px) {
+  .carousel_prev a {
+    background-color: transparent !important;
+    left: -3rem !important;
+  }
+
+  .carousel_next a {
+    background-color: transparent !important;
+    right: -2rem !important;
+  }
+
+  .modal_footer a {
+    padding: 0.6rem;
+    cursor: pointer;
+  }
+}

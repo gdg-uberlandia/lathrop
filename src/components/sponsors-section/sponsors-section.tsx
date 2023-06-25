@@ -51,25 +51,23 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ sponsors }) => {
 
     return (
         <>
-            <div className={styles.SponsorSection}>
-                <Container style={{
-                    marginLeft
-                        : '0px'
-                }}>
-                    <Row >
-                        <Col height="10px" lg={4} sm={22} style={{ paddingLeft: '0px' }}
-                        ><img className={styles.ConectorImage} style={{ marginTop: '15px' }} width="400px" src="/connector.png" />
-                        </Col>
+            <Container>
+                <div className={styles.SponsorSection}>
+                    <Container style={{
+                        marginLeft
+                            : '0px'
+                    }}>
+                        <Row >
 
-                        <Col lg={4} sm={12}><h1 style={{ paddingLeft: '10px' }}>Patrocinadores</h1></Col>
-                    </Row>
-                </Container>
+                            <Col lg={4} sm={12}><h1 style={{ paddingLeft: '10px' }}>Patrocinadores</h1></Col>
+                        </Row>
+                    </Container>
 
-                <Container style={{ marginBottom: '100px', marginTop: '30px' }}>
-                    <div id="sponsors">
-                        {SPONSORS_LIST.map((el) => mapSponsorLevel(sponsors[el], el === "staff"))}
+                    <Container fluid style={{ marginBottom: '100px', marginTop: '30px' }}>
+                        <div id="sponsors">
+                            {SPONSORS_LIST.map((el) => mapSponsorLevel(sponsors[el], el === "staff"))}
 
-                        <h4>
+                            {/*<h4>
                             Organização
                         </h4>
 
@@ -82,10 +80,11 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ sponsors }) => {
                                     }
                                 </div>
                             </Row>
+                                </div>*/}
                         </div>
-                    </div>
-                </Container>
-            </div>
+                    </Container>
+                </div>
+            </Container>
         </>
     );
 }

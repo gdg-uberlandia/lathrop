@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./CountdownTimer.module.css";
-const CountdownTimer: React.FC = ({}) => {
+
+const CountdownTimer: React.FC = ({ }) => {
   const [days, setDays] = useState(0);
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
@@ -10,7 +11,7 @@ const CountdownTimer: React.FC = ({}) => {
     const target = new Date("03/25/2023 08:00:00");
     const interval = setInterval(() => {
       const now = new Date();
-      const difference = target.getTime() - now.getTime()>0?target.getTime() - now.getTime():0;
+      const difference = target.getTime() - now.getTime() > 0 ? target.getTime() - now.getTime() : 0;
       const d = Math.floor(difference / (1000 * 60 * 60 * 24));
       const h = Math.floor(
         (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
@@ -49,7 +50,7 @@ const CountdownTimer: React.FC = ({}) => {
           <div className={styles.outer_wrapper}>
             <div className={styles.inbetween_wrapper}>
               <div className={styles.inner_hours_wrapper}>
-              {Math.floor(hours / 10)}
+                {Math.floor(hours / 10)}
               </div>
             </div>
           </div>
@@ -66,7 +67,7 @@ const CountdownTimer: React.FC = ({}) => {
           <div className={styles.outer_wrapper}>
             <div className={styles.inbetween_wrapper}>
               <div className={styles.inner_minutes_wrapper}>
-              {Math.floor(minutes / 10)}
+                {Math.floor(minutes / 10)}
               </div>
             </div>
           </div>
@@ -83,7 +84,7 @@ const CountdownTimer: React.FC = ({}) => {
           <div className={styles.outer_wrapper}>
             <div className={styles.inbetween_wrapper}>
               <div className={styles.inner_seconds_wrapper}>
-              {Math.floor(seconds / 10)}
+                {Math.floor(seconds / 10)}
               </div>
             </div>
           </div>
