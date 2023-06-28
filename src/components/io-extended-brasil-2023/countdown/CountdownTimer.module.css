@@ -9,7 +9,6 @@
 
 .CounterList {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
     gap: 24px;
     list-style-type: none;
     margin: 0;
@@ -81,4 +80,22 @@
     font-size: 60px;
     font-weight: 700;
     line-height: 1;
+}
+
+@media (max-width: 575.98px) {
+    .CounterList {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+@media (min-width: 576px) and (max-width: 991.98px) {
+    .CounterList {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 992px) {
+    .CounterList {
+        grid-template-columns: repeat(4, 1fr);
+    }
 }

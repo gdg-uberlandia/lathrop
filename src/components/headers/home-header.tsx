@@ -22,17 +22,12 @@ const HomeHeader: React.FC = ({ }) => {
                 <div className={styles.BgImageFull} style={bgImageFullTheme} />
             </div>
             <div className={styles.MainInnerFull}>
-                {/**/}
-                <div className={styles.MainInnerFullContent}>
-                    <div className={styles.MainInnerFullDescription}>
-                        <h1>
-                            {configValues.formattedDate}
-                        </h1>
-                        <h3>On-line e ao vivo</h3>
-                        <a className={styles.RegisterButton} href={configValues.eventLinkRegistrationUrl}>
-                            Inscreva-se
-                        </a>
-                    </div>
+                <div className={styles.MainInnerFullDescription}>
+                    <h1>{configValues.formattedDate}</h1>
+                    <h3>On-line e ao vivo</h3>
+                    <a className={styles.RegisterButton} href={configValues.eventLinkRegistrationUrl}>
+                        Inscreva-se
+                    </a>
                 </div>
             </div >
         </>
