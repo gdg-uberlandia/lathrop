@@ -9,6 +9,6 @@ export interface ThemeValues {
 const Theme: ThemeValues = {
     bgImageFull: '/google-io-extended-2023-header.png',
     bgImageFullPosition: 'center top',
-    bgImageFullSize: 'auto 100%',
+    bgImageFullSize: 'contain',
 }
 export default Theme

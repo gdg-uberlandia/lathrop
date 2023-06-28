@@ -1,36 +1,42 @@
 .BgWrap {
   position: absolute;
-  height: 80vh;
+  height: 300px;
   width: 100%;
   z-index: -1;
 }
 
 .BgImageFull {
-  background-position: left top;
+  height: 100%;
+  background-position: center top;
   background-repeat: no-repeat;
   background-size: contain;
-  height: 100%;
-}
-
-.BgImageMin {
-  display: none;
 }
 
 .MainInnerFull {
   width: 100%;
-  height: 80vh;
+  min-height: 65vh;
   position: relative;
   text-align: left;
-  padding-top: 10%;
-  padding-left: 5%;
+  padding: 10% 5% 1%;
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
+  justify-content: center;
+  align-items: flex-end;
   text-shadow: 1px 1px 1px var(--white);
 }
 
 .MainInnerFullContent {
-  margin-top: 100px;
+
+}
+
+.MainInnerFullDescription {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /*align-items: center;*/
+  width: 100%;
+  /*min-width: 800px;*/
+  min-height: 100px;
+  padding-bottom: 20px;
 }
 
 .Counter {
@@ -127,59 +133,12 @@
   display: none;
 }
 
-@media only screen and (max-width: 1026px) {
-  .MainInnerFull {
-    height: 35vh;
-  }
-
-  .MainInnerFullContent {
-    display: none;
-  }
-
-  .MainDescriptionMinWrapper {
-    display: block;
-    padding: 25px 10px;
-  }
-
-  .MainDescriptionMin {
-    padding: 30px 30px;
-    text-align: center;
-  }
-
-  .cardCounter {
-    margin: .5rem;
-    padding: 1rem;
-    text-align: center;
-    width: 120px;
-  }
-
-  .cardCounter span {
-    font-size: 30px;
-    font-weight: 400;
-  }
-
-  .CounterList {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 600px) {
-  .grid {
-    width: 100%;
-    flex-direction: column;
-  }
-
-  .CounterList {
-    grid-template-columns: 1fr;
-  }
-}
-
 .RegisterButton {
-  padding: 15px 15px;
+  padding: 15px 20px;
   background-color: var(--black);
   color: white;
   width: 164px;
-  height: 33px;
+  height: 60px;
   font-size: 20px;
   border-radius: 10px;
 }
@@ -211,15 +170,6 @@
   animation: updown 2s infinite;
 }
 
-@media (min-height: 500px) {
-  .ScrollDown {
-    position: absolute;
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-  }
-}
 
 @keyframes updown {
   0% {
@@ -239,8 +189,33 @@
   margin-top: 180px;
 }
 
-@media only screen and (max-width: 1026px) {
-  .Section {
-    margin-top: 80px;
+@media only screen and (min-width: 800px) {
+  .BgWrap {
+    height: 70vh;
+  }
+
+  .BgImageFull {
+    background-size: auto 100%;
+  }
+
+  .MainInnerFull {
+    width: 100%;
+    min-height: 80vh;
+    position: relative;
+    text-align: left;
+    padding: 10% 5% 1%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    text-shadow: 1px 1px 1px var(--white);
+  }
+
+  .MainInnerFullDescription {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 800px;
+    min-height: 100px;
+    padding-bottom: initial;
   }
 }
