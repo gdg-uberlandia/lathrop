@@ -1,4 +1,6 @@
 
+export type systemValue = 'gdg' | 'iwd' | 'devfest-cerrado' | string;
+
 export interface ConfigValues {
   name: string,
   eventDate: Date,
@@ -7,7 +9,7 @@ export interface ConfigValues {
   placeCity: string,
   formattedDate: string,
   email: 'gdg.uberlandia@gmail.com',
-  organizedBy: 'gdg' | 'iwd'
+  organizedBy: systemValue
 }
 
 
@@ -29,7 +31,7 @@ const resolveURL = () => {
   } else if (process.env.NEXT_PUBLIC_VERCEL_URL) {
     finalUrl += `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
   } else {
-    finalUrl += `https://wtmuberlandia.com.br`
+    finalUrl += `https://ioextendedbrasil.devfest.com.br`
   }
 
 

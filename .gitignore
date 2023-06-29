@@ -43,7 +43,7 @@ next-env.d.ts
 functions/index.html
 
 .firebase/
-firebase-debug.lo
+firebase-debug.log
 hosting.*
 
 serviceAccount.json

@@ -24,6 +24,28 @@ npm run dev
 yarn dev
 ```
 
+
+
+### Deploy Inicial
+`Instalar firebase CLI`
+npm install -g firebase-tools
+`Configurar projeto experimental`
+firebase experiments:enable webframeworks
+`Configurar projeto experimental`
+firebase init hosting
+Adicione o serviceAccount.json a raiz do projeto
+npm run deploy_prod
+
+
+### Problems
+
+```This version of npm is compatible with lockfileVersion@1, but package-lock.json was generated for lockfileVersion@3.```
+Instale a versão do global pelo npm
+
+
+
+### un Local
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
