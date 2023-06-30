@@ -8,7 +8,7 @@ const nextConfig = {
     path: '/',
     domains: ['firebasestorage.googleapis.com'],
   },
-  exportPathMap: async function (
+  /*exportPathMap: async function (
     defaultPathMap,
     { dev, dir, outDir, distDir, buildId }
   ) {
@@ -19,7 +19,7 @@ const nextConfig = {
       '/speakers': { page: '/speakers' },
       '/campaigns': { page: '/campaigns' },
     }
-  },
+  },*/
 }
 
 

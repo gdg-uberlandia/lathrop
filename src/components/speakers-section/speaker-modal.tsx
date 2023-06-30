@@ -36,12 +36,12 @@ const SpeakerModal: React.FC<ModalProps> = ({
     >
       <ModalHeader toggle={modalToggle} className={styles.modal_header}>
         <div className={styles.modal_speaker_info_container}>
-          <Image
-            unoptimized
+          <img
             className={styles.card_image}
             src={speaker.photo ? speaker.photo : ""}
             alt={`Foto ${speaker.name}`}
-            fill
+            height={120}
+            width={120}
           />
           <div className={styles.modal_speaker_info_content}>
             <h1>{speaker.name}</h1>
