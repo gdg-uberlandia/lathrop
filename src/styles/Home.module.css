@@ -1,128 +1,29 @@
 .BgWrap {
-  position: absolute;
-  height: 100vh;
-  width: 100%;
-  z-index: -1;
-}
-
-.BgWrap2 {
-  position: absolute;
-  height: 100vh;
+  height: 300px;
   width: 100%;
   z-index: -1;
 }
 
 .BgImageFull {
-  background: url('/header-dare-to-be.png');
-  background-position: left top;
+  height: 100%;
+  background-position: center top;
   background-repeat: no-repeat;
   background-size: contain;
-  height: 100vh;
-}
-
-.BgImageMin {
-  display: none;
 }
 
 .MainInnerFull {
   width: 100%;
-  height: 80vh;
-  text-align: left;
-  padding-top: 10%;
-  padding-left: 5%;
+  padding: 0px 10% 20px;
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
   text-shadow: 1px 1px 1px var(--white);
 }
 
-.MainInnerFullContent {
-  margin-top: 100px;
-}
-
-.Counter {
-  align-items: center;
-  background-color: #1A1D1C;
-  display: flex;
-  font-family: 'Open Sans', sans-serif;
-  justify-content: center;
-  padding: 38px 0;
-}
-
-.CounterList {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
-.CounterListItem {
-  background: var(--white);
-  border-radius: 10px;
-  border: 3px transparent solid;
-  color: var(--white);
-  cursor: default;
+.MainInnerFullDescription {
   display: flex;
   flex-direction: column;
-  font-size: 32px;
-  font-weight: 600;
-  height: 158px;
   justify-content: center;
-  padding-top: 20px;
-  text-align: center;
-  transition-property: color, background-color, border-color;
-  transition-duration: 400ms;
-  transition-timing-function: ease-in-out;
-  width: 221px;
-}
-
-.CounterListItem:nth-child(1) {
-  background: var(--blue);
-}
-
-.CounterListItem:nth-child(2) {
-  background: var(--red);
-}
-
-.CounterListItem:nth-child(3) {
-  background: var(--orange);
-}
-
-.CounterListItem:nth-child(4) {
-  color: var(--black);
-}
-
-.CounterListItem:hover {
-  background: var(--white);
-}
-
-.CounterListItem:nth-child(1):hover {
-  border-color: var(--blue);
-  color: var(--blue);
-}
-
-.CounterListItem:nth-child(2):hover {
-  border-color: var(--red);
-  color: var(--red);
-}
-
-.CounterListItem:nth-child(3):hover {
-  border-color: var(--orange);
-  color: var(--orange);
-}
-
-.CounterListItem:nth-child(4):hover {
-  background: var(--black);
-  border-color: var(--white);
-  color: var(--white);
-}
-
-.CounterListItem__time {
-  font-size: 60px;
-  font-weight: 700;
-  line-height: 1;
+  align-items: center;
+  width: 100%;
 }
 
 .logo {
@@ -134,66 +35,20 @@
   display: none;
 }
 
-@media only screen and (max-width: 1026px) {
-  .MainInnerFull {
-    height: 35vh;
-  }
-
-  .MainInnerFullContent {
-    display: none;
-  }
-
-  .MainDescriptionMinWrapper {
-    display: block;
-    padding: 25px 10px;
-  }
-
-  .MainDescriptionMin {
-    padding: 30px 30px;
-    text-align: center;
-  }
-
-  .cardCounter {
-    margin: .5rem;
-    padding: 1rem;
-    text-align: center;
-    width: 120px;
-  }
-
-  .cardCounter span {
-    font-size: 30px;
-    font-weight: 400;
-  }
-
-  .CounterList {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 600px) {
-  .grid {
-    width: 100%;
-    flex-direction: column;
-  }
-
-  .CounterList {
-    grid-template-columns: 1fr;
-  }
-}
-
 .RegisterButton {
-  padding: 15px 15px;
-  background-color: var(--pink);
+  padding: 15px 20px;
+  background-color: var(--black);
   color: white;
   width: 164px;
-  height: 33px;
+  height: 60px;
   font-size: 20px;
   border-radius: 10px;
+  text-align: center;
 }
 
 .RegisterButton:hover {
-  border: 3px var(--pink) solid;
-  color: var(--pink);
+  border: 3px var(--black) solid;
+  color: var(--black);
   background-color: transparent;
 }
 
@@ -218,15 +73,6 @@
   animation: updown 2s infinite;
 }
 
-@media (min-height: 500px) {
-  .ScrollDown {
-    position: absolute;
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-  }
-}
 
 @keyframes updown {
   0% {
@@ -246,8 +92,13 @@
   margin-top: 180px;
 }
 
-@media only screen and (max-width: 1026px) {
-  .Section {
-    margin-top: 80px;
+@media only screen and (min-width: 800px) {
+  .BgWrap {
+    height: 70vh;
+  }
+
+  .MainInnerFullDescription {
+    flex-direction: row;
+    justify-content: space-between;
   }
 }

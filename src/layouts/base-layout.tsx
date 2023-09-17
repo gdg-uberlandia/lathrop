@@ -10,6 +10,8 @@ interface BaseLayout {
 //id="base-layout" className="main-content"
 const BaseLayout: React.FC<BaseLayout> = ({ children }) => {
 
+    const favicon = `${configValues.organizedBy}/favicon.ico`
+
     return (
         <>
             <Head>
@@ -18,6 +20,7 @@ const BaseLayout: React.FC<BaseLayout> = ({ children }) => {
                     content="width=device-width, initial-scale=1, shrink-to-fit=no"
                 />
                 <meta name="functions-insert-dynamic-og"></meta>
+                <link rel="icon" href={favicon} sizes="any" />
                 <title>{configValues.name}</title>
             </Head>
             <main className="absolute-position">

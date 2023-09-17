@@ -2,10 +2,12 @@
   "hosting": {
     "source": ".",
     "ignore": [
-      ".firebase/iwd-uberlandia-2022/functions",
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ]
+    ],
+    "frameworksBackend": {
+      "region": "us-central1"
+    }
   }
 }

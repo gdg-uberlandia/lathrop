@@ -1,4 +1,3 @@
-import { cp } from "fs";
 import * as React from "react";
 
 interface LogoProps {

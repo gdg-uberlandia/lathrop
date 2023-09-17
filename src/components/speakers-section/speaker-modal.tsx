@@ -1,8 +1,7 @@
 /*eslint-disable*/
 
-import speakers from "hooks/useSpeakers";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import {
   faTwitter,
@@ -13,7 +12,7 @@ import {
 import { faArrowPointer } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import styles from "../../../styles/Speakers.module.css";
+import styles from "./styles/Speakers.module.css";
 import { Speaker } from "models/speaker";
 
 interface ModalProps {
@@ -37,12 +36,12 @@ const SpeakerModal: React.FC<ModalProps> = ({
     >
       <ModalHeader toggle={modalToggle} className={styles.modal_header}>
         <div className={styles.modal_speaker_info_container}>
-          <Image
-            unoptimized
+          <img
             className={styles.card_image}
             src={speaker.photo ? speaker.photo : ""}
             alt={`Foto ${speaker.name}`}
-            fill
+            height={120}
+            width={120}
           />
           <div className={styles.modal_speaker_info_content}>
             <h1>{speaker.name}</h1>

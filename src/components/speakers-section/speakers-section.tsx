@@ -6,13 +6,12 @@ import {
   Container,
   Carousel,
   CarouselItem,
-  CarouselIndicators,
-  Button,
   CarouselControl,
 } from "reactstrap";
 
-import styles from "../../styles/Speakers.module.css";
+import styles from "./styles/Speakers.module.css";
 import SpeakerCard from "./speaker-card";
+import configValues from "helpers/config";
 
 interface SpeakersSectionProps {
   speakers: Array<Speaker>,
@@ -76,7 +75,7 @@ const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
         <div id="speakers" className={styles.container}>
           <h1>Palestrantes</h1>
           <p>
-            O time de palestrantes do Devfest Cerrado 2022 traz grandes nomes da
+            O time de palestrantes do {configValues.name} traz grandes nomes da
             área técnica e referências em liderança de comunidades. Reunimos em
             um só evento Google Developer Experts (GDEs), Tech Leads, pessoas
             desenvolvedoras e principalmente pessoas resolvedoras de problemas.

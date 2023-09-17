@@ -1,7 +1,6 @@
 import admin from 'firebase-admin';
 const serviceAccount = require('../../../serviceAccount.json');
 
-
 interface Database extends admin.firestore.Firestore {
 }
 
