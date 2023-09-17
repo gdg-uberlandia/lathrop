@@ -1,5 +1,5 @@
 
-export type systemValue = 'gdg' | 'iwd' | 'devfest-cerrado' | string;
+export type systemValue = 'gdg' | 'iwd' | 'devfest-cerrado' | 'devfest-triangulo' | string;
 
 export interface ConfigValues {
   name: string,
@@ -10,18 +10,26 @@ export interface ConfigValues {
   formattedDate: string,
   email: 'gdg.uberlandia@gmail.com',
   organizedBy: systemValue
+  midiaKit?: string
+  socialMedia?: {
+    instagram: string;
+  }
 }
 
 
 const configValues = {
-  name: 'IO Extended Brasil 2023',
-  eventDate: '2023-07-15T08:00:00',
-  eventLinkRegistrationUrl: 'https://www.sympla.com.br/evento-online/io-extended-brasil-2023/2026630',
+  name: 'Devfest Triângulo 2023',
+  eventDate: '2023-12-02T08:00:00',
+  eventLinkRegistrationUrl: 'https://doity.com.br/devfesttriangulo',
   place: '',
-  placeCity: '',
-  formattedDate: '15 Julho',
+  placeCity: 'Uberlândia',
+  formattedDate: '02 Dezembro',
   email: 'gdg.uberlandia@gmail.com',
-  organizedBy: 'gdg' // options 
+  organizedBy: 'gdg', // options
+  midiaKit: 'https://docs.google.com/presentation/d/1gPKzG7xZibF3wAbEA050irl2ijhsAMRKXMispSaFrys/edit#slide=id.g223b3f84614_0_31',
+  socialMedia: {
+    instagram: 'https://www.instagram.com/devfesttriangulo'
+  }
 }
 
 const resolveURL = () => {
@@ -31,7 +39,7 @@ const resolveURL = () => {
   } else if (process.env.NEXT_PUBLIC_VERCEL_URL) {
     finalUrl += `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
   } else {
-    finalUrl += `https://ioextendedbrasil.devfest.com.br`
+    finalUrl += `https://devfesttriangulo.com.br`
   }
 
 

@@ -14,20 +14,26 @@ const HomeHeader: React.FC = ({ }) => {
 
     const bgImageFullTheme = {
         backgroundImage: `url(${Theme.bgImageFull})`,
+        backgrroundPosition: Theme.bgImageFullPosition,
+        backgroundSize: Theme.bgImageFullSize,
     }
 
     return (
         <>
             <div className={styles.BgWrap}>
-                <div className={styles.BgImageFull} style={bgImageFullTheme} />
+                <div className={styles.BgImageFull} />
             </div>
             <div className={styles.MainInnerFull}>
                 <div className={styles.MainInnerFullDescription}>
-                    <h1>{configValues.formattedDate}</h1>
-                    <h3>On-line e ao vivo</h3>
-                    <a className={styles.RegisterButton} href={configValues.eventLinkRegistrationUrl}>
-                        Inscreva-se
-                    </a>
+                    <div style={{ paddingBottom: '30px' }}>
+                        <h1>{configValues.formattedDate}</h1>
+                    </div>
+                    <div>
+                        <a className={styles.RegisterButton} href={configValues.eventLinkRegistrationUrl}>
+                            Inscreva-se
+                        </a>
+                    </div>
+
                 </div>
             </div >
         </>

@@ -12,8 +12,8 @@ import HomeHeader from "../components/headers/home-header";
 import SpeakerSection from "components/speakers-section/speakers-section";
 import ScheduleSection from "components/iwd-2023/schedule-section/schedule-section";
 import SponsorsSection from "components/sponsors-section/sponsors-section";
-import CountdownTimer from "components/io-extended-brasil-2023/countdown/countdown-timer";
-import OlderEvenstsSection from "components/io-extended-brasil-2023/older-events-section/older-events-section";
+import CountdownTimer from "components/devfest-triangulo-2023/countdown/countdown-timer";
+import OlderEvenstsSection from "components/devfest-triangulo-2023/older-events-section/older-events-section";
 
 // https://alvarotrigo.com/blog/css-animations-scroll/
 
@@ -44,20 +44,26 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
 
   return (
     <>
+      {/*
+    <section className={styles.Section}>
+          <ScheduleSection speakers={speakers} schedule={schedule} />
+        </section>  
+  */}
+
       <div>
-        <HomeHeader></HomeHeader>
-        <section>
+        <section className={styles.MainSection}>
+          <HomeHeader></HomeHeader>
           <CountdownTimer />
         </section>
+
         <section className={`${styles.Section} Section`}>
           <OlderEvenstsSection />
         </section>
-        <section className={styles.Section}>
+
+        <section className={`${styles.Section} Section`}>
           <SpeakerSection speakers={speakers} />
         </section>
-        {/*<section className={styles.Section}>
-          <ScheduleSection speakers={speakers} schedule={schedule} />
-        </section>*/}
+
         <section className={`${styles.Section} Section`}>
           <SponsorsSection sponsors={sponsors} />
         </section>

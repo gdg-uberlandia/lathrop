@@ -14,7 +14,18 @@ npm install
 cp .env.example .env.local
 ```
 
-Add values of environment variables that you can find on Project Settings -> Service Accounts -> Generate new private Key
+
+### Add Service Account to root of the project
+
+Add values of environment variables that you can find on 
+
+1. Download the key
+Project Settings -> Service Accounts -> Generate new private Key
+
+2. Rename to serviceAccount.json in root of project
+
+
+
 
 
 

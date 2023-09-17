@@ -220,3 +220,7 @@
     cursor: pointer;
   }
 }
+
+.speakers_link:link {
+  color: var(--blue)
+}

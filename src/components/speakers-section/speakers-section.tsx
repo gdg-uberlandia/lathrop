@@ -1,6 +1,6 @@
 /*eslint-disable*/
 import { Speaker } from "models/speaker";
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import {
   Col,
   Container,
@@ -69,6 +69,45 @@ const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
     }
   );
 
+  const renderSpeakers = (): ReactNode => {
+    return
+    (<>
+      <div className={styles.cards}>=
+        <Carousel
+          activeIndex={activeIndex}
+          next={next}
+          previous={previous}
+          ride="carousel"
+          className={styles.carousel}
+          style={{ width: '100%' }}
+        >
+          {displaySpeakers}
+          <div className={styles.carousel_prev}>
+            <CarouselControl
+              direction="prev"
+              directionText="Previous"
+              onClickHandler={previous}
+            />
+          </div>
+          <div className={styles.carousel_next}>
+            <CarouselControl
+              direction="next"
+              directionText="Next"
+              onClickHandler={next}
+            />
+          </div>
+        </Carousel>
+      </div>
+    </>);
+  }
+
+  const renderWithoutSpeakers = (): ReactNode => {
+    return (<div style={{
+      textAlign: "center"
+    }} >
+      <b >Em breve novas informações sobre os palestrantes do evento acompanhe tambem no <a className={styles.speakers_link} target="_blank" href={configValues.socialMedia.instagram}>instagram </a></b>
+    </div >);
+  }
   return (
     <>
       <Container>
@@ -83,39 +122,10 @@ const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
             além de conhecimento técnico, contando com muita interatividade,
             conexões e diversidade.
           </p>
-          <div className={styles.cards}>
-            <Carousel
-              activeIndex={activeIndex}
-              next={next}
-              previous={previous}
-              ride="carousel"
-              className={styles.carousel}
-              style={{ width: '100%' }}
-            >
-              {displaySpeakers}
-              <div className={styles.carousel_prev}>
-                <CarouselControl
-                  direction="prev"
-                  directionText="Previous"
-                  onClickHandler={previous}
-                />
-              </div>
-              <div className={styles.carousel_next}>
-                <CarouselControl
-                  direction="next"
-                  directionText="Next"
-                  onClickHandler={next}
-                />
-              </div>
-            </Carousel>
-          </div>
-          <div className={styles.button_container}>
-            <a color="info" href="/speakers">
-              Ver todos
-            </a>
-          </div>
+
+          {(speakers.length > 0) ? renderSpeakers() : renderWithoutSpeakers()}
         </div>
-      </Container>
+      </Container >
     </>
   );
 };
