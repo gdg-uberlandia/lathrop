@@ -93,7 +93,7 @@
 }
 
 .Section {
-  margin-top: 80px;
+  margin-top: 100px;
 }
 
 @media only screen and (max-width: 900px) {
@@ -134,4 +134,5 @@
 
 .MainSection {
   height: 100dvh;
+  max-height: -webkit-fill-available;
 }

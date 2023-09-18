@@ -26,9 +26,6 @@ Project Settings -> Service Accounts -> Generate new private Key
 
 
 
-
-
-
 ```
 npm run dev
 # or
@@ -42,6 +39,11 @@ yarn dev
 npm install -g firebase-tools
 `Configurar projeto experimental`
 firebase experiments:enable webframeworks
+
+
+`Configure seu projeto firebase``
+firebase use --add {nome do projeto}
+
 `Configurar projeto experimental`
 firebase init hosting
 Adicione o serviceAccount.json a raiz do projeto

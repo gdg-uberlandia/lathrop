@@ -22,7 +22,7 @@ const Footer: React.FC<FooterProps> = ({ }) => {
           <NavItem>
             <NavLink active href={generateRef("#")}>
 
-              {Logo({ height: 120 })}
+              {Logo({ width: 200 })}
             </NavLink>
           </NavItem>
           {/*<NavItem>

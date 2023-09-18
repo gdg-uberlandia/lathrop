@@ -105,7 +105,7 @@ const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
     return (<div style={{
       textAlign: "center"
     }} >
-      <b >Em breve novas informações sobre os palestrantes do evento acompanhe tambem no <a className={styles.speakers_link} target="_blank" href={configValues.socialMedia.instagram}>instagram </a></b>
+      <b >Em breve novas informações sobre os palestrantes do evento acompanhe também no <a className={styles.speakers_link} target="_blank" href={configValues.socialMedia.instagram}>instagram </a></b>
     </div >);
   }
   return (
