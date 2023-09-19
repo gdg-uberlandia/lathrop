@@ -33,7 +33,7 @@ const Footer: React.FC<FooterProps> = ({ }) => {
           </NavItem>
           */}
           {(configValues.midiaKit) ? <NavItem>
-            <NavLink target="_blank" href={configValues.midiaKit}>Mídia Kit</NavLink>
+            <NavLink target="_blank" href={configValues.midiaKit}>Seja um patrocinador</NavLink>
           </NavItem> : <></>}
           <NavItem className={styles.FooterRegister}>
             <NavLink target="_blank" href={configValues.eventLinkRegistrationUrl}>Se cadastrar</NavLink>

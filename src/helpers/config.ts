@@ -22,7 +22,7 @@ const configValues = {
   eventDate: '2023-12-02T08:00:00',
   eventLinkRegistrationUrl: 'https://doity.com.br/devfesttriangulo',
   place: '',
-  placeCity: 'Uberlândia',
+  placeCity: 'Uberlândia - MG',
   formattedDate: '02 Dezembro',
   email: 'gdg.uberlandia@gmail.com',
   organizedBy: 'gdg', // options

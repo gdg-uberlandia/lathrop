@@ -25,7 +25,8 @@ const HomeHeader: React.FC = ({ }) => {
             </div>
             <div className={styles.MainInnerFull}>
                 <div className={styles.MainInnerFullDescription}>
-                    <div style={{ paddingBottom: '30px' }}>
+                    <div style={{ paddingBottom: '30px', textAlign: 'center' }}>
+                        <h1>{configValues.placeCity}</h1>
                         <h1>{configValues.formattedDate}</h1>
                     </div>
                     <div>
