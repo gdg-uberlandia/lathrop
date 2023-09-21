@@ -1,11 +1,20 @@
 import admin from 'firebase-admin';
-const serviceAccount = require('../../../serviceAccount.json');
+//const serviceAccount = require('../../../serviceAccount.json');
 
 interface Database extends admin.firestore.Firestore {
 }
 
 let db: Database;
 if (!admin.apps.length) {
+    //const adminConfig = serviceAccount;
+
+    if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+        throw new Error('FIREBASE_SERVICE_ACCOUNT is not defined');
+    }
+
+    const serviceAccountString = Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT, 'base64').toString()
+    const serviceAccount = JSON.parse(serviceAccountString);
+
     const adminConfig = serviceAccount;
     adminConfig.credential = admin.credential.cert(serviceAccount);
     admin.initializeApp(adminConfig);
