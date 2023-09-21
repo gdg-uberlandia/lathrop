@@ -75,5 +75,4 @@ const NavbarHome = () => {
     </div>
   );
 }
-
 export default NavbarHome;
