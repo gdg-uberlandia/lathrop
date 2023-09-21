@@ -6,7 +6,6 @@ interface Database extends admin.firestore.Firestore {
 
 let db: Database;
 if (!admin.apps.length) {
-    //const adminConfig = serviceAccount;
 
     if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
         throw new Error('FIREBASE_SERVICE_ACCOUNT is not defined');
