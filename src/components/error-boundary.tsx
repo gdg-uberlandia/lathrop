@@ -2,7 +2,7 @@
 import React, { ReactElement } from "react";
 
 interface IProps {
-    children: React.Component
+    children: ReactElement<any, any>
 }
 
 interface IState {

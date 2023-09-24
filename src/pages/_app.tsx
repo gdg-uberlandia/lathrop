@@ -6,7 +6,6 @@ import { NextComponentType, NextPageContext } from 'next';
 
 
 import { AppLayoutProps } from '../../types';
-import ErrorBoundary from '../components/error-boundary';
 
 const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = (
   props: AppLayoutProps,
@@ -18,9 +17,7 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = (
   return (<React.Fragment>
 
     <Layout>
-      <ErrorBoundary>
-        <Component {...pageProps} />
-      </ErrorBoundary>
+      <Component {...pageProps} />
     </Layout>
   </React.Fragment>);
 

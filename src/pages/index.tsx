@@ -15,6 +15,9 @@ import SponsorsSection from "components/sponsors-section/sponsors-section";
 import CountdownTimer from "components/devfest-triangulo-2023/countdown/countdown-timer";
 import OlderEvenstsSection from "components/devfest-triangulo-2023/older-events-section/older-events-section";
 
+
+import ErrorBoundary from '../components/error-boundary';
+
 // https://alvarotrigo.com/blog/css-animations-scroll/
 
 interface HomePageProps {
@@ -49,26 +52,28 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           <ScheduleSection speakers={speakers} schedule={schedule} />
         </section>  
   */}
+      <ErrorBoundary>
 
-      <div>
-        <section>
-          <HomeHeader></HomeHeader>
-          <CountdownTimer />
-        </section>
+        <div>
+          <section>
+            <HomeHeader></HomeHeader>
+            <CountdownTimer />
+          </section>
 
-        <section className={`${styles.Section} Section`}>
-          <OlderEvenstsSection />
-        </section>
+          <section className={`${styles.Section} Section`}>
+            <OlderEvenstsSection />
+          </section>
 
-        <section className={`${styles.Section} Section`}>
-          <SpeakerSection speakers={speakers} />
-        </section>
+          <section className={`${styles.Section} Section`}>
+            <SpeakerSection speakers={speakers} />
+          </section>
 
-        <section className={`${styles.Section} Section`}>
-          <SponsorsSection sponsors={sponsors} />
-        </section>
+          <section className={`${styles.Section} Section`}>
+            <SponsorsSection sponsors={sponsors} />
+          </section>
 
-      </div>
+        </div>
+      </ErrorBoundary>
     </>
   );
 };
