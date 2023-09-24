@@ -27,6 +27,10 @@
     .StaffCardBody {
         width: 130px;
     }
+
+    .SponsorCardBodyImage {
+        width: 60%;
+    }
 }
 
 .StaffWrapper {
