@@ -1,7 +1,5 @@
 import db from '../utils/db';
-
 const SPEAKERS_COLLECTION = "speakers";
-
 
 interface SpeakerPayload {
     key: string,
@@ -22,26 +20,25 @@ const createSpeaker = async ({ key, id, companyTitle, mini_bio, name, photo, tec
     };
 
     if (key) {
-        db.collection(SPEAKERS_COLLECTION).doc(key).get().then(async (doc: any) => {
+        const doc = await db.collection(SPEAKERS_COLLECTION).doc(key).get();
 
-            if (doc.exists) {
+        if (doc.exists) {
 
-                await db.collection(SPEAKERS_COLLECTION)
-                    .doc(key)
-                    .set(data, { merge: true });
+            await db.collection(SPEAKERS_COLLECTION)
+                .doc(key)
+                .set(data, { merge: true });
 
-                const speaker = await db.collection(SPEAKERS_COLLECTION).doc(key).get();
+            const speaker = await db.collection(SPEAKERS_COLLECTION).doc(key).get();
 
-                return {
-                    ...speaker.data(),
-                    key: speaker.id,
-                };
+            return {
+                ...speaker.data(),
+                key: speaker.id,
+            };
 
-            } else {
-                throw new Error("Doc does not exist.");
-            }
+        } else {
+            throw new Error("Doc does not exist.");
+        }
 
-        })
 
     } else {
 
