@@ -33,7 +33,7 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ sponsors }) => {
 
     const mapSponsorLevel = (sponsorLevel: SponsorLevel, isStaff: boolean) => {
         if (sponsorLevel?.items?.length > 0)
-            return (<div>
+            return (<div key={sponsorLevel.id}>
                 <h4>
                     {sponsorLevel.name}
                 </h4>

@@ -1,5 +1,5 @@
 .BgWrap {
-  height: 50%;
+  height: 26dvh;
   width: 100%;
   z-index: -1;
 }
@@ -96,28 +96,7 @@
   margin-top: 100px;
 }
 
-@media (max-width: 669px) {
-  .BgWrap {
-    height: 15%;
-  }
-
-  .MainSection {
-    height: 150dvh;
-  }
-}
-
-@media (max-width: 991.98px) {
-
-  .MainSection {
-    height: 130dvh;
-  }
-}
-
-
 @media (min-width: 992px) {
-  .BgWrap {
-    height: 70%;
-  }
 
   .MainInnerFullDescription {
     position: absolute;
@@ -126,15 +105,14 @@
     width: 30%;
   }
 
+  .BgWrap {
+    height: 70vh;
+  }
+
   .BgImageFull {
     height: 100%;
     background-position: center top;
     background-repeat: no-repeat;
     background-size: cover;
-  }
-
-  .MainSection {
-    height: 100dvh;
-    max-height: -webkit-fill-available;
   }
 }

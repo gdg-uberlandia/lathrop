@@ -51,7 +51,7 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
   */}
 
       <div>
-        <section className={styles.MainSection}>
+        <section>
           <HomeHeader></HomeHeader>
           <CountdownTimer />
         </section>

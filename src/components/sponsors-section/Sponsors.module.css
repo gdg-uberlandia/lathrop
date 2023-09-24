@@ -55,12 +55,16 @@
 
 .SponsorCardBody {
     position: relative;
-    width: 200px;
+    width: 270px;
     height: 90px;
+    display: flex;
+    justify-content: center;
 }
 
 .SponsorCardBodyImage {
     padding: 0px 10px !important;
+    width: 90%;
+    object-fit: scale-down;
 }
 
 #sponsors {

@@ -14,7 +14,6 @@ const getSponsors = async () => {
     }
 }
 
-
 export {
     getSponsors
 }
