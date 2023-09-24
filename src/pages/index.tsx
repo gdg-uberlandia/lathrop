@@ -77,9 +77,9 @@ export async function getServerSideProps() {
   try {
     return {
       props: {
-        speakers: await getSpeakers(),
+        speakers: [], //await getSpeakers(),
         sponsors: await getSponsors(),
-        schedule: await getSchedule(),
+        schedule: [],//await getSchedule(),
       },
     };
   } catch (error) {

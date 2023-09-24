@@ -65,7 +65,7 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ sponsors }) => {
 
                     <Container fluid style={{ marginBottom: '100px', marginTop: '30px' }}>
                         <div id="sponsors">
-                            {SPONSORS_LIST.map((el) => mapSponsorLevel(sponsors[el], el === "staff"))}
+                            {sponsors && SPONSORS_LIST.map((el) => mapSponsorLevel(sponsors[el], el === "staff"))}
 
                             {/*<h4>
                             Organização

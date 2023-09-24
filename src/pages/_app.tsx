@@ -3,10 +3,10 @@ import type { AppContext, AppInitialProps, AppProps } from 'next/app'
 
 import React, { ReactNode } from "react";
 import { NextComponentType, NextPageContext } from 'next';
-import { Analytics } from '@vercel/analytics/react';
 
 
 import { AppLayoutProps } from '../../types';
+import ErrorBoundary from '../components/error-boundary';
 
 const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = (
   props: AppLayoutProps,
@@ -16,9 +16,11 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = (
   const Layout = Component.layout || (({ children }: { children: ReactNode }) => <>{children}</>);
 
   return (<React.Fragment>
+
     <Layout>
-      <Component {...pageProps} />
-      <Analytics />
+      <ErrorBoundary>
+        <Component {...pageProps} />
+      </ErrorBoundary>
     </Layout>
   </React.Fragment>);
 
