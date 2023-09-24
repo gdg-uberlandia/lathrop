@@ -17,8 +17,6 @@ interface SpeakerPayload {
 }
 
 const createSpeaker = async ({ key, id, companyTitle, mini_bio, name, photo, tech, title, topic, location }: SpeakerPayload) => {
-
-
     const data = {
         id, companyTitle, mini_bio, name, photo, tech, title, topic, location,
     };
@@ -59,17 +57,21 @@ const createSpeaker = async ({ key, id, companyTitle, mini_bio, name, photo, tec
 }
 
 const getSpeaker = async () => {
+    try {
 
-    const speakersQuerySnapshot = await db.collection(SPEAKERS_COLLECTION).get();
-    const speakers: { key: string }[] = [];
-    speakersQuerySnapshot.forEach(
-        (doc) => speakers.push({
-            ...doc.data(),
-            key: doc.id,
-        })
-    );
+        const speakersQuerySnapshot = await db.collection(SPEAKERS_COLLECTION).get();
+        const speakers: { key: string }[] = [];
+        speakersQuerySnapshot.forEach(
+            (doc) => speakers.push({
+                ...doc.data(),
+                key: doc.id,
+            })
+        );
 
-    return speakers;
+        return speakers;
+    } catch (error) {
+        console.error(error)
+    }
 
 }
 
