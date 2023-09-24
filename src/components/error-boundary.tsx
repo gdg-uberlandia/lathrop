@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { ReactElement } from "react";
 
 interface IProps {
     children: React.Component
@@ -9,7 +9,7 @@ interface IState {
     hasError?: boolean;
 }
 
-class ErrorBoundary extends React.Component<IProps | {}, IState | {}, any> {
+class ErrorBoundary extends React.Component<IProps, IState, any> {
     public state: IState = {
         hasError: false
     };
@@ -46,7 +46,7 @@ class ErrorBoundary extends React.Component<IProps | {}, IState | {}, any> {
                 </div>
             );
         }
-        return this.props.children;
+        return <>{this.props.children}</>
     }
 }
 
