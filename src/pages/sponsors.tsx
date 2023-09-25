@@ -26,9 +26,6 @@ const SponsorsPage = ({ sponsors }: SponsorsPageProps) => {
             <Container>
                 <div id="sponsors" style={{ margin: "60px", height: '90vh' }}>
                     <h1>Patrocinadores e Apoiadores</h1>
-
-
-
                     <Row style={{ ..._center, textAlign: 'center', marginTop: '120px' }}>
                         <h4> Que tal colocar sua marca neste evento?</h4>
                         <p>

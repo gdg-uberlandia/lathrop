@@ -1,22 +1,28 @@
-import { initializeApp } from "firebase-admin";
-import { getFirestore, Firestore } from 'firebase-admin/firestore';
+import admin from "firebase-admin";
 
-interface Database extends Firestore { }
-
-let db: Database;
-
-
-if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
-    throw new Error('FIREBASE_SERVICE_ACCOUNT is not defined');
+interface Database extends admin.firestore.Firestore {
 }
 
-const serviceAccountString = Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT, 'base64').toString()
-const serviceAccount = JSON.parse(serviceAccountString);
+let db: Database;
+if (!admin.apps.length) {
+    if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+        throw new Error('FIREBASE_SERVICE_ACCOUNT is not defined');
+    }
 
-const adminConfig = serviceAccount;
-//adminConfig.credential = admin.credential.cert(serviceAccount);
-const app = initializeApp(adminConfig);
+    const serviceAccountString = Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT, 'base64').toString()
 
-db = getFirestore(app);
+    const adminConfig = JSON.parse(serviceAccountString);
+    adminConfig.credential = admin.credential.cert(adminConfig);
+    admin.initializeApp(adminConfig);
+
+    db = admin.firestore();
+
+    db.settings({ ignoreUndefinedProperties: true });
+
+}
+else {
+    db = admin.firestore();
+}
+
 
 export default db;

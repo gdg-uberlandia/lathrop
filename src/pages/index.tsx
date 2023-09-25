@@ -2,9 +2,7 @@ import React, { useEffect } from "react";
 import BaseLayout from "../layouts/base-layout";
 import { Speaker } from "models/speaker";
 import { Schedule } from "models/schedule";
-import { getSpeakers } from "front-features/speakers";
-import { getSponsors } from "front-features/sponsors";
-import { getSchedule } from "front-features/schedule";
+import { getSponsors } from 'back-features/sponsors';
 import { SponsorLevel } from "models/sponsor-level";
 
 import styles from "styles/Home.module.css";
