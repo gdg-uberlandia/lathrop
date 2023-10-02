@@ -14,13 +14,11 @@ import SpeakerCard from "./speaker-card";
 import configValues from "helpers/config";
 
 interface SpeakersSectionProps {
-  speakers: Array<Speaker>,
+  speakers: Array<Speaker>;
 }
 
 const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
-
   const [activeIndex, setActiveIndex] = useState(0);
-
 
   const speakersChunk = (array: Array<Speaker>, size: number) => {
     return Array.from({ length: Math.ceil(array.length / size) }, (v, i) =>
@@ -28,7 +26,7 @@ const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
     );
   };
 
-  let _chunckSize = 4;
+  let _chunckSize = 3;
   const _speakersChuncked = speakersChunk(speakers, _chunckSize);
 
   const next = () => {
@@ -70,44 +68,60 @@ const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
   );
 
   const renderSpeakers = (): ReactNode => {
-    return
-    (<>
-      <div className={styles.cards}>=
-        <Carousel
-          activeIndex={activeIndex}
-          next={next}
-          previous={previous}
-          ride="carousel"
-          className={styles.carousel}
-          style={{ width: '100%' }}
-        >
-          {displaySpeakers}
-          <div className={styles.carousel_prev}>
-            <CarouselControl
-              direction="prev"
-              directionText="Previous"
-              onClickHandler={previous}
-            />
-          </div>
-          <div className={styles.carousel_next}>
-            <CarouselControl
-              direction="next"
-              directionText="Next"
-              onClickHandler={next}
-            />
-          </div>
-        </Carousel>
-      </div>
-    </>);
-  }
+    return (
+      <>
+        <div className={styles.cards}>
+          =
+          <Carousel
+            activeIndex={activeIndex}
+            next={next}
+            previous={previous}
+            ride="carousel"
+            className={styles.carousel}
+            style={{ width: "100%" }}
+          >
+            {displaySpeakers}
+            <div className={styles.carousel_prev}>
+              <CarouselControl
+                direction="prev"
+                directionText="Previous"
+                onClickHandler={previous}
+              />
+            </div>
+            <div className={styles.carousel_next}>
+              <CarouselControl
+                direction="next"
+                directionText="Next"
+                onClickHandler={next}
+              />
+            </div>
+          </Carousel>
+        </div>
+      </>
+    );
+  };
 
   const renderWithoutSpeakers = (): ReactNode => {
-    return (<div style={{
-      textAlign: "center"
-    }} >
-      <b >Em breve novas informações sobre os palestrantes do evento acompanhe também no <a className={styles.speakers_link} target="_blank" href={configValues.socialMedia.instagram}>instagram </a></b>
-    </div >);
-  }
+    return (
+      <div
+        style={{
+          textAlign: "center",
+        }}
+      >
+        <b>
+          Em breve novas informações sobre os palestrantes do evento acompanhe
+          também no{" "}
+          <a
+            className={styles.speakers_link}
+            target="_blank"
+            href={configValues.socialMedia.instagram}
+          >
+            instagram{" "}
+          </a>
+        </b>
+      </div>
+    );
+  };
   return (
     <>
       <Container>
@@ -123,12 +137,11 @@ const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
             conexões e diversidade.
           </p>
 
-          {(speakers.length > 0) ? renderSpeakers() : renderWithoutSpeakers()}
+          {speakers.length > 0 ? renderSpeakers() : renderWithoutSpeakers()}
         </div>
-      </Container >
+      </Container>
     </>
   );
 };
-
 
 export default SpeakersSection;
