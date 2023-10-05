@@ -28,7 +28,6 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ sponsors }) => {
     const mapSponsorCard = (sponsor: Sponsor, isStaff: boolean) => {
         if (sponsor.logo)
             return (<Col key={sponsor.id}><SponsorCard {...sponsor} isStaff={isStaff}></SponsorCard></Col>)
-        return <Col></Col>
     }
 
     const mapSponsorLevel = (sponsorLevel: SponsorLevel, isStaff: boolean) => {
@@ -66,7 +65,6 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ sponsors }) => {
                     <Container fluid style={{ marginBottom: '100px', marginTop: '30px' }}>
                         <div id="sponsors">
                             {SPONSORS_LIST.map((el) => {
-
                                 if (sponsors != null && sponsors[el] != null)
                                     return mapSponsorLevel(sponsors[el], el === "staff")
                                 return <></>
