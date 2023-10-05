@@ -24,8 +24,8 @@ const SpeakerCard: React.FC<SpeakerCardProps> = (speaker) => {
           width={120}
         />
         <h2 className={styles.card_name}>{speaker.name}</h2>
-        <p className={styles.card_topic}>{speaker.tech}</p>
-        <p className={styles.card_profile}>{speaker.title}</p>
+        <p className={styles.card_topic}>{speaker.title}</p>
+        <p className={styles.card_profile}>{speaker.topic}</p>
       </div>
       <SpeakerModal
         speaker={speaker}
