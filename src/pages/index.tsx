@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/base-layout";
 import { Speaker } from "models/speaker";
 import { Schedule } from "models/schedule";
 import { getSponsors } from 'back-features/sponsors';
+import { getSpeaker } from 'back-features/speakers';
 import { SponsorLevel } from "models/sponsor-level";
 
 import styles from "styles/Home.module.css";
@@ -48,7 +49,7 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
       {/*
     <section className={styles.Section}>
           <ScheduleSection speakers={speakers} schedule={schedule} />
-        </section>  
+        </section>
   */}
       <ErrorBoundary>
 
@@ -80,7 +81,7 @@ export async function getServerSideProps() {
   try {
     return {
       props: {
-        speakers: [], //await getSpeakers(),
+        speakers: await getSpeaker(),
         sponsors: await getSponsors(),
         schedule: [],//await getSchedule(),
       },
