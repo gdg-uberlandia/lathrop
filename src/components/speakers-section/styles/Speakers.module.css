@@ -19,19 +19,27 @@
 }
 
 .carousel_prev a span {
+  background-color: #F9AB00;
+  border-radius: 50%;
+  padding: 10px;
   background-image: url(https://cdn-icons-png.flaticon.com/512/154/154692.png?w=826&t=st=1664232308~exp=1664232908~hmac=2292da8fee0559a1696c89ed327b6769c6b24bac5ad9cd7c16a17fa9187041cc) !important;
+  background-size: 70%;
+  background-position: 4px;
 }
 
 .carousel_next a span {
+  background-color: #F9AB00;
+  border-radius: 50%;
+  padding: 10px;
   background-image: url(https://cdn-icons-png.flaticon.com/512/154/154697.png?w=826&t=st=1664232307~exp=1664232907~hmac=9d79e104c8814a8c9d283e222ca1301e876c0626b93e926dedb5b9bc430c4808) !important;
+  background-size: 70%;
+  background-position: 6px;
 }
 
 .card_container {
-  border: 1px solid #dedede;
   border-radius: 5%;
-  height: 18rem;
-  width: 15rem;
-  padding: 1rem 1rem;
+  max-width: 350px;
+  padding-top: 38px;
   margin-right: 1rem;
   cursor: pointer;
 }
@@ -47,18 +55,19 @@
 }
 
 .card_image {
-  width: 120px;
-  height: 120px;
-  border: 0px solid #000;
+  width: 159px;
+  height: 159px;
+  border: 2px solid #fff;
   border-radius: 50%;
   background: #dedede;
-  margin: 0 0 3rem 0;
+  margin-bottom: 25px;
+  box-shadow: 0px 0px 0.91584px 0px #8AB4F8, 0px 0px 1.83168px 0px #8AB4F8, 0px 0px 6.41088px 0px #8AB4F8, 0px 0px 12.82177px 0px #8AB4F8, 0px 0px 21.98017px 0px #8AB4F8, 0px 0px 38.46531px 0px #8AB4F8;
 }
 
 .card_name {
   width: 100%;
-  font-size: 16px;
-  margin: 1.5rem 0 0 0;
+  font-size: 24px;
+  margin: 0;
 }
 
 .card_location {
@@ -69,16 +78,17 @@
 
 .card_topic {
   width: 100%;
-  font-size: 14px;
+  font-size: 16px;
+  color: #B0AEAE;
   margin: 0;
+  margin-bottom: 10px;
 }
 
 .card_profile {
   width: 100%;
-  font-size: 14px;
-  margin: 0.8rem 0 0 0;
+  font-size: 16px;
+  margin: 0;
   text-decoration: none;
-  color: #298ae4;
 }
 
 .carousel_indicators {
@@ -101,7 +111,7 @@
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .button_container {
@@ -128,11 +138,16 @@
 }
 
 .modal_header {
-  padding: 1rem 1.5rem 0 1.5rem;
+  padding: 32px 1.5rem 0 1.5rem;
+  border: none;
 }
 
 .modal_header button {
   margin: 0 0 4rem 0 !important;
+}
+
+.modal_header .card_image {
+  margin: 0;
 }
 
 .modal_header .card_image img {
@@ -146,6 +161,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 15px;
 }
 
 .modal_speaker_info_content {
@@ -154,13 +170,17 @@
 }
 
 .modal_speaker_info_content h1 {
-  font-size: 1.6rem;
+  font-size: 24px;
   margin: 0;
 }
 
 .modal_speaker_info_content p {
   margin: 0;
-  font-size: 1rem;
+  font-size: 16px;
+}
+
+.modal_speaker_info_content p:first-of-type {
+  color: #B0AEAE;
 }
 
 .modal_body {
@@ -171,11 +191,16 @@
   font-size: 1.35rem;
 }
 
+.modal_body p:last-of-type {
+  margin: 0;
+}
+
 .modal_footer {
   padding: 1rem 1.5rem 1rem 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: none;
 }
 
 .modal_footer a {
