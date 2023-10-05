@@ -70,8 +70,7 @@ const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
   );
 
   const renderSpeakers = (): ReactNode => {
-    return
-    (<>
+    return (<>
       <div className={styles.cards}>=
         <Carousel
           activeIndex={activeIndex}
