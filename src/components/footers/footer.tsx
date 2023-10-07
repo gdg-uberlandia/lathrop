@@ -3,7 +3,7 @@ import React from "react";
 import { useRouter } from 'next/router'
 // reactstrap components
 import { Nav, NavItem, NavLink, Container } from "reactstrap";
-import styles from "../../styles/Footer.module.css";
+import styles from "./Footer.module.css";
 import configValues from '../../helpers/config'
 import LogoWTM from "assets/images/LogoWTM";
 import Logo from "components/logo";
@@ -22,18 +22,17 @@ const Footer: React.FC<FooterProps> = ({ }) => {
           <NavItem>
             <NavLink active href={generateRef("#")}>
 
-              {Logo({ width: 200 })}
+              {Logo({ width: 300 })}
             </NavLink>
           </NavItem>
-          {/*<NavItem>
+          <NavItem>
             <NavLink href={generateRef("#speakers")}>Palestrantes</NavLink>
-  </NavItem>*/}
-          {/*<NavItem>
+          </NavItem>
+          <NavItem>
             <NavLink href={generateRef("#sponsors")}>Patrocinadores</NavLink>
           </NavItem>
-          */}
           {(configValues.midiaKit) ? <NavItem>
-            <NavLink target="_blank" href={configValues.midiaKit}>Seja um patrocinador</NavLink>
+            <NavLink target="_blank" style={{ color: 'red' }} href={configValues.midiaKit}>Seja um patrocinador</NavLink>
           </NavItem> : <></>}
           <NavItem className={styles.FooterRegister}>
             <NavLink target="_blank" href={configValues.eventLinkRegistrationUrl}>Se cadastrar</NavLink>
@@ -46,6 +45,12 @@ const Footer: React.FC<FooterProps> = ({ }) => {
   </NavItem>
           */}
         </Nav>
+        <a href="https://bohr.io/" target="_blank">
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingBottom: '60px' }}>
+
+            Hospedado em <img style={{ paddingLeft: '10px' }} height="30px" src="/bohr.png" />
+          </div>
+        </a>
       </Container>
     </>
   );
