@@ -71,7 +71,6 @@ const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
     return (
       <>
         <div className={styles.cards}>
-          =
           <Carousel
             activeIndex={activeIndex}
             next={next}
