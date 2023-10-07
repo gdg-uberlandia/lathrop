@@ -22,9 +22,9 @@ const NavbarHome = () => {
 
   const menu = [
     { name: "Sobre", ref: "#about" },
-    //{ name: "Palestrantes", ref: '#speakers' },
+    { name: "Palestrantes", ref: '#speakers' },
     //{ name: "Agenda", ref: '#schedule' },
-    //{ name: "Patrocinadores", ref: '#sponsors' },
+    { name: "Patrocinadores", ref: '#sponsors' },
     // { name: "Devdex", ref: 'https://pokedex.devfestcerrado.com.br' }
   ]
 
