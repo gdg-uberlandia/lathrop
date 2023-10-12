@@ -1,37 +1,20 @@
-.SponsorSection {}
+.SponsorSection {
+    margin-bottom: 100px; 
+}
+
+.SponsorSection h2 {
+    font-size: 2.5rem;
+    padding-left: 0.75rem; 
+}
 
 .SponsorWrapper {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(max(152px, 20%), 1fr));
     grid-gap: 8px;
     padding: 20px 0px;
     margin: 0px 5px;
 }
 
-@media (min-width: 812px) {
-    .SponsorWrapper {
-        grid-template-columns: repeat(5, 1fr);
-    }
-}
-
-
-@media (min-width: 640px) {
-    .SponsorWrapper {
-        grid-template-columns: repeat(4, 1fr);
-    }
-
-    .StaffWrapper {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-
-    .StaffCardBody {
-        width: 130px;
-    }
-
-    .SponsorCardBodyImage {
-        width: 60%;
-    }
-}
 
 .StaffWrapper {
     display: grid;
@@ -41,23 +24,16 @@
     margin: 0px 5px;
 }
 
-.StaffCardBody {
-    position: relative;
-    width: 100px;
-    height: 90px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .SponsorCard {
     background-color: var(--default-background-color);
     box-shadow: 0 0 2px 0 rgb(0 0 0 / 7%), 0 2px 2px 0 rgb(0 0 0 / 15%);
     transition: box-shadow var(--animation);
     cursor: pointer;
-    padding: 15px;
+    padding: 24px 16px;
+    height: 120px;
     display: flex;
     justify-content: center;
+    width: 100%;
 }
 
 .SponsorCardBody {
@@ -69,9 +45,9 @@
 }
 
 .SponsorCardBodyImage {
-    padding: 0px 10px !important;
-    width: 90%;
-    object-fit: scale-down;
+    width: 100%;
+    max-width: 248px;
+    object-fit: contain;
 }
 
 #sponsors {
