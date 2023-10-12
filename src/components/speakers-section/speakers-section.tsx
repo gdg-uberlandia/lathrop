@@ -19,14 +19,24 @@ interface SpeakersSectionProps {
 
 const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
   const [activeIndex, setActiveIndex] = useState(0);
-
+  const [innerWidth, setInnerWidth] = useState(0);
   const speakersChunk = (array: Array<Speaker>, size: number) => {
     return Array.from({ length: Math.ceil(array.length / size) }, (v, i) =>
       array.slice(i * size, i * size + size)
     );
   };
 
-  let _chunckSize = 3;
+  useEffect(() => {
+    setInnerWidth(window.innerWidth)
+  }, []);
+
+
+
+  let _chunckSize = 1;
+  if (innerWidth > 600) {
+    _chunckSize = 3
+  }
+
   const _speakersChuncked = speakersChunk(speakers, _chunckSize);
 
   const next = () => {
@@ -67,6 +77,25 @@ const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
     }
   );
 
+  const renderControls = () => {
+    if (innerWidth < 600) return <></>
+
+    return <><div className={styles.carousel_prev}>
+      <CarouselControl
+        direction="prev"
+        directionText="Previous"
+        onClickHandler={previous}
+      />
+    </div>
+      <div className={styles.carousel_next}>
+        <CarouselControl
+          direction="next"
+          directionText="Next"
+          onClickHandler={next}
+        />
+      </div></>
+  }
+
   const renderSpeakers = (): ReactNode => {
     return (
       <>
@@ -80,20 +109,7 @@ const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
             style={{ width: "100%" }}
           >
             {displaySpeakers}
-            <div className={styles.carousel_prev}>
-              <CarouselControl
-                direction="prev"
-                directionText="Previous"
-                onClickHandler={previous}
-              />
-            </div>
-            <div className={styles.carousel_next}>
-              <CarouselControl
-                direction="next"
-                directionText="Next"
-                onClickHandler={next}
-              />
-            </div>
+            {renderControls()}
           </Carousel>
         </div>
       </>
