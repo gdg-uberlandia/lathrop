@@ -11,16 +11,11 @@ interface SponsorCardProps extends Sponsor {
 
 const SponsorCard: React.FC<SponsorCardProps> = (sponsor) => {
     return (
-        <>
+        <a href={sponsor.url} target="_blank">
             <div className={styles.SponsorCard}>
-                <a href={sponsor.url} target="_blank">
-                    <div className={sponsor.isStaff ? styles.StaffCardBody : styles.SponsorCardBody}>
-                        <img src={sponsor.logo}
-                            className={styles.SponsorCardBodyImage}></img>
-                    </div>
-                </a>
+                <img alt={`Logo da empresa ${sponsor.name}`} src={sponsor.logo} className={styles.SponsorCardBodyImage} />
             </div>
-        </>
+        </a>
     );
 }
 
