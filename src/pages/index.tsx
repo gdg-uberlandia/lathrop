@@ -42,7 +42,9 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
 
   useEffect(() => {
     window.addEventListener("scroll", reveal);
-  });
+    
+    return () => window.removeEventListener('scroll', reveal)
+  }, []);
 
   return (
     <>
