@@ -6,12 +6,10 @@ import {
     Col,
 } from "reactstrap";
 import _supports from '../../hooks/userSupports';
-
+import { SponsorLevel } from "models/sponsor-level";
+import SponsorCard from "./sponsor-card";
 
 import styles from './Sponsors.module.css'
-import SponsorCard from "./sponsor-card";
-import { SponsorLevel } from "models/sponsor-level";
-
 
 interface StringMap { [key: string]: any; }
 
@@ -22,73 +20,68 @@ interface SponsorsSectionProps {
 }
 
 const SponsorsSection: React.FC<SponsorsSectionProps> = ({ sponsors }) => {
-
     const supports: StringMap = _supports;
-
-    const mapSponsorCard = (sponsor: Sponsor, isStaff: boolean) => {
-        if (sponsor.logo)
-            return (<Col key={sponsor.id}><SponsorCard {...sponsor} isStaff={isStaff}></SponsorCard></Col>)
-    }
 
     const mapSponsorLevel = (sponsorLevel: SponsorLevel, isStaff: boolean) => {
         if (sponsorLevel?.items?.length > 0)
-            return (<div key={sponsorLevel.id}>
-                <h4>
-                    {sponsorLevel.name}
-                </h4>
-                <Row>
-                    <div className={isStaff ? styles.StaffWrapper : styles.SponsorWrapper}>
-                        {
-                            sponsorLevel.items.map((item) => mapSponsorCard(item, isStaff))
-                        }
-                    </div>
-                </Row>
-            </div>)
+            return (
+                <section key={sponsorLevel.id}>
+                    <h4>
+                        {sponsorLevel.name}
+                    </h4>
+                    <Row>
+                        <div className={isStaff ? styles.StaffWrapper : styles.SponsorWrapper}>
+                            {sponsorLevel.items.map((item) => (
+                                <SponsorCard key={item.id} isStaff={isStaff} {...item} />
+                            ))}
+                        </div>
+                    </Row>
+                </section>
+            )
         return <></>
     }
 
 
     return (
-        <>
-            <Container>
-                <div className={styles.SponsorSection}>
-                    <Container style={{
-                        marginLeft
-                            : '0px'
-                    }}>
-                        <Row >
+        <Container>
+            <section className={styles.SponsorSection}>
+                <Container>
+                    <Row>
+                        <Col lg={4} sm={12}>
+                            <h2>
+                                Patrocinadores
+                            </h2>
+                        </Col>
+                    </Row>
+                </Container>
 
-                            <Col lg={4} sm={12}><h1 style={{ paddingLeft: '10px' }}>Patrocinadores</h1></Col>
-                        </Row>
-                    </Container>
-
-                    <Container fluid style={{ marginBottom: '100px', marginTop: '30px' }}>
+                {sponsors && (
+                    <Container fluid>
                         <div id="sponsors">
                             {SPONSORS_LIST.map((el) => {
-                                if (sponsors != null && sponsors[el] != null)
+                                if (sponsors[el] != null)
                                     return mapSponsorLevel(sponsors[el], el === "staff")
-                                return <></>
                             })}
-
+                            
                             {/*<h4>
-                            Organização
-                        </h4>
+                                Organização
+                            </h4>
 
-                        <div>
-                            <Row>
+                            <div>
+                                <Row>
 
-                                <div className={styles.SponsorWrapper}>
-                                    {
-                                        supports.items.map((item: Sponsor) => mapSponsorCard(item, false))
-                                    }
-                                </div>
-                            </Row>
-                                </div>*/}
+                                    <div className={styles.SponsorWrapper}>
+                                        {
+                                            supports.items.map((item: Sponsor) => mapSponsorCard(item, false))
+                                        }
+                                    </div>
+                                </Row>
+                            </div>*/}
                         </div>
                     </Container>
-                </div>
-            </Container>
-        </>
+                )}
+            </section>
+        </Container>
     );
 }
 
