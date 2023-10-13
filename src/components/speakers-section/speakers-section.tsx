@@ -42,7 +42,7 @@ const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
 
 
   let _chunckSize = 1;
-  if (mobile) {
+  if (!mobile) {
     _chunckSize = 3
   }
 
