@@ -26,16 +26,16 @@ const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
     );
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     setInnerWidth(window.innerWidth)
-  }, []);
+  }, []);*/
 
 
 
   let _chunckSize = 1;
-  if (innerWidth > 600) {
+  /*if (innerWidth > 600) {
     _chunckSize = 3
-  }
+  }*/
 
   const _speakersChuncked = speakersChunk(speakers, _chunckSize);
 
