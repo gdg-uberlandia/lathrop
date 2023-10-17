@@ -1,10 +1,10 @@
 .SponsorSection {
-    margin-bottom: 100px; 
+    margin-bottom: 100px;
 }
 
 .SponsorSection h2 {
     font-size: 2.5rem;
-    padding-left: 0.75rem; 
+    padding-left: 0.75rem;
 }
 
 .SponsorWrapper {
@@ -18,7 +18,7 @@
 
 .StaffWrapper {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
     grid-gap: 8px;
     padding: 20px 0px;
     margin: 0px 5px;
