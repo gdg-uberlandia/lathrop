@@ -9,7 +9,6 @@ import { SponsorLevel } from "models/sponsor-level";
 import styles from "styles/Home.module.css";
 import HomeHeader from "../components/headers/home-header";
 import SpeakerSection from "components/speakers-section/speakers-section";
-import ScheduleSection from "components/iwd-2023/schedule-section/schedule-section";
 import SponsorsSection from "components/sponsors-section/sponsors-section";
 import CountdownTimer from "components/devfest-triangulo-2023/countdown/countdown-timer";
 import OlderEvenstsSection from "components/devfest-triangulo-2023/older-events-section/older-events-section";
