@@ -42,7 +42,7 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
 
   useEffect(() => {
     window.addEventListener("scroll", reveal);
-    
+
     return () => window.removeEventListener('scroll', reveal)
   }, []);
 
@@ -93,6 +93,7 @@ export async function getServerSideProps() {
     return { props: { speakers: [], sponsors: [] } };
   }
 }
+
 
 Home.layout = BaseLayout;
 
