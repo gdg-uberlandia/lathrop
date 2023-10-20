@@ -6,12 +6,18 @@
   --blue2: #4285F4;
   --red: #CB4538;
   --orange: #E59F38;
-  --white: #FFF;
+  --white: #fcfcfc;
   --black: #1A1D1C;
   --green: #09ccb1;
   --soft-blue: #46b3dc;
   --soft-green: #01F4C6;
   --pink: #E41AE1;
+  --primary-text: #393D40;
+
+  --sm: 640px;
+  --md: 768px;
+  --lg: 1024px;
+  --xl: 1440px;
 }
 
 .bg-blue2 {
@@ -69,6 +75,7 @@ a {
   position: absolute;
   top: 0px;
   width: 100%;
+  overflow-x: hidden;
 }
 
 .reveal {
@@ -106,4 +113,14 @@ a {
 .TicketFeatures::before {
   content: url('/check.svg');
   padding-right: 0.5rem;
+}
+
+html {
+  font-size: 12px;
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: 16px;
+  }
 }

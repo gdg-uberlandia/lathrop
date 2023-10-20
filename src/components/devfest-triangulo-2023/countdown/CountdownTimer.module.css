@@ -152,10 +152,3 @@
 
     }
 }
-
-@media only screen and (min-width: 1400px) {
-    .Counter {
-        margin-top: -15px;
-    }
-
-}
