@@ -1,0 +1,99 @@
+.Section {
+  position: relative;
+  background-image: url('/banner/hero.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  width: 100%;
+}
+
+.Content {
+  align-items: center;
+  color: var(--white);
+  display: flex;
+  flex-wrap: wrap;
+  font-family: 'Roboto Mono', monospace;
+  height: calc(100vh - 82px);
+  justify-content: center;
+  max-width: var(--xl);
+  margin: 0 auto;
+  padding: 0 4.5rem;
+}
+
+.Texts {
+  align-content: center;
+  display: grid;
+  flex: 1;
+  height: 100%;
+  justify-content: center;
+  width: 45%;
+}
+
+.IconSection {
+  display: flex;
+  justify-content: space-between;
+  max-width: 38rem;
+  margin-top: 4rem;
+}
+
+.IconItem {
+  display: flex;
+  gap: 1rem;
+  font-size: 1.5rem;
+}
+
+.IconItem:nth-child(2) {
+  gap: 0.5rem;
+}
+
+.Aside {
+  font-size: 1.5rem;
+  text-align: center;
+  position: relative;
+}
+
+.Aside p {
+  padding-bottom: 2rem;
+}
+
+.AsideButton {
+  background-color: var(--blue2);
+  border: none;
+  border-radius: 16px;
+  color: var(--white);
+  font-family: 'Roboto', sans-serif;
+  padding: 1.1rem;
+}
+
+.AsideButton:hover {
+  filter: brightness(0.9);
+  color: var(--white);
+  transition: filter 250ms ease-in;
+}
+
+.AsideButton:active {
+  filter: brightness(0.8);
+}
+
+.ArrowIcon {
+  bottom: -3.2rem;
+  right: -2rem;
+  position: absolute;
+}
+
+@media (min-width: 640px) {
+  .Section {
+    background-image: url('/banner/hero-md.png');
+  }
+}
+
+@media (min-width: 1024px) {
+  .Section {
+    background-image: url('/banner/hero-lg.png');
+  }
+}
+
+@media (min-width: 1440px) {
+  .Section {
+    background-image: url('/banner/hero-xl.png');
+  }
+}
