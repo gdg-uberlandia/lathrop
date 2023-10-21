@@ -3,9 +3,9 @@ import Title from '../../../public/banner/title.png'
 import SchedulerIcon from '../../../public/icons/scheduler.svg'
 import GlobalIcon from '../../../public/icons/global.svg'
 import ArrowIcon from '../../../public/icons/arrow.png'
+import configValues from "helpers/config"
 
 import styles from './styles.module.css'
-import configValues from "helpers/config"
 
 export const HeroSection = () => {
   return (

@@ -1,8 +1,8 @@
 .Section {
   position: relative;
-  background-image: url('/banner/hero.png');
+  background-image: url('/banner/hero-sm.png');
   background-repeat: no-repeat;
-  background-size: 100% 100%;
+  background-size: cover;
   width: 100%;
 }
 
@@ -10,13 +10,13 @@
   align-items: center;
   color: var(--white);
   display: flex;
-  flex-wrap: wrap;
   font-family: 'Roboto Mono', monospace;
+  flex-direction: column-reverse;
   height: calc(100vh - 82px);
   justify-content: center;
   max-width: var(--xl);
   margin: 0 auto;
-  padding: 0 4.5rem;
+  padding: 9rem 4.5rem;
 }
 
 .Texts {
@@ -25,13 +25,13 @@
   flex: 1;
   height: 100%;
   justify-content: center;
-  width: 45%;
 }
 
 .IconSection {
   display: flex;
-  justify-content: space-between;
-  max-width: 38rem;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
   margin-top: 4rem;
 }
 
@@ -59,6 +59,7 @@
   background-color: var(--blue2);
   border: none;
   border-radius: 16px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
   color: var(--white);
   font-family: 'Roboto', sans-serif;
   padding: 1.1rem;
@@ -83,6 +84,13 @@
 @media (min-width: 640px) {
   .Section {
     background-image: url('/banner/hero-md.png');
+    background-size: 100% 100%;
+  }
+}
+
+@media (min-width: 768px) {
+  .Content {
+    flex-direction: row;
   }
 }
 
