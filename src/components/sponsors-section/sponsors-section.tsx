@@ -43,7 +43,7 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ sponsors }) => {
 
 
     return (
-        <Container>
+        <Container style={{ paddingLeft: "0px;" }}>
             <section className={styles.SponsorSection}>
                 <Container>
                     <Row>
@@ -62,7 +62,7 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ sponsors }) => {
                                 if (sponsors[el] != null)
                                     return mapSponsorLevel(sponsors[el], el === "staff")
                             })}
-                            
+
                             {/*<h4>
                                 Organização
                             </h4>
