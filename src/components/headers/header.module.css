@@ -1,0 +1,127 @@
+.Header {
+  align-items: center;
+  display: flex;
+  font-family: 'Roboto', sans-serif;
+  justify-content: space-between;
+  max-width: var(--xl);
+  margin: 0 auto;
+  padding: 1rem 2rem;  
+}
+
+.HeaderNavContainer {
+  display: none;
+  flex: 1;
+}
+
+.HeaderNav {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  margin: 0 0 0 auto;
+  width: fit-content;
+}
+
+.HeaderNavItem {
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.HeaderNavItem:hover {
+  opacity: 0.75;
+}
+
+.HeaderNavItem a {
+  color: var(--primary-text);
+  font-size: 1rem;
+}
+
+.Collapse {
+  left: 0;
+  position: fixed;
+  top: 0;
+  height: 0px;
+  transition: all 250ms ease-in-out;
+  z-index: 2;
+  overflow: hidden;
+  width: 100%;
+}
+
+.HeaderNavContainerOpened {
+  align-items: center;
+  padding: 3rem 2rem;
+  background-color: rgb(43 44 47/1);
+  height: 100%;
+}
+
+.HeaderNavContainerOpened .HeaderNavItem {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.HeaderNavContainerOpened .HeaderNavItem:hover {
+  background-color: rgba(63, 63, 63, 0.1);
+}
+
+.HeaderNavContainerOpened .HeaderNavItem:active,
+.HeaderNavContainerOpened .HeaderNavItem:focus {
+  opacity: 0.6;
+  transition: opacity 250ms ease-in;
+}
+
+.HeaderNavContainerOpened .HeaderNavItem a {
+  color: var(--white);
+  font-size: 1.5rem;
+  font-weight: 500;
+  padding: 1rem;
+}
+
+.HeaderSubscribeButton {
+  background: none;
+  border: 1px solid var(--blue2);
+  border-radius: 16px;
+  color: var(--blue2);
+  cursor: pointer;
+  display: none;
+  margin-left: 2rem;
+  padding: 0.75rem 1rem;
+  white-space: nowrap;
+}
+
+.HeaderSubscribeButton:hover {
+  background-color: var(--blue2);
+  color: var(--white);
+  transition: all 250ms ease-out;
+}
+
+.Collapse .toggler_btn {
+  display: flex;
+  margin-left: auto;
+}
+
+.toggler_btn {
+  border-color: transparent !important;
+  border-radius: 50%;
+  padding: 0.75rem;
+}
+
+.toggler_btn:focus,
+.toggler_btn:active {
+  outline: none;
+  box-shadow: none;
+  box-shadow: transparent;
+}
+
+.toggler_btn:hover {
+  background-color: hsl(210deg 2% 80% / 10%);
+}
+
+@media (min-width: 768px) {
+  .HeaderNavContainer, .HeaderSubscribeButton {
+    display: flex;
+  }
+}
+
+@media (min-width: 768px) {
+  .toggler_btn, .Collapse {
+    display: none;
+  }
+}

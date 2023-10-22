@@ -4,30 +4,6 @@
   z-index: -1;
 }
 
-.BgImageFull {
-  height: 100%;
-  background-position: center top;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-image: url('/header.jpg');
-}
-
-.MainInnerFull {
-  width: 100%;
-  display: flex;
-  text-shadow: 1px 1px 1px var(--white);
-}
-
-.MainInnerFullDescription {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  top: 4%;
-  padding-bottom: 30px;
-}
-
 .logo {
   height: 1em;
   margin-left: 0.5rem;
@@ -35,25 +11,6 @@
 
 .MainDescriptionMinWrapper {
   display: none;
-}
-
-.RegisterButton {
-  padding: 15px 20px;
-  background-color: var(--black);
-  color: white;
-  width: 164px;
-  height: 60px;
-  font-size: 20px;
-  border-radius: 10px;
-  text-align: center;
-  box-shadow: 0 0 40px var(--white);
-}
-
-.RegisterButton:hover {
-  border: 3px var(--black) solid;
-  color: var(--black);
-  background-color: transparent;
-  box-shadow: 0 0 40px var(--black);
 }
 
 .ScrollDown {
@@ -98,21 +55,7 @@
 
 @media (min-width: 992px) {
 
-  .MainInnerFullDescription {
-    position: absolute;
-    top: 30dvh;
-    left: 20px;
-    width: 30%;
-  }
-
   .BgWrap {
     height: 70vh;
-  }
-
-  .BgImageFull {
-    height: 100%;
-    background-position: center top;
-    background-repeat: no-repeat;
-    background-size: cover;
   }
 }

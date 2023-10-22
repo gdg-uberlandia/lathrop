@@ -1,26 +1,3 @@
-.main_navbar {
-    height: 100px;
-}
-
-.navbar_fixed_scrolling {
-    position: fixed;
-    width: 100%;
-    background-image: linear-gradient(to bottom, rgba(32, 33, 36, .8), transparent);
-    z-index: 1000;
-}
-
-.navbar_fixed {
-    z-index: 1000;
-    color: rgba(0, 0, 0, .80);
-    position: fixed;
-    width: 100%;
-}
-
-.nav_brand {
-    margin-left: 5%;
-    zoom: 1.3;
-}
-
 .nav_link {
     padding-left: 1.5rem !important;
     padding-right: 1.5rem !important;
@@ -30,10 +7,6 @@
 
 .nav_link:hover {
     background-color: hsl(210deg 2% 80% / 10%);
-}
-
-.shadow_scrolling:hover {
-    background-color: hsl(0deg 0% 100% / 10%) !important;
 }
 
 .collapse_menu {

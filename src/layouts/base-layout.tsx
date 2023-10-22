@@ -24,11 +24,8 @@ const BaseLayout: React.FC<BaseLayout> = ({ children }) => {
                 <title>{configValues.name}</title>
             </Head>
             <main className="absolute-position">
-                <NavbarHome />
-                <div >
-                    {children}
-                </div>
-                < Footer />
+                {children}
+                <Footer />
             </main>
         </>
     );

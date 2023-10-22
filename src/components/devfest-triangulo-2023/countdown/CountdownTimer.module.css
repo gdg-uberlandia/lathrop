@@ -1,6 +1,6 @@
 .Counter {
     align-items: center;
-    background-color: var(--black);
+    background-color: black;
     display: flex;
     font-family: 'Open Sans', sans-serif;
     justify-content: center;
@@ -151,11 +151,4 @@
         transform: scale(1);
 
     }
-}
-
-@media only screen and (min-width: 1400px) {
-    .Counter {
-        margin-top: -15px;
-    }
-
 }

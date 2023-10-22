@@ -15,6 +15,7 @@ import OlderEvenstsSection from "components/devfest-triangulo-2023/older-events-
 
 
 import ErrorBoundary from '../components/error-boundary';
+import { HeroSection } from "components/hero-section";
 
 // https://alvarotrigo.com/blog/css-animations-scroll/
 
@@ -53,26 +54,23 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
         </section>
   */}
       <ErrorBoundary>
+        <HomeHeader />
+        
+        <HeroSection />
 
-        <div>
-          <section>
-            <HomeHeader></HomeHeader>
-            <CountdownTimer />
-          </section>
+        <CountdownTimer />
 
-          <section className={`${styles.Section} Section`}>
-            <OlderEvenstsSection />
-          </section>
+        <section className={`${styles.Section} Section`}>
+          <OlderEvenstsSection />
+        </section>
 
-          <section className={`${styles.Section} Section`}>
-            <SpeakerSection speakers={speakers} />
-          </section>
+        <section className={`${styles.Section} Section`}>
+          <SpeakerSection speakers={speakers} />
+        </section>
 
-          <section className={`${styles.Section} Section`}>
-            <SponsorsSection sponsors={sponsors} />
-          </section>
-
-        </div>
+        <section className={`${styles.Section} Section`}>
+          <SponsorsSection sponsors={sponsors} />
+        </section>
       </ErrorBoundary>
     </>
   );
