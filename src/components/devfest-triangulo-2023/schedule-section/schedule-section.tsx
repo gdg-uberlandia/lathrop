@@ -30,11 +30,14 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, sche
                   <ScheduleTime initialTime={schedule.start} endTime={schedule.end} />
                   <Col xxl={11} sm={12}>
                     <Row className={styles.height100p}>
-                      {schedule.speeches?.map((speech, index) => {
+                      {schedule.speeches?.map((speech) => {
                           const speaker = speakers.find(speakerObj => speakerObj.key === speech.speakerSlug);
-
                           return (
-                            <ScheduleCard key={`speech-${schedule.start}-${schedule.end}-${index}`} lgValue={12 / schedule.speeches.length} {...speaker} />
+                            <ScheduleCard 
+                              key={`speech-${schedule.start}-${schedule.end}-${speaker?.key}`} 
+                              lgValue={12 / schedule.speeches.length} 
+                              {...speaker} 
+                            />
                           )
                       })}
                     </Row>
