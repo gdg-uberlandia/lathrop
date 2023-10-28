@@ -4,11 +4,9 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   trailingSlash: true,
-  // images: {
-  //   loader: 'akamai',
-  //   path: '/',
-  //   domains: ['firebasestorage.googleapis.com'],
-  // },
+  images: {
+    domains: ['firebasestorage.googleapis.com', 'media.licdn.com', 'raw.githubusercontent.com'],
+  },
   /*exportPathMap: async function (
     defaultPathMap,
     { dev, dir, outDir, distDir, buildId }
