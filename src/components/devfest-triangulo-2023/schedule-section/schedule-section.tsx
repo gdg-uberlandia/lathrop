@@ -17,8 +17,6 @@ interface SpeakersSectionProps {
 }
 
 export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, schedule }) => {
-  console.log("chedu ", schedule);
-  
   return (
     <>
       {speakers.length &&
@@ -26,8 +24,7 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, sche
           <div id="schedule">
             <h4>Agenda</h4>
           </div>
-          {
-            schedule.map((schedule, index) => {
+          {schedule.map((schedule, index) => {
               return (
                 <Row key={`schedule-${index}`} className={styles.row_content}>
                   <ScheduleTime initialTime={schedule.start} endTime={schedule.end} />
@@ -42,9 +39,9 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, sche
                       })}
                     </Row>
                   </Col>
-                </Row>)
-            })
-          }
+                </Row>
+              )
+          })}
         </Container>
       }
     </>

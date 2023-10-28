@@ -1,4 +1,4 @@
-import { Speaker } from "models/speaker";
+import { Speaker, SpeakerTech } from "models/speaker";
 import Image from "next/legacy/image";
 import React, { useState } from "react";
 import {
@@ -39,25 +39,24 @@ const renderPath = (path: string) => {
     }
 }
 
+const getPillColor = (tech: SpeakerTech) => {
+    switch (tech) {
+        case SpeakerTech.Career:
+            return "primary"
+        case SpeakerTech.MachineLearning:
+            return "secondary"
+        case SpeakerTech.Web:
+            return "danger"
+        case SpeakerTech.UI_UX:
+            return "info"
+        case SpeakerTech.Infra_Devops:
+            return "warning"
+        default:
+            return "success"
+    }
+}
 
 const ScheduleCard: React.FC<ScheduleCardProps> = (props) => {
-    const getPillColor = (tech: string) => {
-        switch (tech) {
-            case "Carreira":
-                return "primary"
-            case "Machine Learning":
-                return "secondary"
-            case "Web":
-                return "danger"
-            case "UI/UX":
-                return "info"
-            case "Infra/Devops":
-                return "warning"
-            default:
-                return "success"
-        }
-    }
-
     return (
         <Col xxl={props.lgValue} sm={12} className={styles.card_text}>
             <Row className={styles.card_content}>
@@ -87,11 +86,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = (props) => {
                             />
                             <div className={styles.card_speaker_info_content}>
                                 <h5>{props.name}</h5>
-                                {props.community && <p className={styles.gde}>{props.community}</p>}
                                 <p className={styles.font_size_14}>{`${props.title} ${props.company ? "@" + props.company : ""}`}</p>
-                                <div className={styles.path_wrapper}>
-                                    {props.path && renderPath(props.path)}
-                                </div>
                             </div>
                         </div>
                     </Row>
