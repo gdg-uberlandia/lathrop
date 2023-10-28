@@ -1,0 +1,137 @@
+.time_row{
+    font-family: NAMU-Pro,sans-serif;
+    font-size: 2.0rem;
+    color: #858585;
+    letter-spacing: .05rem;
+    display: inline-flex;
+    max-height: 100px;
+    margin-top: 20px;
+}
+
+.font_size_14 {
+    font-size: 14px !important;
+}
+
+.margin_right_15 {
+    margin-right: 15px;
+}
+
+.margin_left_10 {
+    margin-left: 10px;
+}
+
+.gde {
+    font-size: 14px !important;
+    color: #1b1bb7;
+    font-weight: 600;
+}
+
+.row_content {
+    margin: 20px 0px;
+}
+
+.opacity50 {
+    opacity: 0.5;
+}
+
+.height100p {
+    height: 100%;
+}
+
+.timeSeparator {
+    opacity: 0.7;
+    margin: 0px 10px;
+}
+
+.card_content {
+    background-color: #Fff;
+    min-height: 80px;
+    width: 100%;
+    height: 100%;
+    display: inline-flex;
+    padding: 13px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 5%), 0 6px 20px 0 rgb(0 0 0 / 10%);
+}
+
+.card_text{
+    font-family: NAMU-Pro, sans-serif;
+    justify-content: space-between;
+    line-height: 24px;
+    font-size: 18px;
+    color: #565656;
+    letter-spacing: .05rem;
+    margin-top: 20px;
+}
+
+.card_image {
+    border-radius: 50%;
+    min-width: 40px !important;
+    min-height: 40px !important;
+
+}
+
+.card_speaker_info_content {
+    margin-left: 1rem;
+}
+
+.card_speaker_info_content h1 {
+    font-size: 1.6rem;
+    margin: 0;
+}
+
+.card_speaker_info_content p {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.div_wrapper {
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+}
+
+.div_wrapper > span {
+    min-width: 40px;
+}
+
+.card_title {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.path_wrapper {
+    display: inline-flex;
+    width: 125%;
+    margin-top: 5px;
+}
+
+.path_div {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+}
+.card_path_icon {
+    min-width: 15px !important;
+    min-height: 15px !important;
+    margin-right: 10px;
+}
+
+.path_brain_color{
+    background-color: black;
+    color: white
+}
+
+.path_curado_color{
+    background-color: #fab49e;
+}
+
+.path_minas_color{
+    background-color: #feff80;
+}
+
+.path_canastra_color{
+    background-color: #ffd664;
+}
