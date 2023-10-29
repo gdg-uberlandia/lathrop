@@ -29,9 +29,8 @@
 .card_container {
   border: 1px solid #dedede;
   border-radius: 5%;
-  height: 18rem;
-  width: 15rem;
-  padding: 1rem 1rem;
+  width: 20rem;
+  padding: 2rem 1.5rem;
   margin-right: 1rem;
   cursor: pointer;
 }

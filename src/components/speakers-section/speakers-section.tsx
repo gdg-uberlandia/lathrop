@@ -163,6 +163,11 @@ const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
 
           {speakers.length > 0 ? renderSpeakers() : renderWithoutSpeakers()}
         </div>
+        <div className={styles.button_container}>
+          <a color="info" href="/speakers">
+            Ver todos os palestrantes
+          </a>
+        </div>
       </Container>
     </>
   );

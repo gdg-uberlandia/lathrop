@@ -48,7 +48,7 @@ const SpeakersPage = ({ speakers }: SpeakersPageProps) => {
                     </section>
                 </Container>
                 <Container fluid>
-                    <Row style={{ ..._center, textAlign: 'center' }}>
+                    <Row style={{ ..._center, textAlign: 'center', marginTop: '20px' }}>
                         <h4> Mais palestrantes a confirmar ...</h4>
 
                     </Row>
