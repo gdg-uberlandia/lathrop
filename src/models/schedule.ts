@@ -4,5 +4,13 @@ export interface Schedule {
     speeches: {
         topic?: string;
         speakerSlug?: string;
+        path: SpeechesPath;
     }[]
+}
+
+// TODO: rename enum to correct path names
+export enum SpeechesPath {
+    ONE,
+    TWO,
+    THREE,
 }

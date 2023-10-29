@@ -8,9 +8,12 @@ import {
 } from "reactstrap";
 
 import styles from "./Schedule.module.css";
+import { SpeechesPath } from "models/schedule";
+import clsx from "clsx";
 
 interface ScheduleCardProps extends Partial<Speaker> {
     lgValue: number;
+    path: SpeechesPath;
 }
 
 const getPillColor = (tech: SpeakerTech) => {
@@ -30,18 +33,29 @@ const getPillColor = (tech: SpeakerTech) => {
     }
 }
 
+const getPathColor = (path: SpeechesPath) => {
+    switch (path) {
+        case SpeechesPath.ONE:
+            return styles.path_one_color
+        case SpeechesPath.TWO:
+            return styles.path_two_color
+        case SpeechesPath.THREE:
+            return styles.path_three_color
+    }
+}
+
 const ScheduleCard: React.FC<ScheduleCardProps> = (props) => {
     return (
-        <Col xl={props.lgValue} sm={12} className={styles.card_text}>
-            <Row className={styles.card_content}>
-                <Row className={styles.card_title}>
+        <Col md={props.lgValue} sm={12} className={styles.card_container}>
+            <div className={clsx(styles.card_content, getPathColor(props.path))}>
+                <header className={styles.card_title}>
                     <h3 className={styles.card_topic}>{props.topic}</h3>
                     {props.tech && 
                         <Badge className={styles.card_badge} color={getPillColor(props.tech)} pill>
                             {props.tech}
                         </Badge>
                     }
-                </Row>
+                </header>
                 {props.photo && (
                     <Row className={styles.display_inline_block}>
                         <div className={styles.div_wrapper}>
@@ -63,7 +77,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = (props) => {
                         </div>
                     </Row>
                 )}
-            </Row>
+            </div>
         </Col>
     );
 };

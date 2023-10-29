@@ -125,6 +125,6 @@ html {
   }
 }
 
-img {
+img, svg {
   user-select: none;
 }

@@ -4,7 +4,7 @@
     letter-spacing: .05rem;
     display: flex;
     max-height: 100px;
-    margin-top: 20px;
+    margin: 1rem 0;
 }
 
 .font_size_14 {
@@ -12,16 +12,12 @@
 }
 
 .row_content {
-    margin: 20px 0px;
+    margin: 1.25rem 0px;
     display: grid;
 }
 
 .opacity50 {
     opacity: 0.5;
-}
-
-.height100p {
-    height: 100%;
 }
 
 .timeSeparator {
@@ -30,26 +26,25 @@
     margin: 0px 10px;
 }
 
-.card_content {
-    background-color: #Fff;
-    min-height: 80px;
-    width: 100%;
-    height: 100%;
-    display: inline-flex;
-    padding: 13px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 5%), 0 6px 20px 0 rgb(0 0 0 / 10%);
+.card_container {
+    padding: 0 0.5rem;
 }
 
-.card_text {
+.card_content {
     font-family: NAMU-Pro, sans-serif;
-    margin-top: 1rem;
+    min-height: 80px;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    margin-top: 0.75rem;
 }
 
 .card_image {
     border-radius: 50%;
-    min-width: 40px !important;
-    min-height: 40px !important;
+    min-width: 40px;
+    min-height: 40px;
 }
 
 .card_speaker_info_content {
@@ -77,6 +72,7 @@
 }
 
 .card_title {
+    align-items: flex-start;
     display: flex;
     gap: 0.75rem;
 }
@@ -90,16 +86,21 @@
 
 .card_badge {
     width: fit-content;
+    height: fit-content;
+    font-size: 0.8rem;
 }
 
-.path_curado_color{
-    background-color: #fab49e;
+.path_one_color{
+    background: rgba(250, 180, 158, 0.6);
+    border: 1px solid rgba(250, 180, 158, 0.3);
 }
 
-.path_minas_color{
-    background-color: #feff80;
+.path_two_color{
+    background: rgba(254, 255, 128, 0.6);
+    border: 1px solid rgba(254, 255, 128, 0.3);
 }
 
-.path_canastra_color{
-    background-color: #ffd664;
+.path_three_color{
+    background: rgba(255, 214, 100, 0.6);
+    border: 1px solid rgba(255, 214, 100, 0.3);
 }

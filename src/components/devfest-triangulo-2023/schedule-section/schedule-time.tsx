@@ -10,7 +10,6 @@ interface ScheduleTimeProps {
   endTime: string;
 }
 
-
 const ScheduleTime: React.FC<ScheduleTimeProps> = (props) => {
 
   return (
