@@ -12,6 +12,7 @@ import {
 } from 'reactstrap';
 import LogoMenu from "../../assets/images/MenuLogo"
 import { CloseMenu } from "../../assets/images/CloseMenu"
+import configValues from "helpers/config";
 
 const NAV_ITEMS = [
     {
@@ -28,7 +29,7 @@ const NAV_ITEMS = [
     }
 ]
 
-const HomeHeader = ({ isRoot = true }: { isRoot: boolean }) => {
+const HomeHeader = ({ isRoot = true }: { isRoot?: boolean }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggle = () => setIsOpen(!isOpen);
@@ -78,7 +79,7 @@ const HomeHeader = ({ isRoot = true }: { isRoot: boolean }) => {
                 </Nav>
             </Collapse>
 
-            <a className={styles.HeaderSubscribeButton}>
+            <a target="_blank" href={configValues.eventLinkRegistrationUrl} className={styles.HeaderSubscribeButton}>
                 Inscreva-se
             </a>
         </header>
