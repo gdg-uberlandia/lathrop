@@ -9,7 +9,7 @@ import {
     Nav,
     NavItem,
     NavLink,
-  } from 'reactstrap';
+} from 'reactstrap';
 import LogoMenu from "../../assets/images/MenuLogo"
 import { CloseMenu } from "../../assets/images/CloseMenu"
 
@@ -28,10 +28,17 @@ const NAV_ITEMS = [
     }
 ]
 
-const HomeHeader = () => {
+const HomeHeader = ({ isRoot = true }: { isRoot: boolean }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggle = () => setIsOpen(!isOpen);
+
+
+    const generateRef = (ref: string) => {
+        if (isRoot) return ref;
+
+        return `/${ref}`;
+    }
 
     return (
         <header className={styles.Header}>
@@ -41,7 +48,7 @@ const HomeHeader = () => {
                 <ul className={styles.HeaderNav}>
                     {NAV_ITEMS.map(({ ref, name }) => (
                         <li key={name} className={styles.HeaderNavItem}>
-                            <a href={ref}>
+                            <a href={generateRef(ref)}>
                                 {name}
                             </a>
                         </li>
@@ -59,9 +66,11 @@ const HomeHeader = () => {
                 </NavbarToggler>
 
                 <Nav navbar>
-                    {NAV_ITEMS.map(({name, ref}, index) =>
+
+
+                    {NAV_ITEMS.map(({ name, ref }, index) =>
                         <NavItem key={"nav-item-" + index} className={styles.HeaderNavItem} onClick={toggle}>
-                            <NavLink href={ref}>
+                            <NavLink href={generateRef(ref)}>
                                 {name}
                             </NavLink>
                         </NavItem>
@@ -70,7 +79,7 @@ const HomeHeader = () => {
             </Collapse>
 
             <a className={styles.HeaderSubscribeButton}>
-               Inscreva-se 
+                Inscreva-se
             </a>
         </header>
     );

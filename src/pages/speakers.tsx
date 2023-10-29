@@ -6,6 +6,7 @@ import SpeakerCard from 'components/speakers-section/speaker-card';
 import { Speaker } from 'models/speaker';
 import { getSpeakers } from "front-features/speakers";
 import configValues from "helpers/config";
+import HomeHeader from "components/headers/home-header";
 
 
 interface SpeakersPageProps {
@@ -33,8 +34,10 @@ const SpeakersPage = ({ speakers }: SpeakersPageProps) => {
 
     return (
         <>
+
+            <HomeHeader isRoot={false} />
             <div style={{ margin: "60px 60px" }}>
-                <Container fluid>
+                <Container >
                     <h1>Palestrantes</h1>
 
                     <p style={{ marginTop: '60px' }}>
