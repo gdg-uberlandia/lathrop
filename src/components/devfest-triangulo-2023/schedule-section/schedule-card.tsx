@@ -60,16 +60,18 @@ const ScheduleCard = ({ speeches, speaker, ...rest }: ScheduleCardProps) => {
             <div className={clsx(styles.card_content, getPathColor(speeches.path))}>
                 <header className={styles.card_header}>
                     <h3 className={styles.card_topic}>{speaker.topic}</h3>
-                    {speaker.tech && 
-                        <Badge className={styles.card_badge} color={getPillColor(speaker.tech)} pill>
-                            {speaker.tech}
-                        </Badge>
-                    }
-                    {speedSpeeches && 
-                        <p className={styles.card_duration}>
-                            {rest.start} - {startHour}:{Number(startMinute) + speeches.duration} 
-                        </p>
-                    }
+                    <span className={styles.speeches_infos}>
+                        {speaker.tech && 
+                            <Badge className={styles.card_badge} color={getPillColor(speaker.tech)} pill>
+                                {speaker.tech}
+                            </Badge>
+                        }
+                        {speedSpeeches && 
+                            <p className={styles.card_duration}>
+                                {rest.start} - {startHour}:{Number(startMinute) + speeches.duration} 
+                            </p>
+                        }
+                    </span>
                 </header>
                 {speaker.photo && (
                     <div className={styles.speaker_description}>

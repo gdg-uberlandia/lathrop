@@ -43,10 +43,15 @@
 }
 
 .card_duration {
+    background-color: rgb(132, 132, 132, 0.3);
+    border-radius: 4px;
     color: var(--secondary-text);
+    font-size: 0.75rem;
     font-weight: 600;
+    margin: 0;
+    padding: 0 0.5rem;
     text-align: right;
-    width: 100%;
+    width: fit-content;
 }
 
 .card_image {
@@ -71,16 +76,14 @@
 }
 
 .speaker_description {
-    display: flex;
     align-items: center;
-}
-
-.common-speeches .speaker_description {
+    display: flex;
     margin-top: 1.5rem;
 }
 
-.speed-speeches .speaker_description {
-    margin-top: -1.5rem;
+.speeches_infos {
+    display: flex;
+    gap: 0.5rem;
 }
 
 .card_header {
@@ -99,9 +102,9 @@
 }
 
 .card_badge {
-    width: fit-content;
-    height: fit-content;
     font-size: 0.8rem;
+    height: fit-content;
+    width: fit-content;
 }
 
 .path_one_color{
