@@ -28,6 +28,7 @@
 
 .card_container {
     padding: 0 0.5rem;
+    flex: 1;
 }
 
 .card_content {
@@ -39,6 +40,13 @@
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
     margin-top: 0.75rem;
+}
+
+.card_duration {
+    color: var(--secondary-text);
+    font-weight: 600;
+    text-align: right;
+    width: 100%;
 }
 
 .card_image {
@@ -57,24 +65,30 @@
 }
 
 .card_speaker_info_content p {
+    display: grid;
     margin: 0;
     font-size: 1rem;
 }
 
-.div_wrapper {
+.speaker_description {
     display: flex;
-    margin-top: 20px;
     align-items: center;
 }
 
-.div_wrapper > span {
-    min-width: 40px;
+.common-speeches .speaker_description {
+    margin-top: 1.5rem;
 }
 
-.card_title {
+.speed-speeches .speaker_description {
+    margin-top: -1.5rem;
+}
+
+.card_header {
     align-items: flex-start;
     display: flex;
+    flex-wrap: wrap;
     gap: 0.75rem;
+    justify-content: space-between;
 }
 
 .card_topic {
@@ -91,16 +105,22 @@
 }
 
 .path_one_color{
-    background: rgba(250, 180, 158, 0.6);
+    background-color: rgba(250, 180, 158, 0.6);
     border: 1px solid rgba(250, 180, 158, 0.3);
 }
 
 .path_two_color{
-    background: rgba(254, 255, 128, 0.6);
+    background-color: rgba(254, 255, 128, 0.6);
     border: 1px solid rgba(254, 255, 128, 0.3);
 }
 
 .path_three_color{
-    background: rgba(255, 214, 100, 0.6);
+    background-color: rgba(255, 214, 100, 0.6);
     border: 1px solid rgba(255, 214, 100, 0.3);
+}
+
+.path_SPEED_color {
+    background-color: rgb(128, 156, 255, 0.6);
+    background-color: rgb(128, 156, 255, 0.3);
+    
 }

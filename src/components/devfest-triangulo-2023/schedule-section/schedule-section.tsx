@@ -8,7 +8,7 @@ import ScheduleCard from "./schedule-card"
 import ScheduleTime from "./schedule-time"
 import { Speaker } from "models/speaker";
 
-import { Schedule } from "models/schedule";
+import { Schedule, ScheduleSpeedSpeeches, SpeechesPath } from "models/schedule";
 import styles from "./Schedule.module.css";
 
 interface SpeakersSectionProps {
@@ -17,6 +17,8 @@ interface SpeakersSectionProps {
 }
 
 export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, schedule }) => {
+  const speakersMap = new Map(speakers.map((speaker) => ([speaker.key, speaker])));
+
   return (
     <>
       {speakers.length &&
@@ -25,23 +27,49 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, sche
             <h4>Agenda</h4>
           </div>
           {schedule.map((schedule, index) => {
+              const commonSpeeches = schedule.speeches.filter((speeches) => speeches.path !== SpeechesPath.SPEED); 
+              const speedSpeeches = schedule.speeches.filter((speeches) => speeches.path === SpeechesPath.SPEED); 
+              console.log("speedSpeeches ", speedSpeeches.length)
+              const startTimeGenerator = () => {
+                let start = schedule.start;
+
+                return (duration: number) => {
+                  const _temp = start;
+                  const [hour, minute] = start.split(':');
+                  start = `${hour}:${Number(minute) + duration}`;
+                  return _temp;
+                }
+              }
+
+              const generateStarTime = startTimeGenerator()
+
               return (
                 <Row tag="section" key={`schedule-${index}`} className={styles.row_content}>
                   <ScheduleTime initialTime={schedule.start} endTime={schedule.end} />
-                  <Col xxl={11} sm={12}>
-                    <Row className={styles.schedule_grid}>
-                      {schedule.speeches?.map(({ path, speakerSlug, topic }) => {
-                          const speaker = speakers.find(speakerObj => speakerObj.key === speakerSlug);
-                          return (
-                            <ScheduleCard 
-                              key={`speech-${schedule.start}-${schedule.end}-${speaker?.key}`} 
-                              lgValue={Math.floor(12 / schedule.speeches.length)} 
-                              path={path}
-                              {...speaker} 
-                            />
-                          )
-                      })}
-                    </Row>
+                  <Col sm={12}>
+                    {commonSpeeches.length && (
+                      <Row>
+                        {commonSpeeches.map((speeches) => (
+                          <ScheduleCard 
+                            key={`speech-${speeches.path}-${speeches.speakerSlug}`} 
+                            speeches={speeches}
+                            speaker={speakersMap.get(speeches.speakerSlug)!}
+                          />
+                        ))}
+                      </Row>
+                    )}
+                    {speedSpeeches.length > 0 && (
+                      <Row>
+                        {speedSpeeches.map((speeches) => (
+                          <ScheduleCard 
+                            key={`speech-${speeches.path}-${speeches.speakerSlug}`} 
+                            speeches={speeches}
+                            speaker={speakersMap.get(speeches.speakerSlug)!}
+                            start={generateStarTime((speeches as ScheduleSpeedSpeeches).duration)}
+                          />
+                        ))}
+                      </Row>
+                    )}
                   </Col>
                 </Row>
               )

@@ -1,19 +1,19 @@
 import { Speaker, SpeakerTech } from "models/speaker";
-import Image from "next/legacy/image";
-import React, { useState } from "react";
-import {
-    Badge,
-    Col,
-    Row
-} from "reactstrap";
+import Image from "next/image";
+import React from "react";
+import { Badge, Col } from "reactstrap";
 
 import styles from "./Schedule.module.css";
-import { SpeechesPath } from "models/schedule";
+import { ScheduleSpeeches, ScheduleSpeedSpeeches,  SpeechesPath } from "models/schedule";
 import clsx from "clsx";
 
-interface ScheduleCardProps extends Partial<Speaker> {
-    lgValue: number;
-    path: SpeechesPath;
+type ScheduleCardProps = {
+    speaker: Speaker;
+    speeches: ScheduleSpeeches;
+} | {
+    speaker: Speaker;
+    speeches: ScheduleSpeedSpeeches;
+    start: string;
 }
 
 const getPillColor = (tech: SpeakerTech) => {
@@ -41,41 +41,54 @@ const getPathColor = (path: SpeechesPath) => {
             return styles.path_two_color
         case SpeechesPath.THREE:
             return styles.path_three_color
+        case SpeechesPath.SPEED:
+            return styles.path_SPEED_color
     }
 }
 
-const ScheduleCard: React.FC<ScheduleCardProps> = (props) => {
+const ScheduleCard = ({ speeches, speaker, ...rest }: ScheduleCardProps) => {
+    const speedSpeeches = 'start' in rest && 'duration' in speeches;
+    const [startHour, startMinute] = speedSpeeches ? rest.start.split(':') : []
+
     return (
-        <Col md={props.lgValue} sm={12} className={styles.card_container}>
-            <div className={clsx(styles.card_content, getPathColor(props.path))}>
-                <header className={styles.card_title}>
-                    <h3 className={styles.card_topic}>{props.topic}</h3>
-                    {props.tech && 
-                        <Badge className={styles.card_badge} color={getPillColor(props.tech)} pill>
-                            {props.tech}
+        <Col className={clsx(
+            styles.card_container,
+            speedSpeeches 
+                ? styles['speed-speeches']
+                : styles['common-speeches']
+        )}>
+            <div className={clsx(styles.card_content, getPathColor(speeches.path))}>
+                <header className={styles.card_header}>
+                    <h3 className={styles.card_topic}>{speaker.topic}</h3>
+                    {speaker.tech && 
+                        <Badge className={styles.card_badge} color={getPillColor(speaker.tech)} pill>
+                            {speaker.tech}
                         </Badge>
                     }
+                    {speedSpeeches && 
+                        <p className={styles.card_duration}>
+                            {rest.start} - {startHour}:{Number(startMinute) + speeches.duration} 
+                        </p>
+                    }
                 </header>
-                {props.photo && (
-                    <Row className={styles.display_inline_block}>
-                        <div className={styles.div_wrapper}>
-                            <Image
-                                className={styles.card_image}
-                                src={props.photo}
-                                alt={`Foto ${props.name}`}
-                                height={40}
-                                width={40}
-                                loading="lazy"
-                            />
-                            <div className={styles.card_speaker_info_content}>
-                                <h5>{props.name}</h5>
-                                <p className={styles.font_size_14}>
-                                    {props.title}{' '}
-                                    {props.company && <strong>@{props.company} </strong>}
-                                </p>
-                            </div>
+                {speaker.photo && (
+                    <div className={styles.speaker_description}>
+                        <Image
+                            className={styles.card_image}
+                            src={speaker.photo}
+                            alt={`Foto ${speaker.name}`}
+                            height={40}
+                            width={40}
+                            loading="lazy"
+                        />
+                        <div className={styles.card_speaker_info_content}>
+                            <h5>{speaker.name}</h5>
+                            <p>
+                                {speaker.title}{' '}
+                                {speaker.company && <strong>@{speaker.company} </strong>}
+                            </p>
                         </div>
-                    </Row>
+                    </div>
                 )}
             </div>
         </Col>
