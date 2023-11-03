@@ -28,18 +28,17 @@
 
 .card_container {
     padding: 0 0.5rem;
-    flex: 1;
 }
 
 .card_content {
-    font-family: NAMU-Pro, sans-serif;
-    min-height: 80px;
-    padding: 1rem;
+    backdrop-filter: blur(5px);
     border-radius: 10px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    font-family: NAMU-Pro, sans-serif;
     margin-top: 0.75rem;
+    min-height: 80px;
+    padding: 1rem;
+    -webkit-backdrop-filter: blur(5px);
 }
 
 .card_duration {
@@ -79,6 +78,10 @@
     align-items: center;
     display: flex;
     margin-top: 1.5rem;
+}
+
+.speed-speeches {
+    margin-top: 1rem;
 }
 
 .speeches_infos {

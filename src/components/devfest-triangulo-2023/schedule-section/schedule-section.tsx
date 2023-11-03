@@ -11,6 +11,8 @@ import { Speaker } from "models/speaker";
 import { Schedule, ScheduleSpeedSpeeches, SpeechesPath } from "models/schedule";
 import styles from "./Schedule.module.css";
 
+const GRID_LAYOUTS = 12;
+
 interface SpeakersSectionProps {
   speakers: Array<Speaker>,
   schedule: Array<Schedule>
@@ -54,6 +56,7 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, sche
                             key={`speech-${speeches.path}-${speeches.speakerSlug}`} 
                             speeches={speeches}
                             speaker={speakersMap.get(speeches.speakerSlug)!}
+                            lgValue={GRID_LAYOUTS / commonSpeeches.length}
                           />
                         ))}
                       </Row>
@@ -66,6 +69,7 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, sche
                             speeches={speeches}
                             speaker={speakersMap.get(speeches.speakerSlug)!}
                             start={generateStarTime((speeches as ScheduleSpeedSpeeches).duration)}
+                            lgValue={GRID_LAYOUTS / speedSpeeches.length}
                           />
                         ))}
                       </Row>

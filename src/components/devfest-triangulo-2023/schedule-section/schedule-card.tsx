@@ -8,9 +8,11 @@ import { ScheduleSpeeches, ScheduleSpeedSpeeches,  SpeechesPath } from "models/s
 import clsx from "clsx";
 
 type ScheduleCardProps = {
+    lgValue: number;
     speaker: Speaker;
     speeches: ScheduleSpeeches;
 } | {
+    lgValue: number;
     speaker: Speaker;
     speeches: ScheduleSpeedSpeeches;
     start: string;
@@ -46,7 +48,7 @@ const getPathColor = (path: SpeechesPath) => {
     }
 }
 
-const ScheduleCard = ({ speeches, speaker, ...rest }: ScheduleCardProps) => {
+const ScheduleCard = ({ speeches, speaker, lgValue, ...rest }: ScheduleCardProps) => {
     const speedSpeeches = 'start' in rest && 'duration' in speeches;
     const [startHour, startMinute] = speedSpeeches ? rest.start.split(':') : []
 
@@ -56,7 +58,7 @@ const ScheduleCard = ({ speeches, speaker, ...rest }: ScheduleCardProps) => {
             speedSpeeches 
                 ? styles['speed-speeches']
                 : styles['common-speeches']
-        )}>
+        )} lg={lgValue} sm={12}>
             <div className={clsx(styles.card_content, getPathColor(speeches.path))}>
                 <header className={styles.card_header}>
                     <h3 className={styles.card_topic}>{speaker.topic}</h3>
