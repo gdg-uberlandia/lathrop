@@ -4,12 +4,12 @@ import React from "react";
 import { Badge, Row } from "reactstrap";
 
 import styles from "./Schedule.module.css";
-import { Speeches,  SpeechesPath } from "models/schedule";
+import { Speeches, SpeechesPath } from "models/schedule";
 import clsx from "clsx";
 
 type ScheduleCardProps = {
-    speaker: Speaker;
-    speeches: Speeches;
+    speaker?: Speaker;
+    speech: { topic: string, duration: number, path: SpeechesPath };
     start?: string;
 }
 
@@ -52,53 +52,68 @@ const formatDate = (str: number) => {
     return `${hours}:${minutes.toString().padStart(2, '0')}`
 }
 
-const ScheduleCard = ({ speeches, speaker, start }: ScheduleCardProps) => {
-    const speedSpeeches =  'duration' in speeches;
-    const duration = speedSpeeches ? speeches.duration : DEFAULT_DURATION;
-    const [startHour, startMinute] =  start?.split(':') ?? [];
+const ScheduleCard = ({ speaker, start, speech }: ScheduleCardProps) => {
+    const speedSpeeches = speech?.duration != null && speech?.duration < 30;
+    const [startHour, startMinute] = start?.split(':') ?? [];
     const startDate = new Date(0, 0, 0, Number(startHour), Number(startMinute), 0)
 
-    return (
-        <article 
+
+    const renderRegularBlock = () => {
+        return <article
             className={clsx(
                 styles.card_container,
-                speedSpeeches 
+                styles['common-speeches']
+            )}
+        >
+            <div className={clsx(styles.card_content, getPathColor(speech!.path))}>
+                <header className={styles.card_header_regular}>
+                    <h3 className={styles.card_topic}>{speech?.topic}</h3>
+                </header>
+            </div>
+        </article>
+    }
+
+    const renderSpeaker = () => {
+        return <article
+            className={clsx(
+                styles.card_container,
+                speedSpeeches
                     ? styles['speed-speeches']
                     : styles['common-speeches']
-            )} 
+            )}
         >
-            <div className={clsx(styles.card_content, getPathColor(speeches.path))}>
+            <div className={clsx(styles.card_content, getPathColor(speech!.path))}>
                 <header className={styles.card_header}>
-                    <h3 className={styles.card_topic}>{speaker.topic}</h3>
+                    <h3 className={styles.card_topic}>{speaker!.topic}</h3>
                     <span className={styles.speeches_infos}>
-                        {speaker.tech && 
-                            <Badge className={styles.card_badge} color={getPillColor(speaker.tech)} pill>
-                                {speaker.tech}
+                        {speaker!.tech &&
+                            <Badge className={styles.card_badge} color={getPillColor(speaker!.tech)} pill>
+                                {speaker!.tech}
                             </Badge>
                         }
                         <p className={styles.card_duration}>
-                            {start} - {formatDate(startDate.setMinutes(startDate.getMinutes() + duration))} 
+                            {start} - {formatDate(startDate.setMinutes(startDate.getMinutes() + speech!.duration))}
                         </p>
                     </span>
                 </header>
-                {speaker.photo && (
+                {speaker!.photo && (
                     <div className={styles.speaker_description}>
                         <Image
                             className={styles.card_image}
-                            src={speaker.photo}
-                            alt={`Foto ${speaker.name}`}
+                            src={speaker!.photo}
+                            alt={`Foto ${speaker!.name}`}
                             height={40}
                             width={40}
                             loading="lazy"
                         />
                         <div className={styles.card_speaker_info_content}>
-                            <h5>{speaker.name}</h5>
+                            <h5>{speaker!.name}</h5>
                             <Row noGutters>
                                 <p className={styles.speaker_title}>
-                                    {speaker.title}{' '}
+                                    {speaker!.title}{' '}
                                 </p>
                                 <p>
-                                    {speaker.company && <strong>@{speaker.company} </strong>}
+                                    {speaker!.company && <strong>@{speaker!.company} </strong>}
                                 </p>
                             </Row>
                         </div>
@@ -106,6 +121,22 @@ const ScheduleCard = ({ speeches, speaker, start }: ScheduleCardProps) => {
                 )}
             </div>
         </article>
+    }
+
+    const conditionalRender = () => {
+        if (speaker) {
+            return renderSpeaker();
+        }
+        else if (speech) {
+            return renderRegularBlock();
+        }
+    }
+
+    return (
+        <>
+            {conditionalRender()}
+        </>
+
     );
 };
 

@@ -4,16 +4,17 @@ export interface Schedule {
     speeches: Speeches[]
 }
 
-export type Speeches = (ScheduleSpeeches | ScheduleSpeedSpeeches);
+export type Speeches = (ScheduleSpeech | ScheduleSpeedSpeech);
 
-export interface ScheduleSpeeches {
+export interface ScheduleSpeech {
     topic: string;
     speakerSlug: string;
     path: SpeechesPath;
+    duration: number;
 }
 
-export interface ScheduleSpeedSpeeches extends ScheduleSpeeches {
-    duration: number; 
+export interface ScheduleSpeedSpeech extends ScheduleSpeech {
+    duration: number;
 }
 
 // TODO: rename enum to correct path names
