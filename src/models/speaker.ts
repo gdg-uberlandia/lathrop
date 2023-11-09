@@ -23,4 +23,7 @@ export enum SpeakerTech {
 export interface SpeakerSocialMedia {
   linkedIn: string
   instagram: string
+  twitter?: string;
+  github?: string;
+  website?: string;
 }
