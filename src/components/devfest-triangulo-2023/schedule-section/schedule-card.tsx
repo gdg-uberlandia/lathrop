@@ -55,7 +55,6 @@ const formatDate = (str: number) => {
 const ScheduleCard = ({ speeches, speaker, start }: ScheduleCardProps) => {
     const speedSpeeches =  'duration' in speeches;
     const duration = speedSpeeches ? speeches.duration : DEFAULT_DURATION;
-    console.log("start ", start)
     const [startHour, startMinute] =  start?.split(':') ?? [];
     const startDate = new Date(0, 0, 0, Number(startHour), Number(startMinute), 0)
 
