@@ -45,10 +45,19 @@ const getPathColor = (path: SpeechesPath) => {
     }
 }
 
+const formatDate = (str: number) => {
+    const hours = new Date(str).getHours()
+    const minutes = new Date(str).getMinutes()
+
+    return `${hours}:${minutes.toString().padStart(2, '0')}`
+}
+
 const ScheduleCard = ({ speeches, speaker, start }: ScheduleCardProps) => {
     const speedSpeeches =  'duration' in speeches;
-    const duration = speedSpeeches ? speeches.duration : DEFAULT_DURATION
-    const [startHour, startMinute] =  start?.split(':') ?? []
+    const duration = speedSpeeches ? speeches.duration : DEFAULT_DURATION;
+    console.log("start ", start)
+    const [startHour, startMinute] =  start?.split(':') ?? [];
+    const startDate = new Date(0, 0, 0, Number(startHour), Number(startMinute), 0)
 
     return (
         <article 
@@ -69,7 +78,7 @@ const ScheduleCard = ({ speeches, speaker, start }: ScheduleCardProps) => {
                             </Badge>
                         }
                         <p className={styles.card_duration}>
-                            {start} - {startHour}:{Number(startMinute) + duration} 
+                            {start} - {formatDate(startDate.setMinutes(startDate.getMinutes() + duration))} 
                         </p>
                     </span>
                 </header>
