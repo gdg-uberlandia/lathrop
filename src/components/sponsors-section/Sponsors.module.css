@@ -1,5 +1,6 @@
 .SponsorSection {
     margin-bottom: 100px;
+    padding: 0 0.6rem;
 }
 
 .SponsorSection h2 {
@@ -28,7 +29,6 @@
     box-shadow: 0 0 2px 0 rgb(0 0 0 / 7%), 0 2px 2px 0 rgb(0 0 0 / 15%);
     transition: box-shadow var(--animation);
     cursor: pointer;
-    padding: 24px 16px;
     height: 120px;
     display: flex;
     justify-content: center;
@@ -51,6 +51,7 @@
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%);
+    padding: 0 1rem;
 }
 
 #sponsors {

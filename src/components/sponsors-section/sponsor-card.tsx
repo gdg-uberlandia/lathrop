@@ -16,8 +16,9 @@ const SponsorCard: React.FC<SponsorCardProps> = (sponsor) => {
                 <Image
                     alt={`Logo da empresa ${sponsor.name}`} 
                     src={sponsor.logo} 
-                    layout="fill"
+                    fill
                     className={styles.SponsorCardBodyImage} 
+                    sizes="(max-width: 768px) , 248px"
                 />
             </div>
         </a>
