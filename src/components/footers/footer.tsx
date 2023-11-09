@@ -20,7 +20,7 @@ const Footer: React.FC<FooterProps> = ({ }) => {
       <Container>
         <Nav className={styles.FooterContent}>
           <NavItem>
-            <NavLink active href={generateRef("#")}>
+            <NavLink aria-label="Ir para o início" active href={generateRef("#")}>
 
               {Logo({ width: 300 })}
             </NavLink>
@@ -51,7 +51,7 @@ const Footer: React.FC<FooterProps> = ({ }) => {
         <a href="https://bohr.io/" target="_blank">
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingBottom: '60px' }}>
 
-            Hospedado em <img style={{ paddingLeft: '10px' }} height="30px" src="/bohr.png" />
+            Hospedado em <img style={{ paddingLeft: '10px' }} height="30px" src="/bohr.png" alt='Bohr' />
           </div>
         </a>
       </Container>

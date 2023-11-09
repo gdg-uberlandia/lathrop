@@ -1,6 +1,6 @@
 /*eslint-disable*/
 import { Sponsor } from "models/sponsor";
-import React, { useState } from "react";
+import React from "react";
 import styles from './Sponsors.module.css'
 import Image from 'next/image'
 
@@ -13,7 +13,12 @@ const SponsorCard: React.FC<SponsorCardProps> = (sponsor) => {
     return (
         <a href={sponsor.url} target="_blank">
             <div className={styles.SponsorCard}>
-                <img alt={`Logo da empresa ${sponsor.name}`} src={sponsor.logo} className={styles.SponsorCardBodyImage} />
+                <Image
+                    alt={`Logo da empresa ${sponsor.name}`} 
+                    src={sponsor.logo} 
+                    layout="fill"
+                    className={styles.SponsorCardBodyImage} 
+                />
             </div>
         </a>
     );

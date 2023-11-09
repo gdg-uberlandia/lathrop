@@ -32,6 +32,7 @@
     height: 120px;
     display: flex;
     justify-content: center;
+    position: relative;
     width: 100%;
 }
 
@@ -44,9 +45,12 @@
 }
 
 .SponsorCardBodyImage {
-    width: 100%;
+    max-height: 72px;
     max-width: 248px;
     object-fit: contain;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%);
 }
 
 #sponsors {
