@@ -1,7 +1,7 @@
 import { Speaker, SpeakerTech } from "models/speaker";
 import Image from "next/image";
 import React from "react";
-import { Badge, Col } from "reactstrap";
+import { Badge, Row } from "reactstrap";
 
 import styles from "./Schedule.module.css";
 import { ScheduleSpeeches, ScheduleSpeedSpeeches,  SpeechesPath } from "models/schedule";
@@ -53,12 +53,14 @@ const ScheduleCard = ({ speeches, speaker, lgValue, ...rest }: ScheduleCardProps
     const [startHour, startMinute] = speedSpeeches ? rest.start.split(':') : []
 
     return (
-        <Col className={clsx(
-            styles.card_container,
-            speedSpeeches 
-                ? styles['speed-speeches']
-                : styles['common-speeches']
-        )} lg={lgValue} sm={12}>
+        <article 
+            className={clsx(
+                styles.card_container,
+                speedSpeeches 
+                    ? styles['speed-speeches']
+                    : styles['common-speeches']
+            )} 
+        >
             <div className={clsx(styles.card_content, getPathColor(speeches.path))}>
                 <header className={styles.card_header}>
                     <h3 className={styles.card_topic}>{speaker.topic}</h3>
@@ -87,15 +89,19 @@ const ScheduleCard = ({ speeches, speaker, lgValue, ...rest }: ScheduleCardProps
                         />
                         <div className={styles.card_speaker_info_content}>
                             <h5>{speaker.name}</h5>
-                            <p>
-                                {speaker.title}{' '}
-                                {speaker.company && <strong>@{speaker.company} </strong>}
-                            </p>
+                            <Row noGutters>
+                                <p className={styles.speaker_title}>
+                                    {speaker.title}{' '}
+                                </p>
+                                <p>
+                                    {speaker.company && <strong>@{speaker.company} </strong>}
+                                </p>
+                            </Row>
                         </div>
                     </div>
                 )}
             </div>
-        </Col>
+        </article>
     );
 };
 

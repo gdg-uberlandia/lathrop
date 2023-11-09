@@ -20,28 +20,6 @@ interface SponsorsSectionProps {
 }
 
 const SponsorsSection: React.FC<SponsorsSectionProps> = ({ sponsors }) => {
-    const supports: StringMap = _supports;
-
-    const mapSponsorLevel = (sponsorLevel: SponsorLevel, isStaff: boolean) => {
-        if (sponsorLevel?.items?.length > 0)
-            return (
-                <section key={sponsorLevel.id}>
-                    <h4>
-                        {sponsorLevel.name}
-                    </h4>
-                    <Row>
-                        <div className={isStaff ? styles.StaffWrapper : styles.SponsorWrapper}>
-                            {sponsorLevel.items.map((item) => (
-                                <SponsorCard key={item.id} isStaff={isStaff} {...item} />
-                            ))}
-                        </div>
-                    </Row>
-                </section>
-            )
-        return <></>
-    }
-
-
     return (
         <Container style={{ paddingLeft: "0px;" }}>
             <section className={styles.SponsorSection}>
@@ -58,9 +36,25 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ sponsors }) => {
                 {sponsors && (
                     <Container fluid>
                         <div id="sponsors">
-                            {SPONSORS_LIST.map((el) => {
+                            {SPONSORS_LIST.map((el, i) => {
+                                const sponsorLevel = sponsors[el]
+                                const isStaff =  el === "staff"
+
                                 if (sponsors[el] != null)
-                                    return mapSponsorLevel(sponsors[el], el === "staff")
+                                return (
+                                    <section key={el}>
+                                        <h4>
+                                            {sponsorLevel.name}
+                                        </h4>
+                                        <Row>
+                                            <div className={isStaff ? styles.StaffWrapper : styles.SponsorWrapper}>
+                                                {sponsorLevel.items.map((item) => (
+                                                   <SponsorCard key={item.name} isStaff={isStaff} {...item} />
+                                                ))}
+                                            </div>
+                                        </Row>
+                                    </section>
+                                )
                             })}
 
                             {/*<h4>
