@@ -4,19 +4,16 @@ import React from "react";
 import { Badge, Row } from "reactstrap";
 
 import styles from "./Schedule.module.css";
-import { ScheduleSpeeches, ScheduleSpeedSpeeches,  SpeechesPath } from "models/schedule";
+import { Speeches,  SpeechesPath } from "models/schedule";
 import clsx from "clsx";
 
 type ScheduleCardProps = {
-    lgValue: number;
     speaker: Speaker;
-    speeches: ScheduleSpeeches;
-} | {
-    lgValue: number;
-    speaker: Speaker;
-    speeches: ScheduleSpeedSpeeches;
-    start: string;
+    speeches: Speeches;
+    start?: string;
 }
+
+const DEFAULT_DURATION = 40
 
 const getPillColor = (tech: SpeakerTech) => {
     switch (tech) {
@@ -48,9 +45,10 @@ const getPathColor = (path: SpeechesPath) => {
     }
 }
 
-const ScheduleCard = ({ speeches, speaker, lgValue, ...rest }: ScheduleCardProps) => {
-    const speedSpeeches = 'start' in rest && 'duration' in speeches;
-    const [startHour, startMinute] = speedSpeeches ? rest.start.split(':') : []
+const ScheduleCard = ({ speeches, speaker, start }: ScheduleCardProps) => {
+    const speedSpeeches =  'duration' in speeches;
+    const duration = speedSpeeches ? speeches.duration : DEFAULT_DURATION
+    const [startHour, startMinute] =  start?.split(':') ?? []
 
     return (
         <article 
@@ -70,11 +68,9 @@ const ScheduleCard = ({ speeches, speaker, lgValue, ...rest }: ScheduleCardProps
                                 {speaker.tech}
                             </Badge>
                         }
-                        {speedSpeeches && 
-                            <p className={styles.card_duration}>
-                                {rest.start} - {startHour}:{Number(startMinute) + speeches.duration} 
-                            </p>
-                        }
+                        <p className={styles.card_duration}>
+                            {start} - {startHour}:{Number(startMinute) + duration} 
+                        </p>
                     </span>
                 </header>
                 {speaker.photo && (

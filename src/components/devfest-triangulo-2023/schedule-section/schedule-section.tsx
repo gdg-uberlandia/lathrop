@@ -50,29 +50,28 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, sche
                   <ScheduleTime initialTime={schedule.start} endTime={schedule.end} />
                   <Col sm={12}>
                     {commonSpeeches.length && (
-                      <Row className={styles.schedule_grid} noGutters>
+                      <section className={styles.schedule_grid}>
                         {commonSpeeches.map((speeches) => (
                           <ScheduleCard 
                             key={`speech-${speeches.path}-${speeches.speakerSlug}`} 
                             speeches={speeches}
                             speaker={speakersMap.get(speeches.speakerSlug)!}
-                            lgValue={GRID_LAYOUTS / commonSpeeches.length}
+                            start={schedule.start}
                           />
                         ))}
-                      </Row>
+                      </section>
                     )}
                     {speedSpeeches.length > 0 && (
-                      <Row className={styles.schedule_grid} noGutters>
+                      <section className={styles.schedule_grid}>
                         {speedSpeeches.map((speeches) => (
                           <ScheduleCard 
                             key={`speech-${speeches.path}-${speeches.speakerSlug}`} 
                             speeches={speeches}
                             speaker={speakersMap.get(speeches.speakerSlug)!}
                             start={generateStarTime((speeches as ScheduleSpeedSpeeches).duration)}
-                            lgValue={GRID_LAYOUTS / speedSpeeches.length}
                           />
                         ))}
-                      </Row>
+                      </section>
                     )}
                   </Col>
                 </Row>
