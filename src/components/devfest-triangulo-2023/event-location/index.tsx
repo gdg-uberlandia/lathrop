@@ -3,9 +3,7 @@ import Image from "next/image"
 import LocationImg from './assets/event-location.png'
 
 import styles from './styles.module.css'
-
-const ADDRESS = 'R. Anita, 25 Altamira, Uberlândia - MG 38411-122'
-const LOCATION_NAME = 'Gaudium Hall'
+import configValues from "helpers/config"
 
 export const EventLocationSection = () => {
   return (
@@ -17,13 +15,13 @@ export const EventLocationSection = () => {
       <div className={styles.LocationContainer}>
         <aside>
           <article className={styles.LocationDescription}>
-            <strong>{LOCATION_NAME}</strong>
+            <strong>{configValues.place}</strong>
             <p className={styles.LocationAddress}>
-              {ADDRESS}
+              {configValues.placeAddress}
             </p>
           </article>
           <Image 
-            alt={`Fachada do ${LOCATION_NAME}`}
+            alt={`Fachada do ${configValues.place}`}
             className={styles.LocationImg}
             src={LocationImg} 
             height={247}
