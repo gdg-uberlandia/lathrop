@@ -7,7 +7,7 @@ const LOCATION_NAME = 'Gaudium Hall'
 
 export const EventLocationSection = () => {
   return (
-    <Container className={styles.EventLocation}>
+    <Container className={styles.EventLocation} id='local'>
       <h2 className="gdg-line">
         Local
       </h2> 
