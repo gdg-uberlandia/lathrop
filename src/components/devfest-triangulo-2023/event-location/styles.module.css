@@ -1,22 +1,44 @@
 .EventLocation h2 {
   font-size: 2.5rem;
+  width: min-content;
 }
 
 .LocationContainer {
-  color: var(--primary-text);
   display: flex;
   flex-wrap: wrap;
   font-size: 1.25rem;
-  gap: 3rem;
-  text-align: left;
-  margin-top: 3rem;
+  gap: 2rem;
+  text-align: center;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.LocationContent {
+  max-width: 25rem;
+  padding-top: 2rem;
 }
 
 .LocationAddress {
-  padding-top: 2rem;
-  max-width: 400px;
+  color: var(--primary-text);
+}
+
+.LocationContent::after {
+  background: var(--primary-text);
+  content: "";
+  display: flex;
+  height: 1px;
+  opacity: 0.20;
+  width: 100%;
+  margin-top: -0.2rem;
 }
 
 .Map {
   flex: 1;
+}
+
+@media (min-width: 768px) {
+  .LocationContainer {
+    gap: 3rem;
+    text-align: left;
+  }
 }

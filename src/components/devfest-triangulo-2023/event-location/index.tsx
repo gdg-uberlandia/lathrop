@@ -8,14 +8,14 @@ const LOCATION_NAME = 'Gaudium Hall'
 export const EventLocationSection = () => {
   return (
     <Container className={styles.EventLocation}>
-      <h2>
+      <h2 className="gdg-line">
         Local
       </h2> 
 
       <div className={styles.LocationContainer}>
-        <article className={styles.LocationAddress}>
+        <article className={styles.LocationContent}>
           <strong>{LOCATION_NAME}</strong>
-          <p>
+          <p className={styles.LocationAddress}>
             {ADDRESS}
           </p>
         </article>
