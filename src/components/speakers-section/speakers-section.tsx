@@ -150,7 +150,7 @@ const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
     <>
       <Container>
         <div id="speakers" className={styles.container}>
-          <h1>Palestrantes</h1>
+          <h1 className="gdg-line">Palestrantes</h1>
           <p>
             O time de palestrantes do {configValues.name} traz grandes nomes da
             área técnica e referências em liderança de comunidades. Reunimos em
