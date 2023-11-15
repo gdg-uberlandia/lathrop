@@ -19,8 +19,8 @@ export interface ScheduleSpeedSpeech extends ScheduleSpeech {
 
 // TODO: rename enum to correct path names
 export enum SpeechesPath {
-    MINAS, // principal
-    CURADO,
-    CANASTRA,
-    COMUNIDADE
+    MINAS = "MINAS", // principal
+    CURADO = "CURADO",
+    CANASTRA = "CANASTRA",
+    COMUNIDADE = "COMUNIDADE"
 }
