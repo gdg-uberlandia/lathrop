@@ -34,13 +34,13 @@ const getPillColor = (tech: SpeakerTech) => {
 
 const getPathColor = (path: SpeechesPath) => {
     switch (path) {
-        case SpeechesPath.ONE:
+        case SpeechesPath.MINAS:
             return styles.path_one_color
-        case SpeechesPath.TWO:
+        case SpeechesPath.CURADO:
             return styles.path_two_color
-        case SpeechesPath.THREE:
+        case SpeechesPath.CANASTRA:
             return styles.path_three_color
-        case SpeechesPath.SPEED:
+        case SpeechesPath.COMUNIDADE:
             return styles.path_SPEED_color
     }
 }

@@ -29,21 +29,8 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, sche
             <h2>Agenda</h2>
           </div>
           {schedule.map((schedule, index) => {
-            const commonSpeeches = schedule.speeches.filter((speeches) => speeches.path !== SpeechesPath.SPEED);
-            const speedSpeeches = schedule.speeches.filter((speeches) => speeches.path === SpeechesPath.SPEED);
-
-            const startTimeGenerator = () => {
-              let start = schedule.start;
-
-              return (duration: number) => {
-                const _temp = start;
-                const [hour, minute] = start.split(':');
-                start = `${hour}:${Number(minute) + duration}`;
-                return _temp;
-              }
-            }
-
-            const generateStarTime = startTimeGenerator()
+            const commonSpeeches = schedule.speeches.filter((speeches) => speeches.path !== SpeechesPath.COMUNIDADE);
+            const speedSpeeches = schedule.speeches.filter((speeches) => speeches.path === SpeechesPath.COMUNIDADE);
 
             return (
               <Row tag="section" key={`schedule-${index}`} className={styles.row_content}>
@@ -57,7 +44,6 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, sche
                           key={`speech-${speech.path}-${speech.speakerSlug}`}
                           speech={speech}
                           speaker={speaker}
-
                           start={schedule.start}
                         /> : <ScheduleCard
                           key={`speech-${speech.path}-${speech.topic}`}
@@ -75,7 +61,7 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, sche
                           key={`speech-${speech.path}-${speech.speakerSlug}`}
                           speech={speech}
                           speaker={speakersMap.get(speech.speakerSlug)!}
-                          start={generateStarTime((speech as ScheduleSpeedSpeech).duration)}
+                          start={schedule.start}
                         />
                       ))}
                     </section>
