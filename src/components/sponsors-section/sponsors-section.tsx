@@ -21,12 +21,12 @@ interface SponsorsSectionProps {
 
 const SponsorsSection: React.FC<SponsorsSectionProps> = ({ sponsors }) => {
     return (
-        <Container style={{ paddingLeft: "0px;" }}>
+        <Container style={{ paddingLeft: "0px" }}>
             <section className={styles.SponsorSection}>
                 <Container>
                     <Row>
                         <Col lg={4} sm={12}>
-                            <h2>
+                            <h2 className="gdg-line">
                                 Patrocinadores
                             </h2>
                         </Col>
