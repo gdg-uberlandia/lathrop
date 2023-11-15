@@ -26,7 +26,7 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, sche
       {speakers.length &&
         <Container>
           <div id="schedule">
-            <h2>Agenda</h2>
+            <h2 className="gdg-line">Agenda</h2>
           </div>
           {schedule.map((schedule, index) => {
             const commonSpeeches = schedule.speeches.filter((speeches) => speeches.path !== SpeechesPath.COMUNIDADE);
