@@ -50,7 +50,7 @@ const formatDate = (str: number) => {
     return `${hours}:${minutes.toString().padStart(2, '0')}`
 }
 
-const ScheduleCard = (props: ScheduleCardProps) => {
+const ScheduleCardChooser = (props: ScheduleCardProps) => {
     return props.speakers.length > 0 ? <SpeakerScheduleCard {...props} /> : <RegularScheduleCard {...props} />;
 };
 
@@ -60,12 +60,7 @@ const SpeakerScheduleCard = ({ speech, speakers, start }: ScheduleCardProps) => 
     const startDate = new Date(0, 0, 0, Number(startHour), Number(startMinute), 0);
 
     return (
-        <article
-            className={clsx(
-                styles.card_container,
-                styles.common_speeches
-            )}
-        >
+        <article className={clsx(styles.card_container, styles.common_speeches)}>
             <div className={clsx(styles.card_content, getPathColor(speech.path))}>
                 <header className={styles.card_header}>
                     <h3 className={styles.card_topic}>{speakerInfo?.topic}</h3>
@@ -111,10 +106,7 @@ const SpeakerScheduleCard = ({ speech, speakers, start }: ScheduleCardProps) => 
 
 const RegularScheduleCard = ({ speech }: ScheduleCardProps) => {
     return <article
-        className={clsx(
-            styles.card_container,
-            styles.common_speeches
-        )}
+        className={clsx(styles.card_container, styles.common_speeches)}
     >
         <div className={clsx(styles.card_content, getPathColor(speech!.path))}>
             <header className={styles.card_header_regular}>
@@ -124,4 +116,4 @@ const RegularScheduleCard = ({ speech }: ScheduleCardProps) => {
     </article>
 }
 
-export default ScheduleCard;
+export default ScheduleCardChooser;

@@ -129,6 +129,7 @@ html {
   content: "";
   display: flex;
   height: 0.15rem;
+  margin-top: 0.25rem;
   width: 75%;
 }
 

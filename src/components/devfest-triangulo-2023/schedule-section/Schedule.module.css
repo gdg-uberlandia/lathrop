@@ -47,7 +47,7 @@
     font-family: NAMU-Pro, sans-serif;
     gap: 1rem;
     height: min-content;
-    justify-content: space-between;
+    justify-content: center;
     min-height: 80px;
     min-width: 20rem;
     padding: 1rem;
@@ -104,6 +104,10 @@
 
 .common_speeches {
     margin-top: 1rem;
+}
+
+.regular_card {
+    justify-content: center;
 }
 
 .speeches_infos {
