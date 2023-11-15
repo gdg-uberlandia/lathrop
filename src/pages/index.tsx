@@ -52,7 +52,7 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
     <>
       <ErrorBoundary>
         <HomeHeader />
-        
+
         <HeroSection />
 
         <CountdownTimer />
