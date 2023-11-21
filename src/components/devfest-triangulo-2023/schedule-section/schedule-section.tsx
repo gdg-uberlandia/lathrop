@@ -36,6 +36,20 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, sche
             const commonSpeeches = schedule.speeches.filter((speeches) => speeches.path !== SpeechesPath.COMUNIDADE);
             const speedSpeeches = schedule.speeches.filter((speeches) => speeches.path === SpeechesPath.COMUNIDADE);
 
+            const startTimeGenerator = () => {
+              let start = schedule.start;
+
+              return (duration: number) => {
+                const _temp = start;
+                const [hour, minute] = start.split(':').map(Number);
+                const date = new Date(0, 0, 0, hour, minute + duration)
+                start = `${date.getHours()}:${date.getMinutes().toString().padEnd(2, '0')}`;
+                return _temp;
+              }
+            }
+
+            const generateStarTime = startTimeGenerator()
+
             return (
               <Row tag="section" key={`schedule-${index}`} className={styles.row_content}>
                 <ScheduleTime initialTime={schedule.start} endTime={schedule.end} />
@@ -58,7 +72,7 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, sche
                   )}
                   {speedSpeeches.length > 0 && (
                     <section className={styles.schedule_grid}>
-                      {speedSpeeches.map((speeches) => (
+                      {speedSpeeches.map((speeches, i) => (
                         <ScheduleCard 
                           key={generateKey(speeches)} 
                           speech={speeches}
@@ -67,7 +81,7 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, sche
                               ? speeches.speakerSlugs.map((slug) => speakersMap.get(slug)!)
                               : []
                             }
-                          start={schedule.start}
+                          start={generateStarTime(speeches.duration)}
                         />
                       ))}
                     </section>
