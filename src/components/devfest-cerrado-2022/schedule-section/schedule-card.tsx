@@ -82,11 +82,11 @@ const ScheduleCard: React.FC<ScheduleCardProps> = (props) => {
                             />
                             <div className={styles.card_speaker_info_content}>
                                 <h5>{props.name}</h5>
-                                {props.community && <p className={styles.gde}>{props.community}</p>}
-                                <p className={styles.font_size_14}>{`${props.companyTitle} @ ${props.company}`}</p>
+                                {props.tech && <p className={styles.gde}>{props.tech}</p>}
+                                <p className={styles.font_size_14}>{`${props.title} @ ${props.company}`}</p>
                                 <div className={styles.path_wrapper}>
                                     {
-                                        props.path && renderPath(props.path)
+                                        props.topic && renderPath(props.topic)
                                     }
                                 </div>
                             </div>

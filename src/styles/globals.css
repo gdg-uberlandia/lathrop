@@ -14,7 +14,7 @@
   --pink: #E41AE1;
   --primary-text: #393D40;
   --secondary-text: #848484;
-  
+
   --sm: 640px;
   --md: 768px;
   --lg: 1024px;
@@ -125,10 +125,11 @@ html {
 }
 
 .gdg-line::after {
-  background: linear-gradient(90deg,#c00,#d74206 10%,#e38c0c 30%,#eecd11 40%,#15ff28 70%,#1559ff);
+  background: linear-gradient(90deg, #c00, #d74206 10%, #e38c0c 30%, #eecd11 40%, #15ff28 70%, #1559ff);
   content: "";
   display: flex;
   height: 0.15rem;
+  margin-top: 0.25rem;
   width: 75%;
 }
 
@@ -136,4 +137,9 @@ html {
   html {
     font-size: 16px;
   }
+}
+
+img,
+svg {
+  user-select: none;
 }

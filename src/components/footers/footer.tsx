@@ -20,7 +20,7 @@ const Footer: React.FC<FooterProps> = ({ }) => {
       <Container>
         <Nav className={styles.FooterContent}>
           <NavItem>
-            <NavLink active href={generateRef("#")}>
+            <NavLink aria-label="Ir para o início" active href={generateRef("#")}>
 
               {Logo({ width: 300 })}
             </NavLink>
@@ -31,19 +31,20 @@ const Footer: React.FC<FooterProps> = ({ }) => {
           <NavItem>
             <NavLink href={generateRef("#sponsors")}>Patrocinadores</NavLink>
           </NavItem>
-          {(configValues.midiaKit) ? <NavItem>
+          {/*(configValues.midiaKit) ? <NavItem>
             <NavLink target="_blank" style={{ color: 'red' }} href={configValues.midiaKit}>Seja um patrocinador</NavLink>
-          </NavItem> : <></>}
+  </NavItem> : <></>}*/}
           {(configValues.midiaKit) ? <NavItem>
             <NavLink target="_blank" href="https://docs.google.com/document/d/16duFqXn39gR0rs2l-YOZ2UbDEUnG96YMD5mVvQZI_MQ/edit?usp=sharing">Código de conduta</NavLink>
           </NavItem> : <></>}
+
+          <NavItem>
+            <NavLink href="#">Agenda</NavLink>
+          </NavItem>
           <NavItem className={styles.FooterRegister}>
             <NavLink target="_blank" href={configValues.eventLinkRegistrationUrl}>Se cadastrar</NavLink>
           </NavItem>
           {/*<NavItem>
-            <NavLink href="#">Agenda</NavLink>
-          </NavItem>
-          <NavItem>
             <NavLink href="#">Organizadores</NavLink>
   </NavItem>
           */}
@@ -51,7 +52,7 @@ const Footer: React.FC<FooterProps> = ({ }) => {
         <a href="https://bohr.io/" target="_blank">
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingBottom: '60px' }}>
 
-            Hospedado em <img style={{ paddingLeft: '10px' }} height="30px" src="/bohr.png" />
+            Hospedado em <img style={{ paddingLeft: '10px' }} height="30px" src="/bohr.png" alt='Bohr' />
           </div>
         </a>
       </Container>

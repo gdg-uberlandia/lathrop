@@ -4,6 +4,7 @@ import { Speaker } from "models/speaker";
 import { Schedule } from "models/schedule";
 import { getSponsors } from 'back-features/sponsors';
 import { getSpeaker } from 'back-features/speakers';
+import { getSchedule } from 'back-features/schedule';
 import { SponsorLevel } from "models/sponsor-level";
 
 import styles from "styles/Home.module.css";
@@ -16,6 +17,7 @@ import OlderEvenstsSection from "components/devfest-triangulo-2023/older-events-
 
 import ErrorBoundary from '../components/error-boundary';
 import { HeroSection } from "components/hero-section";
+import { ScheduleSection } from "components/devfest-triangulo-2023/schedule-section/schedule-section";
 import { EventLocationSection } from "components/devfest-triangulo-2023/event-location";
 
 // https://alvarotrigo.com/blog/css-animations-scroll/
@@ -49,11 +51,6 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
 
   return (
     <>
-      {/*
-    <section className={styles.Section}>
-          <ScheduleSection speakers={speakers} schedule={schedule} />
-        </section>
-  */}
       <ErrorBoundary>
         <HomeHeader />
 
@@ -69,10 +66,14 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           <SpeakerSection speakers={speakers} />
         </section>
 
+        <section>
+          <ScheduleSection schedule={schedule} speakers={speakers} />
+        </section>
+
         <section className={`${styles.Section} Section`}>
           <SponsorsSection sponsors={sponsors} />
         </section>
-  
+
         <section className={`${styles.Section} Section`}>
           <EventLocationSection />
         </section>
@@ -87,7 +88,7 @@ export async function getServerSideProps() {
       props: {
         speakers: await getSpeaker(),
         sponsors: await getSponsors(),
-        schedule: [],//await getSchedule(),
+        schedule: await getSchedule(),
       },
     };
   } catch (error) {

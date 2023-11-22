@@ -60,20 +60,16 @@ const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
     setActiveIndex(nextIndex);
   };
 
-  const goToIndex = (newIndex: number) => {
-    setActiveIndex(newIndex);
-  };
-
   const displaySpeakers = _speakersChuncked.map(
     (speakersList: Array<Speaker>, index: number) => {
       return (
         <CarouselItem key={`${index}-carousel-item`}>
           <div className={styles.carousel_inner}>
             {speakersList.map((speaker: Speaker) => {
-              const _itemId: number | undefined = speaker.id;
+              const _itemKey = speaker.key;
               return (
                 <Col
-                  key={`${_itemId}-carousel-col`}
+                  key={`${_itemKey}-carousel-col`}
                   className={styles.card_container}
                 >
                   <SpeakerCard {...speaker} />

@@ -11,7 +11,7 @@ export const HeroSection = () => {
   return (
     <section className={styles.Section}>
       <div className={styles.Content}>
-        <Image alt='Devfest Triângulo 2023' src={Title} loading="eager" layout="responsive" />
+        <Image alt='Devfest Triângulo 2023' src={Title} loading="eager" layout="responsive" height={83} width={216} />
 
           
         <aside className={styles.Aside}>

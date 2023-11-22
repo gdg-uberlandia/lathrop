@@ -43,7 +43,7 @@ const OlderEvenstsSection: React.FC = ({ }) => {
                     <Col lg={4} sm={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 
 
-                        <img height="300px" src="sticker-black.gif" ></img>
+                        <img height="300px" src="sticker-black.gif" alt='Animações com a logo do DevFest Triangulo, alguns traços e desenhos na cor amarela aparecendo gradativamente na tela'></img>
                     </Col>
 
                 </Row>
