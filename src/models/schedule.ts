@@ -10,7 +10,8 @@ export interface ScheduleSpeech {
     topic: string;
     speakerSlugs: Array<string>;
     path: SpeechesPath;
-    duration: number;
+    start: string;
+    end: string;
 }
 
 export interface ScheduleSpeedSpeech extends ScheduleSpeech {

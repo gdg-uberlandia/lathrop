@@ -10,7 +10,6 @@ import clsx from "clsx";
 type ScheduleCardProps = {
     speakers: Array<Speaker>;
     speech: Speeches;    
-    start?: string;
 }
 
 const getPillColor = (tech: SpeakerTech) => {
@@ -54,10 +53,8 @@ const ScheduleCardChooser = (props: ScheduleCardProps) => {
     return props.speakers.length > 0 ? <SpeakerScheduleCard {...props} /> : <RegularScheduleCard {...props} />;
 };
 
-const SpeakerScheduleCard = ({ speech, speakers, start }: ScheduleCardProps) => {
+const SpeakerScheduleCard = ({ speech, speakers }: ScheduleCardProps) => {
     const speakerInfo = speakers.find(({ tech }) => tech);
-    const [startHour, startMinute] =  start?.split(':') ?? [];
-    const startDate = new Date(0, 0, 0, Number(startHour), Number(startMinute), 0);
 
     return (
         <article className={clsx(styles.card_container, styles.common_speeches)}>
@@ -71,7 +68,7 @@ const SpeakerScheduleCard = ({ speech, speakers, start }: ScheduleCardProps) => 
                             </Badge>
                         }
                         <p className={styles.card_duration}>
-                            {start} - {formatDate(startDate.setMinutes(startDate.getMinutes() + Number(speech!.duration)))}
+                            {speech.start} - {speech.end}
                         </p>
                     </span>
                 </header>
