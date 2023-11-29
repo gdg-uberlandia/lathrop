@@ -34,7 +34,6 @@
 
 .card_container {
     flex: 1;
-    height: fit-content;
     border-radius: 8px;
 }
 
@@ -46,8 +45,7 @@
     flex-direction: column;
     font-family: NAMU-Pro, sans-serif;
     gap: 1rem;
-    height: min-content;
-    justify-content: center;
+    height: 100%;
     min-height: 80px;
     min-width: 20rem;
     padding: 1rem;
