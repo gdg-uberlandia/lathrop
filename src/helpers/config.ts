@@ -18,18 +18,18 @@ export interface ConfigValues {
 
 
 const configValues = {
-  name: 'Devfest Triângulo 2023',
-  eventDate: '2023-12-02T08:00:00',
+  name: 'IWD Uberlândia 2024',
+  eventDate: '2024-03-15T08:00:00',
   eventLinkRegistrationUrl: 'https://doity.com.br/devfesttriangulo',
-  place: 'Gaudium Hall',
-  placeAddress: 'R. Anita, 25 Altamira, Uberlândia - MG 38411-122',
+  place: 'A definir',
+  placeAddress: 'A definir',
   placeCity: 'Uberlândia - MG',
-  formattedDate: '02 Dezembro',
+  formattedDate: 'A definir',
   email: 'gdg.uberlandia@gmail.com',
-  organizedBy: 'gdg', // options
-  midiaKit: 'https://docs.google.com/presentation/d/1gPKzG7xZibF3wAbEA050irl2ijhsAMRKXMispSaFrys/edit#slide=id.g223b3f84614_0_31',
+  organizedBy: 'wtm', // options
+  midiaKit: '',
   socialMedia: {
-    instagram: 'https://www.instagram.com/devfesttriangulo'
+    instagram: 'https://www.instagram.com/wtmuberlandia/'
   }
 }
 
@@ -40,7 +40,7 @@ const resolveURL = () => {
   } else if (process.env.NEXT_PUBLIC_VERCEL_URL) {
     finalUrl += `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
   } else {
-    finalUrl += `https://devfesttriangulo.com.br`
+    finalUrl += `https://wtmuberlandia.com.br`
   }
 
 
