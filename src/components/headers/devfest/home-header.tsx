@@ -10,13 +10,13 @@ import {
     NavItem,
     NavLink,
 } from 'reactstrap';
-import LogoMenu from "../../assets/images/MenuLogo"
-import { CloseMenu } from "../../assets/images/CloseMenu"
+import LogoMenu from "../../../assets/images/MenuLogo"
+import { CloseMenu } from "../../../assets/images/CloseMenu"
 import configValues from "helpers/config";
 
 const NAV_ITEMS = [
     {
-        name: "O que é o IWD?",
+        name: "O que é o Devfest?",
         ref: "#about",
     },
     {

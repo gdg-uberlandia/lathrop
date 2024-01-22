@@ -7,15 +7,15 @@ import { getSpeaker } from 'back-features/speakers';
 import { SponsorLevel } from "models/sponsor-level";
 
 import styles from "styles/Home.module.css";
-import HomeHeader from "../components/headers/home-header";
-import SpeakerSection from "components/speakers-section/speakers-section";
+import HomeHeader from "../components/headers/iwd/home-header";
+import SpeakerSection from "components/iwd-2023/speakers-section/speakers-section";
 import SponsorsSection from "components/sponsors-section/sponsors-section";
-import CountdownTimer from "components/devfest-triangulo-2023/countdown/countdown-timer";
-import OlderEvenstsSection from "components/devfest-triangulo-2023/older-events-section/older-events-section";
+import CountdownTimer from "components/iwd-2023/countdown/countdown-timer";
+import OlderEvenstsSection from "components/iwd-2023/older-events-section/older-events-section";
 
 
 import ErrorBoundary from '../components/error-boundary';
-import { HeroSection } from "components/hero-section";
+import { HeroSection } from "components/hero-section/iwd-2024";
 import { EventLocationSection } from "components/devfest-triangulo-2023/event-location";
 
 // https://alvarotrigo.com/blog/css-animations-scroll/
@@ -59,23 +59,26 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
 
         <HeroSection />
 
-        <CountdownTimer />
+        {/*<CountdownTimer />*/}
 
         <section className={`${styles.Section} Section`}>
           <OlderEvenstsSection />
         </section>
 
-        <section className={`${styles.Section} Section`}>
+        {/* <section className={`${styles.Section} Section`}>
           <SpeakerSection speakers={speakers} />
         </section>
+        
 
         <section className={`${styles.Section} Section`}>
           <SponsorsSection sponsors={sponsors} />
         </section>
-  
-        <section className={`${styles.Section} Section`}>
+        */}
+
+        {/*<section className={`${styles.Section} Section`}>
           <EventLocationSection />
         </section>
+      */}
       </ErrorBoundary>
     </>
   );
@@ -85,8 +88,8 @@ export async function getServerSideProps() {
   try {
     return {
       props: {
-        speakers: await getSpeaker(),
-        sponsors: await getSponsors(),
+        speakers: [],// await getSpeaker(),
+        sponsors: [], //await getSponsors(),
         schedule: [],//await getSchedule(),
       },
     };

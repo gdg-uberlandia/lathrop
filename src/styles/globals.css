@@ -10,11 +10,12 @@
   --black: #1A1D1C;
   --green: #09ccb1;
   --soft-blue: #46b3dc;
+  --soft-blue2: #00AAE9;
   --soft-green: #01F4C6;
   --pink: #E41AE1;
   --primary-text: #393D40;
   --secondary-text: #848484;
-  
+
   --sm: 640px;
   --md: 768px;
   --lg: 1024px;
@@ -125,7 +126,7 @@ html {
 }
 
 .gdg-line::after {
-  background: linear-gradient(90deg,#c00,#d74206 10%,#e38c0c 30%,#eecd11 40%,#15ff28 70%,#1559ff);
+  background: linear-gradient(90deg, #c00, #d74206 10%, #e38c0c 30%, #eecd11 40%, #15ff28 70%, #1559ff);
   content: "";
   display: flex;
   height: 0.15rem;

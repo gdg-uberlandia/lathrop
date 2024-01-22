@@ -21,13 +21,13 @@ const configValues = {
   name: 'IWD Uberlândia 2024',
   eventDate: '2024-03-15T08:00:00',
   eventLinkRegistrationUrl: 'https://doity.com.br/devfesttriangulo',
-  place: 'A definir',
-  placeAddress: 'A definir',
+  place: 'Á definir',
+  placeAddress: 'Á definir',
   placeCity: 'Uberlândia - MG',
   formattedDate: 'A definir',
   email: 'gdg.uberlandia@gmail.com',
   organizedBy: 'wtm', // options
-  midiaKit: '',
+  midiaKit: 'https://docs.google.com/presentation/d/1nyyCyA1RJ37lAjCbLB9UH60pgkGZUONLNAtljmkzR68/edit#slide=id.g26157c686c7_0_239',
   socialMedia: {
     instagram: 'https://www.instagram.com/wtmuberlandia/'
   }
