@@ -11,12 +11,17 @@
 }
 
 .Testimonial__img {
-  margin-top: -1rem;
+  margin: 0 auto;
+  margin-top: 1rem;
+  max-height: 350px; 
+  min-height: 300px; 
+  max-width: 408px;
+  width: 80%;
+  position: relative;
 }
 
-.Testimonial__topTestimonial {
-  padding-top: 3.75rem;
-  padding-left: 2.5rem;
+.Testimonial__topTestimonial:nth-child(3) {
+  padding-top: 2rem;
 }
 
 .Testimonial__title {
@@ -28,19 +33,15 @@
   width: fit-content;
 }
 
-.Testimonial__section {
+.Testimonial__content {
+  margin-top: 2rem;
   gap: 2.5rem;
 }
 
 .Testimonials__aside {
   display: flex;
   flex-direction: column;
-  gap: 3.75rem;
-}
-
-.Testimonials__main {
-  padding-top: 3.75rem;
-  padding-right: 2.5rem;
+  gap: 2rem;
 }
 
 .TestimonialCard {
@@ -75,5 +76,28 @@
 @media (min-width: 768px) {
   .Testimonial__header {
     justify-content: space-between;
+  }
+
+  .Testimonial__img {
+    margin-top: -1rem;
+    width: 100%;
+  }
+
+  .Testimonial__topTestimonial:nth-child(n) {
+    padding-top: 3.75rem;
+    padding-left: 2.5rem;
+  }
+
+  .Testimonial__content {
+    margin-top: 0;
+  }
+
+  .Testimonials__aside {
+    gap: 3.75rem;
+  }
+
+  .Testimonials__main {
+    padding-top: 3.75rem;
+    padding-right: 2.5rem;
   }
 }

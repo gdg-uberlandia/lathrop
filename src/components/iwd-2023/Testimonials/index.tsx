@@ -14,13 +14,13 @@ export const Testimonials = () => {
                             <Image 
                                 src="/iwd-2024/testimonials.png" 
                                 loading="lazy" 
-                                width={408} 
-                                height={350} 
+                                objectFit="contain"
+                                fill
                                 alt="Testimonials" 
                             />
                         </Col>
 
-                        <Col sm={12} lg={4} className={styles.Testimonial__topTestimonial}>
+                        <Col sm={12} md={4} className={styles.Testimonial__topTestimonial}>
                             <Card 
                                 author="Poliana Gomes"
                                 testimonial="Participar de um evento com várias mulheres líderes na área de tecnologia me fez sentir que tenho capacidade, vou progredir na minha carreira e todas nós juntas podemos inspirar mais mulheres a entrar na área de tecnologia, mostrando que podemos alcançar nossos objetivos." 
@@ -35,7 +35,7 @@ export const Testimonials = () => {
                         </Col>
                     </Row>
                 </Row>
-                <Row tag="section" noGutters className={styles.Testimonial__section}>
+                <Row tag="section" noGutters className={styles.Testimonial__content}>
                     <Col tag="article" sm={12} lg={4} className={styles.Testimonials__aside}>
                         <Card 
                             author="Aline Reis"
