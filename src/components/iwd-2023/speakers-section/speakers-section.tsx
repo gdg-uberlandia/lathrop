@@ -19,7 +19,7 @@ const SpeakerSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
         {speakers && speakers.map((speaker) => {
           return <SpeakerCard
 
-            key={speaker.slug}
+            key={speaker.key}
             speaker={speaker}
           />
         })}

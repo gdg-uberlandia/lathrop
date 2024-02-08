@@ -14,7 +14,7 @@ const SpeakerCard: React.FC<{
         </div>
         <h2 className={styles.SpeakerName}>{speaker.name}</h2>
         {/*<p className={styles.SpeakerInstagram}>{speaker?.socialMedia?.instagram}</p>*/}
-        {(speaker.company) ? <p>{speaker.companyTitle} @ {speaker.company}</p> : <></>}
+        {(speaker.company) ? <p>{speaker.company} @ {speaker.company}</p> : <></>}
         {(speaker.title) ? <p>{speaker.title} </p> : <></>}
         <p className={styles.Description}>{speaker.miniBio}</p>
       </div>
