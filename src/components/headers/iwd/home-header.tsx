@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 
 import styles from './header.module.css'
-import LogoGDG from "assets/images/LogoGDG";
 import {
     Collapse,
     NavbarToggler,
