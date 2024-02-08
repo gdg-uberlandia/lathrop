@@ -1,0 +1,130 @@
+.Counter {
+    align-items: center;
+    display: flex;
+    font-family: 'Open Sans', sans-serif;
+    justify-content: center;
+    padding: 38px 0;
+    background-image: url('/iwd-2024/banner/background-contador.png');
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+
+.CounterList {
+    display: grid;
+    gap: 24px;
+    list-style-type: none;
+    margin: 0;
+    margin-left: 60px;
+    padding: 0;
+}
+
+.CounterListItem {
+    background: #FFF;
+    border-radius: 10px;
+    border: 3px var(--black) solid;
+    color: var(--black);
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+    font-size: 32px;
+    font-weight: 600;
+    height: 158px;
+    justify-content: center;
+    padding-top: 20px;
+    text-align: center;
+    transition-property: color, background-color, border-color;
+    transition-duration: 400ms;
+    transition-timing-function: ease-in-out;
+    width: 221px;
+    animation: grow 1.6s ease-in-out infinite;
+    box-shadow: 0 0 10px var(--black);
+}
+
+.CounterListItem:nth-child(1) {
+    animation-delay: -1.4s;
+}
+
+.CounterListItem:nth-child(2) {
+    animation-delay: -1.2s;
+}
+
+.CounterListItem:nth-child(3) {
+    animation-delay: -1s;
+}
+
+.CounterListItem:nth-child(4) {
+    animation-delay: -0.8s;
+}
+
+.CounterListItem__time {
+    font-size: 60px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+@media (max-width: 575.98px) {
+    .CounterList {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+@media (min-width: 576px) and (max-width: 991.98px) {
+    .CounterList {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 992px) {
+    .CounterList {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+
+}
+
+@media (max-width: 992px) {
+    .Counter {
+        background-image: none;
+    }
+}
+
+.glow {
+    text-align: center;
+    -webkit-animation: glow 1s ease-in-out infinite alternate;
+    -moz-animation: glow 1s ease-in-out infinite alternate;
+    animation: glow 1s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
+    }
+
+    to {
+        text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+    }
+}
+
+@keyframes glow-blue {
+    from {
+        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px var(--blue), 0 0 40px var(--blue), 0 0 50px var(--blue), 0 0 60px var(--blue), 0 0 70px var(--blue);
+    }
+
+    to {
+        text-shadow: 0 0 20px #fff, 0 0 30px var(--blue2), 0 0 40px var(--blue2), 0 0 50px var(--blue2), 0 0 60px var(--blue2), 0 0 70px var(--blue2), 0 0 80px var(--blue2);
+    }
+}
+
+@keyframes grow {
+
+    0%,
+    40%,
+    100% {
+        transform: scale(0.95);
+    }
+
+    20% {
+        transform: scale(1);
+
+    }
+}

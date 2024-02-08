@@ -6,11 +6,14 @@
   --blue2: #4285F4;
   --red: #CB4538;
   --orange: #E59F38;
-  --white: #fcfcfc;
+  --white: #fefefe;
   --black: #1A1D1C;
-  --green: #09ccb1;
+  --green: #00b698;
+  --blue-light: #E4F4FF;
   --soft-blue: #46b3dc;
-  --soft-green: #01F4C6;
+  --soft-blue2: #00AAE9;
+  --soft-green: #00df9d;
+  --soft-green-light: #00d193;
   --pink: #E41AE1;
   --primary-text: #393D40;
   --secondary-text: #848484;
@@ -25,10 +28,6 @@
   background-color: var(--blue2);
 }
 
-.bg-soft-green {
-  background-color: var(--soft-green);
-}
-
 .bg-soft-blue {
   background-color: var(--soft-blue);
 }
@@ -40,7 +39,7 @@
 body {
   padding: 0;
   margin: 0;
-  font-family: 'Inter var', sans-serif;
+  font-family: Roboto Mono, monospace;
 }
 
 @supports (font-variation-settings: normal) {

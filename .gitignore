@@ -48,3 +48,8 @@ firebase-debug.log
 hosting.*
 
 serviceAccount.json
+
+public/.next/**
+
+.env.dev**
+serviceAccount**
