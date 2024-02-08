@@ -19,7 +19,7 @@ export const HeroSection = () => {
         <div className={styles.InnerContent}>
           <div>
             <h1 className={styles.H1}>Impact The Future</h1>
-            <h3 className={styles.H3} > International Women's Day 2024</h3>
+            <h3 className={styles.H3} > International Women&apos;s Day 2024</h3>
             <p style={{ paddingTop: '5px' }}>
               Mulheres na tecnologia que impactam
               o futuro <br />com as suas próprias <span className={styles.HighLightText}>ideias</span> e <span className={styles.HighLightText}>inovações</span>
