@@ -52,3 +52,4 @@ serviceAccount.json
 public/.next/**
 
 .env.dev**
+serviceAccount**
