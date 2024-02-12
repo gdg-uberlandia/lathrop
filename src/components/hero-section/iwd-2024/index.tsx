@@ -41,7 +41,6 @@ export const HeroSection = () => {
         url="https://www.youtube.com/embed/uY9nDt4swuU?si=EvquzOhd_7EjRulP"
         open={open}
         toggle={() => {
-          console.log('foi')
           toggle()
         }}
       />

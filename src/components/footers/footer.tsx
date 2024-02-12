@@ -31,15 +31,16 @@ const Footer: React.FC<FooterProps> = ({ }) => {
           <NavItem>
             <NavLink href={generateRef("#sponsors")}>Patrocinadores</NavLink>
           </NavItem>
-          {/*(configValues.midiaKit) ? <NavItem>
-            <NavLink target="_blank" style={{ color: 'red' }} href={configValues.midiaKit}>Seja um patrocinador</NavLink>
-  </NavItem> : <></>}*/}
+          
           {/*(configValues.midiaKit) ? <NavItem>
             <NavLink target="_blank" href="https://docs.google.com/document/d/16duFqXn39gR0rs2l-YOZ2UbDEUnG96YMD5mVvQZI_MQ/edit?usp=sharing">Código de conduta</NavLink>
 </NavItem> : <></>*/}
+          {(configValues.midiaKit) ? <NavItem>
+            <NavLink target="_blank" style={{ color: 'var(--soft-green)' }} href={configValues.midiaKit}>Seja um patrocinador</NavLink>
+          </NavItem> : <></>}
 
           <NavItem className={styles.FooterRegister}>
-            <NavLink target="_blank" href={configValues.eventLinkRegistrationUrl}>Se cadastrar</NavLink>
+            <NavLink target="_blank" href={configValues.eventLinkRegistrationUrl}>Inscreva-se</NavLink>
           </NavItem>
           {/*<NavItem>
             <NavLink href="#">Organizadores</NavLink>
