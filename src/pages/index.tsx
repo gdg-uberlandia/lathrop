@@ -2,21 +2,16 @@ import React, { useEffect } from "react";
 import BaseLayout from "../layouts/base-layout";
 import { Speaker } from "models/speaker";
 import { Schedule } from "models/schedule";
-import { getSponsors } from 'back-features/sponsors';
-import { getSpeaker } from 'back-features/speakers';
 import { SponsorLevel } from "models/sponsor-level";
 
 import styles from "styles/Home.module.css";
 import HomeHeader from "../components/headers/iwd/home-header";
-import SpeakerSection from "components/iwd-2023/speakers-section/speakers-section";
-import SponsorsSection from "components/sponsors-section/sponsors-section";
-import CountdownTimer from "components/iwd-2023/countdown/countdown-timer";
+import SpeakerSection from "components/iwd-2023/speakers-section";
 import OlderEvenstsSection from "components/iwd-2023/older-events-section/older-events-section";
 
 
 import ErrorBoundary from '../components/error-boundary';
 import { HeroSection } from "components/hero-section/iwd-2024";
-import { EventLocationSection } from "components/devfest-triangulo-2023/event-location";
 
 // https://alvarotrigo.com/blog/css-animations-scroll/
 
@@ -65,6 +60,9 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           <OlderEvenstsSection />
         </section>
 
+        <section className={`${styles.Section} Section`}>
+          <SpeakerSection speakers={speakers} />
+        </section>
         {/* <section className={`${styles.Section} Section`}>
           <SpeakerSection speakers={speakers} />
         </section>

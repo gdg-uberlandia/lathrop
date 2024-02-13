@@ -8,22 +8,15 @@ interface SpeakersSectionProps {
   speakers: Array<Speaker>,
 }
 
-const SpeakerSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
+const SpeakerSection = ({ speakers }: SpeakersSectionProps) => {
   return (
     <div className={styles.Container}>
-      <header className={styles.Header}>
-        <img className={styles.ConectorImage} src="/connector.png" />
-        <h1 className={styles.Title}>Palestrantes</h1>
-      </header>
-      <div className={styles.Body}>
-        {speakers && speakers.map((speaker) => {
-          return <SpeakerCard
-
+        {speakers.map((speaker) => 
+          <SpeakerCard
             key={speaker.slug}
             speaker={speaker}
           />
-        })}
-      </div>
+        )}
     </div>
   );
 };
