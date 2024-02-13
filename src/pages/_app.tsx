@@ -1,4 +1,5 @@
 import '../styles/globals.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 import type { AppContext, AppInitialProps, AppProps } from 'next/app'
 
 import React, { ReactNode } from "react";

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import BaseLayout from "../layouts/base-layout";
 import { Speaker } from "models/speaker";
 import { Schedule } from "models/schedule";
@@ -6,12 +6,15 @@ import { SponsorLevel } from "models/sponsor-level";
 
 import styles from "styles/Home.module.css";
 import HomeHeader from "../components/headers/iwd/home-header";
-import SpeakerSection from "components/iwd-2023/speakers-section";
-import OlderEvenstsSection from "components/iwd-2023/older-events-section/older-events-section";
+import SpeakerSection from "components/iwd-2024/speakers-section/speakers-section";
+import SponsorsSection from "components/sponsors-section/sponsors-section";
+import CountdownTimer from "components/iwd-2024/countdown/countdown-timer";
+import OlderEvenstsSection from "components/iwd-2024/older-events-section/older-events-section";
 
 
 import ErrorBoundary from '../components/error-boundary';
 import { HeroSection } from "components/hero-section/iwd-2024";
+import { Testimonials } from "components/iwd-2023/Testimonials";
 
 // https://alvarotrigo.com/blog/css-animations-scroll/
 
@@ -22,6 +25,7 @@ interface HomePageProps {
 }
 
 const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
+
   const reveal = () => {
     var reveals = document.querySelectorAll(".Section");
     for (var i = 0; i < reveals.length; i++) {
@@ -50,9 +54,12 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
         </section>
   */}
       <ErrorBoundary>
+
         <HomeHeader />
 
         <HeroSection />
+
+        <CountdownTimer />
 
         {/*<CountdownTimer />*/}
 
@@ -63,6 +70,8 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
         <section className={`${styles.Section} Section`}>
           <SpeakerSection speakers={speakers} />
         </section>
+        
+        <Testimonials />
         {/* <section className={`${styles.Section} Section`}>
           <SpeakerSection speakers={speakers} />
         </section>

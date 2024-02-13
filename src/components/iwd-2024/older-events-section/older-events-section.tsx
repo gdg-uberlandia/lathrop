@@ -1,4 +1,5 @@
-import React from "react";
+/*eslint-disable*/
+import React, { useState } from "react";
 import {
     Col,
     Container,
@@ -18,17 +19,17 @@ const OlderEvenstsSection: React.FC = ({ }) => {
 
                         <p className={styles.Description}>
 
-                            O que é o IWD?
-
-                            Desde 2013, embaixadoras Women Techmakers ao redor de todo o mundo realizam o IWD (International Women’s Day), já são mais de 1.000 eventos em mais de 75 países celebrando as incríveis realizações das mulheres na tecnologia e atuando também como um apelo à equidade de gênero em todo o mundo.
-                            O IWD é um evento que promove a troca de conhecimento, networking, mentorias e principalmente o protagonismo	da mulher em tecnologia.
+                            O IWD (International Women's Day) é um evento anual organizado pela comunidade Women Techmakers globalmente para celebrar as conquistas das mulheres em tecnologia e conscientizar as pessoas sobre questões que afetam a igualdade de gênero na área de STEM. Em 2024 o tema do IWD será: <b>"Impact the Future"!</b>
                             <br />
-                            Todos os anos o IWD é celebrado em torno de um tema, e em 2023 nosso tema é #DareToBe.
-                            O que significa Dare To Be? Ouse ser!
                             <br />
-                            A beleza de “Dare To Be” é que a frase faz parte de algo maior: você pode ousar ser ousada, ser inovadora, ser resiliente, entre tantas outras coisas.
-                            Reconhecemos que cada uma de nós tem algo único para oferecer, e quando nós, como comunidade, somos capazes de aproveitar a diversidade de todas então podemos contribuir com a construção de um mundo onde todas as mulheres possam prosperar na tecnologia.
-                        </p>
+                            Todos temos o poder de impactar o futuro, e como será esse futuro? Como vamos construí-lo?
+                            <br />
+                            <br/>
+                             Ao  celebrarmos o <b>IWD 2024</b>, encorajamos você a refletir sobre as seguintes questões: No que vocês estão trabalhando que fará a diferença no mundo? Como você está usando suas habilidades e talentos para criar um futuro melhor? Você está sonhando grande e sendo ousada para “Impactar o Futuro”?
+                            <br />
+                                            <br />
+                            Venha participar conosco dessa celebração com <b>100% de palestrantes mulheres</b> que irão abordar diversos temáticas e ajudar a refletir ainda mais sobre como impactar o futuro!
+                                                    </p>
                     </Col>
                     <Col lg={3} sm={12} style={{ display: 'flex', justifyContent: 'center' }}>
                         {/*<img

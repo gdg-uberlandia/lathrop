@@ -29,10 +29,6 @@
   background-color: var(--blue2);
 }
 
-.bg-soft-green {
-  background-color: var(--soft-green);
-}
-
 .bg-soft-blue {
   background-color: var(--soft-blue);
 }
@@ -44,7 +40,7 @@
 body {
   padding: 0;
   margin: 0;
-  font-family: 'Inter var', sans-serif;
+  font-family: Roboto Mono, monospace;
 }
 
 @supports (font-variation-settings: normal) {

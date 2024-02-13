@@ -19,12 +19,12 @@ export interface ConfigValues {
 
 const configValues = {
   name: 'IWD Uberlândia 2024',
-  eventDate: '2024-03-15T08:00:00',
-  eventLinkRegistrationUrl: 'https://doity.com.br/devfesttriangulo',
-  place: 'Á definir',
-  placeAddress: 'Á definir',
+  eventDate: '2024-04-06T08:00:00',
+  eventLinkRegistrationUrl: 'https://doity.com.br/iwd-uberlandia-2024',
+  place: 'CDL Uberlândia',
+  placeAddress: 'Av. Belo Horizonte, 1290 - Osvaldo Rezende',
   placeCity: 'Uberlândia - MG',
-  formattedDate: 'A definir',
+  formattedDate: '06 de Abril',
   email: 'gdg.uberlandia@gmail.com',
   organizedBy: 'wtm', // options
   midiaKit: 'https://docs.google.com/presentation/d/1nyyCyA1RJ37lAjCbLB9UH60pgkGZUONLNAtljmkzR68/edit#slide=id.g26157c686c7_0_239',
