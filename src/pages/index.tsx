@@ -6,8 +6,7 @@ import { SponsorLevel } from "models/sponsor-level";
 
 import styles from "styles/Home.module.css";
 import HomeHeader from "../components/headers/iwd/home-header";
-import SpeakerSection from "components/iwd-2024/speakers-section/speakers-section";
-import SponsorsSection from "components/sponsors-section/sponsors-section";
+import SpeakerSection from "components/iwd-2024/speakers-section";
 import CountdownTimer from "components/iwd-2024/countdown/countdown-timer";
 import OlderEvenstsSection from "components/iwd-2024/older-events-section/older-events-section";
 
@@ -67,9 +66,7 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           <OlderEvenstsSection />
         </section>
 
-        <section className={`${styles.Section} Section`}>
-          <SpeakerSection speakers={speakers} />
-        </section>
+        <SpeakerSection speakers={speakers} />
         
         <Testimonials />
         {/* <section className={`${styles.Section} Section`}>
