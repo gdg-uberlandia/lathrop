@@ -10,7 +10,8 @@
 }
 
 .Content {
-  padding: 0 0.5rem;
+  padding: 0 2rem;
+  position: relative;
 }
 
 .Title {
@@ -30,25 +31,13 @@
 }
 
 .SpeakersCarousel {
-  position: relative;
-}
-
-.CarouselInner {
-  align-items: center;
-  display: flex;
-  gap: 30px;
+  height: 20rem;
   margin: 0 auto;
   max-width: 1150px;
-  overflow: hidden;
-}
 
-.CarouselItem {
-  flex-shrink: 0;
-  width: 28%;
-}
-
-.CarouselItemActive {
-  width: 37%;
+  & .swiper .swiper-button-prev {
+    display: none;
+  } 
 }
 
 .SpeakersCarouselControl {
@@ -79,14 +68,19 @@
   box-shadow: 0 5px 0 0 #191A23;
   font-family: "Space Grotesk", sans-serif;
   padding: 2em;
+  margin: 0 auto;
+  position: relative;
 }
 
 .SpeakerCard.Active {
   font-size: 16px;
+  height: 17.8rem;
+  width: 24rem;
 }
 
 .SpeakerCard.Inactive {
   font-size: 0.8rem;
+  width: 20rem;
 }
 
 .SpeakerCardTitle {

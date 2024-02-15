@@ -1,34 +1,24 @@
 import { Speaker } from "models/speaker";
-import React, { useState } from "react";
+import { Swiper as SwiperType } from 'swiper';
+
+import React, { useRef } from "react";
 import styles from "./SpeakerSection.module.css";
 import SpeakerCard from "./speaker-card";
-import { Carousel, CarouselControl, CarouselItem, Col, Container, Row } from "reactstrap";
-import Image from "next/image";
+import { Col, Container, Row } from "reactstrap";
+import { Carousel } from "components/carousel";
+import { Navigation } from 'swiper/modules';
 import clsx from "clsx";
-
+import Image from "next/image";
 interface SpeakersSectionProps {
   speakers: Array<Speaker>,
 }
 
 const SpeakerSection = ({ speakers }: SpeakersSectionProps) => {
-  const [activeIndex, setActiveIndex] = useState(1);
-  const [animating, setAnimating] = useState(false);
+  const swiperRef = useRef<SwiperType>();
 
-  const next = () => {
-    if (animating) return;
-    const nextIndex = activeIndex === speakers.length - 1 ? 0 : activeIndex + 1;
-    setActiveIndex(nextIndex);
-  };
-
-  const previous = () => {
-    if (animating) return;
-    const nextIndex = activeIndex === 0 ? speakers.length - 1 : activeIndex - 1;
-    setActiveIndex(nextIndex);
-  };
-  
   return (
     <Container className={styles.Container}>
-        <Row noGutters tag="header" className={styles.Header}>
+        <Row tag="header" className={styles.Header}>
           <Col sm={12} xxl={3} tag="h2">
             <span className={styles.Title}>
               Palestrantes
@@ -39,60 +29,66 @@ const SpeakerSection = ({ speakers }: SpeakersSectionProps) => {
           </Col>
         </Row>
         <Row tag="section" className={styles.Content}>
-          <Carousel
-            interval={false}
-            activeIndex={activeIndex}
-            next={next}
-            previous={previous}
-            className={styles.SpeakersCarousel}
-            cssModule={{
-              'carousel-inner': styles.CarouselInner,
+          <Carousel.Container
+            loop
+            breakpoints={{
+              640: {
+                slidesPerView: 1,
+              },
+              768: {
+                slidesPerView: 2,
+                spaceBetween: 15,
+              },
+              1024: {
+                slidesPerView: 2,
+                spaceBetween: 20,
+              },
+              1440: {
+                slidesPerView: 3,
+                spaceBetween: 30,
+              },
             }}
+            modules={[Navigation]}
+            onBeforeInit={(swiper) => {
+              swiperRef.current = swiper;
+            }}
+            className={styles.SpeakersCarousel}
           >
             {speakers.map((speaker, i) => 
-              <CarouselItem 
+              <Carousel.Item 
                 key={speaker.id} 
-                onExiting={() => setAnimating(true)}
-                onExited={() => setAnimating(false)}
-                cssModule={{
-                  'carousel-item': styles.CarouselItem,
-                  'active': styles.CarouselItemActive,
-                }}
               >
+               {({ isActive, isNext }) => 
                 <SpeakerCard
                   key={speaker.slug}
                   speaker={speaker}
                   color={
-                    i % 3 === 0 ? 'primary' : 
-                    i % 2 === 0 ? 'secondary' : 
-                    'tertiary'
+                    isActive ? "primary" :
+                    isNext ? "tertiary" :
+                    "secondary"
                   }
-                  active={i % 2 !== 0}
+                  active={isNext}
                 />
-              </CarouselItem>
+              }
+              </Carousel.Item>
             )}
-            <button 
-              aria-label="Ver palestrantes anteriores"
-              onClick={previous}
-              className={clsx(
-                styles.SpeakersCarouselControl,
-                styles.SpeakersCarouselControlBack
-              )}
-            >
-              <Image alt="Ver palestrantes anteriores" src='/icons/arrow-back.svg' width={20} height={20} />
-            </button>
-            
-            <button 
-              aria-label="Ver próximos palestrantes"
-              onClick={next}
-              className={clsx(
-                styles.SpeakersCarouselControl,
-                styles.SpeakersCarouselControlForward
-              )}
-            >
-              <Image alt="Ver próximos palestrantes" src='/icons/arrow-forward.svg' width={20} height={20} />
-            </button>
-          </Carousel>
+          </Carousel.Container>
+
+          <button 
+            aria-label="Ver palestrantes anteriores"
+            className={clsx(styles.SpeakersCarouselControl)}
+            onClick={() => swiperRef.current?.slidePrev()}
+          >
+            <Image alt="Ver palestrantes anteriores" src='/icons/arrow-back.svg' width={20} height={20} />
+          </button>
+
+          <button 
+            aria-label="Ver próximos palestrantes"
+            className={clsx(styles.SpeakersCarouselControl, styles.SpeakersCarouselControlForward)}
+            onClick={() => swiperRef.current?.slideNext()}
+          >
+            <Image alt="Ver próximos palestrantes" src='/icons/arrow-forward.svg' width={20} height={20} />
+          </button>
         </Row>
     </Container>
   );

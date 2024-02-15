@@ -22,7 +22,13 @@ const SpeakerCard = ({ speaker, active, color }: SpeakerCardProps) => {
       <p className={clsx(styles.SpeakerCardTitle, styles[color])}>
         {speaker.content}
       </p>
-      <Image alt="Internation Women`s Day 2024" src='/iwd-2024/circle-iwd-svg.svg' width={active ? 154 : 129} height={active ? 154 : 129} className={styles.SpeakerCardImage} />
+      <Image 
+        alt="Internation Women`s Day 2024" 
+        src='/iwd-2024/circle-iwd-svg.svg' 
+        className={styles.SpeakerCardImage} 
+        height={active ? 154 : 129}
+        width={active ? 154 : 129} 
+      />
       <a className={styles.SpeakerCardFooter}>
         <span className={styles.ArrowIcon}>
           <Image alt="Uma seta apontando pra diagonal direita na cor branca" src='/icons/arrow-icon.svg' width={16} height={16} />
