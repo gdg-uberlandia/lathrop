@@ -5,6 +5,8 @@ import type { AppContext, AppInitialProps, AppProps } from 'next/app'
 import React, { ReactNode } from "react";
 import { NextComponentType, NextPageContext } from 'next';
 
+import 'swiper/css';
+import 'swiper/css/navigation';
 
 import { AppLayoutProps } from '../../types';
 
