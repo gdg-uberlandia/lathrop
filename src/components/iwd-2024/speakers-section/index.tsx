@@ -17,7 +17,8 @@ const SpeakerSection = ({ speakers }: SpeakersSectionProps) => {
   const swiperRef = useRef<SwiperType>();
 
   return (
-    <Container className={styles.Container}>
+    <section className={styles.Wrapper}>
+      <Container className={styles.Container}>
         <Row tag="header" className={styles.Header}>
           <Col sm={12} xxl={3} tag="h2">
             <span className={styles.Title}>
@@ -90,7 +91,12 @@ const SpeakerSection = ({ speakers }: SpeakersSectionProps) => {
             <Image alt="Ver próximos palestrantes" src='/icons/arrow-forward.svg' width={20} height={20} />
           </button>
         </Row>
-    </Container>
+
+        <section
+          className={styles.IllustrationSection}
+        />
+      </Container>
+    </section>
   );
 };
 export default SpeakerSection;
