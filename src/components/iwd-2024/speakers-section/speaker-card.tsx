@@ -10,7 +10,19 @@ interface SpeakerCardProps {
   active?: boolean;
 }
 
+const SPEAKER_CONTENT_CHAR_CHUNK = 22;
+
 const SpeakerCard = ({ speaker, active, color }: SpeakerCardProps) => {
+  const speakerContentChunks = speaker.content?.split('').reduce((acc, current) => {
+    const shouldAddNextChunk = current === ' ' && acc[acc.length - 1].length >= SPEAKER_CONTENT_CHAR_CHUNK;
+    if (shouldAddNextChunk) {
+      acc.push(current);
+      return acc;
+    } 
+    acc[acc.length - 1] += current;
+    return acc;
+  }, ['']);
+
   return (
     <article className={
       clsx(
@@ -19,15 +31,19 @@ const SpeakerCard = ({ speaker, active, color }: SpeakerCardProps) => {
         active ? styles.Active : styles.Inactive,
       )
     }>  
-      <p className={clsx(styles.SpeakerCardTitle, styles[color])}>
-        {speaker.content}
+      <p>
+        {speakerContentChunks?.map((chunk) => 
+          <span key={chunk} className={clsx(styles.SpeakerCardTitle, styles[color])}>
+            {chunk}
+          </span>
+        )}
       </p>
       <Image 
         alt="Internation Women`s Day 2024" 
         src='/iwd-2024/circle-iwd-svg.svg' 
         className={styles.SpeakerCardImage} 
-        height={active ? 154 : 129}
-        width={active ? 154 : 129} 
+        height={active ? 140 : 129}
+        width={active ? 140 : 129} 
       />
       <a className={styles.SpeakerCardFooter}>
         <span className={styles.ArrowIcon}>
