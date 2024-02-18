@@ -82,10 +82,10 @@ const SpeakerSection = ({ speakers }: SpeakersSectionProps) => {
 
           <button 
             aria-label="Ver palestrantes anteriores"
-            className={clsx(styles.SpeakersCarouselControl)}
+            className={clsx(styles.SpeakersCarouselControl, styles.SpeakersCarouselControlPrevious)}
             onClick={() => swiperRef.current?.slidePrev()}
           >
-            <Image alt="Ver palestrantes anteriores" src='/icons/arrow-back.svg' width={20} height={20} />
+            <Image alt="Ver palestrantes anteriores" src='/icons/arrow-back.svg' width={12} height={20} />
           </button>
 
           <button 
@@ -93,7 +93,7 @@ const SpeakerSection = ({ speakers }: SpeakersSectionProps) => {
             className={clsx(styles.SpeakersCarouselControl, styles.SpeakersCarouselControlForward)}
             onClick={() => swiperRef.current?.slideNext()}
           >
-            <Image alt="Ver próximos palestrantes" src='/icons/arrow-forward.svg' width={20} height={20} />
+            <Image alt="Ver próximos palestrantes" src='/icons/arrow-forward.svg' width={12} height={20} />
           </button>
         </Row>
 
