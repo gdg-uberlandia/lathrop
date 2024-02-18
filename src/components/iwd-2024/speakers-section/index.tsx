@@ -40,15 +40,13 @@ const SpeakerSection = ({ speakers }: SpeakersSectionProps) => {
                 slidesPerView: 1,
               },
               768: {
-                slidesPerView: 2,
+                slidesPerView: 3,
                 spaceBetween: 15,
               },
               1024: {
-                slidesPerView: 2,
                 spaceBetween: 20,
               },
-              1440: {
-                slidesPerView: 3,
+              1240: {
                 spaceBetween: 30,
               },
             }}

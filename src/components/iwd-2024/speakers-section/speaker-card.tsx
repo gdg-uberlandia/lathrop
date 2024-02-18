@@ -1,6 +1,6 @@
 import { Speaker } from "models/speaker";
 import React from "react";
-import styles from "./SpeakerSection.module.css";
+import styles from "./SpeakerCard.module.css";
 import clsx from "clsx";
 import Image from "next/image";
 

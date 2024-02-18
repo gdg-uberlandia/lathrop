@@ -1,0 +1,91 @@
+.SpeakerCard {
+  border-radius: 29px;
+  border: 1px solid #191A23;
+  box-shadow: 0 5px 0 0 #191A23;
+  font-family: "Space Grotesk", sans-serif;
+  padding: 2em;
+  margin: 0 auto 5px auto;
+  position: relative;
+}
+
+.SpeakerCard.Active {
+  font-size: 0.8rem;
+  width: 24rem;
+}
+
+.SpeakerCard.Inactive {
+  font-size: 0.8rem;
+  width: 20rem;
+}
+
+.SpeakerCardTitle {
+  border-radius: 5px;
+  font-size: 1.25em;
+  font-weight: medium;
+  width: fit-content;
+  padding: 0 0.25rem;
+  display: block;
+
+  &.primary {
+    background-color: var(--soft-blue3);
+  }
+
+  &.secondary {
+    background-color: var(--soft-green);
+  }
+
+  &.tertiary {
+    background-color: var(--gray);
+  }
+}
+
+.SpeakerCardFilled {
+  &.Active {
+    background-color: var(--soft-blue3);
+  }
+
+  &.Inactive {
+    background-color: var(--gray);
+  }
+}
+
+.SpeakerCardImage {
+  display: flex;
+  margin-left: auto;
+  margin-top: -3em;
+}
+
+.SpeakerCardFooter {
+  align-items: center;
+  color: #191A23;
+  display: flex;
+  font-size: 0.75em;
+  gap: 0.75em;
+  text-decoration: none;
+
+  .SpeakerCardFooterText {
+    margin-bottom: 0;
+  }
+}
+
+.SpeakerCardFooter:hover {
+  cursor: pointer;
+}
+
+.ArrowIcon {
+  align-items: center;
+  background-color: #191A23;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  height: 1.625rem;
+  width: 1.625rem;
+}
+
+
+@media (min-width: 1200px) {
+  .SpeakerCard.Active {
+    font-size: 16px;
+    height: 17.8rem;
+  }
+}
