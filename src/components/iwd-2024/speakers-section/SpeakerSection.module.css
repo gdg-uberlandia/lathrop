@@ -45,6 +45,11 @@
   } 
 }
 
+.CustomSwiperSlide {
+  display: flex;
+  align-items: center;
+}
+
 .SpeakersCarouselControl {
   align-items: center;
   background: linear-gradient(265.06deg, #4BB9DA 2.13%, #21C4BF 67.86%, #0FC8B4 96.02%);

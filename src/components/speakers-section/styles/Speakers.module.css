@@ -55,12 +55,11 @@
 }
 
 .card_image {
-  width: 159px;
-  height: 159px;
+  width: 120px;
+  height: 120px;
   border: 2px solid #fff;
   border-radius: 50%;
   background: #dedede;
-  margin-bottom: 25px;
   box-shadow: 0px 0px 0.91584px 0px #8AB4F8, 0px 0px 1.83168px 0px #8AB4F8, 0px 0px 6.41088px 0px #8AB4F8, 0px 0px 12.82177px 0px #8AB4F8, 0px 0px 21.98017px 0px #8AB4F8, 0px 0px 38.46531px 0px #8AB4F8;
 }
 
@@ -150,23 +149,16 @@
   margin: 0;
 }
 
-.modal_header .card_image img {
-  min-width: 110% !important;
-  min-height: 110% !important;
-  background: #dedede;
+.modal_header > h5 {
+  flex: 1;
 }
 
 .modal_speaker_info_container {
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 15px;
-}
-
-.modal_speaker_info_content {
-  width: 80%;
-  margin-left: 1rem;
+  justify-content: flex-start;
+  gap: 2rem;
 }
 
 .modal_speaker_info_content h1 {

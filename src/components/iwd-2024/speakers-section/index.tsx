@@ -1,7 +1,7 @@
 import { Speaker } from "models/speaker";
 import { Swiper as SwiperType } from 'swiper';
 
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import styles from "./SpeakerSection.module.css";
 import SpeakerCard from "./speaker-card";
 import { Col, Container, Row } from "reactstrap";
@@ -9,12 +9,15 @@ import { Carousel } from "components/carousel";
 import { Navigation } from 'swiper/modules';
 import clsx from "clsx";
 import Image from "next/image";
+import SpeakerModal from "components/speakers-section/speaker-modal";
 interface SpeakersSectionProps {
   speakers: Array<Speaker>,
 }
 
 const SpeakerSection = ({ speakers }: SpeakersSectionProps) => {
   const swiperRef = useRef<SwiperType>();
+
+  const [speakerSelected, setSpeakerSelected] = useState<Speaker | undefined>(undefined)
 
   return (
     <section className={styles.Wrapper}>
@@ -58,6 +61,7 @@ const SpeakerSection = ({ speakers }: SpeakersSectionProps) => {
             {speakers.map((speaker, i) => 
               <Carousel.Item 
                 key={speaker.id} 
+                className={styles.CustomSwiperSlide}
               >
                {({ isActive, isNext }) => 
                 <SpeakerCard
@@ -69,6 +73,7 @@ const SpeakerSection = ({ speakers }: SpeakersSectionProps) => {
                     "secondary"
                   }
                   active={isNext}
+                  onSelectSpeaker={() => setSpeakerSelected(speaker)}
                 />
               }
               </Carousel.Item>
@@ -96,6 +101,14 @@ const SpeakerSection = ({ speakers }: SpeakersSectionProps) => {
           className={styles.IllustrationSection}
         />
       </Container>
+
+     {speakerSelected && 
+        <SpeakerModal 
+          speaker={speakerSelected}
+          modalOpen
+          modalToggle={() => setSpeakerSelected(undefined)}
+        />
+      }
     </section>
   );
 };

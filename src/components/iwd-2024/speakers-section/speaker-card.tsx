@@ -7,12 +7,13 @@ import Image from "next/image";
 interface SpeakerCardProps {
   speaker: Speaker;
   color: 'primary' | 'secondary' | 'tertiary';
+  onSelectSpeaker: () => void;
   active?: boolean;
 }
 
 const SPEAKER_CONTENT_CHAR_CHUNK = 22;
 
-const SpeakerCard = ({ speaker, active, color }: SpeakerCardProps) => {
+const SpeakerCard = ({ speaker, active, color, onSelectSpeaker }: SpeakerCardProps) => {
   const speakerContentChunks = speaker.content?.split('').reduce((acc, current) => {
     const shouldAddNextChunk = current === ' ' && acc[acc.length - 1].length >= SPEAKER_CONTENT_CHAR_CHUNK;
     if (shouldAddNextChunk) {
@@ -49,7 +50,7 @@ const SpeakerCard = ({ speaker, active, color }: SpeakerCardProps) => {
         <span className={styles.ArrowIcon}>
           <Image alt="Uma seta apontando pra diagonal direita na cor branca" src='/icons/arrow-icon.svg' width={16} height={16} />
         </span>
-        <p className={styles.SpeakerCardFooterText}>
+        <p className={styles.SpeakerCardFooterText} onClick={onSelectSpeaker}>
           Ler mais sobre: <strong>{speaker.name}</strong>
         </p>
       </a>
