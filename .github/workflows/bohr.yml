@@ -1,5 +1,5 @@
 name: bohr.io deploy
-on: 
+on:
   push:
   repository_dispatch:
     types: [bohr-dispatch]

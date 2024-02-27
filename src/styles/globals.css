@@ -130,6 +130,7 @@ html {
   content: "";
   display: flex;
   height: 0.15rem;
+  margin-top: 0.25rem;
   width: 75%;
 }
 
@@ -137,4 +138,9 @@ html {
   html {
     font-size: 16px;
   }
+}
+
+img,
+svg {
+  user-select: none;
 }

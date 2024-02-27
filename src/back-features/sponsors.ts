@@ -11,6 +11,7 @@ const getSponsors = async () => {
         return sponsors;
     } catch (error) {
         console.error(error);
+        return [];
     }
 }
 

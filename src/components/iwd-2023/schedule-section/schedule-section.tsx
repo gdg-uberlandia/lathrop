@@ -71,7 +71,7 @@ const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, schedule })
                                                     <Row >
                                                         {
                                                             schedule.speeches?.map((speech, index) => {
-                                                                const speaker = speakers.find(speakerObj => speakerObj.slug === speech.speakerSlug);
+                                                                const speaker = speakers.find(speakerObj => speakerObj.key == 'speakerId');
                                                                 //console.log("speaker: " + JSON.stringify(speaker))
                                                                 if (speech?.topic) {
                                                                     return <><Row>

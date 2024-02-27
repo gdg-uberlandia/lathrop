@@ -7,13 +7,15 @@ import { SponsorLevel } from "models/sponsor-level";
 import styles from "styles/Home.module.css";
 import HomeHeader from "../components/headers/iwd/home-header";
 import SpeakerSection from "components/iwd-2024/speakers-section";
+import SponsorsSection from "components/iwd-2024/sponsors-section/sponsors-section";
 import CountdownTimer from "components/iwd-2024/countdown/countdown-timer";
 import OlderEvenstsSection from "components/iwd-2024/older-events-section/older-events-section";
 
 
 import ErrorBoundary from '../components/error-boundary';
 import { HeroSection } from "components/hero-section/iwd-2024";
-import { Testimonials } from "components/iwd-2023/Testimonials";
+import { Testimonials } from "components/iwd-2024/testimonials";
+import { getSponsors } from "back-features/sponsors";
 
 // https://alvarotrigo.com/blog/css-animations-scroll/
 
@@ -47,11 +49,6 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
 
   return (
     <>
-      {/*
-    <section className={styles.Section}>
-          <ScheduleSection speakers={speakers} schedule={schedule} />
-        </section>
-  */}
       <ErrorBoundary>
 
         <HomeHeader />
@@ -67,17 +64,17 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
         </section>
 
         <SpeakerSection speakers={speakers} />
-        
+
         <Testimonials />
         {/* <section className={`${styles.Section} Section`}>
           <SpeakerSection speakers={speakers} />
         </section>
         
-
+      */}
         <section className={`${styles.Section} Section`}>
           <SponsorsSection sponsors={sponsors} />
         </section>
-        */}
+
 
         {/*<section className={`${styles.Section} Section`}>
           <EventLocationSection />
@@ -93,7 +90,7 @@ export async function getServerSideProps() {
     return {
       props: {
         speakers: [],// await getSpeaker(),
-        sponsors: [], //await getSponsors(),
+        sponsors: await getSponsors(),
         schedule: [],//await getSchedule(),
       },
     };

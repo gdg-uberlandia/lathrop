@@ -5,7 +5,7 @@ import {
     Row,
     Col,
 } from "reactstrap";
-import _supports from '../../hooks/userSupports';
+import _supports from '../../../hooks/userSupports';
 import { SponsorLevel } from "models/sponsor-level";
 import SponsorCard from "./sponsor-card";
 
@@ -26,7 +26,7 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ sponsors }) => {
                 <Container>
                     <Row>
                         <Col lg={4} sm={12}>
-                            <h2 className="gdg-line">
+                            <h2>
                                 Patrocinadores
                             </h2>
                         </Col>
@@ -38,23 +38,23 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ sponsors }) => {
                         <div id="sponsors">
                             {SPONSORS_LIST.map((el, i) => {
                                 const sponsorLevel = sponsors[el]
-                                const isStaff =  el === "staff"
+                                const isStaff = el === "staff"
 
                                 if (sponsors[el] != null)
-                                return (
-                                    <section key={el}>
-                                        <h4>
-                                            {sponsorLevel.name}
-                                        </h4>
-                                        <Row>
-                                            <div className={isStaff ? styles.StaffWrapper : styles.SponsorWrapper}>
-                                                {sponsorLevel.items.map((item) => (
-                                                   <SponsorCard key={item.name} isStaff={isStaff} {...item} />
-                                                ))}
-                                            </div>
-                                        </Row>
-                                    </section>
-                                )
+                                    return (
+                                        <section key={el}>
+                                            <h4>
+                                                {sponsorLevel.name}
+                                            </h4>
+                                            <Row>
+                                                <div className={isStaff ? styles.StaffWrapper : styles.SponsorWrapper}>
+                                                    {sponsorLevel.items.map((item) => (
+                                                        <SponsorCard key={item.name} isStaff={isStaff} {...item} />
+                                                    ))}
+                                                </div>
+                                            </Row>
+                                        </section>
+                                    )
                             })}
 
                             {/*<h4>
