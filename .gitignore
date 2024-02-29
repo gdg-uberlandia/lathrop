@@ -53,3 +53,5 @@ public/.next/**
 
 .env.dev**
 serviceAccount**
+
+.firebase/

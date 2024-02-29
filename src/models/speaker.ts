@@ -10,6 +10,7 @@ export interface Speaker {
   content: string
   company: string
   key: string
+  slug: string
 }
 
 export enum SpeakerTech {
