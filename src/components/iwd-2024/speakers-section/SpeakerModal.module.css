@@ -1,0 +1,165 @@
+.container {
+    padding: 0 0.75rem;
+}
+
+.card_container {
+    border-radius: 5%;
+    max-width: 350px;
+    padding-top: 38px;
+    margin-right: 1rem;
+    cursor: pointer;
+    height: 450px;
+}
+
+.card_content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.card_image {
+    width: 150px;
+    height: 150px;
+}
+
+.card_name {
+    width: 100%;
+    font-size: 24px;
+    margin: 0;
+}
+
+.card_location {
+    width: 100%;
+    font-size: 14px;
+    margin: 0 0 0.8rem 0;
+}
+
+.card_topic {
+    width: 100%;
+    font-size: 16px;
+    color: #B0AEAE;
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.card_profile {
+    width: 100%;
+    font-size: 16px;
+    margin: 0;
+    text-decoration: none;
+}
+
+
+
+.button_container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.button_container a {
+    background: #298ae4;
+    color: #fff;
+    font-size: 1.2rem;
+    padding: 0.6rem 1rem;
+    border-radius: 0.7rem;
+    border: 3px solid #298ae4;
+}
+
+.button_container a:hover {
+    background: transparent;
+    color: #298ae4;
+    border: 3px solid #298ae4;
+}
+
+.modal_header {
+    padding: 32px 1.5rem 0 1.5rem;
+    border: none;
+}
+
+.modal_header button {
+    margin: 0 0 4rem 0 !important;
+}
+
+.modal_header .card_image {
+    margin: 0;
+}
+
+.modal_header>h5 {
+    flex: 1;
+}
+
+.modal_speaker_info_container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2rem;
+}
+
+.modal_speaker_info_content h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+.modal_speaker_info_content p {
+    margin: 0;
+    font-size: 16px;
+}
+
+.modal_speaker_info_content p:first-of-type {
+    color: #B0AEAE;
+}
+
+.modal_body {
+    padding: 1rem 1.5rem 0 1.5rem;
+}
+
+.modal_body h2 {
+    font-size: 1.35rem;
+}
+
+.modal_body p:last-of-type {
+    margin: 0;
+}
+
+.modal_footer {
+    padding: 1rem 1.5rem 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+}
+
+.modal_footer a {
+    padding: 1rem;
+    cursor: pointer;
+}
+
+.modal_footer a svg {
+    color: #000 !important;
+}
+
+@media (max-width: 360px) {
+    .modal_footer a {
+        padding: 0.5rem;
+        cursor: pointer;
+    }
+}
+
+@media (max-width: 414px) {
+
+    .modal_footer a {
+        padding: 0.6rem;
+        cursor: pointer;
+    }
+}
+
+.speakers_link:link {
+    color: var(--blue)
+}

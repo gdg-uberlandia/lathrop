@@ -12,7 +12,7 @@ import {
 import { faArrowPointer } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import styles from "./styles/Speakers.module.css";
+import styles from "./SpeakerModal.module.css";
 import { Speaker } from "models/speaker";
 
 interface ModalProps {
