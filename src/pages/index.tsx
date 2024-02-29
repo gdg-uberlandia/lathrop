@@ -16,6 +16,7 @@ import ErrorBoundary from '../components/error-boundary';
 import { HeroSection } from "components/hero-section/iwd-2024";
 import { Testimonials } from "components/iwd-2024/testimonials";
 import { getSponsors } from "back-features/sponsors";
+import { getSpeakers } from "back-features/speakers";
 
 // https://alvarotrigo.com/blog/css-animations-scroll/
 
@@ -89,7 +90,7 @@ export async function getServerSideProps() {
   try {
     return {
       props: {
-        speakers: [],// await getSpeaker(),
+        speakers: await getSpeakers(),
         sponsors: await getSponsors(),
         schedule: [],//await getSchedule(),
       },

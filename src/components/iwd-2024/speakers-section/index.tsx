@@ -9,15 +9,23 @@ import { Carousel } from "components/carousel";
 import { Navigation } from 'swiper/modules';
 import clsx from "clsx";
 import Image from "next/image";
-import SpeakerModal from "components/speakers-section/speaker-modal";
+import SpeakerModal from "./speaker-modal";
 interface SpeakersSectionProps {
   speakers: Array<Speaker>,
 }
+
+type colorTypes = 'primary' | 'secondary' | 'tertiary';
 
 const SpeakerSection = ({ speakers }: SpeakersSectionProps) => {
   const swiperRef = useRef<SwiperType>();
 
   const [speakerSelected, setSpeakerSelected] = useState<Speaker | undefined>(undefined)
+
+  const resolveColor = (i: number) => {
+    const resolve = i % 3;
+    const value = { 0: 'primary', 1: 'secondary', 2: 'tertiary' }[resolve]
+    return value ?? 'primary';
+  }
 
   return (
     <section className={styles.Wrapper}>
@@ -34,19 +42,21 @@ const SpeakerSection = ({ speakers }: SpeakersSectionProps) => {
         </Row>
         <Row tag="section" className={styles.Content}>
           <Carousel.Container
-            loop
+            loop={speakers?.length > 3}
             breakpoints={{
               640: {
                 slidesPerView: 1,
               },
               768: {
-                slidesPerView: 3,
+                slidesPerView: 1,
                 spaceBetween: 15,
               },
               1024: {
+                slidesPerView: 3,
                 spaceBetween: 20,
               },
               1240: {
+                slidesPerView: 3,
                 spaceBetween: 30,
               },
             }}
@@ -56,29 +66,27 @@ const SpeakerSection = ({ speakers }: SpeakersSectionProps) => {
             }}
             className={styles.SpeakersCarousel}
           >
-            {speakers.map((speaker, i) => 
-              <Carousel.Item 
-                key={speaker.id} 
+            {speakers.map((speaker, i) =>
+              <Carousel.Item
+                key={speaker.id}
                 className={styles.CustomSwiperSlide}
               >
-               {({ isActive, isNext }) => 
-                <SpeakerCard
-                  key={speaker.slug}
-                  speaker={speaker}
-                  color={
-                    isActive ? "primary" :
-                    isNext ? "tertiary" :
-                    "secondary"
-                  }
-                  active={isNext}
-                  onSelectSpeaker={() => setSpeakerSelected(speaker)}
-                />
-              }
+                {({ isActive, isNext }) =>
+                  <SpeakerCard
+                    key={speaker?.slug}
+                    speaker={speaker}
+                    color={
+                      resolveColor(i)
+                    }
+                    active={isNext}
+                    onSelectSpeaker={() => setSpeakerSelected(speaker)}
+                  />
+                }
               </Carousel.Item>
             )}
           </Carousel.Container>
 
-          <button 
+          <button
             aria-label="Ver palestrantes anteriores"
             className={clsx(styles.SpeakersCarouselControl, styles.SpeakersCarouselControlPrevious)}
             onClick={() => swiperRef.current?.slidePrev()}
@@ -86,7 +94,7 @@ const SpeakerSection = ({ speakers }: SpeakersSectionProps) => {
             <Image alt="Ver palestrantes anteriores" src='/icons/arrow-back.svg' width={12} height={20} />
           </button>
 
-          <button 
+          <button
             aria-label="Ver próximos palestrantes"
             className={clsx(styles.SpeakersCarouselControl, styles.SpeakersCarouselControlForward)}
             onClick={() => swiperRef.current?.slideNext()}
@@ -100,8 +108,8 @@ const SpeakerSection = ({ speakers }: SpeakersSectionProps) => {
         />
       </Container>
 
-     {speakerSelected && 
-        <SpeakerModal 
+      {speakerSelected &&
+        <SpeakerModal
           speaker={speakerSelected}
           modalOpen
           modalToggle={() => setSpeakerSelected(undefined)}

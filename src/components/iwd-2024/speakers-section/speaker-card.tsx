@@ -6,20 +6,20 @@ import Image from "next/image";
 
 interface SpeakerCardProps {
   speaker: Speaker;
-  color: 'primary' | 'secondary' | 'tertiary';
+  color: 'primary' | 'secondary' | 'tertiary' | string;
   onSelectSpeaker: () => void;
   active?: boolean;
 }
 
-const SPEAKER_CONTENT_CHAR_CHUNK = 22;
+const SPEAKER_TOPIC_CHAR_CHUNK = 22;
 
 const SpeakerCard = ({ speaker, active, color, onSelectSpeaker }: SpeakerCardProps) => {
-  const speakerContentChunks = speaker.content?.split('').reduce((acc, current) => {
-    const shouldAddNextChunk = current === ' ' && acc[acc.length - 1].length >= SPEAKER_CONTENT_CHAR_CHUNK;
+  const speakerTopicChunks = speaker.topic?.split('').reduce((acc, current) => {
+    const shouldAddNextChunk = current === ' ' && acc[acc.length - 1].length >= SPEAKER_TOPIC_CHAR_CHUNK;
     if (shouldAddNextChunk) {
       acc.push(current);
       return acc;
-    } 
+    }
     acc[acc.length - 1] += current;
     return acc;
   }, ['']);
@@ -31,21 +31,24 @@ const SpeakerCard = ({ speaker, active, color, onSelectSpeaker }: SpeakerCardPro
         styles.SpeakerCardFilled,
         active ? styles.Active : styles.Inactive,
       )
-    }>  
+    }>
       <p>
-        {speakerContentChunks?.map((chunk) => 
+        {speakerTopicChunks?.map((chunk) =>
           <span key={chunk} className={clsx(styles.SpeakerCardTitle, styles[color])}>
             {chunk}
           </span>
         )}
       </p>
-      <Image 
-        alt="Internation Women`s Day 2024" 
-        src='/iwd-2024/circle-iwd-svg.svg' 
-        className={styles.SpeakerCardImage} 
-        height={active ? 140 : 129}
-        width={active ? 140 : 129} 
-      />
+      <div style={{ position: 'relative', maxWidth: '300px' }}>
+
+        <Image
+          alt="Internation Women`s Day 2024"
+          src={speaker.photo}
+          className={styles.SpeakerCardImage}
+          height={active ? 140 : 129}
+          width={active ? 140 : 129}
+        />
+      </div>
       <a className={styles.SpeakerCardFooter}>
         <span className={styles.ArrowIcon}>
           <Image alt="Uma seta apontando pra diagonal direita na cor branca" src='/icons/arrow-icon.svg' width={16} height={16} />
