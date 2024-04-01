@@ -17,14 +17,25 @@ interface SpeakersSectionProps {
 }
 
 function generateKey(speech: Speeches) {
-  return `speech-${speech.path}-${
-    speech.speakerSlugs ? speech.speakerSlugs.map((slug) => slug).join('-') : speech.topic
-  }`
+  return `speech-${speech.path}-${speech.start}-${speech.end}`;
+}
+
+const getSpeakers = (speech: Speeches, speakersMap: any) => {
+
+  if (speech.speakerKey) {
+    return [speech.speakerKey];
+  }
+
+  if ('speakerKeys' in speech) {
+    return speech.speakerKeys.map((speakerKey) => speakersMap.get(speakerKey));
+  }
+
+  return [];
 }
 
 export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, schedule }) => {
   const speakersMap = new Map(speakers.map((speaker) => ([speaker.key, speaker])));
-  
+
   return (
     <>
       {speakers.length &&
@@ -43,14 +54,11 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, sche
                   {commonSpeeches.length && (
                     <section className={styles.schedule_grid}>
                       {commonSpeeches.map((speeches) => (
-                        <ScheduleCard 
-                          key={generateKey(speeches)} 
+                        <ScheduleCard
+                          key={generateKey(speeches)}
                           speech={speeches}
-                          speakers={
-                            speeches.speakerSlugs 
-                              ? speeches.speakerSlugs.map((slug) => speakersMap.get(slug)!)
-                              : []
-                            }
+                          speakers={getSpeakers(speeches, speakersMap)}
+
                         />
                       ))}
                     </section>
@@ -58,14 +66,10 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, sche
                   {speedSpeeches.length > 0 && (
                     <section className={styles.schedule_grid}>
                       {speedSpeeches.map((speeches, i) => (
-                        <ScheduleCard 
-                          key={generateKey(speeches)} 
+                        <ScheduleCard
+                          key={generateKey(speeches)}
                           speech={speeches}
-                          speakers={
-                            speeches.speakerSlugs 
-                              ? speeches.speakerSlugs.map((slug) => speakersMap.get(slug)!)
-                              : []
-                            }
+                          speakers={getSpeakers(speeches, speakersMap)}
                         />
                       ))}
                     </section>

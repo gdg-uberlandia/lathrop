@@ -4,7 +4,7 @@ export interface Schedule {
     speeches: Speeches[]
 }
 
-export type Speeches = (ScheduleSpeech | ScheduleSpeedSpeech);
+export type Speeches = ScheduleSpeech | ScheduleSpeedSpeech | ScheduleMultipleSpeech;
 
 export interface ScheduleSpeech {
     topic: string;
@@ -14,11 +14,14 @@ export interface ScheduleSpeech {
     end: string;
 }
 
+export interface ScheduleMultipleSpeech extends ScheduleSpeech {
+    speakerKeys: Array<string>;
+    speakerKey: never;
+}
+
 export interface ScheduleSpeedSpeech extends ScheduleSpeech {
     duration: number;
 }
-
-// TODO: rename enum to correct path names
 export enum SpeechesPath {
     MINAS = "MINAS", // principal
     CURADO = "CURADO",
