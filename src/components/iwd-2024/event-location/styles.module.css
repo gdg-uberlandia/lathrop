@@ -1,0 +1,66 @@
+.EventLocation h2 {
+  background-color: var(--soft-green-light);
+  border-radius: 0.5rem;
+  color: var(--white);
+  margin: 0;
+  height: fit-content;
+  width: fit-content;
+  padding: 0 0.75rem;
+}
+
+.LocationContainer {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 1.25rem;
+  gap: 2rem;
+  text-align: center;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.LocationDescription {
+  max-width: 29rem;
+  margin: 2rem auto 0 auto;
+  position: relative;
+}
+
+.LocationImg {
+  border-radius: 2px;
+  object-fit: contain;
+  padding: 0 5rem;
+}
+
+.LocationAddress {
+  color: var(--primary-text);
+}
+
+.LocationDescription::after {
+  background: var(--primary-text);
+  content: "";
+  display: flex;
+  height: 1px;
+  opacity: 0.20;
+  width: 100%;
+  margin-top: -0.2rem;
+}
+
+.Map {
+  flex: 1;
+}
+
+@media (min-width: 980px) {
+  .LocationContainer {
+    gap: 3rem;
+    text-align: left;
+  }
+}
+
+@media (min-width: 640px) {
+  .LocationDescription {
+    margin: 2rem auto;
+  }
+
+  .LocationImg {
+    padding: 0;
+  }
+}

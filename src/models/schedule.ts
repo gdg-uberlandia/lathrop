@@ -8,7 +8,7 @@ export type Speeches = (ScheduleSpeech | ScheduleSpeedSpeech);
 
 export interface ScheduleSpeech {
     topic: string;
-    speakerSlugs: Array<string>;
+    speakerKey: string;
     path: SpeechesPath;
     start: string;
     end: string;
