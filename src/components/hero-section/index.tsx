@@ -10,7 +10,7 @@ import styles from './styles.module.css'
 export const HeroSection = () => {
   return (
     <section className={styles.Section}>
-      <video muted loop={true} autoPlay={true} playsInline={true} onContextMenu={() => false} preload="metadata" className={styles.Video} src="/videos/last-year-video.mp4"></video>
+      <video muted loop={true} autoPlay={true} playsInline={true} onContextMenu={() => false} preload="metadata" className={styles.Video} src="/public/videos/last-year-video.mp4"></video>
       <div className={styles.Overlay}></div>
       <div className={styles.Content}>
         <Image alt='Devfest Triângulo 2024' src={Title} loading="eager" layout="responsive" height={83} width={216} />
