@@ -3,11 +3,6 @@
   background-color: #EEEEEE;
   color: #000;
   width: 100%;
-  background: repeating-linear-gradient(45deg,
-      tomato 0px,
-      tomato 2px,
-      transparent 2px,
-      transparent 9px);
 }
 
 .Content {

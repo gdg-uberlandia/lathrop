@@ -13,7 +13,7 @@ export const HeroSection = () => {
       <video muted loop={true} autoPlay={true} playsInline={true} onContextMenu={() => false} preload="metadata" className={styles.Video} src="/videos/last-year-video.mp4"></video>
       <div className={styles.Overlay}></div>
       <div className={styles.Content}>
-        <Image alt='Devfest Triângulo 2023' src={Title} loading="eager" layout="responsive" height={83} width={216} />
+        <Image alt='Devfest Triângulo 2024' src={Title} loading="eager" layout="responsive" height={83} width={216} />
         <aside className={styles.Aside}>
           <p className={styles.AsideText}>Inscreva-se</p>
           <a href={configValues.eventLinkRegistrationUrl} target="_blank" className={styles.AsideButton}>
