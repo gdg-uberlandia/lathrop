@@ -16,6 +16,7 @@ import ErrorBoundary from '../components/error-boundary';
 import { HeroSection } from "components/hero-section";
 import { ScheduleSection } from "components/devfest-triangulo-2023/schedule-section/schedule-section";
 import { EventLocationSection } from "components/devfest-triangulo-2023/event-location";
+import SponsorEventSection from "components/devfest-triangulo-2023/sponsor-event-section";
 
 // https://alvarotrigo.com/blog/css-animations-scroll/
 
@@ -38,6 +39,11 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
 
         <section className={`${styles.Section} Section`}>
           <OlderEvenstsSection />
+        </section>
+
+
+        <section className={`${styles.Section} Section`}>
+          <SponsorEventSection />
         </section>
 
         {/*<section className={`${styles.Section} Section`}>
