@@ -2,16 +2,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700&display=swap');
 
 :root {
-  --blue: #3270EB;
-  --blue2: #4285F4;
-  --red: #CB4538;
-  --orange: #E59F38;
+  --blue: #4285F4;
+  --red: #EA4335;
+  --green: #34A852;
+  --orange: #F8AB00;
+  --yellow: #FFD327;
+  --soft-yellow: #FFE7A4;
   --white: #fcfcfc;
   --black: #1A1D1C;
-  --green: #09ccb1;
-  --soft-blue: #46b3dc;
-  --soft-green: #01F4C6;
-  --pink: #E41AE1;
+  --green: #CCF6CF;
+  --soft-blue: #C3EBF6;
+  --soft-green: #CCF6CF;
+  --pink: #FF7CAE;
+  --soft-pink: #F8D7D7;
   --primary-text: #393D40;
   --secondary-text: #848484;
 
@@ -21,8 +24,8 @@
   --xl: 1440px;
 }
 
-.bg-blue2 {
-  background-color: var(--blue2);
+.bg-blue {
+  background-color: var(--blue);
 }
 
 .bg-soft-green {

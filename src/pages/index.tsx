@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import BaseLayout from "../layouts/base-layout";
 import { Speaker } from "models/speaker";
 import { Schedule } from "models/schedule";
@@ -26,25 +26,6 @@ interface HomePageProps {
 }
 
 const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
-  const reveal = () => {
-    var reveals = document.querySelectorAll(".Section");
-    for (var i = 0; i < reveals.length; i++) {
-      var windowHeight = window.innerHeight;
-      var elementTop = reveals[i].getBoundingClientRect().top;
-      var elementVisible = 150;
-      if (elementTop < windowHeight - elementVisible) {
-        reveals[i].classList.add("active");
-      } else {
-        reveals[i].classList.remove("active");
-      }
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", reveal);
-
-    return () => window.removeEventListener('scroll', reveal)
-  }, []);
 
   return (
     <>
@@ -59,17 +40,21 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           <OlderEvenstsSection />
         </section>
 
-        <section className={`${styles.Section} Section`}>
+        {/*<section className={`${styles.Section} Section`}>
           <SpeakerSection speakers={speakers} />
-        </section>
+        </section>*
 
         <section>
           <ScheduleSection schedule={schedule} speakers={speakers} />
         </section>
 
+        
+
         <section className={`${styles.Section} Section`}>
           <SponsorsSection sponsors={sponsors} />
         </section>
+
+        */}
 
         <section className={`${styles.Section} Section`}>
           <EventLocationSection />
@@ -83,9 +68,9 @@ export async function getServerSideProps() {
   try {
     return {
       props: {
-        speakers: await getSpeaker(),
+        speakers: [],//await getSpeaker(),
         sponsors: await getSponsors(),
-        schedule: await getSchedule(),
+        schedule: [], //await getSchedule(),
       },
     };
   } catch (error) {

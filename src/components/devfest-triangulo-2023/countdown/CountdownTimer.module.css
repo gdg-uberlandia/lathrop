@@ -1,6 +1,5 @@
 .Counter {
     align-items: center;
-    background-color: black;
     display: flex;
     font-family: 'Open Sans', sans-serif;
     justify-content: center;
@@ -34,59 +33,30 @@
     transition-timing-function: ease-in-out;
     width: 221px;
     animation: grow 1.6s ease-in-out infinite;
+    color: var(--black);
+    border-color: var(--black);
 }
 
 .CounterListItem:nth-child(1) {
-
-    border: 1px solid var(--blue);
-    background-color: transparent;
-    color: var(--blue);
-    box-shadow: 0 0 10px var(--blue);
+    background-color: var(--soft-blue);
     animation-delay: -1.4s;
 }
 
 .CounterListItem:nth-child(2) {
-    background: transparent;
-    box-shadow: 0 0 10px var(--red);
-    border-color: var(--red);
-    color: var(--red);
+    background: var(--red);
     animation-delay: -1.2s;
 }
 
 .CounterListItem:nth-child(3) {
-    background: transparent;
-    box-shadow: 0 0 10px var(--orange);
-    color: var(--orange);
+    background: var(--orange);
     animation-delay: -1s;
 }
 
 .CounterListItem:nth-child(4) {
     animation-delay: -0.8s;
-    color: var(--white);
     background: transparent;
-    box-shadow: 0 0 10px var(--white);
 }
 
-.CounterListItem:nth-child(1):hover {
-    border-color: var(--blue);
-    box-shadow: 0 0 100px var(--blue);
-}
-
-.CounterListItem:nth-child(2):hover {
-    border-color: var(--red);
-    color: var(--red);
-    box-shadow: 0 0 100px var(--red);
-}
-
-.CounterListItem:nth-child(3):hover {
-    border-color: var(--orange);
-    color: var(--orange);
-    box-shadow: 0 0 100px var(--orange);
-}
-
-.CounterListItem:nth-child(4):hover {
-    border-color: var(--white);
-}
 
 .CounterListItem__time {
     font-size: 60px;
@@ -109,33 +79,6 @@
 @media (min-width: 992px) {
     .CounterList {
         grid-template-columns: repeat(4, 1fr);
-    }
-}
-
-.glow {
-    text-align: center;
-    -webkit-animation: glow 1s ease-in-out infinite alternate;
-    -moz-animation: glow 1s ease-in-out infinite alternate;
-    animation: glow 1s ease-in-out infinite alternate;
-}
-
-@keyframes glow {
-    from {
-        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
-    }
-
-    to {
-        text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
-    }
-}
-
-@keyframes glow-blue {
-    from {
-        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px var(--blue), 0 0 40px var(--blue), 0 0 50px var(--blue), 0 0 60px var(--blue), 0 0 70px var(--blue);
-    }
-
-    to {
-        text-shadow: 0 0 20px #fff, 0 0 30px var(--blue2), 0 0 40px var(--blue2), 0 0 50px var(--blue2), 0 0 60px var(--blue2), 0 0 70px var(--blue2), 0 0 80px var(--blue2);
     }
 }
 

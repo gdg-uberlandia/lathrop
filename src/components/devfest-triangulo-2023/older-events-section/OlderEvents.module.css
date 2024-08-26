@@ -90,15 +90,15 @@
 }
 
 .ConstructItem:nth-child(3n+0) {
-    background-color: var(--red);
+    background-color: var(--blue);
 }
 
 .ConstructItem:nth-child(3n+1) {
-    background-color: var(--orange);
+    background-color: var(--red);
 }
 
 .ConstructItem:nth-child(3n+2) {
-    background-color: var(--blue);
+    background-color: var(--orange);
 }
 
 .List ul {
@@ -107,7 +107,7 @@
 
 .List li::before {
     content: "\2022";
-    color: var(--blue);
+    color: var(--soft-blue);
     font-weight: bold;
     display: inline-block;
     width: 2em;

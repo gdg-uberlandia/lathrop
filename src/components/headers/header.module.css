@@ -5,7 +5,7 @@
   justify-content: space-between;
   max-width: var(--xl);
   margin: 0 auto;
-  padding: 1rem 2rem;  
+  padding: 1rem 2rem;
 }
 
 .HeaderNavContainer {
@@ -76,9 +76,9 @@
 
 .HeaderSubscribeButton {
   background: none;
-  border: 1px solid var(--blue2);
+  border: 1px solid var(--blue);
   border-radius: 16px;
-  color: var(--blue2);
+  color: var(--blue);
   cursor: pointer;
   display: none;
   margin-left: 2rem;
@@ -87,7 +87,7 @@
 }
 
 .HeaderSubscribeButton:hover {
-  background-color: var(--blue2);
+  background-color: var(--blue);
   color: var(--white);
   transition: all 250ms ease-out;
 }
@@ -115,13 +115,17 @@
 }
 
 @media (min-width: 768px) {
-  .HeaderNavContainer, .HeaderSubscribeButton {
+
+  .HeaderNavContainer,
+  .HeaderSubscribeButton {
     display: flex;
   }
 }
 
 @media (min-width: 768px) {
-  .toggler_btn, .Collapse {
+
+  .toggler_btn,
+  .Collapse {
     display: none;
   }
 }

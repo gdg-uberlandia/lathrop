@@ -12,8 +12,6 @@ const DATE_DISTANCE_LABELS: Record<string, string> = {
     minutes: 'minutos',
     seconds: 'segundos',
 }
-
-
 const CountdownTimer: React.FC = ({ }) => {
 
     const [_dateDistance, _setDateDistance] = useState({
