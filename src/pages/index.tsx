@@ -46,21 +46,22 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           <SponsorEventSection />
         </section>
 
-        {/*<section className={`${styles.Section} Section`}>
+        <section className={`${styles.Section} Section`}>
           <SpeakerSection speakers={speakers} />
-        </section>*
+        </section>
 
+        {/*	
         <section>
           <ScheduleSection schedule={schedule} speakers={speakers} />
         </section>
 
-        
+         */}
 
         <section className={`${styles.Section} Section`}>
           <SponsorsSection sponsors={sponsors} />
         </section>
 
-        */}
+
 
         <section className={`${styles.Section} Section`}>
           <EventLocationSection />
@@ -74,7 +75,7 @@ export async function getServerSideProps() {
   try {
     return {
       props: {
-        speakers: [],//await getSpeaker(),
+        speakers: await getSpeaker(),
         sponsors: await getSponsors(),
         schedule: [], //await getSchedule(),
       },

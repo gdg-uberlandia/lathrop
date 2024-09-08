@@ -29,7 +29,7 @@ const SponsorsPage = ({ sponsors }: SponsorsPageProps) => {
                     <Row style={{ ..._center, textAlign: 'center', marginTop: '120px' }}>
                         <h4> Que tal colocar sua marca neste evento?</h4>
                         <p>
-                            <a style={{ textDecoration: 'underline' }} href="https://docs.google.com/presentation/d/18L58cFLqdb2kV4rjxGnXthOSjwuHb_duosIOJNBehZ4">
+                            <a style={{ textDecoration: 'underline' }} href={configValues.midiaKit} >
                                 Clique aqui e acesse nosso midia kit!
                             </a>
                         </p>
@@ -39,7 +39,7 @@ const SponsorsPage = ({ sponsors }: SponsorsPageProps) => {
                         </p>
                     </Row>
                 </div>
-            </Container>
+            </Container >
         </>
     )
 }
