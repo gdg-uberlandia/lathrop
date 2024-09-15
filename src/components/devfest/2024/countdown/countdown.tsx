@@ -44,7 +44,7 @@ const Countdown: React.FC = () => {
   }, [targetDate]);
 
   return (
-    <div className="flex justify-between space-x-4 w-full max-w-screen-lg mx-auto p-9">
+    <div className="mx-auto flex max-w-screen-lg flex-wrap justify-between space-y-4 p-9 sm:flex-nowrap sm:space-x-4 sm:space-y-0">
       <CountdownBlock
         value={timeLeft.days}
         label="dias"
