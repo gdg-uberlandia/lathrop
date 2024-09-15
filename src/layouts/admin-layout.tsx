@@ -1,13 +1,9 @@
 import React from "react";
-import { useRouter } from "next/router";
 // reactstrap components
-import { Container } from "reactstrap";
 // core components
 //import AdminNavbar from "../components/navbars/admin-navbar";
 //import AdminFooter from "../components/footers/admin-footer";
 //import Sidebar from "../components/sidebar/sidebar";
-
-
 
 /*const options = {
     // you can also just use 'bottom center'
@@ -18,15 +14,7 @@ import { Container } from "reactstrap";
 }*/
 
 function AdminLayout() {
-    let mainContentRef = React.createRef();
-
-    return (
-        <>
-
-        </>
-    );
+  return <></>;
 }
-
-
 
 export default AdminLayout;

@@ -4,7 +4,6 @@ import { Speaker } from "models/speaker";
 import { Schedule } from "models/schedule";
 import { getSponsors } from "back-features/sponsors";
 import { getSpeaker } from "back-features/speakers";
-import { getSchedule } from "back-features/schedule";
 import { SponsorLevel } from "models/sponsor-level";
 import styles from "styles/Home.module.css";
 import HomeHeader from "../components/headers/home-header";
@@ -14,7 +13,6 @@ import { Countdown } from "components/devfest/2024/countdown";
 import OlderEvenstsSection from "components/devfest-triangulo-2023/older-events-section/older-events-section";
 import ErrorBoundary from "../components/error-boundary";
 import { HeroSection } from "components/hero-section";
-import { ScheduleSection } from "components/devfest-triangulo-2023/schedule-section/schedule-section";
 import { EventLocationSection } from "components/devfest-triangulo-2023/event-location";
 import SponsorEventSection from "components/devfest-triangulo-2023/sponsor-event-section";
 
@@ -26,7 +24,7 @@ interface HomePageProps {
   schedule: Array<Schedule>;
 }
 
-const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
+const Home = ({ speakers, sponsors }: HomePageProps) => {
   return (
     <>
       <ErrorBoundary>

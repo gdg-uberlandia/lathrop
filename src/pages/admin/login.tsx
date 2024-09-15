@@ -1,36 +1,27 @@
-import React from 'react';
-import AdminLayout from '../../layouts/admin-layout';
-import { Col, Row, Container } from 'reactstrap';
+import React from "react";
+import AdminLayout from "../../layouts/admin-layout";
+import { Container } from "reactstrap";
 
+interface LoginPageProps {}
 
-interface LoginPageProps { };
-
-
-const LoginPage = ({ }: LoginPageProps) => {
-
-
-    return (
-        <>
-            <Container>
-
-            </Container>
-        </>
-    )
-}
+const LoginPage = ({}: LoginPageProps) => {
+  return (
+    <>
+      <Container></Container>
+    </>
+  );
+};
 export async function getServerSideProps() {
-    try {
-        return {
-            props: {}
-        }
-    } catch (error) {
-        console.error(error)
-        return ({ props: {} });
-    }
-
+  try {
+    return {
+      props: {},
+    };
+  } catch (error) {
+    console.error(error);
+    return { props: {} };
+  }
 }
 
 LoginPage.layout = AdminLayout;
 
-
-
-export default LoginPage
+export default LoginPage;
