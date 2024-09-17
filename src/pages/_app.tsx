@@ -4,7 +4,7 @@ import type { AppContext, AppInitialProps, AppProps } from 'next/app'
 import React, { ReactNode } from "react";
 import { NextComponentType, NextPageContext } from 'next';
 
-
+import GoogleAnalytics from '../components/google-analytics';
 import { AppLayoutProps } from '../../types';
 
 const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = (
@@ -16,6 +16,7 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = (
 
   return (<React.Fragment>
 
+    <GoogleAnalytics />
     <Layout>
       <Component {...pageProps} />
     </Layout>
