@@ -1,5 +1,5 @@
 const SCHEDULE_COLLECTION = "schedule";
-import db from '../utils/db';
+import db from '../utils/firebase/server';
 
 const getSchedule = async () => {
     try {

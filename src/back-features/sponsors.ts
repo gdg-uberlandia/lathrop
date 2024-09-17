@@ -1,5 +1,5 @@
 const SPONSORS_COLLECTION = "sponsors";
-import db from '../utils/db';
+import db from '../utils/firebase/server';
 
 const getSponsors = async () => {
     try {

@@ -1,10 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
   reactStrictMode: true,
-  swcMinify: true,
   trailingSlash: true,
   images: {
+    dangerouslyAllowSVG: true,
     domains: ['firebasestorage.googleapis.com', 'media.licdn.com', 'raw.githubusercontent.com'],
   },
   /*exportPathMap: async function (

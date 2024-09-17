@@ -1,28 +1,23 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { useRouter } from "next/router";
 // reactstrap components
 import { Container } from "reactstrap";
 // core components
-//import AdminNavbar from "../components/navbars/admin-navbar";
-//import AdminFooter from "../components/footers/admin-footer";
-//import Sidebar from "../components/sidebar/sidebar";
+// import Navbar from "../components/navbar";
+// import Footer from "../components/footer";
+// import Sidebar from "../components/sidebar";
 
 
+interface AdminLayout {
+    children: ReactNode;
+}
 
-/*const options = {
-    // you can also just use 'bottom center'
-    position: positions.TOP_RIGHT,
-    timeout: 5000,
-    offset: '30px',
-    transition: transitions.SCALE,
-}*/
-
-function AdminLayout() {
+const AdminLayout: React.FC<AdminLayout> = function ({ children }) {
     let mainContentRef = React.createRef();
 
     return (
         <>
-
+            {children}
         </>
     );
 }

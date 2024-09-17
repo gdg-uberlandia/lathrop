@@ -1,22 +1,44 @@
-import db from '../utils/db';
+import db from '../utils/firebase/server';
 const SPEAKERS_COLLECTION = "speakers";
 
 interface SpeakerPayload {
     key: string,
     id: string,
     companyTitle: string,
-    mini_bio: string,
+    miniBio: string,
     name: string,
     photo: string,
     tech: string,
     title: string,
     topic: string,
     location: string
+    slug: string
 }
 
-const createSpeaker = async ({ key, id, companyTitle, mini_bio, name, photo, tech, title, topic, location }: SpeakerPayload) => {
+const createOrUpdateSpeaker = async ({
+    key,
+    id,
+    companyTitle,
+    miniBio,
+    name,
+    photo,
+    tech,
+    title,
+    topic,
+    location,
+    slug
+}: SpeakerPayload) => {
     const data = {
-        id, companyTitle, mini_bio, name, photo, tech, title, topic, location,
+        id,
+        companyTitle,
+        miniBio,
+        name,
+        photo,
+        tech,
+        title,
+        topic,
+        location,
+        slug
     };
 
     if (key) {
@@ -33,19 +55,19 @@ const createSpeaker = async ({ key, id, companyTitle, mini_bio, name, photo, tec
             return {
                 ...speaker.data(),
                 key: speaker.id,
+                slug: speaker.id,
             };
 
         } else {
             throw new Error("Doc does not exist.");
         }
-
-
     } else {
 
         const speakerRef = await db.collection(SPEAKERS_COLLECTION).add(data);
         const speaker = await speakerRef.get();
         return {
             ...speaker.data(),
+            slug: speaker.id,
             key: speaker.id,
         };
 
@@ -85,7 +107,7 @@ const deleteSpeaker = async (speakerId: string) => {
 }
 
 export {
-    createSpeaker,
+    createOrUpdateSpeaker,
     getSpeaker,
     deleteSpeaker
 }
