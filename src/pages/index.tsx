@@ -61,8 +61,6 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           <SponsorsSection sponsors={sponsors} />
         </section>
 
-
-
         <section className={`${styles.Section} Section`}>
           <EventLocationSection />
         </section>
