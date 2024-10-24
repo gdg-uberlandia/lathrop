@@ -1,5 +1,5 @@
 .schedule_grid {
-    display: flex;
+    /*display: flex;*/
     flex-wrap: wrap;
     gap: 1rem;
 }
@@ -92,7 +92,7 @@
     min-height: 61px;
 }
 
-.speaker_description + .speaker_description {
+.speaker_description+.speaker_description {
     margin-top: 0.75rem;
 }
 
@@ -143,15 +143,15 @@
     width: fit-content;
 }
 
-.path_one_color{
+.path_one_color {
     border-left: 5px solid rgba(250, 180, 158, 1);
 }
 
-.path_two_color{
+.path_two_color {
     border-left: 5px solid rgba(254, 255, 128, 1);
 }
 
-.path_three_color{
+.path_three_color {
     border-left: 5px solid rgba(255, 214, 100, 1);
 }
 

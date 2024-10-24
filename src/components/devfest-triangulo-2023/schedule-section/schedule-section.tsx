@@ -17,14 +17,13 @@ interface SpeakersSectionProps {
 }
 
 function generateKey(speech: Speeches) {
-  return `speech-${speech.path}-${
-    speech.speakerSlugs ? speech.speakerSlugs.map((slug) => slug).join('-') : speech.topic
-  }`
+  return `speech-${speech.path}-${speech.speakerSlugs ? speech.speakerSlugs.map((slug) => slug).join('-') : speech.topic
+    }`
 }
 
 export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, schedule }) => {
   const speakersMap = new Map(speakers.map((speaker) => ([speaker.key, speaker])));
-  
+
   return (
     <>
       {speakers.length &&
@@ -33,8 +32,8 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, sche
             <h2 className="gdg-line">Agenda</h2>
           </div>
           {schedule.map((schedule, index) => {
-            const commonSpeeches = schedule.speeches.filter((speeches) => speeches.path !== SpeechesPath.COMUNIDADE);
-            const speedSpeeches = schedule.speeches.filter((speeches) => speeches.path === SpeechesPath.COMUNIDADE);
+            const commonSpeeches = schedule.speeches.filter((speeches) => speeches.path !== SpeechesPath.TRANCA);
+            const speedSpeeches = schedule.speeches.filter((speeches) => speeches.path === SpeechesPath.TRANCA);
 
             return (
               <Row tag="section" key={`schedule-${index}`} className={styles.row_content}>
@@ -43,14 +42,14 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, sche
                   {commonSpeeches.length && (
                     <section className={styles.schedule_grid}>
                       {commonSpeeches.map((speeches) => (
-                        <ScheduleCard 
-                          key={generateKey(speeches)} 
+                        <ScheduleCard
+                          key={generateKey(speeches)}
                           speech={speeches}
                           speakers={
-                            speeches.speakerSlugs 
+                            speeches.speakerSlugs
                               ? speeches.speakerSlugs.map((slug) => speakersMap.get(slug)!)
                               : []
-                            }
+                          }
                         />
                       ))}
                     </section>
@@ -58,14 +57,14 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({ speakers, sche
                   {speedSpeeches.length > 0 && (
                     <section className={styles.schedule_grid}>
                       {speedSpeeches.map((speeches, i) => (
-                        <ScheduleCard 
-                          key={generateKey(speeches)} 
+                        <ScheduleCard
+                          key={generateKey(speeches)}
                           speech={speeches}
                           speakers={
-                            speeches.speakerSlugs 
+                            speeches.speakerSlugs
                               ? speeches.speakerSlugs.map((slug) => speakersMap.get(slug)!)
                               : []
-                            }
+                          }
                         />
                       ))}
                     </section>

@@ -9,7 +9,7 @@ import clsx from "clsx";
 
 type ScheduleCardProps = {
     speakers: Array<Speaker>;
-    speech: Speeches;    
+    speech: Speeches;
 }
 
 const getPillColor = (tech: SpeakerTech) => {
@@ -37,7 +37,7 @@ const getPathColor = (path: SpeechesPath) => {
             return styles.path_two_color
         case SpeechesPath.CANASTRA:
             return styles.path_three_color
-        case SpeechesPath.COMUNIDADE:
+        case SpeechesPath.TRANCA:
             return styles.path_SPEED_color
     }
 }
@@ -62,14 +62,14 @@ const SpeakerScheduleCard = ({ speech, speakers }: ScheduleCardProps) => {
                 <header className={styles.card_header}>
                     <h3 className={styles.card_topic}>{speakerInfo?.topic}</h3>
                     <span className={styles.speeches_infos}>
-                        {speakerInfo?.tech && 
+                        {speakerInfo?.tech &&
                             <Badge className={styles.card_badge} color={getPillColor(speakerInfo?.tech)} pill>
                                 {speakerInfo?.tech}
                             </Badge>
                         }
-                        <p className={styles.card_duration}>
+                        {/*<p className={styles.card_duration}>
                             {speech.start} - {speech.end}
-                        </p>
+                        </p>*/}
                     </span>
                 </header>
                 <div>
@@ -87,7 +87,7 @@ const SpeakerScheduleCard = ({ speech, speakers }: ScheduleCardProps) => {
                                 <h5>{name}</h5>
                                 <Row noGutters>
                                     <p className={styles.speaker_title}>
-                                        {title}{' '}{company && 
+                                        {title}{' '}{company &&
                                             <strong>@{company} </strong>
                                         }
                                     </p>
