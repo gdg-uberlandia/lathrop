@@ -42,6 +42,34 @@ const getPathColor = (path: SpeechesPath) => {
     }
 }
 
+const getPathLabel = (path: SpeechesPath) => {
+
+    switch (path) {
+        case SpeechesPath.MINAS:
+            return styles.path_one_label
+        case SpeechesPath.CURADO:
+            return styles.path_two_label
+        case SpeechesPath.CANASTRA:
+            return styles.path_three_label
+        case SpeechesPath.TRANCA:
+            return styles.path_SPEED_label
+    }
+}
+
+
+const getPathName = (path: SpeechesPath) => {
+    switch (path) {
+        case SpeechesPath.MINAS:
+            return "Minas";
+        case SpeechesPath.CURADO:
+            return 'Curado';
+        case SpeechesPath.CANASTRA:
+            return 'Canastra';
+        case SpeechesPath.TRANCA:
+            return 'Trança';
+    }
+}
+
 const formatDate = (str: number) => {
     const hours = new Date(str).getHours()
     const minutes = new Date(str).getMinutes()
@@ -61,6 +89,7 @@ const SpeakerScheduleCard = ({ speech, speakers }: ScheduleCardProps) => {
             <div className={clsx(styles.card_content, getPathColor(speech.path))}>
                 <header className={styles.card_header}>
                     <h3 className={styles.card_topic}>{speakerInfo?.topic}</h3>
+                    {speech.path && <div className={clsx(styles.card_label, getPathLabel(speech.path))}>Trilha: {getPathName(speech.path)}</div>}
                     <span className={styles.speeches_infos}>
                         {speakerInfo?.tech &&
                             <Badge className={styles.card_badge} color={getPillColor(speakerInfo?.tech)} pill>
