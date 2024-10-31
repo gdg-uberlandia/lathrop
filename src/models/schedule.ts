@@ -23,5 +23,5 @@ export enum SpeechesPath {
     MINAS = "MINAS", // principal
     CURADO = "CURADO",
     CANASTRA = "CANASTRA",
-    COMUNIDADE = "COMUNIDADE"
+    TRANCA = "TRANCA"
 }
