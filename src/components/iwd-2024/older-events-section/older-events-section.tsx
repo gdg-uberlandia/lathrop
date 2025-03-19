@@ -19,17 +19,19 @@ const OlderEvenstsSection: React.FC = ({ }) => {
 
                         <p className={styles.Description}>
 
-                            O IWD (International Women's Day) é um evento anual organizado pela comunidade Women Techmakers globalmente para celebrar as conquistas das mulheres em tecnologia e conscientizar as pessoas sobre questões que afetam a igualdade de gênero na área de STEM. Em 2024 o tema do IWD será: <b>"Impact the Future"!</b>
-                            <br />
-                            <br />
-                            Todos temos o poder de impactar o futuro, e como será esse futuro? Como vamos construí-lo?
-                            <br />
-                            <br/>
-                             Ao  celebrarmos o <b>IWD 2024</b>, encorajamos você a refletir sobre as seguintes questões: No que vocês estão trabalhando que fará a diferença no mundo? Como você está usando suas habilidades e talentos para criar um futuro melhor? Você está sonhando grande e sendo ousada para “Impactar o Futuro”?
-                            <br />
-                                            <br />
-                            Venha participar conosco dessa celebração com <b>100% de palestrantes mulheres</b> que irão abordar diversos temáticas e ajudar a refletir ainda mais sobre como impactar o futuro!
-                                                    </p>
+                            O IWD (International Women's Day) é um evento anual organizado pela comunidade Women Techmakers globalmente para celebrar as conquistas das mulheres em tecnologia e conscientizar as pessoas sobre questões que afetam a igualdade de gênero na área de STEM. 
+                            
+                            <br/><br/><b>O tema do IWD 2025 é “Redefine Possible”! ✨</b>
+
+
+                            Esse tema é mais do que uma declaração, é um convite para desafiar os limites do que a tecnologia pode alcançar e, principalmente, para reconhecer o papel transformador das mulheres na construção desse futuro.<br/><br/> 
+                            O futuro da tecnologia não está predeterminado, ele está em constante evolução. O que hoje parece impossível, pode se tornar realidade amanhã!<br/><br/>
+                            Com esse tema, queremos inspirar você a redefinir seu próprio futuro, a expandir suas possibilidades e a tornar sua presença no mundo da tecnologia ainda mais impactante. <br/><br/>
+
+Juntas, podemos reinventar as possibilidades e criar um futuro mais<b> inclusivo e inovador! 💙</b>
+
+
+                        </p>
                     </Col>
                     <Col lg={3} sm={12} style={{ display: 'flex', justifyContent: 'center' }}>
                         {/*<img
@@ -38,7 +40,7 @@ const OlderEvenstsSection: React.FC = ({ }) => {
                             className={styles.SupportImage}
                         />*/}
                         <video width="430" autoPlay loop muted>
-                            <source src={"/iwd-2024/impact-the-future.mp4"} type="video/mp4" />
+                            <source src={"/iwd-2025/redefine.mp4"} type="video/mp4" />
                             Your browser does not support the video tag.
                         </video>
 

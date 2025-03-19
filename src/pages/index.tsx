@@ -8,14 +8,14 @@ import styles from "styles/Home.module.css";
 import HomeHeader from "../components/headers/iwd/home-header";
 import SpeakerSection from "components/iwd-2024/speakers-section";
 import SponsorsSection from "components/iwd-2024/sponsors-section/sponsors-section";
-import CountdownTimer from "components/iwd-2024/countdown/countdown-timer";
+import CountdownTimer from "components/iwd-2025/countdown/countdown-timer";
 import OlderEvenstsSection from "components/iwd-2024/older-events-section/older-events-section";
 
 import { EventLocationSection } from "components/iwd-2024/event-location";
 import ScheduleSection from "components/iwd-2024/schedule-section/schedule-section";
 
 import ErrorBoundary from '../components/error-boundary';
-import { HeroSection } from "components/hero-section/iwd-2024";
+import { HeroSection } from "components/iwd-2025/hero-section";
 import { Testimonials } from "components/iwd-2024/testimonials";
 import { getSponsors } from "back-features/sponsors";
 import { getSpeakers } from "back-features/speakers";
@@ -67,21 +67,21 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           <OlderEvenstsSection />
         </section>
 
-        <SpeakerSection speakers={speakers} />
+        {/*<SpeakerSection speakers={speakers} />
 
         <Testimonials />
 
         <section className={`${styles.Section} Section`}>
           <ScheduleSection schedule={schedule} speakers={speakers} />
-        </section>
+        </section>*/}
 
         <section className={`${styles.Section} Section`}>
           <EventLocationSection />
         </section>
 
-        <section className={`${styles.Section} Section`}>
+         {/*<section className={`${styles.Section} Section`}>
           <SponsorsSection sponsors={sponsors} />
-        </section>
+        </section>*/}
 
       </ErrorBoundary>
     </>
