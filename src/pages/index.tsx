@@ -17,6 +17,7 @@ import { HeroSection } from "components/hero-section";
 import { ScheduleSection } from "components/devfest-triangulo-2023/schedule-section/schedule-section";
 import { EventLocationSection } from "components/devfest-triangulo-2023/event-location";
 import SponsorEventSection from "components/devfest-triangulo-2023/sponsor-event-section";
+import { Header } from "components/devfest-triangulo-2025/Header";
 
 // https://alvarotrigo.com/blog/css-animations-scroll/
 
@@ -30,7 +31,8 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
   return (
     <>
       <ErrorBoundary>
-        <HomeHeader />
+        <Header />
+        {/* <HomeHeader /> */}
 
         <HeroSection />
 

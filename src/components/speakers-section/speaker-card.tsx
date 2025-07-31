@@ -5,10 +5,11 @@ import React, { useState } from "react";
 
 import styles from "./styles/Speakers.module.css";
 import SpeakerModal from "./speaker-modal";
+interface SpeakerCardProps {
+  speaker: Speaker;
+}
 
-interface SpeakerCardProps extends Speaker {}
-
-const SpeakerCard: React.FC<SpeakerCardProps> = (speaker) => {
+const SpeakerCard: React.FC<SpeakerCardProps> = ({ speaker }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const modalToggle = () => setModalOpen(!modalOpen);
 

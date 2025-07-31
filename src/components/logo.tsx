@@ -1,6 +1,6 @@
 import * as React from "react";
 import LogoDevfestCerrado from "assets/images/LogoDevfestCerrado";
-import LogoGDG from "assets/images/LogoGDG";
+import { LogoGDG } from "assets/images/LogoGDG";
 import LogoWTM from "assets/images/LogoWTM";
 import configValues, { systemValue } from "helpers/config";
 

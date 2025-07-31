@@ -70,7 +70,7 @@ const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
                   key={`${_itemKey}-carousel-col`}
                   className={styles.card_container}
                 >
-                  <SpeakerCard {...speaker} />
+                  <SpeakerCard speaker={speaker} />
                 </Col>
               );
             })}
