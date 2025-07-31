@@ -13,7 +13,10 @@
     "deploy_staging": "npm run build_export && firebase use default && npm run deploy",
     "deploy_staging:functions": "firebase use default && npm run deploy:functions",
     "deploy_prod": "npm run build_export && firebase use production && npm run deploy",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "prettier": "prettier src --check",
+    "prettier:fix": "prettier src --write"
   },
   "dependencies": {
     "@firebase/database-types": "^0.10.3",
@@ -37,6 +40,9 @@
     "@types/react-dom": "18.0.6",
     "eslint": "8.22.0",
     "eslint-config-next": "^13.1.6",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.3",
+    "prettier": "3.6.2",
     "typescript": "^5.2.2"
   }
 }
