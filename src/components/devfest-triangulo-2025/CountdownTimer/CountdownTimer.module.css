@@ -13,7 +13,7 @@
   max-width: var(--xl);
 }
 
-@media (min-width: 391px) {
+@media (min-width: 431px) {
   .CountdownTimer {
     flex-direction: row;
   }

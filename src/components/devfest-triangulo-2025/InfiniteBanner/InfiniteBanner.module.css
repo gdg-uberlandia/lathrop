@@ -1,0 +1,53 @@
+.InfiniteBanner {
+  width: 100%;
+  max-width: var(--xl);
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+}
+
+.InfiniteBanner::before,
+.InfiniteBanner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 70px;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.InfiniteBanner::before {
+  left: -5px;
+  background: linear-gradient(to right, var(--black) 0%, transparent 100%);
+}
+
+.InfiniteBanner::after {
+  right: -5px;
+  background: linear-gradient(to left, var(--black) 0%, transparent 100%);
+}
+
+.Container {
+  display: flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  overflow-x: hidden;
+  gap: 2rem;
+  scrollbar-width: none;
+}
+
+.Container::-webkit-scrollbar {
+  display: none;
+}
+
+.Item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 302px;
+  height: 72px;
+  font-size: 1.125rem;
+  background-image: url("/devfest-2025/ticket.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+}

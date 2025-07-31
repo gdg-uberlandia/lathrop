@@ -1,0 +1,144 @@
+.PastEvent {
+  max-width: var(--xl);
+  gap: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 10.25rem;
+}
+
+.Title {
+  font-family: Google Sans;
+  font-weight: 400;
+  font-size: 3rem;
+  line-height: 1em;
+  letter-spacing: 0%;
+  text-align: center;
+}
+
+.Title span {
+  color: var(--blue-1);
+}
+
+.PastEvent p {
+  margin: 0;
+  padding: 0;
+  font-size: 1.125rem;
+  max-width: 834px;
+}
+
+.TagList {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.Tag {
+  border-radius: 64px;
+  padding: 0.5rem 1rem;
+  font-size: 1.125rem;
+  line-height: 1rem;
+  width: fit-content;
+  align-items: center;
+  position: relative;
+  background: var(--black);
+  background-clip: padding-box;
+  border: solid 1 transparent;
+}
+
+.Tag:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  margin: -1px; /* !importanté */
+  border-radius: inherit; /* !importanté */
+  background: var(--gradient-1);
+}
+
+.InstaLink {
+  border: 1px solid var(--gray-4);
+  border-radius: 16px;
+  padding: 1rem;
+  color: var(--ice);
+  font-size: 1.175rem;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: fit-content;
+  margin-top: 1.5rem;
+}
+
+.Link {
+  border-radius: 12px;
+  padding: 0.75rem 1.5rem;
+  background: var(--blue-1);
+  color: var(--wjhite);
+  border: 1px solid var(--blue-1);
+}
+
+.Link:hover {
+  border: 1px solid var(--white);
+  color: var(--white);
+}
+
+.FullRow {
+  background-color: var(--gray-2);
+  padding: 2.5rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.Caroussel {
+  width: 90%;
+  max-width: var(--xl);
+  padding-top: 177.78%;
+  margin: 0 auto;
+  border-radius: 16px;
+  text-align: center;
+  position: relative;
+}
+@media (min-width: 600px) {
+  .Caroussel {
+    padding-top: 100%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .Caroussel {
+    padding-top: 56.25%;
+  }
+}
+
+.IFrame {
+  border-radius: 16px;
+  background-color: var(--black);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+}
+
+.CustomRightBracket,
+.CustomLeftBracket {
+  width: 36px;
+  border: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+}
+
+.CustomRightBracket {
+  right: -1rem;
+}
+.CustomLeftBracket {
+  left: -1rem;
+}

@@ -1,18 +1,12 @@
-.Presentation {
-  max-width: var(--lg);
-  padding: 4rem 1.5rem;
+.ExtraInfo {
+  max-width: var(--xl);
   gap: 1.5rem;
   display: flex;
   flex-direction: column;
   text-align: center;
   align-items: center;
   margin: 0 auto;
-}
-
-@media (min-width: 431px) {
-  .Presentation {
-    padding: 4rem;
-  }
+  padding: 4rem 1.5rem;
 }
 
 .Title {
@@ -20,7 +14,7 @@
   font-weight: 400;
   font-size: 3rem;
   line-height: 1em;
-  max-width: 54rem;
+  letter-spacing: 0%;
   text-align: center;
 }
 
@@ -28,29 +22,11 @@
   color: var(--blue-1);
 }
 
-.Presentation p {
+.ExtraInfo p {
   margin: 0;
   padding: 0;
-  max-width: 54rem;
   font-size: 1.125rem;
-}
-
-.TagList {
-  display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.Tag {
-  border-radius: 8px;
-  border: 1px solid var(--gray-4);
-  padding: 1rem 1.5rem;
-  gap: 0.625rem;
-  display: flex;
-  font-size: 1.125rem;
-  line-height: 1rem;
-  width: fit-content;
-  align-items: center;
+  max-width: 834px;
 }
 
 .Link {
