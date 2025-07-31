@@ -1,0 +1,20 @@
+.CountdownTimer {
+  gap: 2.5rem;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  position: relative;
+  max-width: 100%;
+  padding: 4rem 1.5rem;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  flex-direction: column;
+  max-width: var(--xl);
+}
+
+@media (min-width: 391px) {
+  .CountdownTimer {
+    flex-direction: row;
+  }
+}
