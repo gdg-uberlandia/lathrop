@@ -1,6 +1,6 @@
 export interface Ticket {
-    title: string
-    description: string
-    thumbnailUrl: string
-    content: string
+  title: string;
+  description: string;
+  thumbnailUrl: string;
+  content: string;
 }

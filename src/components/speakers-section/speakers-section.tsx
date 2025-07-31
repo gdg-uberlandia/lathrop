@@ -19,31 +19,29 @@ interface SpeakersSectionProps {
 
 const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [mobile, setMobile] = useState<boolean>(true)
+  const [mobile, setMobile] = useState<boolean>(true);
   const speakersChunk = (array: Array<Speaker>, size: number) => {
     return Array.from({ length: Math.ceil(array.length / size) }, (v, i) =>
-      array.slice(i * size, i * size + size)
+      array.slice(i * size, i * size + size),
     );
   };
 
   useEffect(() => {
     const updateMobile = () => {
       if (typeof window !== undefined)
-        setMobile(window.innerWidth < 576 ? true : false)
-    }
+        setMobile(window.innerWidth < 576 ? true : false);
+    };
 
-    updateMobile()
-    window.addEventListener('resize', updateMobile)
+    updateMobile();
+    window.addEventListener("resize", updateMobile);
     return () => {
-      window.removeEventListener('resize', updateMobile)
-    }
-  }, [])
-
-
+      window.removeEventListener("resize", updateMobile);
+    };
+  }, []);
 
   let _chunckSize = 1;
   if (!mobile) {
-    _chunckSize = 3
+    _chunckSize = 3;
   }
 
   const _speakersChuncked = speakersChunk(speakers, _chunckSize);
@@ -79,27 +77,31 @@ const SpeakersSection: React.FC<SpeakersSectionProps> = ({ speakers }) => {
           </div>
         </CarouselItem>
       );
-    }
+    },
   );
 
   const renderControls = () => {
-    if (mobile) return <></>
+    if (mobile) return <></>;
 
-    return <><div className={styles.carousel_prev}>
-      <CarouselControl
-        direction="prev"
-        directionText="Previous"
-        onClickHandler={previous}
-      />
-    </div>
-      <div className={styles.carousel_next}>
-        <CarouselControl
-          direction="next"
-          directionText="Next"
-          onClickHandler={next}
-        />
-      </div></>
-  }
+    return (
+      <>
+        <div className={styles.carousel_prev}>
+          <CarouselControl
+            direction="prev"
+            directionText="Previous"
+            onClickHandler={previous}
+          />
+        </div>
+        <div className={styles.carousel_next}>
+          <CarouselControl
+            direction="next"
+            directionText="Next"
+            onClickHandler={next}
+          />
+        </div>
+      </>
+    );
+  };
 
   const renderSpeakers = (): ReactNode => {
     return (

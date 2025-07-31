@@ -34,18 +34,17 @@
   animation: updown 2s infinite;
 }
 
-
 @keyframes updown {
   0% {
-    transform: translate(0, 0)
+    transform: translate(0, 0);
   }
 
   50% {
-    transform: translate(0, 5px)
+    transform: translate(0, 5px);
   }
 
   100% {
-    transform: translate(0, 0)
+    transform: translate(0, 0);
   }
 }
 
@@ -54,7 +53,6 @@
 }
 
 @media (min-width: 992px) {
-
   .BgWrap {
     height: 70vh;
   }

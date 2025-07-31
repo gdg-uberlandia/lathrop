@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import styles from "./styles/Speakers.module.css";
 import SpeakerModal from "./speaker-modal";
 
-interface SpeakerCardProps extends Speaker { }
+interface SpeakerCardProps extends Speaker {}
 
 const SpeakerCard: React.FC<SpeakerCardProps> = (speaker) => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -24,7 +24,10 @@ const SpeakerCard: React.FC<SpeakerCardProps> = (speaker) => {
           width={120}
         />
         <h2 className={styles.card_name}>{speaker.name}</h2>
-        <p className={styles.card_topic}>{speaker.title}{speaker?.company ? ` - ${speaker?.company}` : ''}</p>
+        <p className={styles.card_topic}>
+          {speaker.title}
+          {speaker?.company ? ` - ${speaker?.company}` : ""}
+        </p>
         <p className={styles.card_profile}>{speaker.topic}</p>
       </div>
       <SpeakerModal

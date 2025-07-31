@@ -1,53 +1,54 @@
-
-export type systemValue = 'gdg' | 'iwd' | 'devfest-cerrado' | 'devfest-triangulo' | string;
+export type systemValue =
+  | "gdg"
+  | "iwd"
+  | "devfest-cerrado"
+  | "devfest-triangulo"
+  | string;
 
 export interface ConfigValues {
-  name: string,
-  eventDate: Date,
-  eventLinkRegistrationUrl: string,
-  place: string,
-  placeCity: string,
-  formattedDate: string,
-  email: 'gdg.uberlandia@gmail.com',
-  organizedBy: systemValue
-  midiaKit?: string
+  name: string;
+  eventDate: Date;
+  eventLinkRegistrationUrl: string;
+  place: string;
+  placeCity: string;
+  formattedDate: string;
+  email: "gdg.uberlandia@gmail.com";
+  organizedBy: systemValue;
+  midiaKit?: string;
   socialMedia?: {
     instagram: string;
-  }
+  };
 }
-
 
 const configValues = {
-  name: 'Devfest Triângulo 2024',
-  eventDate: '2024-11-02T08:00:00',
-  eventLinkRegistrationUrl: 'https://doity.com.br/devfest-triangulo-2024',
-  place: 'Gaudium Hall',
-  placeAddress: 'R. Anita, 25 Altamira, Uberlândia - MG 38411-122',
-  placeCity: 'Uberlândia - MG',
-  formattedDate: '02 Novembro',
-  email: 'gdg.uberlandia@gmail.com',
-  organizedBy: 'gdg', // options
-  midiaKit: 'https://docs.google.com/presentation/d/1XUVpgqNhBOQQPaZe6gVE4xhfbmF5cabiZOQQIM3Qdk0/edit?usp=sharing',
+  name: "Devfest Triângulo 2024",
+  eventDate: "2024-11-02T08:00:00",
+  eventLinkRegistrationUrl: "https://doity.com.br/devfest-triangulo-2024",
+  place: "Gaudium Hall",
+  placeAddress: "R. Anita, 25 Altamira, Uberlândia - MG 38411-122",
+  placeCity: "Uberlândia - MG",
+  formattedDate: "02 Novembro",
+  email: "gdg.uberlandia@gmail.com",
+  organizedBy: "gdg", // options
+  midiaKit:
+    "https://docs.google.com/presentation/d/1XUVpgqNhBOQQPaZe6gVE4xhfbmF5cabiZOQQIM3Qdk0/edit?usp=sharing",
   socialMedia: {
-    instagram: 'https://www.instagram.com/devfesttriangulo'
-  }
-}
+    instagram: "https://www.instagram.com/devfesttriangulo",
+  },
+};
 
 const resolveURL = () => {
-  let finalUrl = '';
+  let finalUrl = "";
   if (process.env.NEXT_PUBLIC_SITE_URL) {
     finalUrl = process.env.NEXT_PUBLIC_SITE_URL;
   } else if (process.env.NEXT_PUBLIC_VERCEL_URL) {
     finalUrl += `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
   } else {
-    finalUrl += `https://devfesttriangulo.com.br`
+    finalUrl += `https://devfesttriangulo.com.br`;
   }
 
-
   return finalUrl;
-
-}
-
+};
 
 export const server = resolveURL();
 

@@ -1,21 +1,21 @@
-@import url('https://rsms.me/inter/inter.css');
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700&display=swap');
+@import url("https://rsms.me/inter/inter.css");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700&display=swap");
 
 :root {
-  --blue: #4285F4;
-  --red: #EA4335;
-  --green: #34A852;
-  --orange: #F8AB00;
-  --yellow: #FFD327;
-  --soft-yellow: #FFE7A4;
+  --blue: #4285f4;
+  --red: #ea4335;
+  --green: #34a852;
+  --orange: #f8ab00;
+  --yellow: #ffd327;
+  --soft-yellow: #ffe7a4;
   --white: #fcfcfc;
-  --black: #1A1D1C;
-  --green: #CCF6CF;
-  --soft-blue: #C3EBF6;
-  --soft-green: #CCF6CF;
-  --pink: #FF7CAE;
-  --soft-pink: #F8D7D7;
-  --primary-text: #393D40;
+  --black: #1a1d1c;
+  --green: #ccf6cf;
+  --soft-blue: #c3ebf6;
+  --soft-green: #ccf6cf;
+  --pink: #ff7cae;
+  --soft-pink: #f8d7d7;
+  --primary-text: #393d40;
   --secondary-text: #848484;
 
   --sm: 640px;
@@ -43,13 +43,13 @@
 body {
   padding: 0;
   margin: 0;
-  font-family: 'Inter var', sans-serif;
-  background-color: #F2F2F2
+  font-family: "Inter var", sans-serif;
+  background-color: #f2f2f2;
 }
 
 @supports (font-variation-settings: normal) {
   html {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
   }
 }
 
@@ -62,13 +62,11 @@ a {
   box-sizing: border-box;
 }
 
-
 @media only screen and (max-width: 1026px) {
   .hideSmall {
     display: none;
   }
 }
-
 
 #__next {
   position: absolute;
@@ -95,7 +93,6 @@ a {
   opacity: 1;
 }
 
-
 .DangerButton {
   padding: 15px 15px;
   background-color: var(--red);
@@ -116,7 +113,7 @@ a {
 }
 
 .TicketFeatures::before {
-  content: url('/check.svg');
+  content: url("/check.svg");
   padding-right: 0.5rem;
 }
 
@@ -129,7 +126,15 @@ html {
 }
 
 .gdg-line::after {
-  background: linear-gradient(90deg, #c00, #d74206 10%, #e38c0c 30%, #eecd11 40%, #15ff28 70%, #1559ff);
+  background: linear-gradient(
+    90deg,
+    #c00,
+    #d74206 10%,
+    #e38c0c 30%,
+    #eecd11 40%,
+    #15ff28 70%,
+    #1559ff
+  );
   content: "";
   display: flex;
   height: 0.15rem;

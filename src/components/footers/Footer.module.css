@@ -10,7 +10,6 @@
   list-style: none;
 }
 
-
 .FooterContent .nav-link {
   color: var(--black);
 }
@@ -20,7 +19,6 @@
     padding: 10px 10px;
     flex-direction: column;
   }
-
 }
 
 .FooterLogo {
@@ -42,7 +40,7 @@
 .FooterRegister a {
   text-decoration: none;
   transition: none;
-  color: #FFF;
+  color: #fff;
 }
 
 .FooterRegister:hover {

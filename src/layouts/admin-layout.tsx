@@ -7,8 +7,6 @@ import { Container } from "reactstrap";
 //import AdminFooter from "../components/footers/admin-footer";
 //import Sidebar from "../components/sidebar/sidebar";
 
-
-
 /*const options = {
     // you can also just use 'bottom center'
     position: positions.TOP_RIGHT,
@@ -18,15 +16,9 @@ import { Container } from "reactstrap";
 }*/
 
 function AdminLayout() {
-    let mainContentRef = React.createRef();
+  let mainContentRef = React.createRef();
 
-    return (
-        <>
-
-        </>
-    );
+  return <></>;
 }
-
-
 
 export default AdminLayout;

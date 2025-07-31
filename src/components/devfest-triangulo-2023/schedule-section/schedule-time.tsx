@@ -1,7 +1,5 @@
 import React from "react";
-import {
-  Col
-} from "reactstrap";
+import { Col } from "reactstrap";
 
 import styles from "./Schedule.module.css";
 
@@ -11,7 +9,6 @@ interface ScheduleTimeProps {
 }
 
 const ScheduleTime: React.FC<ScheduleTimeProps> = (props) => {
-
   return (
     <Col xxl={1} sm={12} className={styles.time_row}>
       <span>{props.initialTime}</span>
