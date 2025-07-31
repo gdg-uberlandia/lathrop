@@ -23,7 +23,7 @@ export const HeroSection = () => {
       <div className={styles.Overlay}></div>
       <div className={styles.Content}>
         <Image
-          alt="Devfest Triângulo 2024"
+          alt="DevFest Triângulo 2024"
           src={Title}
           loading="eager"
           layout="responsive"

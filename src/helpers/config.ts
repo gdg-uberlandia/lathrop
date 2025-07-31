@@ -21,17 +21,19 @@ export interface ConfigValues {
 }
 
 const configValues = {
-  name: "Devfest Triângulo 2024",
-  eventDate: "2024-11-02T08:00:00",
-  eventLinkRegistrationUrl: "https://doity.com.br/devfest-triangulo-2024",
+  name: "Devfest Triângulo 2025",
+  eventDate: "2025-11-22T08:00:00",
+  eventLinkRegistrationUrl: "https://doity.com.br/devfest-triangulo-2025",
+  eventLinkSponsorshipUrl:
+    "https://www.canva.com/design/DAGqnTRLIRo/py54Ke6aC5yqYyJXZ8X00A/edit",
   place: "Gaudium Hall",
   placeAddress: "R. Anita, 25 Altamira, Uberlândia - MG 38411-122",
   placeCity: "Uberlândia - MG",
-  formattedDate: "02 Novembro",
+  formattedDate: "22 Novembro",
   email: "gdg.uberlandia@gmail.com",
   organizedBy: "gdg", // options
   midiaKit:
-    "https://docs.google.com/presentation/d/1XUVpgqNhBOQQPaZe6gVE4xhfbmF5cabiZOQQIM3Qdk0/edit?usp=sharing",
+    "https://www.canva.com/design/DAGqnTRLIRo/py54Ke6aC5yqYyJXZ8X00A/edit",
   socialMedia: {
     instagram: "https://www.instagram.com/devfesttriangulo",
   },

@@ -1,11 +1,12 @@
-/*eslint-disable*/
-import { LogoGDG } from "assets/images/LogoGDG";
 import { clsx } from "clsx";
 import { HeaderButtonGroup } from "components/devfest-triangulo-2025/Header/HeaderButtonGroup";
 import { useState } from "react";
 import { Collapse, Nav, NavbarToggler, NavItem, NavLink } from "reactstrap";
-import { CloseMenu } from "../../../assets/images/CloseMenu";
-import { LogoMenu } from "assets/images/MenuLogo";
+
+import { CloseMenu } from "@/assets/images/CloseMenu";
+import { LogoGDG } from "@/assets/images/LogoGDG";
+import { LogoMenu } from "@/assets/images/MenuLogo";
+
 import styles from "./Header.module.css";
 
 const NAV_ITEMS = [

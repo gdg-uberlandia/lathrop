@@ -47,6 +47,7 @@
   margin: 0;
   gap: 1rem;
 }
+
 @media (max-width: 768px) {
   .HeaderButtonGroup {
     flex-grow: 1;

@@ -1,0 +1,67 @@
+.Presentation {
+  max-width: var(--lg);
+  padding: 4rem 1.5rem;
+  gap: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+@media (min-width: 391px) {
+  .Presentation {
+    padding: 4rem;
+  }
+}
+
+.Title {
+  font-family: Google Sans;
+  font-weight: 400;
+  font-size: 3rem;
+  line-height: 1em;
+  max-width: 54rem;
+  text-align: center;
+}
+
+.Title span {
+  color: var(--blue-1);
+}
+
+.Presentation p {
+  margin: 0;
+  padding: 0;
+  max-width: 54rem;
+  font-size: 1.125rem;
+}
+
+.TagList {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.Tag {
+  border-radius: 8px;
+  border: 1px solid var(--gray-4);
+  padding: 1rem 1.5rem;
+  gap: 0.625rem;
+  display: flex;
+  font-size: 1.125rem;
+  line-height: 1rem;
+  width: fit-content;
+  align-items: center;
+}
+
+.Link {
+  border-radius: 12px;
+  padding: 0.75rem 1.5rem;
+  background: var(--blue-1);
+  color: var(--wjhite);
+  border: 1px solid var(--blue-1);
+}
+
+.Link:hover {
+  border: 1px solid var(--white);
+  color: var(--white);
+}

@@ -7,7 +7,6 @@ import { getSpeaker } from "back-features/speakers";
 import { getSchedule } from "back-features/schedule";
 import { SponsorLevel } from "models/sponsor-level";
 import styles from "styles/Home.module.css";
-import HomeHeader from "../components/headers/home-header";
 import SpeakerSection from "components/speakers-section/speakers-section";
 import SponsorsSection from "components/sponsors-section/sponsors-section";
 import CountdownTimer from "components/devfest-triangulo-2023/countdown/countdown-timer";
@@ -18,6 +17,7 @@ import { ScheduleSection } from "components/devfest-triangulo-2023/schedule-sect
 import { EventLocationSection } from "components/devfest-triangulo-2023/event-location";
 import SponsorEventSection from "components/devfest-triangulo-2023/sponsor-event-section";
 import { Header } from "components/devfest-triangulo-2025/Header";
+import { Presentation } from "components/devfest-triangulo-2025/Presentation";
 
 // https://alvarotrigo.com/blog/css-animations-scroll/
 
@@ -32,9 +32,12 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
     <>
       <ErrorBoundary>
         <Header />
-        {/* <HomeHeader /> */}
 
         <HeroSection />
+
+        <section className={`${styles.Section} Section`}>
+          <Presentation />
+        </section>
 
         <CountdownTimer />
 
