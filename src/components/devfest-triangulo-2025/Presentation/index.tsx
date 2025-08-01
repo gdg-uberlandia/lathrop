@@ -1,10 +1,10 @@
 import Image from "next/image";
 
-import BusinesCenter from "@/public/devfest-2025/icons/business_center.svg";
-import ChildCare from "@/public/devfest-2025/icons/child_care.svg";
-import Handshake from "@/public/devfest-2025/icons/handshake.svg";
-import Mic from "@/public/devfest-2025/icons/mic.svg";
-import Trophy from "@/public/devfest-2025/icons/trophy.svg";
+import BusinesCenter from "@public/devfest-2025/icons/business_center.svg";
+import ChildCare from "@public/devfest-2025/icons/child_care.svg";
+import Handshake from "@public/devfest-2025/icons/handshake.svg";
+import Mic from "@public/devfest-2025/icons/mic.svg";
+import Trophy from "@public/devfest-2025/icons/trophy.svg";
 
 import styles from "./Presentation.module.css";
 

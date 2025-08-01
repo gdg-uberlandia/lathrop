@@ -37,6 +37,9 @@ const configValues = {
   socialMedia: {
     instagram: "https://www.instagram.com/devfesttriangulo",
   },
+  terms: "",
+  codeOfConduct:
+    "https://docs.google.com/document/d/16duFqXn39gR0rs2l-YOZ2UbDEUnG96YMD5mVvQZI_MQ/edit?tab=t.0#heading=h.pmwr554r0cy0",
 };
 
 const resolveURL = () => {

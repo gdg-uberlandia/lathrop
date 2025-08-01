@@ -1,12 +1,13 @@
-/*eslint-disable*/
-import React from "react";
-import { useRouter } from "next/router";
 // reactstrap components
-import { Nav, NavItem, NavLink, Container } from "reactstrap";
-import styles from "./Footer.module.css";
-import configValues from "../../helpers/config";
-import LogoWTM from "assets/images/LogoWTM";
 import Logo from "components/logo";
+/*eslint-disable*/
+import { useRouter } from "next/router";
+import React from "react";
+import { Container, Nav, NavItem, NavLink } from "reactstrap";
+
+import configValues from "../../helpers/config";
+import styles from "./Footer.module.css";
+
 interface FooterProps {}
 
 const Footer: React.FC<FooterProps> = ({}) => {

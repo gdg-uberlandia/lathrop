@@ -1,8 +1,8 @@
-import React, { ReactNode } from "react";
-import Head from "next/head";
-import Footer from "../components/footers/footer";
-import NavbarHome from "../components/navbar/home-navbar";
 import configValues from "helpers/config";
+import Head from "next/head";
+import React, { ReactNode } from "react";
+
+import { Footer } from "../components/devfest-triangulo-2025/Footer";
 
 interface BaseLayout {
   children: ReactNode;

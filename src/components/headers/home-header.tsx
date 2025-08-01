@@ -2,9 +2,9 @@
 import React, { useState } from "react";
 
 import styles from "./header.module.css";
-import LogoGDG from "assets/images/LogoGDG";
+import { LogoGDG } from "assets/images/LogoGDG";
 import { Collapse, NavbarToggler, Nav, NavItem, NavLink } from "reactstrap";
-import LogoMenu from "../../assets/images/MenuLogo";
+import { LogoMenu } from "../../assets/images/MenuLogo";
 import { CloseMenu } from "../../assets/images/CloseMenu";
 import configValues from "helpers/config";
 

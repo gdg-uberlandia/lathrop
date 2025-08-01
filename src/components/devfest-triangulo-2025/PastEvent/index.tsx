@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { useEffect } from "react";
 
-import Instagram from "@/public/devfest-2025/icons/instagram.svg";
-import LeftBracket from "@/public/devfest-2025/left-bracket.svg";
-import RightBracket from "@/public/devfest-2025/right-bracket.svg";
+import Instagram from "@public/devfest-2025/icons/instagram.svg";
+import LeftBracket from "@public/devfest-2025/left-bracket.svg";
+import RightBracket from "@public/devfest-2025/right-bracket.svg";
 
 import styles from "./PastEvent.module.css";
 
