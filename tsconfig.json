@@ -17,10 +17,11 @@
     "incremental": true,
     "baseUrl": "./src",
     "paths": {
-      "@/assets/*": ["./assets/*"],
-      "@/components/*": ["./components/*"],
-      "@/public/*": ["../public/*"],
-      "@/utils/*": ["./utils/*"]
+      "@assets/*": ["./assets/*"],
+      "@components/*": ["./components/*"],
+      "@public/*": ["../public/*"],
+      "@utils/*": ["./utils/*"],
+      "@helpers/*": ["./helpers/*"]
     },
     "plugins": [
       {

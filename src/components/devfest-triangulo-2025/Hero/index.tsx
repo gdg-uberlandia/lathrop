@@ -1,15 +1,15 @@
-import clsx from 'clsx';
-import configValues from 'helpers/config';
-import Image from 'next/image';
+import clsx from "clsx";
+import configValues from "helpers/config";
+import Image from "next/image";
 
-import AndroidCheese from '@/public/devfest-2025/android-cheese.png';
-import Title from '@/public/devfest-2025/devfest-logo.png';
-import EventIcon from '@/public/devfest-2025/event.svg';
-import GDGLogo from '@/public/devfest-2025/gdg-logo.png';
-import SidePhoto from '@/public/devfest-2025/hero-photo.png';
-import LocationIcon from '@/public/devfest-2025/location.svg';
+import AndroidCheese from "@public/devfest-2025/android-cheese.png";
+import Title from "@public/devfest-2025/devfest-logo.png";
+import EventIcon from "@public/devfest-2025/event.svg";
+import GDGLogo from "@public/devfest-2025/gdg-logo.png";
+import SidePhoto from "@public/devfest-2025/hero-photo.png";
+import LocationIcon from "@public/devfest-2025/location.svg";
 
-import styles from './Hero.module.css';
+import styles from "./Hero.module.css";
 
 export const Hero = () => {
   return (
