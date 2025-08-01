@@ -1,53 +1,58 @@
 import Image from "next/image";
 
-import configValues from "@helpers/config";
-import BusinesCenter from "@public/devfest-2025/icons/business_center.svg";
-import ChildCare from "@public/devfest-2025/icons/child_care.svg";
-import Handshake from "@public/devfest-2025/icons/handshake.svg";
-import Mic from "@public/devfest-2025/icons/mic.svg";
-import Trophy from "@public/devfest-2025/icons/trophy.svg";
-
 import styles from "./Presentation.module.css";
 
-type Tag = { icon: string; text: string };
+type Tag = { icon?: string; text: string };
 
-const tags: Tag[] = [
-  { icon: Mic, text: "Palestras inspiradoras" },
-  { icon: BusinesCenter, text: "Estandes de empresas" },
-  { icon: Trophy, text: "Dinâmicas interativas" },
-  { icon: Handshake, text: "Networking sem fronteiras" },
-  { icon: ChildCare, text: "Área kids" },
-];
+interface PresentationProps {
+  title: PresentationTitle;
+  subtitle: string;
+  tags: Tag[];
+  description?: string;
+  button?: PresentationButton;
+}
 
-export const Presentation = () => {
+interface PresentationTitle {
+  text: string;
+  highlight: string;
+  highlightPosition: "start" | "end";
+}
+
+interface PresentationButton {
+  text: string;
+  href: string;
+}
+
+export const Presentation = ({
+  title,
+  subtitle,
+  description,
+  tags,
+  button,
+}: PresentationProps) => {
   return (
     <section className={styles.Presentation} id="about">
       <h1 className={styles.Title}>
-        Onde mentes curiosas se conectam e{" "}
-        <span>o futuro é programado em comunidade</span>
+        {title.highlightPosition === "start" && <span>{title.highlight} </span>}
+        {title.text}
+        {title.highlightPosition === "end" && <span> {title.highlight}</span>}
       </h1>
-      <p>
-        O DevFest é um super festival de tecnologia feito por e para a
-        comunidade, com o apoio do Google Developer Groups (GDG). É onde ideias
-        ganham vida, conexões acontecem e o futuro da tecnologia é construído
-        com colaboração, diversidade e muita energia criativa.
-      </p>
-      <p>
-        Se você ama tecnologia, adora aprender e quer fazer parte de algo
-        transformador, esse evento é pra você!
-      </p>
+      {description && <p>{description}</p>}
+      <p>{subtitle}</p>
 
       <section className={styles.TagList}>
         {tags.map((tag, idx) => (
           <div key={idx} className={styles.Tag}>
-            <Image src={tag.icon} alt="" />
+            {tag.icon && <Image src={tag.icon} alt="" />}
             {tag.text}
           </div>
         ))}
       </section>
-      <a className={styles.Link} href={configValues.eventLinkRegistrationUrl}>
-        Fazer parte do DevFest
-      </a>
+      {button && (
+        <a className={styles.Link} href={button.href}>
+          {button.text}
+        </a>
+      )}
     </section>
   );
 };

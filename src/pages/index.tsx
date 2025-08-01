@@ -1,13 +1,10 @@
 import { getSchedule } from "back-features/schedule";
 import { getSpeakers } from "back-features/speakers";
 import { getSponsors } from "back-features/sponsors";
-import { EventLocationSection } from "components/devfest-triangulo-2023/event-location";
 import { ScheduleSection } from "components/devfest-triangulo-2023/schedule-section/schedule-section";
-import SponsorEventSection from "components/devfest-triangulo-2023/sponsor-event-section";
 import { CountdownTimer } from "components/devfest-triangulo-2025/CountdownTimer";
 import { Header } from "components/devfest-triangulo-2025/Header";
 import { Presentation } from "components/devfest-triangulo-2025/Presentation";
-import SponsorsSection from "components/sponsors-section/sponsors-section";
 import { Schedule } from "models/schedule";
 import { Speaker } from "models/speaker";
 import { SponsorLevel } from "models/sponsor-level";
@@ -19,12 +16,15 @@ import { InfiniteBanner } from "@components/devfest-triangulo-2025/InfiniteBanne
 import { PastEvent } from "@components/devfest-triangulo-2025/PastEvent";
 import { Speakers } from "@components/devfest-triangulo-2025/Speakers";
 import { EventLocation } from "@components/devfest-triangulo-2025/EventLocation";
-import { Sponsors } from "@components/devfest-triangulo-2025/Sponsors";
 
 import ErrorBoundary from "../components/error-boundary";
 import BaseLayout from "../layouts/base-layout";
 
-// https://alvarotrigo.com/blog/css-animations-scroll/
+import BusinesCenter from "@/public/devfest-2025/icons/business_center.svg";
+import ChildCare from "@/public/devfest-2025/icons/child_care.svg";
+import Handshake from "@/public/devfest-2025/icons/handshake.svg";
+import Mic from "@/public/devfest-2025/icons/mic.svg";
+import Trophy from "@/public/devfest-2025/icons/trophy.svg";
 
 interface HomePageProps {
   speakers: Array<Speaker>;
@@ -41,7 +41,30 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
         <Hero />
 
         <section className={`${styles.Section} Section`}>
-          <Presentation />
+          <Presentation
+            tags={[
+              { icon: Mic, text: "Palestras inspiradoras" },
+              { icon: BusinesCenter, text: "Estandes de empresas" },
+              { icon: Trophy, text: "Dinâmicas interativas" },
+              { icon: Handshake, text: "Networking sem fronteiras" },
+              { icon: ChildCare, text: "Área kids" },
+            ]}
+            title={{
+              text: "Onde mentes curiosas se conectam e",
+              highlight: "o futuro é programado em comunidade",
+              highlightPosition: "end",
+            }}
+            button={{
+              text: "Fazer parte do DevFest",
+              href: "",
+            }}
+            description=" O DevFest é um super festival de tecnologia feito por e para a
+        comunidade, com o apoio do Google Developer Groups (GDG). É onde ideias
+        ganham vida, conexões acontecem e o futuro da tecnologia é construído
+        com colaboração, diversidade e muita energia criativa."
+            subtitle="Se você ama tecnologia, adora aprender e quer fazer parte de algo
+        transformador, esse evento é pra você!"
+          />
         </section>
 
         <section className={`${styles.Section} Section`}>
@@ -69,7 +92,35 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
         </section>
 
         <section className={`${styles.Section} Section`}>
-          <Sponsors sponsors={[]} />
+          <Presentation
+            tags={[
+              { text: "Arquitetura" },
+              { text: "Carreira" },
+              { text: "Dados" },
+              { text: "Tecnologias web" },
+              { text: "QA" },
+              { text: "Inteligência artificial" },
+              { text: "Design" },
+              { text: "Machine Learning" },
+              { text: "Games" },
+              { text: "Devops" },
+              { text: "E muito mais..." },
+            ]}
+            title={{
+              text: "inspira o presente e constrói o futuro, está aqui",
+              highlight: "Quem",
+              highlightPosition: "start",
+            }}
+            subtitle="Em breve conheça as mentes e os temas incríveis que subirão ao palco do DevFest."
+          />
+        </section>
+
+        <section className={`${styles.Section} Section`}>
+          <SpeakerSection speakers={speakers} />
+        </section>
+
+        <section>
+          <ScheduleSection schedule={schedule} speakers={speakers} />
         </section>
 
         <section className={`${styles.Section} Section`}>
