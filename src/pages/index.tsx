@@ -1,26 +1,28 @@
-import { getSchedule } from "back-features/schedule";
-import { getSpeaker } from "back-features/speakers";
-import { getSponsors } from "back-features/sponsors";
-import { EventLocationSection } from "components/devfest-triangulo-2023/event-location";
-import { ScheduleSection } from "components/devfest-triangulo-2023/schedule-section/schedule-section";
-import SponsorEventSection from "components/devfest-triangulo-2023/sponsor-event-section";
-import { CountdownTimer } from "components/devfest-triangulo-2025/CountdownTimer";
-import { Header } from "components/devfest-triangulo-2025/Header";
-import { Presentation } from "components/devfest-triangulo-2025/Presentation";
-import { HeroSection } from "components/hero-section";
-import SpeakerSection from "components/speakers-section/speakers-section";
-import SponsorsSection from "components/sponsors-section/sponsors-section";
-import { Schedule } from "models/schedule";
-import { Speaker } from "models/speaker";
-import { SponsorLevel } from "models/sponsor-level";
-import styles from "styles/Home.module.css";
+import { getSchedule } from 'back-features/schedule';
+import { getSpeaker } from 'back-features/speakers';
+import { getSponsors } from 'back-features/sponsors';
+import { EventLocationSection } from 'components/devfest-triangulo-2023/event-location';
+import {
+    ScheduleSection
+} from 'components/devfest-triangulo-2023/schedule-section/schedule-section';
+import SponsorEventSection from 'components/devfest-triangulo-2023/sponsor-event-section';
+import { CountdownTimer } from 'components/devfest-triangulo-2025/CountdownTimer';
+import { Header } from 'components/devfest-triangulo-2025/Header';
+import { Presentation } from 'components/devfest-triangulo-2025/Presentation';
+import SpeakerSection from 'components/speakers-section/speakers-section';
+import SponsorsSection from 'components/sponsors-section/sponsors-section';
+import { Schedule } from 'models/schedule';
+import { Speaker } from 'models/speaker';
+import { SponsorLevel } from 'models/sponsor-level';
+import styles from 'styles/Home.module.css';
 
-import { ExtraInfo } from "@/components/devfest-triangulo-2025/ExtraInfo";
-import { InfiniteBanner } from "@/components/devfest-triangulo-2025/InfiniteBanner";
-import { PastEvent } from "@/components/devfest-triangulo-2025/PastEvent";
+import { ExtraInfo } from '@/components/devfest-triangulo-2025/ExtraInfo';
+import { Hero } from '@/components/devfest-triangulo-2025/Hero';
+import { InfiniteBanner } from '@/components/devfest-triangulo-2025/InfiniteBanner';
+import { PastEvent } from '@/components/devfest-triangulo-2025/PastEvent';
 
-import ErrorBoundary from "../components/error-boundary";
-import BaseLayout from "../layouts/base-layout";
+import ErrorBoundary from '../components/error-boundary';
+import BaseLayout from '../layouts/base-layout';
 
 // https://alvarotrigo.com/blog/css-animations-scroll/
 
@@ -36,7 +38,7 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
       <ErrorBoundary>
         <Header />
 
-        <HeroSection />
+        <Hero />
 
         <section className={`${styles.Section} Section`}>
           <Presentation />

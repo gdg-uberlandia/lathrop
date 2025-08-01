@@ -1,0 +1,169 @@
+.Hero {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  max-width: var(--xl);
+  padding: 2.5rem 1.125rem 0;
+  margin: 0 auto;
+  align-items: stretch;
+  position: relative;
+  flex-direction: column;
+}
+
+.HeroSection {
+  position: relative;
+  display: flex;
+  flex-direction: column-reverse;
+  width: 100%;
+  gap: 1.5rem;
+}
+
+.GDGLogo {
+  border-radius: 16px;
+  background-color: var(--black);
+  position: absolute;
+  bottom: -1rem;
+  left: -1rem;
+  padding: 1rem;
+}
+
+.RightSide {
+  flex-direction: column;
+  align-items: center;
+  padding-inline: 1rem;
+}
+
+.HeroLogo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  justify-content: flex-end;
+  flex-grow: 1;
+  max-width: 490px;
+  margin: 0 auto;
+}
+
+.Details {
+  justify-content: space-between;
+  display: flex;
+  font-size: 0.875rem;
+  width: 100%;
+}
+
+.Details .Icon {
+  padding: 10px;
+  border-radius: 100%;
+  background-color: var(--yellow-1);
+  margin-right: 0.5rem;
+}
+
+.SectionOut {
+  position: absolute;
+  bottom: 5vh;
+  right: 0;
+  width: 80vw;
+}
+
+.HeroFooterButton {
+  margin: 4rem auto 0;
+}
+
+.HeroFooterButton:hover {
+  border: 1px solid var(--white);
+  color: var(--white);
+}
+
+.HeroButton {
+  border-radius: 0.75rem;
+  cursor: pointer;
+  line-height: 1rem;
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  transition: all 150ms ease-out;
+  white-space: nowrap;
+  background: var(--blue-1);
+  border: 1px solid var(--blue-1);
+  color: var(--white);
+  text-align: center;
+  width: fit-content;
+}
+
+@media only screen and (min-width: 769px) {
+  .HeroSection {
+    flex-direction: row;
+  }
+
+  .SectionSide {
+    width: 50%;
+    display: flex;
+  }
+
+  .RightSide{
+    align-items: flex-end;
+    z-index: 99;
+  }
+
+  .SidePhoto {
+    width: 100%;
+  }
+
+  .HeroLogo {
+    justify-content: end;
+    width: 73%;
+    min-width: 312px;
+    margin: 0;
+  }
+
+  .Details {
+    margin-top: min( 22vh, 15vw);
+  }
+
+  .SectionOut {
+    position: absolute;
+    bottom: -50px;
+    right: 50%;
+    width: 35%;
+    transform: translateX(45%);
+  }
+}
+
+@media only screen and (min-width: 491px) {
+}
+/* 
+  .Hero {
+    margin-inline: 1.35rem;
+  }
+  .HeroSection {
+    flex-direction: column-reverse;
+    max-width: 100%;
+    padding-inline: 0rem;
+    gap: 4rem;
+  }
+
+  .SectionSide {
+    display: flex;
+    width: 100%;
+    border-radius: 0;
+    position: relative;
+  }
+
+  .GDGLogo {
+    padding: 2rem 1rem 2rem 3rem;
+    width: clamp(120px, min(19vw, 18vh), 240px);
+  }
+
+  .RightSide {
+    align-items: center;
+  }
+
+  .Details {
+    margin-top: 2rem;
+  }
+
+  .SectionOut {
+    bottom: unset !important;
+    width: 100%;
+    right: -50%;
+  }
+} */
