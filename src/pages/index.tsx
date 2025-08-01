@@ -55,7 +55,11 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
         </section>
 
         <section className={`${styles.Section} Section`}>
-          <InfiniteBanner />
+          <InfiniteBanner
+            direction="leftToRight"
+            items={["Os ingressos são limitados", "Garanta sua vaga"]}
+            speed={70}
+          />
         </section>
 
         <section className={`${styles.Section} Section`}>

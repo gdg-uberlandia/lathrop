@@ -6,8 +6,15 @@
   position: relative;
 }
 
-.InfiniteBanner::before,
-.InfiniteBanner::after {
+.InfiniteBannerWrapper {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  padding: 1rem 0;
+}
+
+.InfiniteBannerWrapper::before,
+.InfiniteBannerWrapper::after {
   content: "";
   position: absolute;
   top: 0;
@@ -17,30 +24,22 @@
   pointer-events: none;
 }
 
-.InfiniteBanner::before {
+.InfiniteBannerWrapper::before {
   left: -5px;
   background: linear-gradient(to right, var(--black) 0%, transparent 100%);
 }
 
-.InfiniteBanner::after {
+.InfiniteBannerWrapper::after {
   right: -5px;
   background: linear-gradient(to left, var(--black) 0%, transparent 100%);
 }
 
-.Container {
-  display: flex;
-  flex-wrap: nowrap;
-  white-space: nowrap;
-  overflow-x: hidden;
+.InfiniteBannerTrack {
+  display: inline-flex;
   gap: 2rem;
-  scrollbar-width: none;
 }
 
-.Container::-webkit-scrollbar {
-  display: none;
-}
-
-.Item {
+.InfiniteBannerItem {
   display: flex;
   justify-content: center;
   align-items: center;
