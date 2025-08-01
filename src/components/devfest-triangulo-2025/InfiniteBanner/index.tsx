@@ -1,79 +1,56 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
-import styles from "./InfiniteBanner.module.css";
+import styles from "./InfiniteBanner.module.css"; // você pode usar CSS Modules ou Tailwind
 
 interface InfiniteBannerProps {
+  items: string[];
   speed?: number;
-  direction?: "left" | "right";
+  direction?: "leftToRight" | "rightToLeft";
 }
 
-const items = ["Os ingressos são limitados"];
-
 export const InfiniteBanner = ({
+  items,
   speed = 40,
-  direction = "left",
+  direction = "leftToRight",
 }: InfiniteBannerProps) => {
+  const [width, setWidth] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [copies, setCopies] = useState(2);
-  const lastTimestamp = useRef<number | null>(null);
+
+  const repeatedItems = Array(20).fill(items).flat();
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    if (containerRef.current) {
+      setWidth(containerRef.current.scrollWidth / 2);
+    }
+  }, []);
 
-    const singleItemWidth = 302 + 32;
-    const containerWidth = container.offsetWidth;
-
-    const itemsPerRow = Math.ceil(containerWidth / singleItemWidth);
-    setCopies(Math.max(2, itemsPerRow * 2));
-  }, [items]);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    let animationFrameId: number;
-
-    const step = (timestamp: number) => {
-      if (lastTimestamp.current === null) lastTimestamp.current = timestamp;
-      const elapsed = timestamp - lastTimestamp.current;
-      lastTimestamp.current = timestamp;
-
-      const distance = (speed * elapsed) / 1000;
-
-      if (direction === "right") {
-        container.scrollLeft += distance;
-        if (container.scrollLeft >= container.scrollWidth / 2) {
-          container.scrollLeft = 0;
-        }
-      } else {
-        container.scrollLeft -= distance;
-        if (container.scrollLeft <= 0) {
-          container.scrollLeft = container.scrollWidth / 2;
-        }
-      }
-
-      animationFrameId = requestAnimationFrame(step);
-    };
-
-    animationFrameId = requestAnimationFrame(step);
-
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [speed, direction, copies]);
-
-  const renderedItems = Array.from({ length: copies }, (_, copyIdx) =>
-    items.map((item, i) => (
-      <div key={`${copyIdx}-${i}`} className={styles.Item}>
-        {item}
-      </div>
-    )),
-  );
+  const flow =
+    direction === "leftToRight" ? { x: [-width, 0] } : { x: [0, -width] };
 
   return (
-    <div className={styles.InfiniteBanner}>
-      <div ref={containerRef} className={styles.Container}>
-        {renderedItems}
+    <section className={styles.InfiniteBanner}>
+      <div className={styles.InfiniteBannerWrapper}>
+        <motion.div
+          ref={containerRef}
+          className={styles.InfiniteBannerTrack}
+          animate={flow}
+          transition={{
+            repeat: Infinity,
+            repeatType: "loop",
+            ease: "linear",
+            duration: speed,
+          }}
+        >
+          {repeatedItems.map((item, index) => (
+            <span className={styles.InfiniteBannerItem} key={index}>
+              {item}
+            </span>
+          ))}
+        </motion.div>
       </div>
-    </div>
+    </section>
   );
 };
