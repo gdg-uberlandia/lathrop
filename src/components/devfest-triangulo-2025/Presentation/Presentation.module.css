@@ -1,5 +1,5 @@
 .Presentation {
-  max-width: var(--lg);
+  max-width: var(--md2);
   padding: 4rem 1.5rem;
   gap: 1.5rem;
   display: flex;
@@ -16,7 +16,6 @@
 }
 
 .Title {
-  font-family: Google Sans;
   font-weight: 400;
   font-size: 3rem;
   line-height: 1em;
@@ -33,6 +32,7 @@
   padding: 0;
   max-width: 54rem;
   font-size: 1.125rem;
+  font-weight: 400;
 }
 
 .TagList {
@@ -41,6 +41,7 @@
   flex-wrap: wrap;
   justify-content: center;
 }
+
 .Tag {
   border-radius: 64px;
   padding: 0.5rem 1rem;

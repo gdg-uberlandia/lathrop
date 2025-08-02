@@ -32,13 +32,13 @@ export const Presentation = ({
 }: PresentationProps) => {
   return (
     <section className={styles.Presentation} id="about">
-      <h1 className={styles.Title}>
+      <h3 className={styles.Title}>
         {title.highlightPosition === "start" && <span>{title.highlight} </span>}
         {title.text}
         {title.highlightPosition === "end" && <span> {title.highlight}</span>}
-      </h1>
+      </h3>
       {description && <p>{description}</p>}
-      <p>{subtitle}</p>
+      <p className="presentation__subtitle">{subtitle}</p>
 
       <section className={styles.TagList}>
         {tags.map((tag, idx) => (
@@ -48,6 +48,7 @@ export const Presentation = ({
           </div>
         ))}
       </section>
+
       {button && (
         <a className={styles.Link} href={button.href}>
           {button.text}
