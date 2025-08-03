@@ -6,6 +6,7 @@ import DevFest2022 from "@public/devfest-2025/devfest-2022.png";
 import DevFest2023 from "@public/devfest-2025/devfest-2023.png";
 import DevFest2024 from "@public/devfest-2025/devfest-2024.png";
 import AndroidCheese from "@public/devfest-2025/footer-image.png";
+import LinkedinIcon from "@public/devfest-2025/icons/linkedin-footer.svg";
 import InstagramIcon from "@public/devfest-2025/icons/instagram-footer.svg";
 import MailIcon from "@public/devfest-2025/icons/mail-footer.svg";
 
@@ -20,11 +21,9 @@ export const Footer = () => {
         <Image alt="" src={DevFest2023} />
         <Image alt="" src={DevFest2024} />
       </div>
-      <footer className={styles.Links}>
-        <LogoGDG height={18} width={224} inverted />{" "}
-        <a href={config.codeOfConduct} target="_blank">
-          Código de Conduta
-        </a>
+
+      <footer>
+        <LogoGDG height={18} width={224} inverted />
         <div className={styles.SocialIcons}>
           <a href={`mailto:${config.email}`} target="_blank">
             <Image
@@ -42,7 +41,18 @@ export const Footer = () => {
               height={24}
             />
           </a>
+          <a href={config.socialMedia.linkedin} target="_blank">
+            <Image
+              alt="Logomarca do Linkedin"
+              src={LinkedinIcon}
+              width={24}
+              height={24}
+            />
+          </a>
         </div>
+        <a href={config.codeOfConduct} target="_blank" className={styles.Link}>
+          Código de Conduta
+        </a>
       </footer>
     </section>
   );

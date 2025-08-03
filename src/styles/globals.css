@@ -119,6 +119,10 @@ a {
   text-decoration: none;
 }
 
+a:hover {
+  color: var(--blue-1);
+}
+
 * {
   box-sizing: border-box;
 }

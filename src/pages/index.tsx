@@ -19,11 +19,11 @@ import { EventLocation } from "@components/devfest-triangulo-2025/EventLocation"
 import ErrorBoundary from "../components/error-boundary";
 import BaseLayout from "../layouts/base-layout";
 
-import BusinesCenter from "@/public/devfest-2025/icons/business_center.svg";
-import ChildCare from "@/public/devfest-2025/icons/child_care.svg";
-import Handshake from "@/public/devfest-2025/icons/handshake.svg";
-import Mic from "@/public/devfest-2025/icons/mic.svg";
-import Trophy from "@/public/devfest-2025/icons/trophy.svg";
+import BusinesCenter from "@public/devfest-2025/icons/business_center.svg";
+import ChildCare from "@public/devfest-2025/icons/child_care.svg";
+import Handshake from "@public/devfest-2025/icons/handshake.svg";
+import Mic from "@public/devfest-2025/icons/mic.svg";
+import Trophy from "@public/devfest-2025/icons/trophy.svg";
 
 interface HomePageProps {
   speakers: Array<Speaker>;
