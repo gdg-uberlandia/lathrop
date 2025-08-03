@@ -13,7 +13,7 @@ import styles from "./Hero.module.css";
 
 export const Hero = () => {
   return (
-    <section className={styles.Hero}>
+    <section className={styles.Hero} id="hero">
       <div className={styles.HeroSection}>
         <section className={styles.SectionSide}>
           <div className={styles.SidePhoto}>

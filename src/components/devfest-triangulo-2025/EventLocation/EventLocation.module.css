@@ -1,7 +1,6 @@
 .EventLocation {
   padding: 1rem;
   max-width: var(--xl);
-  margin: 0 auto;
 }
 
 .EventLocationHeader {

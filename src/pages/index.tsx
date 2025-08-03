@@ -9,7 +9,6 @@ import { Speaker } from "models/speaker";
 import { SponsorLevel } from "models/sponsor-level";
 import styles from "styles/Home.module.css";
 
-import { ExtraInfo } from "@components/devfest-triangulo-2025/ExtraInfo";
 import { Hero } from "@components/devfest-triangulo-2025/Hero";
 import { InfiniteBanner } from "@components/devfest-triangulo-2025/InfiniteBanner";
 import { PastEvent } from "@components/devfest-triangulo-2025/PastEvent";
@@ -24,6 +23,7 @@ import Handshake from "@public/devfest-2025/icons/handshake.svg";
 import Mic from "@public/devfest-2025/icons/mic.svg";
 import Trophy from "@public/devfest-2025/icons/trophy.svg";
 import { Faq } from "@components/devfest-triangulo-2025/Faq";
+import configValues from "@helpers/config";
 
 interface HomePageProps {
   speakers: Array<Speaker>;
@@ -64,21 +64,36 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           subtitle="Se você ama tecnologia, adora aprender e quer fazer parte de algo
         transformador, esse evento é pra você!"
           className={styles.Section}
+          id="event-description"
         />
 
-        <CountdownTimer className={styles.Section} />
+        <CountdownTimer className={styles.Section} id="countdown" />
 
-        <section className={styles.Section}>
-          <PastEvent />
-        </section>
+        <PastEvent className={styles.Section} id="past-event" />
 
-        <ExtraInfo className={styles.Section} />
+        <Presentation
+          title={
+            <>
+              <span>Garanta a sua vaga</span> no DevFest
+            </>
+          }
+          subtitle="O maior DevFest da América Latina está chegando, e o melhor é que você
+        pode fazer parte disso tudo. Aprendizado, conexão, experiências únicas e
+        muita inovação te esperam."
+          button={{
+            text: "Garantir a minha vaga",
+            href: configValues.eventLinkRegistrationUrl,
+          }}
+          className={styles.Section}
+          id="registration"
+        />
 
         <InfiniteBanner
           direction="leftToRight"
           items={["Os ingressos são limitados", "Garanta sua vaga"]}
           speed={70}
           className={styles.Section}
+          id="infinite-banner"
         />
 
         <Presentation
@@ -103,6 +118,7 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           }
           subtitle="Em breve conheça as mentes e os temas incríveis que subirão ao palco do DevFest."
           className={styles.Section}
+          id="talk-categories"
         />
 
         <Presentation
@@ -119,11 +135,12 @@ No DevFest, sua empresa não só ganha visibilidade, ela se torna parte ativa da
             href: "",
           }}
           className={styles.Section}
+          id="sponsor"
         />
 
-        <EventLocation className={styles.Section} />
+        <EventLocation className={styles.Section} id="location" />
 
-        <Faq className={styles.Section} />
+        <Faq className={styles.Section} id="faq" />
       </ErrorBoundary>
     </>
   );

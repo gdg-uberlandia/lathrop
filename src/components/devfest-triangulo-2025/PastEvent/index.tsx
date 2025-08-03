@@ -16,7 +16,9 @@ const tags: Tag[] = [
   { text: "+ 20 palestras" },
 ];
 
-export const PastEvent = () => {
+interface PastEventProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+export const PastEvent = ({ className, ...rest }: PastEventProps) => {
   const youtubeVideoId = "csAx-6rJ1L8";
   useEffect(() => {
     const isMobile = /iPhone|Android|Mobile/i.test(navigator.userAgent);
@@ -53,7 +55,7 @@ export const PastEvent = () => {
     }
   }, [youtubeVideoId]);
   return (
-    <>
+    <section className={className} {...rest}>
       <article className={styles.PastEvent}>
         <h1 className={styles.Title}>
           Como foi a<span> última edição</span>
@@ -91,6 +93,6 @@ export const PastEvent = () => {
           Veja mais em @devfesttriangulo
         </a>
       </div>
-    </>
+    </section>
   );
 };

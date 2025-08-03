@@ -1,7 +1,6 @@
 .InfiniteBanner {
   width: 100%;
   max-width: var(--xl);
-  margin: 0 auto;
   overflow: hidden;
   position: relative;
 }

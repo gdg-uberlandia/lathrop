@@ -20,11 +20,9 @@ const DATE_DISTANCE_LABELS: Record<string, string> = {
   seconds: "segundos",
 };
 
-interface CountdownTimerProps {
-  className?: string;
-}
+interface CountdownTimerProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export const CountdownTimer = ({ className }: CountdownTimerProps) => {
+export const CountdownTimer = ({ className, ...rest }: CountdownTimerProps) => {
   const [_dateDistance, _setDateDistance] = useState({
     distance: 0,
     days: 0,
@@ -53,7 +51,7 @@ export const CountdownTimer = ({ className }: CountdownTimerProps) => {
   }, []);
 
   return (
-    <section className={clsx(styles.CountdownTimer, className)}>
+    <section className={clsx(styles.CountdownTimer, className)} {...rest}>
       {Object.keys(DATE_DISTANCE_LABELS).map((key, idx) => (
         <CountdownItem
           key={`${key}-${idx}`}

@@ -6,13 +6,13 @@ import clsx from "clsx";
 
 type Tag = { icon?: string; text: string };
 
-interface PresentationProps {
+interface PresentationProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   title: ReactNode;
   subtitle: string;
   tags?: Tag[];
   description?: string;
   button?: PresentationButton;
-  className?: string;
 }
 
 interface PresentationButton {
@@ -27,9 +27,10 @@ export const Presentation = ({
   tags = [],
   button,
   className,
+  ...rest
 }: PresentationProps) => {
   return (
-    <section className={clsx(styles.Presentation, className)}>
+    <section className={clsx(styles.Presentation, className)} {...rest}>
       <h3 className={styles.Title}>{title}</h3>
       {description && <p>{description}</p>}
       <p className="presentation__subtitle">{subtitle}</p>

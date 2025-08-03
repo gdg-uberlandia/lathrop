@@ -4,13 +4,11 @@ import styles from "./styles.module.css";
 import { Presentation } from "../Presentation";
 import { FaqItem } from "./components/FaqItem";
 
-interface FaqProps {
-  className?: string;
-}
+interface FaqProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export const Faq = ({ className }: FaqProps) => {
+export const Faq = ({ className, ...rest }: FaqProps) => {
   return (
-    <section className={className}>
+    <section className={className} {...rest}>
       <Presentation
         title={
           <>
