@@ -1,0 +1,32 @@
+.TagWrapper {
+  display: flex;
+  position: relative;
+  width: max-content;
+}
+.TagBorder {
+  content: "";
+  border-radius: inherit;
+  background: var(--gradient-1);
+  width: calc(100% + 2px);
+  margin: -1px;
+  border-radius: 64px;
+  position: absolute;
+  height: calc(100% + 2px);
+  top: 0;
+  bottom: 0;
+  z-index: 0;
+}
+
+.TagInner {
+  border-radius: 64px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  line-height: 1rem;
+  width: fit-content;
+  align-items: center;
+  position: relative;
+  background: var(--black);
+  border: solid 1px transparent;
+  width: fit-content;
+  z-index: 2;
+}
