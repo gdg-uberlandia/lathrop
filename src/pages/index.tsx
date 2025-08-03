@@ -13,7 +13,6 @@ import { ExtraInfo } from "@components/devfest-triangulo-2025/ExtraInfo";
 import { Hero } from "@components/devfest-triangulo-2025/Hero";
 import { InfiniteBanner } from "@components/devfest-triangulo-2025/InfiniteBanner";
 import { PastEvent } from "@components/devfest-triangulo-2025/PastEvent";
-import { Speakers } from "@components/devfest-triangulo-2025/Speakers";
 import { EventLocation } from "@components/devfest-triangulo-2025/EventLocation";
 
 import ErrorBoundary from "../components/error-boundary";
@@ -40,7 +39,7 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
 
         <Hero />
 
-        <section className={`${styles.Section} Section`}>
+        <section className={styles.Section}>
           <Presentation
             tags={[
               { icon: Mic, text: "Palestras inspiradoras" },
@@ -68,19 +67,19 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           />
         </section>
 
-        <section className={`${styles.Section} Section`}>
+        <section className={styles.Section}>
           <CountdownTimer />
         </section>
 
-        <section className={`${styles.Section} Section`}>
+        <section className={styles.Section}>
           <PastEvent />
         </section>
 
-        <section className={`${styles.Section} Section`}>
+        <section className={styles.Section}>
           <ExtraInfo />
         </section>
 
-        <section className={`${styles.Section} Section`}>
+        <section className={styles.Section}>
           <InfiniteBanner
             direction="leftToRight"
             items={["Os ingressos são limitados", "Garanta sua vaga"]}
@@ -88,7 +87,7 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           />
         </section>
 
-        <section className={`${styles.Section} Section`}>
+        <section className={styles.Section}>
           <Presentation
             tags={[
               { text: "Arquitetura" },
@@ -113,7 +112,7 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           />
         </section>
 
-        <section className={`${styles.Section} Section`}>
+        <section className={styles.Section}>
           <Presentation
             title={
               <>
@@ -130,19 +129,11 @@ No DevFest, sua empresa não só ganha visibilidade, ela se torna parte ativa da
           />
         </section>
 
-        {/* <section className={`${styles.Section} Section`}>
-          <SpeakerSection speakers={speakers} />
-        </section>
-
-        <section>
-          <ScheduleSection schedule={schedule} speakers={speakers} />
-        </section> */}
-
-        <section className={`${styles.Section} Section`}>
+        <section className={styles.Section}>
           <EventLocation />
         </section>
 
-        <section className={`${styles.Section} Section`}>
+        <section className={styles.Section}>
           <Faq />
         </section>
       </ErrorBoundary>

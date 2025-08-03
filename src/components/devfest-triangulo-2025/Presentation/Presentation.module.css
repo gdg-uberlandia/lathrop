@@ -1,18 +1,12 @@
 .Presentation {
   max-width: var(--md2);
-  padding: 4rem 1.5rem;
+  padding: 1.5rem 1.5rem 4rem 1.5rem;
   gap: 1.5rem;
   display: flex;
   flex-direction: column;
   text-align: center;
   align-items: center;
   margin: 0 auto;
-}
-
-@media (min-width: 431px) {
-  .Presentation {
-    padding: 4rem;
-  }
 }
 
 .Title {
@@ -52,8 +46,16 @@
   align-items: center;
 
   border: 1px solid transparent;
-  background: linear-gradient(var(--black), var(--black)) padding-box,
-  linear-gradient(270deg, #4285F4 0%, #AF50BB 32.21%, #D93A53 65.38%, #F2C438 100%) border-box;
+  background:
+    linear-gradient(var(--black), var(--black)) padding-box,
+    linear-gradient(
+        270deg,
+        #4285f4 0%,
+        #af50bb 32.21%,
+        #d93a53 65.38%,
+        #f2c438 100%
+      )
+      border-box;
 }
 
 .Link {
