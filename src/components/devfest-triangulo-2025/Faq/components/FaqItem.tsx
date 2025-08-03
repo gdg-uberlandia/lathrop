@@ -11,7 +11,7 @@ export const FaqItem = ({ title, content }: FaqItemProps) => {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <section
+    <article
       className={clsx(styles.FaqItem, expanded && styles.FaqItemExpanded)}
     >
       <div className={styles.FaqItemTitle}>
@@ -72,6 +72,6 @@ export const FaqItem = ({ title, content }: FaqItemProps) => {
           <p>{content}</p>
         </div>
       </div>
-    </section>
+    </article>
   );
 };

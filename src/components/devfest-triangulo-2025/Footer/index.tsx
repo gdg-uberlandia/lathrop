@@ -2,8 +2,8 @@ import Image from "next/image";
 
 import { LogoGDG } from "@assets/images/LogoGDG";
 import config from "@helpers/config";
-import DevFest2022 from "@public/devfest-2025/devfest-2022.png";
 import DevFest2023 from "@public/devfest-2025/devfest-2023.png";
+import DevFest2022 from "@public/devfest-2025/devfest-2022.png";
 import DevFest2024 from "@public/devfest-2025/devfest-2024.png";
 import AndroidCheese from "@public/devfest-2025/footer-image.png";
 import LinkedinIcon from "@public/devfest-2025/icons/linkedin-footer.svg";
@@ -15,11 +15,28 @@ import styles from "./Footer.module.css";
 export const Footer = () => {
   return (
     <section className={styles.Footer}>
-      <Image alt="" src={AndroidCheese} className={styles.Media} />
+      <Image
+        alt="Um boneco amarelo estilizado, que lembra o logotipo do sistema operacional Android, acena com a mão esquerda levantada. O boneco tem um corpo cilíndrico, uma cabeça arredondada com duas pequenas antenas e duas pernas curtas e grossas. Há algumas manchas texturizadas em sua superfície, dando a impressão de ser feito de um material rústico ou envelhecido. O fundo da imagem é transparente, indicado pelo padrão quadriculado"
+        src={AndroidCheese}
+        className={styles.Media}
+      />
+
       <div className={styles.LastEventLogos}>
-        <Image alt="" src={DevFest2022} />
-        <Image alt="" src={DevFest2023} />
-        <Image alt="" src={DevFest2024} />
+        <Image
+          alt="Um boneco amarelo estilizado, que lembra o logotipo do sistema operacional Android, acena com a mão esquerda levantada. O boneco tem um corpo cilíndrico, uma cabeça arredondada com duas pequenas antenas e duas pernas curtas e grossas. Há algumas manchas texturizadas em sua superfície, dando a impressão de ser feito de um material rústico ou envelhecido. O fundo da imagem é transparente, indicado pelo padrão quadriculado"
+          src={DevFest2022}
+          height={100}
+        />
+        <Image
+          alt="Ilustração de uma lanterna amarela com aparência rústica. No topo, um pequeno boneco amarelo, semelhante ao mascote do Android, acena no lugar do botão. A lanterna projeta um feixe de luz para baixo, revelando a silhueta branca e desgastada de um dinossauro Tiranossauro Rex. O fundo da imagem é transparente."
+          src={DevFest2023}
+          height={172}
+        />
+        <Image
+          alt="Ilustração estilizada de um confronto entre um boneco amarelo, que lembra o mascote do Android, e a silhueta preta de um dinossauro T-Rex. O dinossauro avança com a boca aberta, enquanto o boneco amarelo está inclinado para trás, como se estivesse caindo ou em meio a uma luta. Ao fundo, um círculo branco com linhas curvas cinzas indica movimento. O fundo da imagem é transparente"
+          src={DevFest2024}
+          height={89}
+        />
       </div>
 
       <footer>

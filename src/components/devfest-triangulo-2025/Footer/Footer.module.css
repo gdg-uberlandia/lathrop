@@ -5,8 +5,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 4rem;
-  margin-top: 14.25rem;
+  padding: 4rem 2.5rem 0 2.5rem;
+  margin-top: 7.75rem;
 }
 
 .Footer footer {
@@ -15,22 +15,22 @@
   display: flex;
   justify-content: center;
   width: 100%;
-  padding: 1rem 2.5rem;
+  padding: 1rem 0;
   gap: 1.875rem;
+  margin-top: 1rem;
 }
 
 .Media {
   max-width: 300px;
   max-height: 364px;
-  margin-bottom: 7.75rem;
+  margin-bottom: 10.75rem;
 }
 
 .LastEventLogos {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.375rem;
-  margin-bottom: 2rem;
+  gap: 1.5rem;
 }
 
 .SocialIcons {
@@ -53,16 +53,21 @@
 }
 
 @media only screen and (min-width: 700px) {
+  .Footer {
+    margin-top: 10.25rem;
+  }
+
   .LastEventLogos {
     width: 100%;
     flex-direction: row;
     justify-content: flex-end;
-    padding: 1rem;
+    gap: 5rem;
   }
 
   .Media {
     max-width: 515px;
     max-height: 618px;
+    margin-bottom: 7.75rem;
   }
 
   .Footer footer {

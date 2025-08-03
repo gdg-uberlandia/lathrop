@@ -1,12 +1,12 @@
 .FaqContainer {
   max-width: var(--xl);
-  padding: 0 1.5rem;
+  padding: 0 1.5rem 2.5rem 1.5rem;
   display: grid;
   gap: 1rem;
 }
 
 @media (min-width: 640px) {
   .FaqContainer {
-    padding: 0 4rem;
+    padding: 0 1.5rem 4rem 1.5rem;
   }
 }
