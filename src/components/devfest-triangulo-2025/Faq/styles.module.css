@@ -1,0 +1,13 @@
+.FaqContainer {
+  margin-top: 4rem;
+  max-width: var(--xl);
+  padding: 0 1.5rem;
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .FaqContainer {
+    padding: 0 4rem;
+  }
+}

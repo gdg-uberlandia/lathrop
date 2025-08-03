@@ -1,0 +1,73 @@
+.FaqItem {
+  border: 1px solid var(--gray-2);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 250ms ease-in-out;
+}
+
+.FaqItemExpanded {
+  border: 1px solid var(--blue-1);
+}
+
+.FaqItem p {
+  margin-bottom: 0;
+}
+
+.FaqItemTitle {
+  align-items: center;
+  color: var(--ice);
+  display: flex;
+  justify-content: space-between;
+}
+
+.FaqItemButton {
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+}
+
+.FaqItemButton svg {
+  fill: var(--ice);
+}
+
+.FaqItemButton:hover svg {
+  fill: var(--blue-1);
+  transition: all 250ms ease;
+}
+
+.FaqItemContent {
+  color: var(--gray-4);
+}
+
+.FaqItemContentShow,
+.FaqItemContentHidden {
+  display: grid;
+  transition: grid-template-rows 250ms ease-in-out;
+}
+
+.FaqItemContentInner {
+  overflow: hidden;
+}
+
+.FaqItemContentInner p {
+  color: var(--gray-4);
+  margin-top: 1.5rem;
+  margin-bottom: 0;
+}
+
+.FaqItemContentHidden {
+  grid-template-rows: 0fr;
+}
+
+.FaqItemContentShow {
+  grid-template-rows: 1fr;
+}
+
+@media (min-width: 640px) {
+  .FaqItem {
+    padding: 1.5rem 4rem;
+  }
+}

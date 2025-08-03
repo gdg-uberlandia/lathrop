@@ -24,6 +24,7 @@ import ChildCare from "@public/devfest-2025/icons/child_care.svg";
 import Handshake from "@public/devfest-2025/icons/handshake.svg";
 import Mic from "@public/devfest-2025/icons/mic.svg";
 import Trophy from "@public/devfest-2025/icons/trophy.svg";
+import { Faq } from "@components/devfest-triangulo-2025/Faq";
 
 interface HomePageProps {
   speakers: Array<Speaker>;
@@ -88,10 +89,6 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
         </section>
 
         <section className={`${styles.Section} Section`}>
-          <Speakers speakers={[]} />
-        </section>
-
-        <section className={`${styles.Section} Section`}>
           <Presentation
             tags={[
               { text: "Arquitetura" },
@@ -143,6 +140,10 @@ No DevFest, sua empresa não só ganha visibilidade, ela se torna parte ativa da
 
         <section className={`${styles.Section} Section`}>
           <EventLocation />
+        </section>
+
+        <section className={`${styles.Section} Section`}>
+          <Faq />
         </section>
       </ErrorBoundary>
     </>
