@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import styles from "./Presentation.module.css";
 import { ReactNode } from "react";
+import clsx from "clsx";
 
 type Tag = { icon?: string; text: string };
 
@@ -11,6 +12,7 @@ interface PresentationProps {
   tags?: Tag[];
   description?: string;
   button?: PresentationButton;
+  className?: string;
 }
 
 interface PresentationButton {
@@ -24,9 +26,10 @@ export const Presentation = ({
   description,
   tags = [],
   button,
+  className,
 }: PresentationProps) => {
   return (
-    <section className={styles.Presentation}>
+    <section className={clsx(styles.Presentation, className)}>
       <h3 className={styles.Title}>{title}</h3>
       {description && <p>{description}</p>}
       <p className="presentation__subtitle">{subtitle}</p>

@@ -4,9 +4,13 @@ import styles from "./styles.module.css";
 import { Presentation } from "../Presentation";
 import { FaqItem } from "./components/FaqItem";
 
-export const Faq = () => {
+interface FaqProps {
+  className?: string;
+}
+
+export const Faq = ({ className }: FaqProps) => {
   return (
-    <>
+    <section className={className}>
       <Presentation
         title={
           <>
@@ -63,6 +67,6 @@ export const Faq = () => {
           content="Colocar descrição aqui."
         />
       </div>
-    </>
+    </section>
   );
 };

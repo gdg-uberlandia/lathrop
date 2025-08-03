@@ -39,103 +39,91 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
 
         <Hero />
 
-        <section className={styles.Section}>
-          <Presentation
-            tags={[
-              { icon: Mic, text: "Palestras inspiradoras" },
-              { icon: BusinesCenter, text: "Estandes de empresas" },
-              { icon: Trophy, text: "Dinâmicas interativas" },
-              { icon: Handshake, text: "Networking sem fronteiras" },
-              { icon: ChildCare, text: "Área kids" },
-            ]}
-            title={
-              <>
-                Onde mentes curiosas se conectam e{" "}
-                <span>o futuro é programado em comunidade</span>
-              </>
-            }
-            button={{
-              text: "Fazer parte do DevFest",
-              href: "",
-            }}
-            description=" O DevFest é um super festival de tecnologia feito por e para a
+        <Presentation
+          tags={[
+            { icon: Mic, text: "Palestras inspiradoras" },
+            { icon: BusinesCenter, text: "Estandes de empresas" },
+            { icon: Trophy, text: "Dinâmicas interativas" },
+            { icon: Handshake, text: "Networking sem fronteiras" },
+            { icon: ChildCare, text: "Área kids" },
+          ]}
+          title={
+            <>
+              Onde mentes curiosas se conectam e{" "}
+              <span>o futuro é programado em comunidade</span>
+            </>
+          }
+          button={{
+            text: "Fazer parte do DevFest",
+            href: "",
+          }}
+          description=" O DevFest é um super festival de tecnologia feito por e para a
         comunidade, com o apoio do Google Developer Groups (GDG). É onde ideias
         ganham vida, conexões acontecem e o futuro da tecnologia é construído
         com colaboração, diversidade e muita energia criativa."
-            subtitle="Se você ama tecnologia, adora aprender e quer fazer parte de algo
+          subtitle="Se você ama tecnologia, adora aprender e quer fazer parte de algo
         transformador, esse evento é pra você!"
-          />
-        </section>
+          className={styles.Section}
+        />
 
-        <section className={styles.Section}>
-          <CountdownTimer />
-        </section>
+        <CountdownTimer className={styles.Section} />
 
         <section className={styles.Section}>
           <PastEvent />
         </section>
 
-        <section className={styles.Section}>
-          <ExtraInfo />
-        </section>
+        <ExtraInfo className={styles.Section} />
 
-        <section className={styles.Section}>
-          <InfiniteBanner
-            direction="leftToRight"
-            items={["Os ingressos são limitados", "Garanta sua vaga"]}
-            speed={70}
-          />
-        </section>
+        <InfiniteBanner
+          direction="leftToRight"
+          items={["Os ingressos são limitados", "Garanta sua vaga"]}
+          speed={70}
+          className={styles.Section}
+        />
 
-        <section className={styles.Section}>
-          <Presentation
-            tags={[
-              { text: "Arquitetura" },
-              { text: "Carreira" },
-              { text: "Dados" },
-              { text: "Tecnologias web" },
-              { text: "QA" },
-              { text: "Inteligência artificial" },
-              { text: "Design" },
-              { text: "Machine Learning" },
-              { text: "Games" },
-              { text: "Devops" },
-              { text: "E muito mais..." },
-            ]}
-            title={
-              <>
-                <span>Quem</span> inspira o presente e constrói o futuro, está
-                aqui
-              </>
-            }
-            subtitle="Em breve conheça as mentes e os temas incríveis que subirão ao palco do DevFest."
-          />
-        </section>
+        <Presentation
+          tags={[
+            { text: "Arquitetura" },
+            { text: "Carreira" },
+            { text: "Dados" },
+            { text: "Tecnologias web" },
+            { text: "QA" },
+            { text: "Inteligência artificial" },
+            { text: "Design" },
+            { text: "Machine Learning" },
+            { text: "Games" },
+            { text: "Devops" },
+            { text: "E muito mais..." },
+          ]}
+          title={
+            <>
+              <span>Quem</span> inspira o presente e constrói o futuro, está
+              aqui
+            </>
+          }
+          subtitle="Em breve conheça as mentes e os temas incríveis que subirão ao palco do DevFest."
+          className={styles.Section}
+        />
 
-        <section className={styles.Section}>
-          <Presentation
-            title={
-              <>
-                <span>Marcas</span> que acreditam no poder da tecnologia e da
-                comunidade têm lugar garantido
-              </>
-            }
-            subtitle="Seja um patrocinador do melhor festival de tecnologia da América Latina e conecte sua marca a milhares de mentes curiosas, criativas e apaixonadas por inovação. 
+        <Presentation
+          title={
+            <>
+              <span>Marcas</span> que acreditam no poder da tecnologia e da
+              comunidade têm lugar garantido
+            </>
+          }
+          subtitle="Seja um patrocinador do melhor festival de tecnologia da América Latina e conecte sua marca a milhares de mentes curiosas, criativas e apaixonadas por inovação. 
 No DevFest, sua empresa não só ganha visibilidade, ela se torna parte ativa da transformação do ecossistema tech!"
-            button={{
-              text: "Quero apoiar o DevFest",
-              href: "",
-            }}
-          />
-        </section>
+          button={{
+            text: "Quero apoiar o DevFest",
+            href: "",
+          }}
+          className={styles.Section}
+        />
 
-        <section className={styles.Section}>
-          <EventLocation />
-        </section>
+        <EventLocation className={styles.Section} />
 
-        <section className={styles.Section}>
-          <Faq />
-        </section>
+        <Faq className={styles.Section} />
       </ErrorBoundary>
     </>
   );

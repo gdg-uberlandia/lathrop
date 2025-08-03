@@ -54,7 +54,7 @@ export const PastEvent = () => {
   }, [youtubeVideoId]);
   return (
     <>
-      <section className={styles.PastEvent}>
+      <article className={styles.PastEvent}>
         <h1 className={styles.Title}>
           Como foi a<span> última edição</span>
         </h1>
@@ -70,9 +70,9 @@ export const PastEvent = () => {
             </div>
           ))}
         </section>
-      </section>
+      </article>
 
-      <section className={styles.FullRow}>
+      <div className={styles.FullRow}>
         <section className={styles.Caroussel}>
           <div className={styles.CustomLeftBracket}>
             <Image src={LeftBracket} alt="" layout="responsive" />
@@ -90,7 +90,7 @@ export const PastEvent = () => {
           <Image src={Instagram} alt="" />
           Veja mais em @devfesttriangulo
         </a>
-      </section>
+      </div>
     </>
   );
 };
