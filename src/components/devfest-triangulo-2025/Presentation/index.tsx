@@ -21,7 +21,7 @@ const tags: Tag[] = [
 
 export const Presentation = () => {
   return (
-    <section className={styles.Presentation}>
+    <section className={styles.Presentation} id="about">
       <h1 className={styles.Title}>
         Onde mentes curiosas se conectam e{" "}
         <span>o futuro é programado em comunidade</span>

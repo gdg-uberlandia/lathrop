@@ -10,7 +10,7 @@ import styles from "./EventLocation.module.css";
 
 export const EventLocation = () => {
   return (
-    <section className={styles.EventLocation} id="local">
+    <section className={styles.EventLocation} id="place">
       <section className={styles.EventLocationHeader}>
         <h1 className={styles.Title}>
           <span>Onde</span> e <span>quando</span> tudo vai acontecer
