@@ -56,6 +56,7 @@
     linear-gradient(270deg, #4285F4 0%, #AF50BB 32.21%, #D93A53 65.38%, #F2C438 100%) border-box;
   width: 3rem;
   height: 3rem;
+  flex-shrink: 0;
 }
 
 .LocationInfoText {
