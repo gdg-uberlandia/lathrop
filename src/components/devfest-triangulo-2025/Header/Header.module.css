@@ -132,7 +132,7 @@
 .HeaderNavContainerOpened {
   align-items: center;
   background-color: var(--black);
-  height: 100%;
+  height: 100vh;
   z-index: 1000;
 }
 
