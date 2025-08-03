@@ -1,7 +1,6 @@
 import { getSchedule } from "back-features/schedule";
 import { getSpeakers } from "back-features/speakers";
 import { getSponsors } from "back-features/sponsors";
-import { ScheduleSection } from "components/devfest-triangulo-2023/schedule-section/schedule-section";
 import { CountdownTimer } from "components/devfest-triangulo-2025/CountdownTimer";
 import { Header } from "components/devfest-triangulo-2025/Header";
 import { Presentation } from "components/devfest-triangulo-2025/Presentation";
@@ -49,11 +48,12 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
               { icon: Handshake, text: "Networking sem fronteiras" },
               { icon: ChildCare, text: "Área kids" },
             ]}
-            title={{
-              text: "Onde mentes curiosas se conectam e",
-              highlight: "o futuro é programado em comunidade",
-              highlightPosition: "end",
-            }}
+            title={
+              <>
+                Onde mentes curiosas se conectam e{" "}
+                <span>o futuro é programado em comunidade</span>
+              </>
+            }
             button={{
               text: "Fazer parte do DevFest",
               href: "",
@@ -106,22 +106,40 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
               { text: "Devops" },
               { text: "E muito mais..." },
             ]}
-            title={{
-              text: "inspira o presente e constrói o futuro, está aqui",
-              highlight: "Quem",
-              highlightPosition: "start",
-            }}
+            title={
+              <>
+                <span>Quem</span> inspira o presente e constrói o futuro, está
+                aqui
+              </>
+            }
             subtitle="Em breve conheça as mentes e os temas incríveis que subirão ao palco do DevFest."
           />
         </section>
 
         <section className={`${styles.Section} Section`}>
+          <Presentation
+            title={
+              <>
+                <span>Marcas</span> que acreditam no poder da tecnologia e da
+                comunidade têm lugar garantido
+              </>
+            }
+            subtitle="Seja um patrocinador do melhor festival de tecnologia da América Latina e conecte sua marca a milhares de mentes curiosas, criativas e apaixonadas por inovação. 
+No DevFest, sua empresa não só ganha visibilidade, ela se torna parte ativa da transformação do ecossistema tech!"
+            button={{
+              text: "Quero apoiar o DevFest",
+              href: "",
+            }}
+          />
+        </section>
+
+        {/* <section className={`${styles.Section} Section`}>
           <SpeakerSection speakers={speakers} />
         </section>
 
         <section>
           <ScheduleSection schedule={schedule} speakers={speakers} />
-        </section>
+        </section> */}
 
         <section className={`${styles.Section} Section`}>
           <EventLocation />
