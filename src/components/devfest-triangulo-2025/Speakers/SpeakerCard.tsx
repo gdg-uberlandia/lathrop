@@ -22,7 +22,7 @@ interface SpeakerCardProps {
 
 const SpeakerCard = ({ speaker, index }: SpeakerCardProps) => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [maxLength, setMaxLength] = useState(124); // valor inicial padrão para desktop
+  const [maxLength, setMaxLength] = useState(124);
 
   const modalToggle = () => setModalOpen(!modalOpen);
 
@@ -33,7 +33,7 @@ const SpeakerCard = ({ speaker, index }: SpeakerCardProps) => {
       setMaxLength(window.innerWidth < 860 ? 68 : 124);
     };
 
-    updateLength(); // executa na montagem
+    updateLength();
     window.addEventListener("resize", updateLength);
 
     return () => window.removeEventListener("resize", updateLength);

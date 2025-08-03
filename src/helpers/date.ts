@@ -36,4 +36,16 @@ const calcDateDistance = (date: Date) => {
   };
 };
 
-export { changeTimeZone, calcDateDistance };
+const toHumanDate = (dataStr: string) => {
+  const date = new Date(dataStr);
+  const formatter = new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+  const formatted = formatter.format(date);
+
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+};
+
+export { changeTimeZone, calcDateDistance, toHumanDate };

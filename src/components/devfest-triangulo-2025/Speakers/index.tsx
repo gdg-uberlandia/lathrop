@@ -33,7 +33,7 @@ export const Speakers = ({ speakers }: SpeakersProps) => {
         Em breve conheça as mentes e os temas incríveis que subirão ao palco do
         {` ${configValues.name}`}.
       </p>
-      {speakers ? (
+      {speakers.length ? (
         <section className={styles.SpeakersList}>
           {speakers.map((speaker, idx) => (
             <SpeakerCard key={idx} speaker={speaker} index={idx} />

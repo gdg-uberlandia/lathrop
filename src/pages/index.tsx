@@ -1,5 +1,5 @@
 import { getSchedule } from "back-features/schedule";
-import { getSpeaker } from "back-features/speakers";
+import { getSpeakers } from "back-features/speakers";
 import { getSponsors } from "back-features/sponsors";
 import { EventLocationSection } from "components/devfest-triangulo-2023/event-location";
 import { ScheduleSection } from "components/devfest-triangulo-2023/schedule-section/schedule-section";
@@ -18,6 +18,8 @@ import { Hero } from "@components/devfest-triangulo-2025/Hero";
 import { InfiniteBanner } from "@components/devfest-triangulo-2025/InfiniteBanner";
 import { PastEvent } from "@components/devfest-triangulo-2025/PastEvent";
 import { Speakers } from "@components/devfest-triangulo-2025/Speakers";
+import { EventLocation } from "@components/devfest-triangulo-2025/EventLocation";
+import { Sponsors } from "@components/devfest-triangulo-2025/Sponsors";
 
 import ErrorBoundary from "../components/error-boundary";
 import BaseLayout from "../layouts/base-layout";
@@ -63,23 +65,15 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
         </section>
 
         <section className={`${styles.Section} Section`}>
-          <Speakers speakers={speakers} />
+          <Speakers speakers={[]} />
         </section>
 
         <section className={`${styles.Section} Section`}>
-          <SponsorEventSection />
-        </section>
-
-        <section>
-          <ScheduleSection schedule={schedule} speakers={speakers} />
+          <Sponsors sponsors={[]} />
         </section>
 
         <section className={`${styles.Section} Section`}>
-          <SponsorsSection sponsors={sponsors} />
-        </section>
-
-        <section className={`${styles.Section} Section`}>
-          <EventLocationSection />
+          <EventLocation />
         </section>
       </ErrorBoundary>
     </>
@@ -90,7 +84,7 @@ export async function getServerSideProps() {
   try {
     return {
       props: {
-        speakers: await getSpeaker(),
+        speakers: await getSpeakers(),
         sponsors: await getSponsors(),
         schedule: await getSchedule(),
       },

@@ -1,4 +1,4 @@
-.ExtraInfo {
+.Sponsors {
   max-width: var(--xl);
   gap: 1.5rem;
   display: flex;
@@ -14,18 +14,21 @@
   font-weight: 400;
   font-size: 3rem;
   line-height: 1em;
+
   text-align: center;
+  max-width: 44rem;
 }
 
-.Title span {
+.Sponsors span {
   color: var(--blue-1);
 }
 
-.ExtraInfo p {
+.Sponsors p {
   margin: 0;
   padding: 0;
   font-size: 1.125rem;
   max-width: 834px;
+  max-width: 43rem;
 }
 
 .Link {

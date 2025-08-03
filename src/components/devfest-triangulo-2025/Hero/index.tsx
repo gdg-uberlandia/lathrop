@@ -44,7 +44,7 @@ export const Hero = () => {
               layout="responsive"
             />
             <a
-              href=""
+              href={configValues.eventLinkRegistrationUrl}
               className={clsx(
                 styles.HeroButton,
                 styles.HeroSubscribeButton,
@@ -90,7 +90,7 @@ export const Hero = () => {
         />
       </section>
       <a
-        href=""
+        href={configValues.eventLinkRegistrationUrl}
         className={clsx(
           styles.HeroButton,
           styles.HeroSubscribeButton,

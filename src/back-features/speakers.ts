@@ -66,7 +66,7 @@ const createSpeaker = async ({
   }
 };
 
-const getSpeaker = async () => {
+const getSpeakers = async () => {
   try {
     const speakersQuerySnapshot = await db
       .collection(SPEAKERS_COLLECTION)
@@ -94,4 +94,4 @@ const deleteSpeaker = async (speakerId: string) => {
   };
 };
 
-export { createSpeaker, getSpeaker, deleteSpeaker };
+export { createSpeaker, getSpeakers, deleteSpeaker };

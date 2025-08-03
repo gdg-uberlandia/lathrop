@@ -1,10 +1,27 @@
 .Header {
-  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+
   display: flex;
   justify-content: space-between;
+  align-items: center;
+
   max-width: var(--xl);
   padding: 1rem 1.5rem;
   margin: 0 auto;
+
+  transition: transform 0.3s ease-in-out;
+  transform: translateY(0);
+  background-color: var(--black);
+
+  padding-bottom: 90px;
+}
+
+.HeaderHidden {
+  transform: translateY(-100%);
 }
 
 .HeaderNavContainer {
@@ -48,6 +65,14 @@
   gap: 1rem;
 }
 
+.ButtonGroupMobileOnly {
+  position: absolute;
+  top: 50px;
+  max-width: 100%;
+  margin: 1rem auto;
+  width: calc(100% - 3rem);
+}
+
 @media (max-width: 768px) {
   .HeaderButtonGroup {
     flex-grow: 1;
@@ -63,6 +88,7 @@
   text-decoration: none;
   transition: all 150ms ease-out;
   font-weight: 500;
+  font-size: 0.875rem;
 }
 
 .HeaderSponsorButton {
@@ -166,6 +192,13 @@
   .HeaderNavContainer,
   .HeaderSubscribeButton {
     display: flex;
+  }
+  .ButtonGroupMobileOnly {
+    display: none;
+  }
+
+  .Header {
+    padding-bottom: 1rem;
   }
 }
 

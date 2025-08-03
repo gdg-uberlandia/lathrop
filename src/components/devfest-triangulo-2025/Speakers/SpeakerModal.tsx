@@ -123,14 +123,18 @@ const SpeakerModal: React.FC<ModalProps> = ({
             <div>
               {speaker.content && (
                 <>
-                  <Tag text="Palestra" />
+                  <Tag>
+                    <>Palestra</>
+                  </Tag>
                   <p>{speaker.content}</p>
                 </>
               )}
 
               {speaker.miniBio && (
                 <>
-                  <Tag text="Sobre mim" />
+                  <Tag>
+                    <>Sobre mim</>
+                  </Tag>
                   <p>{speaker.miniBio}</p>
                 </>
               )}

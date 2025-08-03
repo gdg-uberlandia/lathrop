@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import configValues from "@helpers/config";
 import BusinesCenter from "@public/devfest-2025/icons/business_center.svg";
 import ChildCare from "@public/devfest-2025/icons/child_care.svg";
 import Handshake from "@public/devfest-2025/icons/handshake.svg";
@@ -44,7 +45,7 @@ export const Presentation = () => {
           </div>
         ))}
       </section>
-      <a className={styles.Link} href="">
+      <a className={styles.Link} href={configValues.eventLinkRegistrationUrl}>
         Fazer parte do DevFest
       </a>
     </section>

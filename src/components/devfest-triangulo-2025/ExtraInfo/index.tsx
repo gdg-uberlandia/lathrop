@@ -1,3 +1,5 @@
+import configValues from "@helpers/config";
+
 import styles from "./ExtraInfo.module.css";
 
 export const ExtraInfo = () => {
@@ -13,8 +15,8 @@ export const ExtraInfo = () => {
           e muita inovação te esperam.
         </p>
 
-        <a className={styles.Link} href="">
-          Garantir a mina vaga
+        <a className={styles.Link} href={configValues.eventLinkRegistrationUrl}>
+          Garantir a minha vaga
         </a>
       </section>
     </>

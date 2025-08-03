@@ -8,6 +8,7 @@
   align-items: stretch;
   position: relative;
   flex-direction: column;
+  margin-top: 120px;
 }
 
 .HeroSection {
@@ -89,7 +90,10 @@
   width: fit-content;
 }
 
-@media only screen and (min-width: 769px) {
+@media only screen and (min-width: 768px) {
+  .Hero {
+    margin-top: 80px;
+  }
   .HeroSection {
     flex-direction: row;
   }
@@ -130,40 +134,3 @@
 
 @media only screen and (min-width: 491px) {
 }
-/* 
-  .Hero {
-    margin-inline: 1.35rem;
-  }
-  .HeroSection {
-    flex-direction: column-reverse;
-    max-width: 100%;
-    padding-inline: 0rem;
-    gap: 4rem;
-  }
-
-  .SectionSide {
-    display: flex;
-    width: 100%;
-    border-radius: 0;
-    position: relative;
-  }
-
-  .GDGLogo {
-    padding: 2rem 1rem 2rem 3rem;
-    width: clamp(120px, min(19vw, 18vh), 240px);
-  }
-
-  .RightSide {
-    align-items: center;
-  }
-
-  .Details {
-    margin-top: 2rem;
-  }
-
-  .SectionOut {
-    bottom: unset !important;
-    width: 100%;
-    right: -50%;
-  }
-} */

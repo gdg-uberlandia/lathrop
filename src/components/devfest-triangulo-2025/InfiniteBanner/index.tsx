@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
-import styles from "./InfiniteBanner.module.css"; // você pode usar CSS Modules ou Tailwind
+import styles from "./InfiniteBanner.module.css";
 
 interface InfiniteBannerProps {
   items: string[];

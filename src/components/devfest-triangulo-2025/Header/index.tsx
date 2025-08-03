@@ -1,6 +1,6 @@
 import { clsx } from "clsx";
 import { HeaderButtonGroup } from "components/devfest-triangulo-2025/Header/HeaderButtonGroup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Collapse, Nav, NavbarToggler, NavItem, NavLink } from "reactstrap";
 
 import { CloseMenu } from "@assets/images/CloseMenu";
@@ -38,15 +38,30 @@ const NAV_ITEMS = [
 
 export const Header = ({ isRoot = true }: { isRoot?: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const toggle = () => setIsOpen(!isOpen);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
-  const generateRef = (ref: string) => {
-    if (isRoot) return ref;
-    return `/${ref}`;
-  };
+  const toggle = () => setIsOpen(!isOpen);
+  const generateRef = (ref: string) => (isRoot ? ref : `/${ref}`);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY < lastScrollY) {
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY) {
+        setIsVisible(false);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
 
   return (
-    <header className={styles.Header}>
+    <header className={clsx(styles.Header, !isVisible && styles.HeaderHidden)}>
       <LogoGDG height={18} width={224} inverted />
 
       <nav className={styles.HeaderNavContainer}>
@@ -124,6 +139,10 @@ export const Header = ({ isRoot = true }: { isRoot?: boolean }) => {
           ))}
         </Nav>
       </Collapse>
+
+      <div className={styles.ButtonGroupMobileOnly}>
+        <HeaderButtonGroup />
+      </div>
     </header>
   );
 };
