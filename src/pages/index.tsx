@@ -7,7 +7,6 @@ import SponsorEventSection from "components/devfest-triangulo-2023/sponsor-event
 import { CountdownTimer } from "components/devfest-triangulo-2025/CountdownTimer";
 import { Header } from "components/devfest-triangulo-2025/Header";
 import { Presentation } from "components/devfest-triangulo-2025/Presentation";
-import SpeakerSection from "components/speakers-section/speakers-section";
 import SponsorsSection from "components/sponsors-section/sponsors-section";
 import { Schedule } from "models/schedule";
 import { Speaker } from "models/speaker";
@@ -18,6 +17,7 @@ import { ExtraInfo } from "@components/devfest-triangulo-2025/ExtraInfo";
 import { Hero } from "@components/devfest-triangulo-2025/Hero";
 import { InfiniteBanner } from "@components/devfest-triangulo-2025/InfiniteBanner";
 import { PastEvent } from "@components/devfest-triangulo-2025/PastEvent";
+import { Speakers } from "@components/devfest-triangulo-2025/Speakers";
 
 import ErrorBoundary from "../components/error-boundary";
 import BaseLayout from "../layouts/base-layout";
@@ -63,11 +63,11 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
         </section>
 
         <section className={`${styles.Section} Section`}>
-          <SponsorEventSection />
+          <Speakers speakers={speakers} />
         </section>
 
         <section className={`${styles.Section} Section`}>
-          <SpeakerSection speakers={speakers} />
+          <SponsorEventSection />
         </section>
 
         <section>

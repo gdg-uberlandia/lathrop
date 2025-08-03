@@ -99,7 +99,7 @@
     display: flex;
   }
 
-  .RightSide{
+  .RightSide {
     align-items: flex-end;
     z-index: 99;
   }
@@ -116,7 +116,7 @@
   }
 
   .Details {
-    margin-top: min( 22vh, 15vw);
+    margin-top: min(22vh, 15vw);
   }
 
   .SectionOut {
