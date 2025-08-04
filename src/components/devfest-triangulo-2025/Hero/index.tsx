@@ -10,6 +10,7 @@ import SidePhoto from "@public/devfest-2025/hero-photo.png";
 import LocationIcon from "@public/devfest-2025/location.svg";
 
 import styles from "./Hero.module.css";
+import ToolTip from "../ToolTip";
 
 export const Hero = () => {
   return (
@@ -43,16 +44,18 @@ export const Hero = () => {
               loading="eager"
               layout="responsive"
             />
-            <a
-              href={configValues.eventLinkRegistrationUrl}
-              className={clsx(
-                styles.HeroButton,
-                styles.HeroSubscribeButton,
-                "hide-xsm",
-              )}
-            >
-              Garantir minha vaga
-            </a>
+            <ToolTip content="Em breve ⏳" position="bottom">
+              {/* href={configValues.eventLinkRegistrationUrl} */}
+              <a
+                className={clsx(
+                  styles.HeroButton,
+                  styles.HeroSubscribeButton,
+                  "hide-xsm",
+                )}
+              >
+                Garantir minha vaga
+              </a>
+            </ToolTip>
             <div className={styles.Details}>
               <span>
                 <Image
@@ -89,17 +92,19 @@ export const Hero = () => {
           layout="responsive"
         />
       </section>
-      <a
-        href={configValues.eventLinkRegistrationUrl}
-        className={clsx(
-          styles.HeroButton,
-          styles.HeroSubscribeButton,
-          styles.HeroFooterButton,
-          "show-xsm",
-        )}
-      >
-        Garantir minha vaga
-      </a>
+      <ToolTip content="Em breve ⏳" position="bottom">
+        {/* href={configValues.eventLinkRegistrationUrl} */}
+        <a
+          className={clsx(
+            styles.HeroButton,
+            styles.HeroSubscribeButton,
+            styles.HeroFooterButton,
+            "show-xsm",
+          )}
+        >
+          Garantir minha vaga
+        </a>
+      </ToolTip>
     </section>
   );
 };

@@ -8,6 +8,7 @@ import Mic from "@public/devfest-2025/icons/mic.svg";
 import Trophy from "@public/devfest-2025/icons/trophy.svg";
 
 import styles from "./Presentation.module.css";
+import ToolTip from "../ToolTip";
 
 type Tag = { icon: string; text: string };
 
@@ -45,9 +46,10 @@ export const Presentation = () => {
           </div>
         ))}
       </section>
-      <a className={styles.Link} href={configValues.eventLinkRegistrationUrl}>
-        Fazer parte do DevFest
-      </a>
+      <ToolTip content="Em breve ⏳" position="bottom">
+        {/* href={configValues.eventLinkRegistrationUrl} */}
+        <a className={styles.Link}>Fazer parte do DevFest</a>
+      </ToolTip>
     </section>
   );
 };

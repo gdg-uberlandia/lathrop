@@ -25,7 +25,7 @@ const configValues = {
   eventDate: "2025-11-22T08:00:00",
   eventStart: "9:00",
   eventEnd: "19:00",
-  eventLinkRegistrationUrl: "https://doity.com.br/devfest-triangulo-2025",
+  eventLinkRegistrationUrl: "#",
   eventLinkSponsorshipUrl:
     "https://www.canva.com/design/DAGqnTRLIRo/py54Ke6aC5yqYyJXZ8X00A/edit",
   place: "Gaudium Hall",

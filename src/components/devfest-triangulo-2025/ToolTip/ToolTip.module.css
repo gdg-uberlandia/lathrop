@@ -1,0 +1,152 @@
+/* Container principal da tooltip */
+.root {
+  position: relative;
+  display: inline-block;
+}
+
+/* Trigger (elemento que ativa a tooltip) */
+.trigger {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+}
+
+/* Conteúdo da tooltip */
+.content {
+  position: absolute;
+  z-index: 1000;
+  background-color: #000;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.2s ease-in-out;
+  user-select: none;
+  pointer-events: auto;
+}
+
+/* Posicionamento - Top */
+.top {
+  bottom: calc(100% + var(--side-offset, 4px));
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Posicionamento - Bottom */
+.bottom {
+  top: calc(100% + var(--side-offset, 4px));
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Posicionamento - Left */
+.left {
+  right: calc(100% + var(--side-offset, 4px));
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Posicionamento - Right */
+.right {
+  left: calc(100% + var(--side-offset, 4px));
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Seta da tooltip */
+.arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+/* Seta - Top */
+.arrow-top {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px 6px 0 6px;
+  border-color: #000 transparent transparent transparent;
+}
+
+/* Seta - Bottom */
+.arrow-bottom {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 6px 6px 6px;
+  border-color: transparent transparent #000 transparent;
+}
+
+/* Seta - Left */
+.arrow-left {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px 0 6px 6px;
+  border-color: transparent transparent transparent #000;
+}
+
+/* Seta - Right */
+.arrow-right {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px 6px 6px 0;
+  border-color: transparent #000 transparent transparent;
+}
+
+/* Animação de entrada */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Ajuste de posicionamento para setas */
+.top .arrow-top,
+.bottom .arrow-bottom {
+  transform: translateX(-50%);
+}
+
+.left .arrow-left,
+.right .arrow-right {
+  transform: translateY(-50%);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .content {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+  
+  .arrow-top,
+  .arrow-bottom {
+    border-width: 5px 5px 0 5px;
+  }
+  
+  .arrow-bottom {
+    border-width: 0 5px 5px 5px;
+  }
+  
+  .arrow-left {
+    border-width: 5px 0 5px 5px;
+  }
+  
+  .arrow-right {
+    border-width: 5px 5px 5px 0;
+  }
+}
