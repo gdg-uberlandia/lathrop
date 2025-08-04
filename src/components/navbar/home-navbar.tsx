@@ -9,7 +9,7 @@ import {
   NavLink,
 } from "reactstrap";
 import { useRouter } from "next/router";
-import LogoMenu from "../../assets/images/MenuLogo";
+import LogoMenu from "../../assets/images/LogoMenu";
 import styles from "../../styles/Navbar.module.css";
 import Logo from "../logo";
 

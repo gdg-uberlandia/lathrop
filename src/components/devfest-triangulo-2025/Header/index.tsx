@@ -5,7 +5,7 @@ import { Collapse, Nav, NavbarToggler, NavItem, NavLink } from "reactstrap";
 
 import { CloseMenu } from "@assets/images/CloseMenu";
 import { LogoGDG } from "@assets/images/LogoGDG";
-import { LogoMenu } from "@assets/images/MenuLogo";
+import LogoMenu from "@assets/images/LogoMenu";
 
 import styles from "./Header.module.css";
 

@@ -29,7 +29,7 @@ const SpeakersPage = ({ speakers }: SpeakersPageProps) => {
         key={_speaker.id}
         className={styles.card_container}
       >
-        <SpeakerCard {..._speaker} />
+        <SpeakerCard speaker={_speaker} />
       </Col>
     );
   };

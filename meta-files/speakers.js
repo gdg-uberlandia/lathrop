@@ -14,18 +14,18 @@
  */
 
 const spaker = {
-    "company": "",
-    "companyTile": "",
-    "community": "",
-    "title": "",
-    "name": "",
-    "slug": "",
-    "photo": "",
-    "path": "",
-    "tech": "",
-    "topic": "",
-    "miniBio": "",
-    "socialMedia": {
-        "linkedIn": ""
-    }
+  company: "",
+  companyTile: "",
+  community: "",
+  title: "",
+  name: "",
+  slug: "",
+  photo: "",
+  path: "",
+  tech: "",
+  topic: "",
+  miniBio: "",
+  socialMedia: {
+    linkedIn: "",
+  },
 };

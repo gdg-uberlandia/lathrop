@@ -1,11 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  output: "standalone",
   reactStrictMode: true,
   swcMinify: true,
   trailingSlash: true,
   images: {
-    domains: ['firebasestorage.googleapis.com', 'media.licdn.com', 'raw.githubusercontent.com'],
+    domains: [
+      "firebasestorage.googleapis.com",
+      "media.licdn.com",
+      "raw.githubusercontent.com",
+    ],
   },
   /*exportPathMap: async function (
     defaultPathMap,
@@ -19,7 +23,6 @@ const nextConfig = {
       '/campaigns': { page: '/campaigns' },
     }
   },*/
-}
+};
 
-
-module.exports = nextConfig
+module.exports = nextConfig;

@@ -25,7 +25,9 @@
   font-size: 14px;
   font-weight: 500;
   white-space: nowrap;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
   animation: fadeIn 0.2s ease-in-out;
   user-select: none;
   pointer-events: auto;
@@ -132,20 +134,20 @@
     font-size: 12px;
     padding: 6px 10px;
   }
-  
+
   .arrow-top,
   .arrow-bottom {
     border-width: 5px 5px 0 5px;
   }
-  
+
   .arrow-bottom {
     border-width: 0 5px 5px 5px;
   }
-  
+
   .arrow-left {
     border-width: 5px 0 5px 5px;
   }
-  
+
   .arrow-right {
     border-width: 5px 5px 5px 0;
   }

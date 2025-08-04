@@ -1,4 +1,4 @@
-import { createSpeaker, getSpeaker } from "back-features/speakers";
+import { createSpeaker, getSpeakers } from "back-features/speakers";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default function handler(
@@ -6,9 +6,9 @@ export default function handler(
   response: NextApiResponse,
 ) {
   if (request.method === "GET") {
-    getSpeaker()
-      .then((speaker) => {
-        response.json(speaker);
+    getSpeakers()
+      .then((speakers) => {
+        response.json(speakers);
       })
       .catch((error) => {
         response.status(500).send(error);

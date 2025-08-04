@@ -4,11 +4,7 @@ interface LogoProps {
   width?: number;
 }
 
-export const LogoMenu = ({
-  color = "#fff",
-  height = 32,
-  width = 32,
-}: LogoProps) => (
+const LogoMenu = ({ color = "#fff", height = 32, width = 32 }: LogoProps) => (
   <svg
     width={width}
     height={height}
@@ -32,3 +28,4 @@ export const LogoMenu = ({
     </g>
   </svg>
 );
+export default LogoMenu;
