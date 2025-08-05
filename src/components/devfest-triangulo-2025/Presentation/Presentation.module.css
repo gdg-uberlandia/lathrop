@@ -64,6 +64,7 @@
   background: var(--blue-1);
   color: var(--wjhite);
   border: 1px solid var(--blue-1);
+  font-weight: 700;
 }
 
 .Link:hover {
