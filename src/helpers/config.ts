@@ -17,6 +17,7 @@ export interface ConfigValues {
   midiaKit?: string;
   socialMedia?: {
     instagram: string;
+    linkedin: string;
   };
 }
 
@@ -39,6 +40,7 @@ const configValues = {
     "https://www.canva.com/design/DAGqnTRLIRo/py54Ke6aC5yqYyJXZ8X00A/edit",
   socialMedia: {
     instagram: "https://www.instagram.com/devfesttriangulo",
+    linkedin: "https://www.linkedin.com/company/gdg-uberlandia",
   },
   terms: "",
   codeOfConduct:

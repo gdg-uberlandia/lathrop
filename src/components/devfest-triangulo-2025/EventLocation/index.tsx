@@ -7,10 +7,13 @@ import LocationIcon from "@public/devfest-2025/icons/location.svg";
 import ScheduleIcon from "@public/devfest-2025/icons/schedule.svg";
 
 import styles from "./EventLocation.module.css";
+import clsx from "clsx";
 
-export const EventLocation = () => {
+interface EventLocationProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+export const EventLocation = ({ className, ...rest }: EventLocationProps) => {
   return (
-    <section className={styles.EventLocation} id="place">
+    <section className={clsx(styles.EventLocation, className)} {...rest}>
       <section className={styles.EventLocationHeader}>
         <h1 className={styles.Title}>
           <span>Onde</span> e <span>quando</span> tudo vai acontecer

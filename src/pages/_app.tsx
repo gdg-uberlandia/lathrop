@@ -1,8 +1,8 @@
 import "../styles/globals.css";
-import type { AppContext, AppInitialProps, AppProps } from "next/app";
+import type { AppContext, AppInitialProps } from "next/app";
 
 import React, { ReactNode } from "react";
-import { NextComponentType, NextPageContext } from "next";
+import { NextComponentType } from "next";
 
 import GoogleAnalytics from "../components/google-analytics";
 import { AppLayoutProps } from "../../types";

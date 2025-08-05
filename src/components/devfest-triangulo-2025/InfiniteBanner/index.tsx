@@ -4,8 +4,9 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 import styles from "./InfiniteBanner.module.css";
+import clsx from "clsx";
 
-interface InfiniteBannerProps {
+interface InfiniteBannerProps extends React.HTMLAttributes<HTMLDivElement> {
   items: string[];
   speed?: number;
   direction?: "leftToRight" | "rightToLeft";
@@ -15,6 +16,8 @@ export const InfiniteBanner = ({
   items,
   speed = 40,
   direction = "leftToRight",
+  className,
+  ...rest
 }: InfiniteBannerProps) => {
   const [width, setWidth] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -31,7 +34,7 @@ export const InfiniteBanner = ({
     direction === "leftToRight" ? { x: [-width, 0] } : { x: [0, -width] };
 
   return (
-    <section className={styles.InfiniteBanner}>
+    <section className={clsx(styles.InfiniteBanner, className)} {...rest}>
       <div className={styles.InfiniteBannerWrapper}>
         <motion.div
           ref={containerRef}

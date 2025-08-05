@@ -10,7 +10,6 @@
 }
 
 .Title {
-  font-family: Google Sans;
   font-weight: 400;
   font-size: 3rem;
   line-height: 1em;
@@ -73,6 +72,10 @@
   gap: 0.625rem;
   width: fit-content;
   margin-top: 1.5rem;
+}
+
+.InstaLink:hover {
+  transition: color 0.3s ease;
 }
 
 .Link {

@@ -1,55 +1,57 @@
 import Image from "next/image";
 
-import configValues from "@helpers/config";
-import BusinesCenter from "@public/devfest-2025/icons/business_center.svg";
-import ChildCare from "@public/devfest-2025/icons/child_care.svg";
-import Handshake from "@public/devfest-2025/icons/handshake.svg";
-import Mic from "@public/devfest-2025/icons/mic.svg";
-import Trophy from "@public/devfest-2025/icons/trophy.svg";
-
 import styles from "./Presentation.module.css";
 import ToolTip from "../ToolTip";
+import { ReactNode } from "react";
+import clsx from "clsx";
 
-type Tag = { icon: string; text: string };
+type Tag = { icon?: string; text: string };
 
-const tags: Tag[] = [
-  { icon: Mic, text: "Palestras inspiradoras" },
-  { icon: BusinesCenter, text: "Estandes de empresas" },
-  { icon: Trophy, text: "Dinâmicas interativas" },
-  { icon: Handshake, text: "Networking sem fronteiras" },
-  { icon: ChildCare, text: "Área kids" },
-];
+interface PresentationProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  title: ReactNode;
+  subtitle: string;
+  tags?: Tag[];
+  description?: string;
+  button?: PresentationButton;
+}
 
-export const Presentation = () => {
+interface PresentationButton {
+  text: string;
+  href: string;
+}
+
+export const Presentation = ({
+  title,
+  subtitle,
+  description,
+  tags = [],
+  button,
+  className,
+  ...rest
+}: PresentationProps) => {
   return (
-    <section className={styles.Presentation} id="about">
-      <h1 className={styles.Title}>
-        Onde mentes curiosas se conectam e{" "}
-        <span>o futuro é programado em comunidade</span>
-      </h1>
-      <p>
-        O DevFest é um super festival de tecnologia feito por e para a
-        comunidade, com o apoio do Google Developer Groups (GDG). É onde ideias
-        ganham vida, conexões acontecem e o futuro da tecnologia é construído
-        com colaboração, diversidade e muita energia criativa.
-      </p>
-      <p>
-        Se você ama tecnologia, adora aprender e quer fazer parte de algo
-        transformador, esse evento é pra você!
-      </p>
+    <section className={clsx(styles.Presentation, className)} {...rest}>
+      <h3 className={styles.Title}>{title}</h3>
+      {description && <p>{description}</p>}
+      <p className="presentation__subtitle">{subtitle}</p>
 
-      <section className={styles.TagList}>
-        {tags.map((tag, idx) => (
-          <div key={idx} className={styles.Tag}>
-            <Image src={tag.icon} alt="" />
-            {tag.text}
-          </div>
-        ))}
-      </section>
-      <ToolTip content="Em breve ⏳" position="bottom">
-        {/* href={configValues.eventLinkRegistrationUrl} */}
-        <a className={styles.Link}>Fazer parte do DevFest</a>
-      </ToolTip>
+      {!!tags.length && (
+        <section className={styles.TagList}>
+          {tags.map((tag, idx) => (
+            <div key={idx} className={styles.Tag}>
+              {tag.icon && <Image src={tag.icon} alt="" />}
+              {tag.text}
+            </div>
+          ))}
+        </section>
+      )}
+
+      {button && (
+        <a className={styles.Link} href={button.href}>
+          {button.text}
+        </a>
+      )}
     </section>
   );
 };

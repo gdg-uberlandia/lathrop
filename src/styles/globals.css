@@ -23,6 +23,7 @@
 
   --sm: 640px;
   --md: 768px;
+  --md2: 900px;
   --lg: 1024px;
   --xl: 1440px;
 
@@ -116,6 +117,10 @@ body {
 a {
   color: var(--blue);
   text-decoration: none;
+}
+
+a:hover {
+  color: var(--blue-1);
 }
 
 * {
