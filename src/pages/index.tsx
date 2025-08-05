@@ -140,7 +140,7 @@ No DevFest, sua empresa não só ganha visibilidade, ela se torna parte ativa da
 
         <EventLocation className={styles.Section} id="location" />
 
-        <Faq className={styles.Section} id="faq" />
+        {/* <Faq className={styles.Section} id="faq" /> */}
       </ErrorBoundary>
     </>
   );

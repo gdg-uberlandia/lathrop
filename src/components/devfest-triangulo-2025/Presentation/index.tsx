@@ -48,9 +48,14 @@ export const Presentation = ({
       )}
 
       {button && (
-        <a className={styles.Link} href={button.href}>
-          {button.text}
-        </a>
+        <ToolTip content="Em breve ⏳" position="bottom">
+          <a
+            className={styles.Link}
+            // href={button.href}
+          >
+            {button.text}
+          </a>
+        </ToolTip>
       )}
     </section>
   );
