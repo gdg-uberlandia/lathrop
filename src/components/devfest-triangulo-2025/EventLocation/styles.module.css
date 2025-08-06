@@ -1,0 +1,91 @@
+.EventLocation {
+  max-width: calc(var(--lg) + 2rem);
+  width: 100%;
+}
+
+.LocationContainer {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 1.25rem;
+  gap: 4rem;
+  text-align: center;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.LocationInfoContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: flex-start;
+  flex: 1;
+  max-width: 26rem;
+  min-width: 15rem;
+}
+
+.Map {
+  background-color: var(--gray-2);
+  padding: 1.5rem;
+  border-radius: 8px;
+  flex: 1;
+  min-height: 27rem;
+  min-width: 20rem;
+  max-width: 38rem;
+}
+
+.Map iframe {
+  width: 100%;
+  height: 100%;
+}
+
+.LocationInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-align: left;
+}
+
+.LocationInfoIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--black), var(--black)) padding-box,
+    linear-gradient(
+        270deg,
+        #4285f4 0%,
+        #af50bb 32.21%,
+        #d93a53 65.38%,
+        #f2c438 100%
+      )
+      border-box;
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+}
+
+.LocationInfoText {
+  display: flex;
+  flex-direction: column;
+}
+
+.LocationInfoText h3 {
+  font-weight: 700;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.LocationInfoText p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+@media (min-width: 640px) {
+  .Map {
+    min-height: 23rem;
+  }
+}
