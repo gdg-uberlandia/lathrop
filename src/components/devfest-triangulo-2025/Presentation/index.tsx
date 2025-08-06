@@ -48,7 +48,7 @@ export const Presentation = ({
       )}
 
       {button && (
-        <ToolTip content="Em breve ⏳" position="bottom">
+        <ToolTip content="Em breve ⏳" position="bottom" className="mt-4">
           <a
             className={styles.Link}
             // href={button.href}

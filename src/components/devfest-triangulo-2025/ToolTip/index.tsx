@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./ToolTip.module.css";
+import clsx from "clsx";
 
 interface ToolTipProps {
   children: React.ReactNode;
   content?: string;
   position?: "top" | "bottom" | "left" | "right";
   trigger?: "click" | "hover";
+  className?: string;
 }
 
 interface ToolTipContextType {
@@ -127,10 +129,11 @@ const ToolTip: React.FC<ToolTipProps> = ({
   content = "Em breve",
   position = "top",
   trigger = "click",
+  className,
 }) => {
   return (
     <ToolTipProvider>
-      <div className={styles.root}>
+      <div className={clsx(styles.ToolTip, className)}>
         <ToolTipTrigger asChild>{children}</ToolTipTrigger>
         <ToolTipContent position={position}>{content}</ToolTipContent>
       </div>
