@@ -88,6 +88,7 @@
   color: var(--white);
   text-align: center;
   width: fit-content;
+  font-weight: 700;
 }
 
 @media only screen and (min-width: 768px) {
