@@ -28,7 +28,7 @@ const configValues = {
   eventEnd: "19:00",
   eventLinkRegistrationUrl: "#",
   eventLinkSponsorshipUrl:
-    "https://www.canva.com/design/DAGqnTRLIRo/py54Ke6aC5yqYyJXZ8X00A/edit",
+    "https://wa.me//553491846822?text=Gostaria%20de%20saber%20mais%20sobre%20as%20op%C3%A7%C3%B5es%20de%20patroc%C3%ADnio%20para%20o%20Devfest%20Tri%C3%A2ngulo%202025",
   place: "Gaudium Hall",
   placeAddress: "R. Anita, 25 Altamira",
   placeCity: "Uberlândia - MG",
