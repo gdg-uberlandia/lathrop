@@ -55,7 +55,7 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           }
           button={{
             text: "Fazer parte do DevFest",
-            href: "",
+            href: configValues.eventLinkSponsorshipUrl,
           }}
           description=" O DevFest é um super festival de tecnologia feito por e para a
         comunidade, com o apoio do Google Developer Groups (GDG). É onde ideias
@@ -77,12 +77,13 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
               <span>Garanta a sua vaga</span> no DevFest
             </>
           }
+          showTooltip={true}
           subtitle="O maior DevFest da América Latina está chegando, e o melhor é que você
         pode fazer parte disso tudo. Aprendizado, conexão, experiências únicas e
         muita inovação te esperam."
           button={{
             text: "Garantir a minha vaga",
-            href: configValues.eventLinkRegistrationUrl,
+            href: "#",
           }}
           className={styles.Section}
           id="registration"
@@ -132,7 +133,7 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
 No DevFest, sua empresa não só ganha visibilidade, ela se torna parte ativa da transformação do ecossistema tech!"
           button={{
             text: "Quero apoiar o DevFest",
-            href: "",
+            href: configValues.eventLinkSponsorshipUrl,
           }}
           className={styles.Section}
           id="sponsor"

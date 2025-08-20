@@ -14,6 +14,7 @@ interface PresentationProps
   tags?: Tag[];
   description?: string;
   button?: PresentationButton;
+  showTooltip?: boolean;
 }
 
 interface PresentationButton {
@@ -27,9 +28,33 @@ export const Presentation = ({
   description,
   tags = [],
   button,
+  showTooltip = false,
   className,
   ...rest
 }: PresentationProps) => {
+
+
+  const renderButton = () => {
+    if (!button) return null;
+
+    if (showTooltip) {
+      return (
+        <ToolTip content="Em breve ⏳" position="bottom" className="mt-4">
+          <a className={styles.Link} href={button.href}>
+            {button.text}
+          </a>
+        </ToolTip>
+      );
+    }
+
+    return (
+      <a className={styles.Link} href={button.href}>
+        {button.text}
+      </a>
+    );
+  };
+
+
   return (
     <section className={clsx(styles.Presentation, className)} {...rest}>
       <h3 className={styles.Title}>{title}</h3>
@@ -47,16 +72,7 @@ export const Presentation = ({
         </section>
       )}
 
-      {button && (
-        <ToolTip content="Em breve ⏳" position="bottom" className="mt-4">
-          <a
-            className={styles.Link}
-            // href={button.href}
-          >
-            {button.text}
-          </a>
-        </ToolTip>
-      )}
+      {renderButton()}
     </section>
   );
 };
