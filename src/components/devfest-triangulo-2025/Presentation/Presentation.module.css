@@ -16,7 +16,8 @@
   max-width: 54rem;
 }
 
-.Title span {
+.Title span,
+.PresentationSubtitle span {
   color: var(--blue-1);
 }
 
@@ -33,29 +34,6 @@
   gap: 0.6rem;
   flex-wrap: wrap;
   justify-content: center;
-}
-
-.Tag {
-  border-radius: 64px;
-  padding: 0.5rem 1rem;
-  gap: 0.625rem;
-  display: flex;
-  font-size: 1.125rem;
-  line-height: 1rem;
-  width: fit-content;
-  align-items: center;
-
-  border: 1px solid transparent;
-  background:
-    linear-gradient(var(--black), var(--black)) padding-box,
-    linear-gradient(
-        270deg,
-        #4285f4 0%,
-        #af50bb 32.21%,
-        #d93a53 65.38%,
-        #f2c438 100%
-      )
-      border-box;
 }
 
 .Link {

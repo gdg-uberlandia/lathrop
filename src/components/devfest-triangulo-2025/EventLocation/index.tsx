@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { Container } from "reactstrap";
 import { ComponentProps } from "react";
 
-interface EventLocationProps extends ComponentProps<typeof Container> {}
+type EventLocationProps = ComponentProps<typeof Container>;
 
 export const EventLocation = ({ className, ...props }: EventLocationProps) => {
   return (
@@ -12,7 +12,8 @@ export const EventLocation = ({ className, ...props }: EventLocationProps) => {
       <Presentation
         title={
           <>
-            <span>Onde</span> e <span>quando</span> tudo vai acontecer
+            <span className="blue__text">Onde</span> e{" "}
+            <span className="blue__text">quando</span> tudo vai acontecer
           </>
         }
         subtitle="O DevFest Triângulo 2025 já tem hora e lugar marcados, e tudo o que falta é você!"
