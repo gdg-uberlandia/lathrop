@@ -1,19 +1,20 @@
 import { Presentation } from "../Presentation";
 import Image from "next/image";
 import MiniCheese from "@public/devfest-2025/mini-cheese.svg";
-import { Sponsor } from "models/sponsor";
 import SponsorMock from "@public/devfest-2025/sponsor-mock.svg";
 import { Tag } from "../Tag";
 import styles from "./SponsorsSection.module.css";
+import { SponsorCategory, type SponsorLevel } from "models/sponsor-level";
 
 interface SponsorsSectionsProps extends React.HTMLAttributes<HTMLDivElement> {
-  sponsors: Array<Sponsor>;
+  sponsors: Array<SponsorLevel>;
 }
 
 export const SponsorsSection = ({
   className,
   sponsors,
 }: SponsorsSectionsProps) => {
+  const staffSponsor = sponsors.find(({ id }) => id === SponsorCategory.STAFF);
   return (
     <Presentation
       title={
@@ -31,6 +32,10 @@ export const SponsorsSection = ({
           ecossistema tech!
         </>
       }
+      button={{
+        text: "Quero apoiar o DevFest",
+        href: "pegar o numero do wpp",
+      }}
       className={className}
       id="sponsor"
     >
@@ -43,58 +48,65 @@ export const SponsorsSection = ({
           <p>Patrocinadores</p>
         </span>
 
-        <SponsorLevel level="Ouro" images={[SponsorMock, SponsorMock]} />
-        <SponsorLevel level="Prata" images={[SponsorMock, SponsorMock]} />
-        <SponsorLevel level="Bronze" images={[SponsorMock, SponsorMock]} />
-        <SponsorLevel level="Ferro" images={[SponsorMock, SponsorMock]} />
-        <SponsorLevel level="Apoiadores" images={[SponsorMock, SponsorMock]} />
-        <SponsorLevel level="Parceiros" images={[SponsorMock, SponsorMock]} />
+        {sponsors
+          .filter(({ id, name }) => id !== SponsorCategory.STAFF && name)
+          .map((sponsorLevel) => (
+            <SponsorLevel key={sponsorLevel.id} sponsorLevel={sponsorLevel} />
+          ))}
 
-        <article className="mt-5 d-grid gap-3 mb-5">
-          <span className="d-flex align-items-center justify-content-center gap-3 mb-4">
-            <Image
-              src={MiniCheese}
-              alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
-            />
-            <p>
-              Empresas que investem em seus{" "}
-              <span className={styles.TextBlue}>colaboradores</span>
-            </p>
-          </span>
+        {!!staffSponsor && (
+          <article className="mt-5 d-grid gap-3 mb-5">
+            <span className="d-flex align-items-center justify-content-center gap-3 mb-4">
+              <Image
+                src={MiniCheese}
+                alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
+              />
+              <p>
+                Empresas que investem em seus{" "}
+                <span className={styles.TextBlue}>colaboradores</span>
+              </p>
+            </span>
 
-          <div className="d-flex gap-5 flex-wrap">
-            <Image src={SponsorMock} alt="" />
-            <Image src={SponsorMock} alt="" />
-            <Image src={SponsorMock} alt="" />
-            <Image src={SponsorMock} alt="" />
-            <Image src={SponsorMock} alt="" />
-            <Image src={SponsorMock} alt="" />
-            <Image src={SponsorMock} alt="" />
-            <Image src={SponsorMock} alt="" />
-            <Image src={SponsorMock} alt="" />
-            <Image src={SponsorMock} alt="" />
-            <Image src={SponsorMock} alt="" />
-            <Image src={SponsorMock} alt="" />
-          </div>
-        </article>
+            <div className="d-flex gap-5 flex-wrap">
+              {staffSponsor.items.map((item) => (
+                <a href={item.url} target="_blank" key={item.logo}>
+                  <Image
+                    className={styles.SponsorImage}
+                    src={item.logo}
+                    alt={item.name}
+                    height={40}
+                    width={120}
+                  />
+                </a>
+              ))}
+            </div>
+          </article>
+        )}
       </div>
     </Presentation>
   );
 };
 
 interface SponsorLevelProps {
-  level: string;
-  images: Array<string>;
+  sponsorLevel: SponsorLevel;
 }
 
-const SponsorLevel = ({ level, images }: SponsorLevelProps) => {
+const SponsorLevel = ({ sponsorLevel: { name, items } }: SponsorLevelProps) => {
   return (
     <section className="d-flex align-items-center flex-column gap-4 mb-4">
-      <Tag>{level}</Tag>
+      <Tag>{name}</Tag>
 
-      <div className="d-flex gap-5">
-        {images.map((image, i) => (
-          <Image key={i} src={image} alt="" />
+      <div className="d-flex gap-4">
+        {items.map((item) => (
+          <a href={item.url} target="_blank" key={item.logo}>
+            <Image
+              className={styles.SponsorImage}
+              src={item.logo}
+              alt={item.name}
+              height={40}
+              width={120}
+            />
+          </a>
         ))}
       </div>
     </section>

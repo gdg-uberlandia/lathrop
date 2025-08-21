@@ -23,11 +23,11 @@ import Mic from "@public/devfest-2025/icons/mic.svg";
 import Trophy from "@public/devfest-2025/icons/trophy.svg";
 import configValues from "@helpers/config";
 import { SponsorsSection } from "@components/devfest-triangulo-2025/SponsorsSection";
-import { Sponsor } from "models/sponsor";
+import { SponsorLevel } from "models/sponsor-level";
 
 interface HomePageProps {
   speakers: Array<Speaker>;
-  sponsors: Array<Sponsor>;
+  sponsors: Array<SponsorLevel>;
   schedule: Array<Schedule>;
 }
 

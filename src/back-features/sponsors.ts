@@ -1,5 +1,5 @@
 const SPONSORS_COLLECTION = "sponsors";
-import { Sponsor } from "models/sponsor";
+import { SponsorLevel } from "models/sponsor-level";
 import db from "../utils/db";
 
 const getSponsors = async () => {
@@ -7,9 +7,12 @@ const getSponsors = async () => {
     const sponsorsQuerySnapshot = await db
       .collection(SPONSORS_COLLECTION)
       .get();
-    const sponsors: Array<Sponsor> = [];
+    const sponsors: Array<SponsorLevel> = [];
     sponsorsQuerySnapshot.forEach((doc) =>
-      sponsors.push({ ...(doc.data() as Sponsor) }),
+      sponsors.push({
+        ...(doc.data() as SponsorLevel),
+        id: doc.id,
+      }),
     );
     return sponsors;
   } catch (error) {
