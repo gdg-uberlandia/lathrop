@@ -12,7 +12,7 @@ interface SponsorsSectionsProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const SponsorsSection = ({
   className,
-  sponsors,
+  sponsors = [],
 }: SponsorsSectionsProps) => {
   const staffSponsor = sponsors.find(({ id }) => id === SponsorCategory.STAFF);
   return (
@@ -39,55 +39,57 @@ export const SponsorsSection = ({
       className={className}
       id="sponsor"
     >
-      <div className="d-grid gap-4 mt-5">
-        <span className="d-flex align-items-center justify-content-center gap-3 mb-3">
-          <Image
-            src={MiniCheese}
-            alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
-          />
-          <p>Patrocinadores</p>
-        </span>
+      {!!sponsors.length && (
+        <div className="d-grid gap-4 mt-5">
+          <span className="d-flex align-items-center justify-content-center gap-3 mb-3">
+            <Image
+              src={MiniCheese}
+              alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
+            />
+            <p>Patrocinadores</p>
+          </span>
 
-        {sponsors
-          .filter(({ id, name }) => id !== SponsorCategory.STAFF && name)
-          .map((sponsorLevel) => (
-            <SponsorLevel key={sponsorLevel.id} sponsorLevel={sponsorLevel} />
-          ))}
+          {sponsors
+            .filter(({ id, name }) => id !== SponsorCategory.STAFF && name)
+            .map((sponsorLevel) => (
+              <SponsorLevel key={sponsorLevel.id} sponsorLevel={sponsorLevel} />
+            ))}
 
-        {!!staffSponsor && (
-          <article className="mt-5 d-grid gap-3 mb-5">
-            <span className="d-flex align-items-center justify-content-center gap-3 mb-4">
-              <Image
-                src={MiniCheese}
-                alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
-              />
-              <p>
-                Empresas que investem em seus{" "}
-                <span className={styles.TextBlue}>colaboradores</span>
-              </p>
-            </span>
+          {!!staffSponsor && (
+            <article className="mt-5 d-grid gap-3 mb-5">
+              <span className="d-flex align-items-center justify-content-center gap-3 mb-4">
+                <Image
+                  src={MiniCheese}
+                  alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
+                />
+                <p>
+                  Empresas que investem em seus{" "}
+                  <span className={styles.TextBlue}>colaboradores</span>
+                </p>
+              </span>
 
-            <div className="d-flex gap-5 flex-wrap justify-center">
-              {staffSponsor.items.map((item) => (
-                <a
-                  href={item.url}
-                  target="_blank"
-                  key={item.logo}
-                  className="mx-auto"
-                >
-                  <Image
-                    className={styles.SponsorImage}
-                    src={item.logo}
-                    alt={item.name}
-                    height={40}
-                    width={120}
-                  />
-                </a>
-              ))}
-            </div>
-          </article>
-        )}
-      </div>
+              <div className="d-flex gap-5 flex-wrap justify-center">
+                {staffSponsor.items.map((item) => (
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    key={item.logo}
+                    className="mx-auto"
+                  >
+                    <Image
+                      className={styles.SponsorImage}
+                      src={item.logo}
+                      alt={item.name}
+                      height={40}
+                      width={120}
+                    />
+                  </a>
+                ))}
+              </div>
+            </article>
+          )}
+        </div>
+      )}
     </Presentation>
   );
 };
