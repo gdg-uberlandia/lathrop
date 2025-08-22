@@ -67,9 +67,14 @@ export const SponsorsSection = ({
               </p>
             </span>
 
-            <div className="d-flex gap-5 flex-wrap">
+            <div className="d-flex gap-5 flex-wrap justify-center">
               {staffSponsor.items.map((item) => (
-                <a href={item.url} target="_blank" key={item.logo}>
+                <a
+                  href={item.url}
+                  target="_blank"
+                  key={item.logo}
+                  className="mx-auto"
+                >
                   <Image
                     className={styles.SponsorImage}
                     src={item.logo}
@@ -96,7 +101,7 @@ const SponsorLevel = ({ sponsorLevel: { name, items } }: SponsorLevelProps) => {
     <section className="d-flex align-items-center flex-column gap-4 mb-4">
       <Tag>{name}</Tag>
 
-      <div className="d-flex gap-4">
+      <div className="d-flex flex-wrap gap-4">
         {items.map((item) => (
           <a href={item.url} target="_blank" key={item.logo}>
             <Image
