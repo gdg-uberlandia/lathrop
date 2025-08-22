@@ -46,7 +46,12 @@ export const Presentation = ({
     }
 
     return (
-      <a className={styles.Link} href={button.href}>
+      <a
+        className={styles.Link}
+        href={button.href}
+        target="_blank"
+        rel="noreferrer"
+      >
         {button.text}
       </a>
     );
