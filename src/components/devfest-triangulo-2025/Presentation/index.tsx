@@ -32,8 +32,6 @@ export const Presentation = ({
   className,
   ...rest
 }: PresentationProps) => {
-
-
   const renderButton = () => {
     if (!button) return null;
 
@@ -53,7 +51,6 @@ export const Presentation = ({
       </a>
     );
   };
-
 
   return (
     <section className={clsx(styles.Presentation, className)} {...rest}>

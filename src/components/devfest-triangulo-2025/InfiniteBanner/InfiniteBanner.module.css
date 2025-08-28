@@ -18,19 +18,19 @@
   content: "";
   position: absolute;
   top: 0;
-  width: 70px;
+  width: 170px;
   height: 100%;
   z-index: 10;
   pointer-events: none;
 }
 
 .InfiniteBannerWrapper::before {
-  left: -5px;
+  left: 0;
   background: linear-gradient(to right, var(--black) 0%, transparent 100%);
 }
 
 .InfiniteBannerWrapper::after {
-  right: -5px;
+  right: 0;
   background: linear-gradient(to left, var(--black) 0%, transparent 100%);
 }
 
@@ -40,6 +40,17 @@
 }
 
 .InfiniteBannerItem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 302px;
+}
+
+.InfiniteBannerItem img {
+  border-radius: 1rem;
+}
+
+.InfiniteBannerItemSpan {
   display: flex;
   justify-content: center;
   align-items: center;

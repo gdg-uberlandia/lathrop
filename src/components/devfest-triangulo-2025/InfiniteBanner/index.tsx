@@ -5,9 +5,15 @@ import { useEffect, useRef, useState } from "react";
 
 import styles from "./InfiniteBanner.module.css";
 import clsx from "clsx";
+import Image from "next/image";
+
+export type BannerItem =
+  | { type: "text"; content: string }
+  | { type: "image"; src: string; alt?: string }
+  | { type: "video"; src: string; poster?: string };
 
 interface InfiniteBannerProps extends React.HTMLAttributes<HTMLDivElement> {
-  items: string[];
+  items: BannerItem[];
   speed?: number;
   direction?: "leftToRight" | "rightToLeft";
 }
@@ -48,9 +54,36 @@ export const InfiniteBanner = ({
           }}
         >
           {repeatedItems.map((item, index) => (
-            <span className={styles.InfiniteBannerItem} key={index}>
-              {item}
-            </span>
+            <div className={styles.InfiniteBannerItem} key={index}>
+              {item.type === "text" && (
+                <span className={styles.InfiniteBannerItemSpan}>
+                  {item.content}
+                </span>
+              )}
+              {item.type === "image" && (
+                <Image
+                  src={item.src}
+                  alt={item.alt ?? ""}
+                  width={300}
+                  height={100}
+                  style={{
+                    objectFit: "contain",
+                    width: "100%",
+                    maxWidth: "300px",
+                    height: "auto",
+                  }}
+                />
+              )}
+              {item.type === "video" && (
+                <video
+                  src={item.src}
+                  poster={item.poster}
+                  autoPlay
+                  loop
+                  muted
+                />
+              )}
+            </div>
           ))}
         </motion.div>
       </div>
