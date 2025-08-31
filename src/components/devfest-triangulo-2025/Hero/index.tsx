@@ -23,6 +23,11 @@ export const Hero = () => {
               src={SidePhoto}
               priority={true}
               layout="responsive"
+              style={{
+                objectFit: "contain",
+                maxWidth: "100%",
+                height: "auto",
+              }}
             />
           </div>
           <div className={styles.GDGLogo}>
