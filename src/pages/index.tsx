@@ -84,7 +84,7 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
         muita inovação te esperam."
           button={{
             text: "Garantir a minha vaga",
-            href: "#",
+            href: configValues.eventLinkRegistrationUrl,
           }}
           className={styles.Section}
           id="registration"
