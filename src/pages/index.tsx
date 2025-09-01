@@ -6,7 +6,6 @@ import { Header } from "components/devfest-triangulo-2025/Header";
 import { Presentation } from "components/devfest-triangulo-2025/Presentation";
 import { Schedule } from "models/schedule";
 import { Speaker } from "models/speaker";
-import { SponsorLevel } from "models/sponsor-level";
 import styles from "styles/Home.module.css";
 
 import { Hero } from "@components/devfest-triangulo-2025/Hero";
@@ -22,14 +21,15 @@ import ChildCare from "@public/devfest-2025/icons/child_care.svg";
 import Handshake from "@public/devfest-2025/icons/handshake.svg";
 import Mic from "@public/devfest-2025/icons/mic.svg";
 import Trophy from "@public/devfest-2025/icons/trophy.svg";
-import { Faq } from "@components/devfest-triangulo-2025/Faq";
 import configValues from "@helpers/config";
+import { SponsorsSection } from "@components/devfest-triangulo-2025/SponsorsSection";
+import { SponsorLevel } from "models/sponsor-level";
 
 import { devfest2023Images, devfest2024Images } from "@helpers/carroussel";
 
 interface HomePageProps {
   speakers: Array<Speaker>;
-  sponsors: { [key: string]: SponsorLevel };
+  sponsors: Array<SponsorLevel>;
   schedule: Array<Schedule>;
 }
 
@@ -145,22 +145,7 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           id="talk-categories"
         />
 
-        <Presentation
-          title={
-            <>
-              <span>Marcas</span> que acreditam no poder da tecnologia e da
-              comunidade têm lugar garantido
-            </>
-          }
-          subtitle="Seja um patrocinador do melhor festival de tecnologia da América Latina e conecte sua marca a milhares de mentes curiosas, criativas e apaixonadas por inovação. 
-No DevFest, sua empresa não só ganha visibilidade, ela se torna parte ativa da transformação do ecossistema tech!"
-          button={{
-            text: "Quero apoiar o DevFest",
-            href: configValues.eventLinkSponsorshipUrl,
-          }}
-          className={styles.Section}
-          id="sponsor"
-        />
+        <SponsorsSection className={styles.Section} sponsors={sponsors} />
 
         <EventLocation className={styles.Section} id="location" />
 

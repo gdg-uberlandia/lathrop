@@ -1,0 +1,7 @@
+.TextBlue {
+  color: var(--blue-1);
+}
+
+.SponsorImage {
+  object-fit: contain;
+}
