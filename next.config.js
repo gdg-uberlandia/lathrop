@@ -9,6 +9,7 @@ const nextConfig = {
       "firebasestorage.googleapis.com",
       "media.licdn.com",
       "raw.githubusercontent.com",
+      "lh3.googleusercontent.com",
     ],
   },
   /*exportPathMap: async function (

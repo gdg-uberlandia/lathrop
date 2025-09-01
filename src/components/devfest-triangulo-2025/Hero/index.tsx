@@ -10,7 +10,6 @@ import SidePhoto from "@public/devfest-2025/hero-photo.png";
 import LocationIcon from "@public/devfest-2025/location.svg";
 
 import styles from "./Hero.module.css";
-import ToolTip from "../ToolTip";
 
 export const Hero = () => {
   return (
@@ -23,6 +22,11 @@ export const Hero = () => {
               src={SidePhoto}
               priority={true}
               layout="responsive"
+              style={{
+                objectFit: "contain",
+                maxWidth: "100%",
+                height: "auto",
+              }}
             />
           </div>
           <div className={styles.GDGLogo}>
@@ -44,18 +48,16 @@ export const Hero = () => {
               loading="eager"
               layout="responsive"
             />
-            <ToolTip content="Em breve ⏳" position="bottom">
-              {/* href={configValues.eventLinkRegistrationUrl} */}
-              <a
-                className={clsx(
-                  styles.HeroButton,
-                  styles.HeroSubscribeButton,
-                  "hide-xsm",
-                )}
-              >
-                Garantir minha vaga
-              </a>
-            </ToolTip>
+            <a
+              href={configValues.eventLinkRegistrationUrl}
+              className={clsx(
+                styles.HeroButton,
+                styles.HeroSubscribeButton,
+                "hide-xsm",
+              )}
+            >
+              Garantir minha vaga
+            </a>
             <div className={styles.Details}>
               <span>
                 <Image
@@ -92,19 +94,17 @@ export const Hero = () => {
           layout="responsive"
         />
       </section>
-      <ToolTip content="Em breve ⏳" position="bottom">
-        {/* href={configValues.eventLinkRegistrationUrl} */}
-        <a
-          className={clsx(
-            styles.HeroButton,
-            styles.HeroSubscribeButton,
-            styles.HeroFooterButton,
-            "show-xsm",
-          )}
-        >
-          Garantir minha vaga
-        </a>
-      </ToolTip>
+      <a
+        href={configValues.eventLinkRegistrationUrl}
+        className={clsx(
+          styles.HeroButton,
+          styles.HeroSubscribeButton,
+          styles.HeroFooterButton,
+          "show-xsm",
+        )}
+      >
+        Garantir minha vaga
+      </a>
     </section>
   );
 };

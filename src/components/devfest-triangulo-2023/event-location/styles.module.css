@@ -51,9 +51,16 @@
   justify-content: center;
   border-radius: 100%;
   border: 1px solid transparent;
-  background: 
+  background:
     linear-gradient(var(--black), var(--black)) padding-box,
-    linear-gradient(270deg, #4285F4 0%, #AF50BB 32.21%, #D93A53 65.38%, #F2C438 100%) border-box;
+    linear-gradient(
+        270deg,
+        #4285f4 0%,
+        #af50bb 32.21%,
+        #d93a53 65.38%,
+        #f2c438 100%
+      )
+      border-box;
   width: 3rem;
   height: 3rem;
   flex-shrink: 0;
@@ -75,7 +82,6 @@
   font-size: 1rem;
   font-weight: 400;
 }
-
 
 @media (min-width: 640px) {
   .Map {

@@ -2,7 +2,6 @@ import clsx from "clsx";
 import configValues from "helpers/config";
 
 import styles from "./Header.module.css";
-import ToolTip from "../ToolTip";
 
 interface HeaderButtonGroup {
   hideSponsorship?: boolean;
@@ -27,17 +26,16 @@ export const HeaderButtonGroup = ({
         Seja patrocinador
       </a>
 
-      <ToolTip content="Em breve ⏳" position="bottom">
-        <a
-          className={clsx(
-            styles.HeaderButton,
-            styles.HeaderSubscribeButton,
-            hideRegistration ? "hide-sm" : "",
-          )}
-        >
-          Inscreva-se
-        </a>
-      </ToolTip>
+      <a
+        href={configValues.eventLinkRegistrationUrl}
+        className={clsx(
+          styles.HeaderButton,
+          styles.HeaderSubscribeButton,
+          hideRegistration ? "hide-sm" : "",
+        )}
+      >
+        Inscreva-se
+      </a>
     </div>
   );
 };

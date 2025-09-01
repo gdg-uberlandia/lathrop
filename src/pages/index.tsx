@@ -25,6 +25,8 @@ import configValues from "@helpers/config";
 import { SponsorsSection } from "@components/devfest-triangulo-2025/SponsorsSection";
 import { SponsorLevel } from "models/sponsor-level";
 
+import { devfest2023Images, devfest2024Images } from "@helpers/carroussel";
+
 interface HomePageProps {
   speakers: Array<Speaker>;
   sponsors: Array<SponsorLevel>;
@@ -77,13 +79,12 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
               <span>Garanta a sua vaga</span> no DevFest
             </>
           }
-          showTooltip={true}
           subtitle="O maior DevFest da América Latina está chegando, e o melhor é que você
         pode fazer parte disso tudo. Aprendizado, conexão, experiências únicas e
         muita inovação te esperam."
           button={{
             text: "Garantir a minha vaga",
-            href: "#",
+            href: configValues.eventLinkRegistrationUrl,
           }}
           className={styles.Section}
           id="registration"
@@ -91,8 +92,30 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
 
         <InfiniteBanner
           direction="leftToRight"
-          items={["Os ingressos são limitados", "Garanta sua vaga"]}
-          speed={70}
+          items={[
+            { type: "text", content: "Café da Manhã" },
+            { type: "text", content: "Lanche da Tarde" },
+            { type: "text", content: "Acesso aos Palcos" },
+            { type: "text", content: "Certificado de Participação" },
+            { type: "text", content: "Brindes" },
+          ]}
+          speed={140}
+          className={styles.Section}
+          id="infinite-banner"
+        />
+
+        <InfiniteBanner
+          direction="rightToLeft"
+          items={devfest2023Images}
+          speed={2000}
+          className={styles.Section}
+          id="infinite-banner"
+        />
+
+        <InfiniteBanner
+          direction="leftToRight"
+          items={devfest2024Images}
+          speed={2000}
           className={styles.Section}
           id="infinite-banner"
         />
