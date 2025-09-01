@@ -110,7 +110,7 @@ const SponsorLevel = ({ sponsorLevel: { name, items } }: SponsorLevelProps) => {
               className={styles.SponsorImage}
               src={item.logo}
               alt={item.name}
-              height={160}
+              height={80}
               width={240}
             />
           </a>
