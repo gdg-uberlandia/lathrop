@@ -30,7 +30,6 @@ export const CountdownItem = ({
     markerRefs.current.forEach((mark, mIdx) => {
       if (!mark) return;
       if (mIdx <= activeCount) {
-        console.log("mark", mark.className);
         mark.classList.add(styles.MarkerActive);
         const percent = mIdx / (totalMarkers + 1);
         mark.style.backgroundPosition = `${percent * 100}% 0`;
