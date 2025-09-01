@@ -79,7 +79,6 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
               <span>Garanta a sua vaga</span> no DevFest
             </>
           }
-          showTooltip={true}
           subtitle="O maior DevFest da América Latina está chegando, e o melhor é que você
         pode fazer parte disso tudo. Aprendizado, conexão, experiências únicas e
         muita inovação te esperam."
