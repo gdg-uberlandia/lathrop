@@ -3,7 +3,7 @@
   max-width: var(--xl);
   overflow: hidden;
   position: relative;
-  margin: 0 auto;
+  margin: 0 auto !important;
 }
 
 .InfiniteBannerWrapper {
