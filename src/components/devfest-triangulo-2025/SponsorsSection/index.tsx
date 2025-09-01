@@ -105,13 +105,13 @@ const SponsorLevel = ({ sponsorLevel: { name, items } }: SponsorLevelProps) => {
 
       <div className="d-flex flex-wrap gap-4">
         {items.map((item) => (
-          <a href={item.url} target="_blank" key={item.logo}>
+          <a href={item.url} target="_blank" key={item.name}>
             <Image
               className={styles.SponsorImage}
               src={item.logo}
               alt={item.name}
-              height={40}
-              width={120}
+              height={120}
+              width={200}
             />
           </a>
         ))}
