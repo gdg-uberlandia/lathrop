@@ -14,7 +14,7 @@ const getSponsors = async () => {
         id: doc.id,
       }),
     );
-    return sponsors;
+    return sponsors.sort((a, b) => a.order - b.order);
   } catch (error) {
     console.error(error);
 

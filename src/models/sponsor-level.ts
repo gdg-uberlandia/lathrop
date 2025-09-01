@@ -4,6 +4,7 @@ export interface SponsorLevel {
   id: string;
   name: string;
   items: Array<Sponsor>;
+  order: number;
 }
 
 export enum SponsorCategory {
