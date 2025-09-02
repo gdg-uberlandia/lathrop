@@ -8,6 +8,7 @@ import { LogoGDG } from "@assets/images/LogoGDG";
 import LogoMenu from "@assets/images/LogoMenu";
 
 import styles from "./Header.module.css";
+import Link from "next/link";
 
 const NAV_ITEMS = [
   {
@@ -24,11 +25,11 @@ const NAV_ITEMS = [
   //   ref: "#schedule",
   //   classes: "hide-md",
   // },
-  // {
-  //   name: "Patrocinadores",
-  //   ref: "#sponsors",
-  //   classes: "hide-sm",
-  // },
+  {
+    name: "Patrocinadores",
+    ref: "#sponsors",
+    classes: "hide-sm",
+  },
   {
     name: "Local",
     ref: "#place",
@@ -44,21 +45,21 @@ export const Header = ({ isRoot = true }: { isRoot?: boolean }) => {
   const toggle = () => setIsOpen(!isOpen);
   const generateRef = (ref: string) => (isRoot ? ref : `/${ref}`);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY < lastScrollY) {
-        setIsVisible(true);
-      } else if (currentScrollY > lastScrollY) {
-        setIsVisible(false);
-      }
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const currentScrollY = window.scrollY;
+  //     if (currentScrollY < lastScrollY) {
+  //       setIsVisible(true);
+  //     } else if (currentScrollY > lastScrollY) {
+  //       setIsVisible(false);
+  //     }
 
-      setLastScrollY(currentScrollY);
-    };
+  //     setLastScrollY(currentScrollY);
+  //   };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, [lastScrollY]);
 
   return (
     <header className={clsx(styles.Header, !isVisible && styles.HeaderHidden)}>
@@ -71,7 +72,7 @@ export const Header = ({ isRoot = true }: { isRoot?: boolean }) => {
               key={name}
               className={clsx(styles.HeaderNavItem, classes ? classes : "")}
             >
-              <a href={generateRef(ref)}>{name}</a>
+              <Link href={generateRef(ref)}>{name}</Link>
             </li>
           ))}
         </ul>

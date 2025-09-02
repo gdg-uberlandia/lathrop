@@ -9,7 +9,7 @@ type Tag = { icon?: string; text: string };
 interface PresentationProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   title: ReactNode;
-  subtitle: ReactNode;
+  subtitle?: ReactNode;
   tags?: Tag[];
   description?: string;
   button?: PresentationButton;
