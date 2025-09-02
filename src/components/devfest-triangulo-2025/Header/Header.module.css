@@ -208,3 +208,10 @@
     display: none;
   }
 }
+
+@media (max-width: 368px) {
+  .HeaderButton {
+    padding: 0.7rem 1rem;
+    font-size: 0.75rem;
+  }
+}

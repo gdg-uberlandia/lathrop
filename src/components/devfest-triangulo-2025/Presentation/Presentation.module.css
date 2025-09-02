@@ -1,12 +1,12 @@
 .Presentation {
-  max-width: var(--md2);
+  max-width: var(--xl);
   padding: 1.5rem 1.5rem 4rem 1.5rem;
   gap: 1.5rem;
   display: flex;
   flex-direction: column;
   text-align: center;
   align-items: center;
-  margin: 0 auto;
+  margin-inline: auto;
 }
 
 .Title {
@@ -24,7 +24,7 @@
 .Presentation p {
   margin: 0;
   padding: 0;
-  max-width: 54rem;
+  max-width: 57rem;
   font-size: 1.125rem;
   font-weight: 400;
 }

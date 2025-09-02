@@ -7,15 +7,6 @@ import RightBracket from "@public/devfest-2025/right-bracket.svg";
 
 import styles from "./PastEvent.module.css";
 
-type Tag = { text: string };
-
-const tags: Tag[] = [
-  { text: "O maior da América Latina" },
-  { text: "+ 2.000 participantes" },
-  { text: "4 trilhas de conteúdo" },
-  { text: "+ 20 palestras" },
-];
-
 interface PastEventProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const PastEvent = ({ className, ...rest }: PastEventProps) => {
@@ -56,24 +47,6 @@ export const PastEvent = ({ className, ...rest }: PastEventProps) => {
   }, [youtubeVideoId]);
   return (
     <section className={className} {...rest}>
-      <article className={styles.PastEvent}>
-        <h1 className={styles.Title}>
-          Como foi a<span> última edição</span>
-        </h1>
-        <p>
-          O DevFest Triângulo 2024, em Uberlândia, foi um verdadeiro marco e
-          mostrou o poder da comunidade em ação:
-        </p>
-
-        <section className={styles.TagList}>
-          {tags.map((tag, idx) => (
-            <div key={idx} className={styles.Tag}>
-              {tag.text}
-            </div>
-          ))}
-        </section>
-      </article>
-
       <div className={styles.FullRow}>
         <section className={styles.Caroussel}>
           <div className={styles.CustomLeftBracket}>

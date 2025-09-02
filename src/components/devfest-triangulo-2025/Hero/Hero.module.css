@@ -133,5 +133,13 @@
   }
 }
 
-@media only screen and (min-width: 491px) {
+@media only screen and (min-width: 1080px) {
+  .Details {
+    font-size: 1.125rem;
+  }
+}
+@media only screen and (min-width: 1368px) {
+  .Details {
+    font-size: 1.5rem;
+  }
 }

@@ -50,6 +50,7 @@
 
 .Section {
   margin-top: 10.25rem;
+  scroll-margin-top: 200px;
 }
 
 @media (min-width: 992px) {

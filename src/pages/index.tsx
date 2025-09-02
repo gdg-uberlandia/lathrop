@@ -27,6 +27,7 @@ import { SponsorLevel } from "models/sponsor-level";
 
 import { devfest2023Images, devfest2024Images } from "@helpers/carroussel";
 import { Faq } from "@components/devfest-triangulo-2025/Faq";
+import { Tickets } from "@components/devfest-triangulo-2025/Tickets";
 
 interface HomePageProps {
   speakers: Array<Speaker>;
@@ -67,12 +68,30 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           subtitle="Se você ama tecnologia, adora aprender e quer fazer parte de algo
         transformador, esse evento é pra você!"
           className={styles.Section}
-          id="event-description"
+          id="about"
         />
 
         <CountdownTimer className={styles.Section} id="countdown" />
 
-        <PastEvent className={styles.Section} id="past-event" />
+        <Presentation
+          tags={[
+            { text: "O maior da América Latina" },
+            { text: "+ 2.000 participantes" },
+            { text: "4 trilhas de conteúdo" },
+            { text: "+ 20 palestras" },
+          ]}
+          title={
+            <>
+              Como foi a <span>última edição</span>
+            </>
+          }
+          description="O DevFest Triângulo 2024, em Uberlândia, foi um verdadeiro marco e
+          mostrou o poder da comunidade em ação:"
+          className={styles.Section}
+          id="past-event"
+        ></Presentation>
+
+        <PastEvent />
 
         <Presentation
           title={
@@ -83,13 +102,11 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           subtitle="O maior DevFest da América Latina está chegando, e o melhor é que você
         pode fazer parte disso tudo. Aprendizado, conexão, experiências únicas e
         muita inovação te esperam."
-          button={{
-            text: "Garantir a minha vaga",
-            href: configValues.eventLinkRegistrationUrl,
-          }}
           className={styles.Section}
           id="registration"
-        />
+        ></Presentation>
+
+        <Tickets />
 
         <InfiniteBanner
           direction="leftToRight"
@@ -101,22 +118,6 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
             { type: "text", content: "Brindes" },
           ]}
           speed={140}
-          className={styles.Section}
-          id="infinite-banner"
-        />
-
-        <InfiniteBanner
-          direction="rightToLeft"
-          items={devfest2023Images}
-          speed={2000}
-          className={styles.Section}
-          id="infinite-banner"
-        />
-
-        <InfiniteBanner
-          direction="leftToRight"
-          items={devfest2024Images}
-          speed={2000}
           className={styles.Section}
           id="infinite-banner"
         />
@@ -146,9 +147,29 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           id="talk-categories"
         />
 
-        <SponsorsSection className={styles.Section} sponsors={sponsors} />
+        <InfiniteBanner
+          direction="rightToLeft"
+          items={devfest2023Images}
+          speed={2000}
+          className={styles.Section}
+          id="infinite-banner"
+        />
 
-        <EventLocation className={styles.Section} id="location" />
+        <InfiniteBanner
+          direction="leftToRight"
+          items={devfest2024Images}
+          speed={2000}
+          className={styles.Section}
+          id="infinite-banner"
+        />
+
+        <SponsorsSection
+          className={styles.Section}
+          sponsors={sponsors}
+          id="sponsors"
+        />
+
+        <EventLocation className={styles.Section} id="place" />
 
         <Faq className={styles.Section} id="faq" />
       </ErrorBoundary>

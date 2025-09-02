@@ -37,7 +37,7 @@ export const SponsorsSection = ({
         href: configValues.eventLinkSponsorshipUrl,
       }}
       className={className}
-      id="sponsor"
+      id="sponsors"
     >
       {!!sponsors.length && (
         <div className="d-grid gap-4 mt-5">
