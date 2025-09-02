@@ -26,6 +26,7 @@ import { SponsorsSection } from "@components/devfest-triangulo-2025/SponsorsSect
 import { SponsorLevel } from "models/sponsor-level";
 
 import { devfest2023Images, devfest2024Images } from "@helpers/carroussel";
+import { Faq } from "@components/devfest-triangulo-2025/Faq";
 
 interface HomePageProps {
   speakers: Array<Speaker>;
@@ -149,7 +150,7 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
 
         <EventLocation className={styles.Section} id="location" />
 
-        {/* <Faq className={styles.Section} id="faq" /> */}
+        <Faq className={styles.Section} id="faq" />
       </ErrorBoundary>
     </>
   );

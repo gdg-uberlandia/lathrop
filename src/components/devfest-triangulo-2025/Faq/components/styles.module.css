@@ -27,6 +27,12 @@
   align-items: center;
   justify-content: center;
   border-radius: 100%;
+  padding: 0.1rem;
+  transition: all 250ms ease;
+}
+
+.FaqItemButton:hover {
+  background-color: rgb(66, 133, 244, 0.1);
 }
 
 .FaqItemButton svg {
