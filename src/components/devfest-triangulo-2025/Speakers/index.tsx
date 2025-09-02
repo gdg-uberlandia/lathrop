@@ -30,7 +30,7 @@ export const Speakers = ({ speakers }: SpeakersProps) => {
         <span>Quem</span> inspira o presente e constrói o futuro, está aqui
       </h1>
       <p>
-        Em breve conheça as mentes e os temas incríveis que subirão ao palco do
+        Conheça as mentes e os temas incríveis que subirão ao palco do
         {` ${configValues.name}`}.
       </p>
       {speakers.length ? (

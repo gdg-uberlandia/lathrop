@@ -129,6 +129,7 @@
   font-size: 1.25rem;
   color: var(--ice);
   font-weight: 700;
+  margin-bottom: 0.25rem;
 }
 
 .CardTech {
@@ -281,6 +282,7 @@
     flex-direction: row;
     padding-left: 4rem;
     padding-block: 3rem;
+    align-items: start;
   }
 }
 

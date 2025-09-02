@@ -28,6 +28,7 @@ import { SponsorLevel } from "models/sponsor-level";
 import { devfest2023Images, devfest2024Images } from "@helpers/carroussel";
 import { Faq } from "@components/devfest-triangulo-2025/Faq";
 import { Tickets } from "@components/devfest-triangulo-2025/Tickets";
+import { Speakers } from "@components/devfest-triangulo-2025/Speakers";
 
 interface HomePageProps {
   speakers: Array<Speaker>;
@@ -122,30 +123,7 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
           id="infinite-banner"
         />
 
-        <Presentation
-          tags={[
-            { text: "Arquitetura" },
-            { text: "Carreira" },
-            { text: "Dados" },
-            { text: "Tecnologias web" },
-            { text: "QA" },
-            { text: "Inteligência artificial" },
-            { text: "Design" },
-            { text: "Machine Learning" },
-            { text: "Games" },
-            { text: "Devops" },
-            { text: "E muito mais..." },
-          ]}
-          title={
-            <>
-              <span>Quem</span> inspira o presente e constrói o futuro, está
-              aqui
-            </>
-          }
-          subtitle="Em breve conheça as mentes e os temas incríveis que subirão ao palco do DevFest."
-          className={styles.Section}
-          id="talk-categories"
-        />
+        <Speakers speakers={speakers} />
 
         <InfiniteBanner
           direction="rightToLeft"
