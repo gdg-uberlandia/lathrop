@@ -115,9 +115,16 @@ const SpeakerModal: React.FC<ModalProps> = ({
             <div className={styles.SpeakerInfo}>
               <h1>{speaker.name}</h1>
               <span className={styles.CardTech}>
-                {speaker.tech}
-                {speaker.tech && speaker.company ? " - " : ""}
-                {speaker.company}
+                {speaker.title ? (
+                  <>{speaker.title}</>
+                ) : (
+                  <>
+                    {" "}
+                    {speaker.tech}
+                    {speaker.tech && speaker.company ? " - " : ""}
+                    {speaker.company}
+                  </>
+                )}
               </span>
             </div>
             <div>

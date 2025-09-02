@@ -62,14 +62,22 @@ const SpeakerCard = ({ speaker, index }: SpeakerCardProps) => {
 
         <div className={styles.CardText}>
           <h2 className={styles.CardName}>{speaker.name}</h2>
-          <p className={clsx(styles.CardTech, "show-xsm")}>
-            {speaker.tech}
-            {speaker.tech && speaker.company ? " - " : ""}
-            {speaker.company}
+
+          <p className={clsx(styles.CardTech)}>
+            {speaker.title ? (
+              <>{speaker.title}</>
+            ) : (
+              <>
+                {" "}
+                {speaker.tech}
+                {speaker.tech && speaker.company ? " - " : ""}
+                {speaker.company}
+              </>
+            )}
           </p>
           {speaker.content && (
             <div className={styles.CardDescription}>
-              <TruncatedText text={speaker.content} maxChars={maxLength} />
+              <TruncatedText text={speaker.topic} maxChars={maxLength} />
               <svg
                 width="24"
                 height="24"
