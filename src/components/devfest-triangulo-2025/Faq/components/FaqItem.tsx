@@ -4,7 +4,7 @@ import clsx from "clsx";
 
 interface FaqItemProps {
   title: string;
-  content: string;
+  content: React.ReactNode;
 }
 
 export const FaqItem = ({ title, content }: FaqItemProps) => {
@@ -69,7 +69,7 @@ export const FaqItem = ({ title, content }: FaqItemProps) => {
         }
       >
         <div className={styles.FaqItemContentInner}>
-          <p>{content}</p>
+          {typeof content === "string" ? <p>{content}</p> : content}
         </div>
       </div>
     </article>
