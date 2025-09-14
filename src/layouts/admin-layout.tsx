@@ -1,24 +1,42 @@
-import React from "react";
+import { useAuth } from "../context/AuthContext";
+import Link from "next/link";
 import { useRouter } from "next/router";
-// reactstrap components
+import { useEffect } from "react";
 import { Container } from "reactstrap";
-// core components
-//import AdminNavbar from "../components/navbars/admin-navbar";
-//import AdminFooter from "../components/footers/admin-footer";
-//import Sidebar from "../components/sidebar/sidebar";
 
-/*const options = {
-    // you can also just use 'bottom center'
-    position: positions.TOP_RIGHT,
-    timeout: 5000,
-    offset: '30px',
-    transition: transitions.SCALE,
-}*/
+function AdminLayout({ children }: { children: React.ReactNode }) {
+  const { user, logout, loading } = useAuth();
+  const router = useRouter();
 
-function AdminLayout() {
-  let mainContentRef = React.createRef();
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
 
-  return <></>;
+  if (loading) return <div>Carregando...</div>;
+  if (!user) return null;
+
+  const handleLogout = async () => {
+    await logout();
+    router.push("/login");
+  };
+
+  return (
+    <Container>
+      <header>
+        <nav>
+          <Link href="/admin/">Dashboard</Link>
+          <Link href="/admin/speakers">Speakers</Link>
+        </nav>
+        <div>
+          {user && <span>{user.email}</span>}
+          <button onClick={handleLogout}>Logout</button>
+        </div>
+      </header>
+      <main>{children}</main>
+    </Container>
+  );
 }
 
 export default AdminLayout;

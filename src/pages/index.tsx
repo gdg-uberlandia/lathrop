@@ -1,6 +1,8 @@
 import { getSchedule } from "back-features/schedule";
-import { getSpeakers } from "back-features/speakers";
+import { getSpeakers } from "../back-features/speakers";
+import { useSpeakers } from "../hooks/useSpeakers";
 import { getSponsors } from "back-features/sponsors";
+
 import { CountdownTimer } from "components/devfest-triangulo-2025/CountdownTimer";
 import { Header } from "components/devfest-triangulo-2025/Header";
 import { Presentation } from "components/devfest-triangulo-2025/Presentation";
@@ -8,35 +10,46 @@ import { Schedule } from "models/schedule";
 import { Speaker } from "models/speaker";
 import styles from "styles/Home.module.css";
 
-import { Hero } from "@components/devfest-triangulo-2025/Hero";
-import { InfiniteBanner } from "@components/devfest-triangulo-2025/InfiniteBanner";
-import { PastEvent } from "@components/devfest-triangulo-2025/PastEvent";
-import { EventLocation } from "@components/devfest-triangulo-2025/EventLocation";
+import { Hero } from "@/components/devfest-triangulo-2025/Hero";
+import { InfiniteBanner } from "@/components/devfest-triangulo-2025/InfiniteBanner";
+import { PastEvent } from "@/components/devfest-triangulo-2025/PastEvent";
+import { EventLocation } from "@/components/devfest-triangulo-2025/EventLocation";
 
 import ErrorBoundary from "../components/error-boundary";
 import BaseLayout from "../layouts/base-layout";
 
-import BusinesCenter from "@public/devfest-2025/icons/business_center.svg";
-import ChildCare from "@public/devfest-2025/icons/child_care.svg";
-import Handshake from "@public/devfest-2025/icons/handshake.svg";
-import Mic from "@public/devfest-2025/icons/mic.svg";
-import Trophy from "@public/devfest-2025/icons/trophy.svg";
-import configValues from "@helpers/config";
-import { SponsorsSection } from "@components/devfest-triangulo-2025/SponsorsSection";
+import BusinesCenter from "@/public/devfest-2025/icons/business_center.svg";
+import ChildCare from "@/public/devfest-2025/icons/child_care.svg";
+import Handshake from "@/public/devfest-2025/icons/handshake.svg";
+import Mic from "@/public/devfest-2025/icons/mic.svg";
+import Trophy from "@/public/devfest-2025/icons/trophy.svg";
+import configValues from "@/helpers/config";
+import { SponsorsSection } from "@/components/devfest-triangulo-2025/SponsorsSection";
 import { SponsorLevel } from "models/sponsor-level";
 
-import { devfest2023Images, devfest2024Images } from "@helpers/carroussel";
-import { Faq } from "@components/devfest-triangulo-2025/Faq";
-import { Tickets } from "@components/devfest-triangulo-2025/Tickets";
-import { Speakers } from "@components/devfest-triangulo-2025/Speakers";
+import { devfest2023Images, devfest2024Images } from "@/helpers/carroussel";
+import { Faq } from "@/components/devfest-triangulo-2025/Faq";
+import { Tickets } from "@/components/devfest-triangulo-2025/Tickets";
+import { Speakers } from "@/components/devfest-triangulo-2025/Speakers";
 
 interface HomePageProps {
-  speakers: Array<Speaker>;
-  sponsors: Array<SponsorLevel>;
-  schedule: Array<Schedule>;
+  initialSpeakers: Array<Speaker>;
+  initialSponsors: Array<SponsorLevel>;
+  initialSchedule: Array<Schedule>;
 }
 
-const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
+const Home = ({
+  initialSpeakers,
+  initialSponsors,
+  initialSchedule,
+}: HomePageProps) => {
+  const { speakers, loading, error } = useSpeakers({
+    initialData: initialSpeakers,
+  });
+
+  if (loading) return <p>Carregando...</p>;
+  if (error) return <p>{error}</p>;
+
   return (
     <>
       <ErrorBoundary>
@@ -143,7 +156,7 @@ const Home = ({ speakers, sponsors, schedule }: HomePageProps) => {
 
         <SponsorsSection
           className={styles.Section}
-          sponsors={sponsors}
+          sponsors={initialSponsors}
           id="sponsors"
         />
 
@@ -159,9 +172,9 @@ export async function getServerSideProps() {
   try {
     return {
       props: {
-        speakers: await getSpeakers(),
-        sponsors: await getSponsors(),
-        schedule: await getSchedule(),
+        initialSpeakers: await getSpeakers(),
+        initialSponsors: await getSponsors(),
+        initialSchedule: await getSchedule(),
       },
     };
   } catch (error) {
