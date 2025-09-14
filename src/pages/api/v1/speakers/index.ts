@@ -1,50 +1,46 @@
-import { createSpeaker, getSpeakers } from "back-features/speakers";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { admin } from "@/utils/db";
+import {
+  createSpeaker,
+  getSpeakers,
+  deleteSpeaker,
+} from "back-features/speakers";
 
-export default function handler(
-  request: NextApiRequest,
-  response: NextApiResponse,
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
 ) {
-  if (request.method === "GET") {
-    getSpeakers()
-      .then((speakers) => {
-        response.json(speakers);
-      })
-      .catch((error) => {
-        response.status(500).send(error);
-      });
-  } else if (request.method === "POST") {
-    const {
-      key,
-      id,
-      companyTitle,
-      mini_bio,
-      name,
-      photo,
-      tech,
-      title,
-      topic,
-      location,
-    } = request.body as any;
-    createSpeaker({
-      key,
-      id,
-      companyTitle,
-      mini_bio,
-      name,
-      photo,
-      tech,
-      title,
-      topic,
-      location,
-    })
-      .then((speaker) => {
-        response.json(speaker);
-      })
-      .catch((error) => {
-        response.status(500).send(error);
-      });
-  } else {
-    response.status(404);
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Token não informado" });
+  }
+  const idToken = authHeader.split("Bearer ")[1];
+
+  try {
+    const decoded = await admin.auth().verifyIdToken(idToken);
+    const isAdmin = decoded.admin === true;
+
+    if (req.method === "GET") {
+      const speakers = await getSpeakers();
+      return res.status(200).json(speakers);
+    }
+
+    if (req.method === "POST") {
+      const speaker = await createSpeaker({ data: req.body });
+      return res.status(200).json(speaker);
+    }
+
+    if (req.method === "DELETE") {
+      if (!isAdmin) return res.status(403).json({ error: "Acesso negado" });
+
+      const { key } = req.body;
+      const deleted = await deleteSpeaker(key);
+      return res.status(200).json(deleted);
+    }
+
+    return res.status(405).json({ error: "Método não permitido" });
+  } catch (err) {
+    console.error("Erro ao verificar token:", err);
+    return res.status(403).json({ error: "Token inválido" });
   }
 }

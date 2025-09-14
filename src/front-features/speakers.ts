@@ -1,14 +1,48 @@
-import { server } from "helpers/config";
 import { Speaker } from "models/speaker";
+import { getAuth } from "firebase/auth";
+import { server } from "helpers/config";
+const SPEAKERS_COLLECTION = "speakers";
+
+const getToken = async () => {
+  const auth = getAuth();
+  return auth.currentUser?.getIdToken();
+};
 
 export const getSpeakers = async (): Promise<Speaker[]> => {
-  try {
-    const url = `${server}/api/v1/speakers`;
-    const res = await fetch(url);
-    const speakers = await res.json();
-    return speakers;
-  } catch (error) {
-    console.log(error);
-    return [];
-  }
+  const token = await getToken();
+  const res = await fetch(`${server}/api/v1/${SPEAKERS_COLLECTION}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error("Erro ao buscar speakers");
+  return res.json();
+};
+
+export const createSpeakerAPI = async (speaker: any) => {
+  const token = await getToken();
+
+  const res = await fetch(`${server}/api/v1/${SPEAKERS_COLLECTION}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(speaker),
+  });
+  if (!res.ok) throw new Error("Erro ao criar speaker");
+  const speakerRes = await res.json();
+  return speakerRes;
+};
+
+export const deleteSpeakerAPI = async (key: string) => {
+  const token = await getToken();
+  const res = await fetch(`${server}/api/v1/${SPEAKERS_COLLECTION}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ key }),
+  });
+  if (!res.ok) throw new Error("Erro ao deletar speaker");
+  return res.json();
 };
