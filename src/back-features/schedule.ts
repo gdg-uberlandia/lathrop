@@ -1,5 +1,5 @@
 const SCHEDULE_COLLECTION = "schedule";
-import db from "../utils/db";
+import { db } from "@/utils/db";
 
 const getSchedule = async () => {
   try {

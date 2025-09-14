@@ -6,15 +6,15 @@ export type systemValue =
   | string;
 
 export interface ConfigValues {
-  name: string;
+  email: "gdg.uberlandia@gmail.com";
   eventDate: Date;
   eventLinkRegistrationUrl: string;
+  formattedDate: string;
+  midiaKit?: string;
+  name: string;
+  organizedBy: systemValue;
   place: string;
   placeCity: string;
-  formattedDate: string;
-  email: "gdg.uberlandia@gmail.com";
-  organizedBy: systemValue;
-  midiaKit?: string;
   socialMedia?: {
     instagram: string;
     linkedin: string;

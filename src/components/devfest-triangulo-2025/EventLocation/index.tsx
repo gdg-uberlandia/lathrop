@@ -1,14 +1,15 @@
 import styles from "./styles.module.css";
 import { Presentation } from "../Presentation";
 import clsx from "clsx";
-import { Container } from "reactstrap";
-import { ComponentProps } from "react";
 
-interface EventLocationProps extends ComponentProps<typeof Container> {}
+interface EventLocationProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const EventLocation = ({ className, ...props }: EventLocationProps) => {
   return (
-    <Container className={clsx(styles.EventLocation, className)} {...props}>
+    <div
+      className={clsx(styles.EventLocation, className, "container")}
+      {...props}
+    >
       <Presentation
         title={
           <>
@@ -95,6 +96,6 @@ export const EventLocation = ({ className, ...props }: EventLocationProps) => {
           ></iframe>
         </div>
       </div>
-    </Container>
+    </div>
   );
 };

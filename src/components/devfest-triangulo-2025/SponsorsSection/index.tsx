@@ -1,10 +1,10 @@
 import { Presentation } from "../Presentation";
 import Image from "next/image";
-import MiniCheese from "@public/devfest-2025/mini-cheese.svg";
+import MiniCheese from "@/public/devfest-2025/mini-cheese.svg";
 import { Tag } from "../Tag";
 import styles from "./SponsorsSection.module.css";
 import { SponsorCategory, type SponsorLevel } from "models/sponsor-level";
-import configValues from "@helpers/config";
+import configValues from "@/helpers/config";
 
 interface SponsorsSectionsProps extends React.HTMLAttributes<HTMLDivElement> {
   sponsors: Array<SponsorLevel>;

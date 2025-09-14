@@ -1,6 +1,6 @@
 import { Speaker } from "models/speaker";
 
-import configValues from "@helpers/config";
+import configValues from "@/helpers/config";
 
 import SpeakerCard from "./SpeakerCard";
 import styles from "./Speakers.module.css";

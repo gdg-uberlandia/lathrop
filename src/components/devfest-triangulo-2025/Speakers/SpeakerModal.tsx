@@ -3,8 +3,8 @@ import Image from "next/image";
 import React from "react";
 import { Modal, ModalBody, ModalHeader } from "reactstrap";
 
-import { CloseMenu } from "@assets/images/CloseMenu";
-import { Tag } from "@components/devfest-triangulo-2025/Tag";
+import { CloseMenu } from "@/assets/images/CloseMenu";
+import { Tag } from "@/components/devfest-triangulo-2025/Tag";
 import {
   faGithub,
   faInstagram,
@@ -13,11 +13,11 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { faArrowPointer } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import AvatarFrame1 from "@public/devfest-2025/avatar-frame-1.svg";
-import AvatarFrame2 from "@public/devfest-2025/avatar-frame-2.svg";
-import AvatarFrame3 from "@public/devfest-2025/avatar-frame-3.svg";
-import AvatarFrame4 from "@public/devfest-2025/avatar-frame-4.svg";
-import AvatarNotFound from "@public/devfest-2025/icons/avatar-not-found.svg";
+import AvatarFrame1 from "@/public/devfest-2025/avatar-frame-1.svg";
+import AvatarFrame2 from "@/public/devfest-2025/avatar-frame-2.svg";
+import AvatarFrame3 from "@/public/devfest-2025/avatar-frame-3.svg";
+import AvatarFrame4 from "@/public/devfest-2025/avatar-frame-4.svg";
+import AvatarNotFound from "@/public/devfest-2025/icons/avatar-not-found.svg";
 
 import styles from "./Speakers.module.css";
 

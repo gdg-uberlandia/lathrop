@@ -1,7 +1,7 @@
 /*eslint-disable*/
 import { Sponsor } from "models/sponsor";
 import { Container, Row, Col } from "reactstrap";
-import _supports from "../../hooks/userSupports";
+import _supports from "@/hooks/userSupports";
 import { SponsorLevel } from "models/sponsor-level";
 import SponsorCard from "./sponsor-card";
 
@@ -71,21 +71,6 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ sponsors }) => {
                     </section>
                   );
               })}
-
-              {/*<h4>
-                                Organização
-                            </h4>
-
-                            <div>
-                                <Row>
-
-                                    <div className={styles.SponsorWrapper}>
-                                        {
-                                            supports.items.map((item: Sponsor) => mapSponsorCard(item, false))
-                                        }
-                                    </div>
-                                </Row>
-                            </div>*/}
             </div>
           </Container>
         )}

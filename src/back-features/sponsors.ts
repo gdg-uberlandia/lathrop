@@ -1,6 +1,6 @@
 const SPONSORS_COLLECTION = "sponsors";
 import { SponsorLevel } from "models/sponsor-level";
-import db from "../utils/db";
+import { db } from "@/utils/db";
 
 const getSponsors = async () => {
   try {

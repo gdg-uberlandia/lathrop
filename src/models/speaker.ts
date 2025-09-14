@@ -1,15 +1,16 @@
 export interface Speaker {
-  tech: SpeakerTech;
-  miniBio: string;
-  name: string;
-  topic: string;
-  photo: string;
-  id: number;
-  socialMedia: SpeakerSocialMedia;
-  title: string;
+  canBeEvaluated: boolean;
+  company?: string;
   content: string;
-  company: string;
+  id: string;
   key: string;
+  miniBio?: string;
+  name: string;
+  photo?: string;
+  socialMedia?: SpeakerSocialMedia;
+  tech?: SpeakerTech;
+  title?: string;
+  topic: string;
 }
 
 export enum SpeakerTech {
@@ -21,8 +22,8 @@ export enum SpeakerTech {
 }
 
 export interface SpeakerSocialMedia {
-  linkedIn: string;
-  instagram: string;
+  linkedIn?: string;
+  instagram?: string;
   twitter?: string;
   github?: string;
   website?: string;
