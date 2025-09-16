@@ -4,6 +4,7 @@ import {
   createSpeaker,
   getSpeakers,
   deleteSpeaker,
+  updateSpeaker,
 } from "back-features/speakers";
 
 export default async function handler(
@@ -30,9 +31,12 @@ export default async function handler(
       return res.status(200).json(speaker);
     }
 
-    if (req.method === "DELETE") {
-      if (!isAdmin) return res.status(403).json({ error: "Acesso negado" });
+    if (req.method === "PUT") {
+      const speaker = await updateSpeaker({ data: req.body });
+      return res.status(200).json(speaker);
+    }
 
+    if (req.method === "DELETE") {
       const { key } = req.body;
       const deleted = await deleteSpeaker(key);
       return res.status(200).json(deleted);

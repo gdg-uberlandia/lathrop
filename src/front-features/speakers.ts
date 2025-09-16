@@ -46,3 +46,20 @@ export const deleteSpeakerAPI = async (key: string) => {
   if (!res.ok) throw new Error("Erro ao deletar speaker");
   return res.json();
 };
+
+export const updateSpeakerAPI = async (speaker: Speaker) => {
+  const token = await getToken();
+
+  const res = await fetch(`${server}/api/v1/${SPEAKERS_COLLECTION}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(speaker),
+  });
+
+  if (!res.ok) throw new Error("Erro ao atualizar speaker");
+  const speakerRes = await res.json();
+  return speakerRes;
+};

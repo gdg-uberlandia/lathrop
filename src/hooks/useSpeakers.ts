@@ -4,15 +4,12 @@ import {
   getSpeakers,
   createSpeakerAPI,
   deleteSpeakerAPI,
+  updateSpeakerAPI,
 } from "../front-features/speakers";
 
-interface UseSpeakersOptions {
-  initialData?: Speaker[];
-}
-
-export function useSpeakers({ initialData = [] }: UseSpeakersOptions = {}) {
-  const [speakers, setSpeakers] = useState<Speaker[]>(initialData);
-  const [loading, setLoading] = useState(!initialData.length);
+export function useSpeakers() {
+  const [speakers, setSpeakers] = useState<Speaker[]>([]);
+  const [loading, setLoading] = useState(!speakers.length);
   const [error, setError] = useState<string | null>(null);
 
   const fetchSpeakers = async () => {
@@ -31,9 +28,7 @@ export function useSpeakers({ initialData = [] }: UseSpeakersOptions = {}) {
   const addSpeaker = async (speaker: any) => {
     try {
       setLoading(true);
-
       const newSpeaker = await createSpeakerAPI(speaker);
-
       setSpeakers((prev) => [...prev, newSpeaker]);
     } catch (err) {
       console.error(err);
@@ -56,9 +51,32 @@ export function useSpeakers({ initialData = [] }: UseSpeakersOptions = {}) {
     }
   };
 
-  useEffect(() => {
-    if (!initialData.length) fetchSpeakers();
-  }, [initialData]);
+  const updateSpeaker = async ({ speaker }: { speaker: Speaker }) => {
+    try {
+      setLoading(true);
+      const updatedSpeaker = await updateSpeakerAPI(speaker);
+      setSpeakers((prev) =>
+        prev.map((s) => (s.key === updatedSpeaker.key ? updatedSpeaker : s)),
+      );
+    } catch (err) {
+      console.error(err);
+      setError("Erro ao atualizar speaker");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  return { speakers, loading, error, fetchSpeakers, addSpeaker, removeSpeaker };
+  useEffect(() => {
+    if (!speakers.length) fetchSpeakers();
+  }, [speakers]);
+
+  return {
+    speakers,
+    loading,
+    error,
+    fetchSpeakers,
+    addSpeaker,
+    removeSpeaker,
+    updateSpeaker,
+  };
 }

@@ -1,6 +1,6 @@
 import { db } from "@/utils/db";
-const SPEAKERS_COLLECTION = "speakers";
-
+const SPEAKERS_COLLECTION = "speakers_test";
+import { Speaker } from "@/models/speaker";
 interface SpeakerPayload {
   companyTitle: string;
   id: string;
@@ -45,6 +45,7 @@ const getSpeakers = async (): Promise<SpeakerPayload[]> => {
       speakers.push({
         ...doc.data(),
         key: doc.id,
+        id: doc.id,
       } as SpeakerPayload),
     );
 
@@ -55,11 +56,7 @@ const getSpeakers = async (): Promise<SpeakerPayload[]> => {
   }
 };
 
-const updateSpeaker = async ({
-  data,
-}: {
-  data: SpeakerPayload;
-}): Promise<SpeakerPayload> => {
+const updateSpeaker = async ({ data }: { data: Speaker }): Promise<Speaker> => {
   if (data.key) {
     const doc = await db.collection(SPEAKERS_COLLECTION).doc(data.key).get();
 
@@ -77,7 +74,7 @@ const updateSpeaker = async ({
       return {
         ...speaker.data(),
         key: speaker.id,
-      } as SpeakerPayload;
+      } as Speaker;
     } else {
       throw new Error("Doc does not exist.");
     }
