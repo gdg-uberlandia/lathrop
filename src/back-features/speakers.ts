@@ -21,7 +21,7 @@ const createSpeaker = async ({
 }): Promise<SpeakerPayload | null> => {
   try {
     const speakerRef = await db
-      .collection("speakers_test")
+      .collection(SPEAKERS_COLLECTION)
       .add(JSON.parse(JSON.stringify(data)));
     const speaker = await speakerRef.get();
 
