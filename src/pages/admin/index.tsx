@@ -1,6 +1,7 @@
 import { useSpeakers } from "@/hooks/useSpeakers";
 import AdminLayout from "layouts/admin-layout";
 import { IconLoader2 } from "@tabler/icons-react";
+import { pluralize } from "@/utils/stringUtils";
 
 function AdminIndex() {
   const { speakers, loading: loadingSpeakers } = useSpeakers();
@@ -16,7 +17,9 @@ function AdminIndex() {
           ) : (
             <>
               <div className="text-7xl font-bold">{speakers.length}</div>
-              <div className="text-md ">palestrantes</div>
+              <div className="text-md ">
+                {pluralize("palestrante", speakers.length)}
+              </div>
             </>
           )}
         </div>
