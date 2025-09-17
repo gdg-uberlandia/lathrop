@@ -1,27 +1,34 @@
-import { deleteSpeaker } from "back-features/speakers";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { deleteSpeaker, fetchSpeaker } from "back-features/speakers";
 
-export default function handler(
-  request: NextApiRequest,
-  response: NextApiResponse,
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
 ) {
-  if (request.method === "DELETE") {
-    // Process a POST request
-
-    const { speakerId } = request.query;
-    if (!speakerId) {
-      response.status(500).send({ error: "Id is blank" });
-      return;
-    }
-
-    deleteSpeaker(speakerId.toString())
-      .then(() => {
-        response.status(201);
-      })
-      .catch((error) => {
-        response.status(500).send(error);
-      });
-  } else {
-    response.status(404);
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Token não informado" });
   }
+
+  if (req.method === "GET") {
+    const { speakerId } = req.query;
+    if (typeof speakerId === "string" && speakerId) {
+      const speaker = await fetchSpeaker(speakerId);
+
+      return res.status(200).json(speaker);
+    }
+    return res.status(400).json({ error: "Key não informado" });
+  }
+
+  if (req.method === "DELETE") {
+    const { speakerId } = req.query;
+    if (typeof speakerId === "string" && speakerId) {
+      const key = await deleteSpeaker(speakerId);
+
+      return res.status(200).json(key);
+    }
+    return res.status(400).json({ error: "Key não informado" });
+  }
+
+  return res.status(405).json({ error: "Método não permitido" });
 }

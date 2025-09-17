@@ -6,6 +6,7 @@ import { NextComponentType } from "next";
 
 import GoogleAnalytics from "../components/google-analytics";
 import { AppLayoutProps } from "../../types";
+import { AuthProvider } from "context/AuthContext";
 
 const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = (
   props: AppLayoutProps,
@@ -17,12 +18,12 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = (
     (({ children }: { children: ReactNode }) => <>{children}</>);
 
   return (
-    <React.Fragment>
+    <AuthProvider>
       <GoogleAnalytics />
       <Layout>
         <Component {...pageProps} />
       </Layout>
-    </React.Fragment>
+    </AuthProvider>
   );
 };
 

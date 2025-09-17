@@ -1,4 +1,4 @@
-import { BannerItem } from "@components/devfest-triangulo-2025/InfiniteBanner";
+import { BannerItem } from "@/components/devfest-triangulo-2025/InfiniteBanner";
 
 const googlePhotos2023Urls: string[] = [
   "https://lh3.googleusercontent.com/pw/AP1GczNKpy8R0iPsEIbAheGeEbY8eSdEJWXNbTLsKJ9zcHuQTuxL3dk_O0A_umszjsRJ9Wo0QCe8rQBE1HXZDqxnFDhmIIwi4mxj0m4ZfgpgO4A3P-D8oZRtFirW5v_RNeHWkgoV5M5S_Yb5gegI3U23FJPO=w1078-h719-s-no-gm?authuser=0",

@@ -7,7 +7,7 @@ import { Footer } from "../components/devfest-triangulo-2025/Footer";
 interface BaseLayout {
   children: ReactNode;
 }
-//id="base-layout" className="main-content"
+
 const BaseLayout: React.FC<BaseLayout> = ({ children }) => {
   const favicon = `${configValues.organizedBy}/favicon.ico`;
 

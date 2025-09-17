@@ -17,11 +17,13 @@
     "incremental": true,
     "baseUrl": "./src",
     "paths": {
-      "@assets/*": ["./assets/*"],
-      "@components/*": ["./components/*"],
-      "@public/*": ["../public/*"],
-      "@utils/*": ["./utils/*"],
-      "@helpers/*": ["./helpers/*"]
+      "@/assets/*": ["./assets/*"],
+      "@/components/*": ["./components/*"],
+      "@/helpers/*": ["./helpers/*"],
+      "@/hooks/*": ["./hooks/*"],
+      "@/models/*": ["./models/*"],
+      "@/public/*": ["../public/*"],
+      "@/utils/*": ["./utils/*"]
     },
     "plugins": [
       {

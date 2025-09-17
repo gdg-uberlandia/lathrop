@@ -1,91 +1,115 @@
-import db from "../utils/db";
-const SPEAKERS_COLLECTION = "speakers";
-
+import { db } from "@/utils/db";
+const SPEAKERS_COLLECTION = "speakers_test";
+import { Speaker } from "@/models/speaker";
 interface SpeakerPayload {
-  key: string;
-  id: string;
   companyTitle: string;
+  id: string;
+  key?: string;
+  location: string;
   mini_bio: string;
   name: string;
   photo: string;
   tech: string;
   title: string;
   topic: string;
-  location: string;
 }
 
 const createSpeaker = async ({
-  key,
-  id,
-  companyTitle,
-  mini_bio,
-  name,
-  photo,
-  tech,
-  title,
-  topic,
-  location,
-}: SpeakerPayload) => {
-  const data = {
-    id,
-    companyTitle,
-    mini_bio,
-    name,
-    photo,
-    tech,
-    title,
-    topic,
-    location,
-  };
-
-  if (key) {
-    const doc = await db.collection(SPEAKERS_COLLECTION).doc(key).get();
-
-    if (doc.exists) {
-      await db
-        .collection(SPEAKERS_COLLECTION)
-        .doc(key)
-        .set(data, { merge: true });
-
-      const speaker = await db.collection(SPEAKERS_COLLECTION).doc(key).get();
-
-      return {
-        ...speaker.data(),
-        key: speaker.id,
-      };
-    } else {
-      throw new Error("Doc does not exist.");
-    }
-  } else {
-    const speakerRef = await db.collection(SPEAKERS_COLLECTION).add(data);
+  data,
+}: {
+  data: SpeakerPayload | any;
+}): Promise<SpeakerPayload | null> => {
+  try {
+    const speakerRef = await db
+      .collection(SPEAKERS_COLLECTION)
+      .add(JSON.parse(JSON.stringify(data)));
     const speaker = await speakerRef.get();
+
     return {
       ...speaker.data(),
       key: speaker.id,
-    };
+    } as SpeakerPayload;
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 };
 
-const getSpeakers = async () => {
+const getSpeakers = async (): Promise<SpeakerPayload[]> => {
   try {
     const speakersQuerySnapshot = await db
       .collection(SPEAKERS_COLLECTION)
       .get();
-    const speakers: { key: string }[] = [];
+    const speakers: SpeakerPayload[] = [];
+
     speakersQuerySnapshot.forEach((doc) =>
       speakers.push({
         ...doc.data(),
         key: doc.id,
-      }),
+        id: doc.id,
+      } as SpeakerPayload),
     );
 
     return speakers;
   } catch (error) {
     console.error(error);
+    return [];
   }
 };
 
-const deleteSpeaker = async (speakerId: string) => {
+const fetchSpeaker = async (speakerId: string): Promise<Speaker> => {
+  if (!speakerId) throw new Error("id is blank");
+  try {
+    const speakerDoc = await db
+      .collection(SPEAKERS_COLLECTION)
+      .doc(speakerId)
+      .get();
+
+    if (!speakerDoc.exists) {
+      throw new Error("Speaker not found");
+    }
+
+    return {
+      ...speakerDoc.data(),
+      key: speakerDoc.id,
+    } as Speaker;
+  } catch (error) {
+    console.error(error);
+    return {} as Speaker;
+  }
+};
+
+const updateSpeaker = async ({
+  data,
+}: {
+  data: SpeakerPayload | any;
+}): Promise<SpeakerPayload | null> => {
+  if (data.key) {
+    const doc = await db.collection(SPEAKERS_COLLECTION).doc(data.key).get();
+
+    if (doc.exists) {
+      await db
+        .collection(SPEAKERS_COLLECTION)
+        .doc(data.key)
+        .set(data, { merge: true });
+
+      const speaker = await db
+        .collection(SPEAKERS_COLLECTION)
+        .doc(data.key)
+        .get();
+
+      return {
+        ...speaker.data(),
+        key: speaker.id,
+      } as SpeakerPayload;
+    } else {
+      throw new Error("Doc does not exist.");
+    }
+  }
+  throw new Error("Speaker key is missing.");
+};
+
+const deleteSpeaker = async (speakerId: string): Promise<{ key: string }> => {
   if (!speakerId) throw new Error("id is blank");
   await db.collection(SPEAKERS_COLLECTION).doc(speakerId.toString()).delete();
 
@@ -94,4 +118,10 @@ const deleteSpeaker = async (speakerId: string) => {
   };
 };
 
-export { createSpeaker, getSpeakers, deleteSpeaker };
+export {
+  createSpeaker,
+  fetchSpeaker,
+  getSpeakers,
+  updateSpeaker,
+  deleteSpeaker,
+};

@@ -1,4 +1,4 @@
-import configValues from "@helpers/config";
+import configValues from "@/helpers/config";
 
 import styles from "./ExtraInfo.module.css";
 
