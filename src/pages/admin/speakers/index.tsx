@@ -20,6 +20,9 @@ import Link from "next/link";
 import { Speaker } from "@/models/speaker";
 import { Checkbox } from "@/assets/components/ui/checkbox";
 import { useState } from "react";
+
+import Loading from "@/components/admin/loading-overlay";
+
 function Speakers() {
   const { speakers, removeSpeaker, updateSpeaker, error, loading } =
     useSpeakers();
@@ -52,6 +55,7 @@ function Speakers() {
 
   return (
     <>
+      {loading && <Loading />}
       <div className="p-4">
         <div className="flex w-full items-center gap-2 justify-between">
           <div className="size-12 rounded-full bg-devGray-light/40 flex items-center justify-center">
@@ -98,11 +102,12 @@ function Speakers() {
                       disabled={loading}
                       checked={speaker.canBeEvaluated}
                       onClick={() => handleUpdateEvaluable(speaker)}
-                      className="data-[state=checked]:text-white border-white/50 border-1 dark:data-[state=checked]:border-devBlue-dark dark:data-[state=checked]:bg-devBlue-dark size-5"
+                      className="disabled:!pointer-events-none data-[state=checked]:text-white border-white/50 border-1 dark:data-[state=checked]:border-devBlue-dark dark:data-[state=checked]:bg-devBlue-dark size-5"
                     />
                   </TableCell>
                   <TableCell className="px-3 text-white/80 text-right">
                     <Button
+                      disabled={loading}
                       variant="secondary"
                       size="icon"
                       className="size-8 text-devGreen-dark hover:text-devGreen bg-transparent p-0"

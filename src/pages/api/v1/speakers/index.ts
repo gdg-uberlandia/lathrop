@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { admin } from "@/utils/db";
 import {
   createSpeaker,
   getSpeakers,
@@ -15,11 +14,8 @@ export default async function handler(
   if (!authHeader?.startsWith("Bearer ")) {
     return res.status(401).json({ error: "Token não informado" });
   }
-  const idToken = authHeader.split("Bearer ")[1];
 
   try {
-    const decoded = await admin.auth().verifyIdToken(idToken);
-
     if (req.method === "GET") {
       const speakers = await getSpeakers();
       return res.status(200).json(speakers);

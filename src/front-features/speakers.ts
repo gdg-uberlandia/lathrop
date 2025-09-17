@@ -1,6 +1,7 @@
-import { Speaker } from "models/speaker";
 import { getAuth } from "firebase/auth";
 import { server } from "helpers/config";
+import { Speaker } from "models/speaker";
+
 const SPEAKERS_COLLECTION = "speakers";
 
 const getToken = async () => {
@@ -10,9 +11,15 @@ const getToken = async () => {
 
 export const getSpeakers = async (): Promise<Speaker[]> => {
   const token = await getToken();
+
   const res = await fetch(`${server}/api/v1/${SPEAKERS_COLLECTION}`, {
-    headers: { Authorization: `Bearer ${token}` },
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
   });
+
   if (!res.ok) throw new Error("Erro ao buscar speakers");
   return res.json();
 };
@@ -28,6 +35,7 @@ export const createSpeakerAPI = async (speaker: any) => {
     },
     body: JSON.stringify(speaker),
   });
+
   if (!res.ok) throw new Error("Erro ao criar speaker");
   const speakerRes = await res.json();
   return speakerRes;
@@ -35,6 +43,7 @@ export const createSpeakerAPI = async (speaker: any) => {
 
 export const deleteSpeakerAPI = async (key: string) => {
   const token = await getToken();
+
   const res = await fetch(`${server}/api/v1/${SPEAKERS_COLLECTION}`, {
     method: "DELETE",
     headers: {
@@ -43,6 +52,7 @@ export const deleteSpeakerAPI = async (key: string) => {
     },
     body: JSON.stringify({ key }),
   });
+
   if (!res.ok) throw new Error("Erro ao deletar speaker");
   return res.json();
 };

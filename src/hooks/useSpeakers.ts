@@ -15,6 +15,10 @@ export function useSpeakers() {
   const fetchSpeakers = async () => {
     try {
       setLoading(true);
+
+      // TODO: Remover este timeout (foi colocado apenas para testes)
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       const data = await getSpeakers();
       setSpeakers(data);
     } catch (err) {
@@ -28,6 +32,10 @@ export function useSpeakers() {
   const addSpeaker = async (speaker: any) => {
     try {
       setLoading(true);
+
+      // TODO: Remover este timeout (foi colocado apenas para testes)
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       const newSpeaker = await createSpeakerAPI({
         ...speaker,
         canBeEvaluated: false,
@@ -44,6 +52,10 @@ export function useSpeakers() {
   const removeSpeaker = async (key: string) => {
     try {
       setLoading(true);
+
+      // TODO: Remover este timeout (foi colocado apenas para testes)
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       await deleteSpeakerAPI(key);
       setSpeakers((prev) => prev.filter((s) => s.key !== key));
     } catch (err) {
@@ -57,6 +69,10 @@ export function useSpeakers() {
   const updateSpeaker = async ({ speaker }: { speaker: Speaker }) => {
     try {
       setLoading(true);
+
+      // TODO: Remover este timeout (foi colocado apenas para testes)
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       const updatedSpeaker = await updateSpeakerAPI(speaker);
       setSpeakers((prev) =>
         prev.map((s) => (s.key === updatedSpeaker.key ? updatedSpeaker : s)),
