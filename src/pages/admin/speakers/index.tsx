@@ -68,8 +68,8 @@ function Speakers() {
           </Link>
         </div>
 
-        <div>
-          <Table className="mt-12 rounded-xl overflow-hidden border-collapse">
+        <div className="mt-12">
+          <Table className="rounded-xl overflow-hidden border-collapse">
             <TableCaption />
             <TableHeader className="bg-devGray-dark text-white">
               <TableRow>

@@ -28,7 +28,10 @@ export function useSpeakers() {
   const addSpeaker = async (speaker: any) => {
     try {
       setLoading(true);
-      const newSpeaker = await createSpeakerAPI(speaker);
+      const newSpeaker = await createSpeakerAPI({
+        ...speaker,
+        canBeEvaluated: false,
+      });
       setSpeakers((prev) => [...prev, newSpeaker]);
     } catch (err) {
       console.error(err);

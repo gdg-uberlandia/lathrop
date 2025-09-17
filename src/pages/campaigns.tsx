@@ -11,7 +11,7 @@ const CampaignPage = ({}) => {
   useEffect(() => {
     const _name = router.query?.ogName?.toString() || "";
     setName(_name);
-  });
+  }, [router.query.ogName]);
 
   return (
     <>
