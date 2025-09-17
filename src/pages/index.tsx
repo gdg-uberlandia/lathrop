@@ -1,6 +1,5 @@
 import { getSchedule } from "back-features/schedule";
 import { getSpeakers } from "../back-features/speakers";
-import { useSpeakers } from "../hooks/useSpeakers";
 import { getSponsors } from "back-features/sponsors";
 
 import { CountdownTimer } from "components/devfest-triangulo-2025/CountdownTimer";
@@ -43,13 +42,6 @@ const Home = ({
   initialSponsors,
   initialSchedule,
 }: HomePageProps) => {
-  const { speakers, loading, error } = useSpeakers({
-    initialData: initialSpeakers,
-  });
-
-  if (loading) return <p>Carregando...</p>;
-  if (error) return <p>{error}</p>;
-
   return (
     <>
       <ErrorBoundary>
@@ -136,7 +128,7 @@ const Home = ({
           id="infinite-banner"
         />
 
-        <Speakers speakers={speakers} />
+        <Speakers speakers={initialSpeakers} />
 
         <InfiniteBanner
           direction="rightToLeft"

@@ -19,7 +19,6 @@ export default async function handler(
 
   try {
     const decoded = await admin.auth().verifyIdToken(idToken);
-    const isAdmin = decoded.admin === true;
 
     if (req.method === "GET") {
       const speakers = await getSpeakers();

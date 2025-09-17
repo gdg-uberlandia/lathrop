@@ -67,7 +67,6 @@ export default function LoginPage({
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="rounded-xl"
                 />
               </div>
               <div className="grid gap-2">
@@ -82,12 +81,11 @@ export default function LoginPage({
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="rounded-xl"
                 />
               </div>
               <Button
                 type="submit"
-                className="w-full rounded-xl bg-devBlue-dark border-1 border-devBlue-dark hover:border-1 hover:bg-devBlue-dark hover:!border-white text-sm"
+                className="w-full rounded-xl bg-devBlue-dark border-1 text-white border-devBlue-dark hover:border-1 hover:bg-devBlue-dark hover:!border-white text-sm"
                 disabled={loading}
               >
                 {loading ? "Entrando..." : "Login"}

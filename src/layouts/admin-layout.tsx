@@ -3,6 +3,15 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 
 import { useAuth } from "../context/AuthContext";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/assets/components/ui/sidebar";
+import { AppSidebar } from "@/components/admin/app-sidebar";
+import { Separator } from "@radix-ui/react-separator";
+import { Breadcrumb, BreadcrumbItem } from "reactstrap";
+import { Button } from "@/assets/components/ui/button";
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, logout, loading } = useAuth();
@@ -16,6 +25,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
 
   if (loading) return <div>Carregando...</div>;
   if (!user) return null;
+  console.log(user);
 
   const handleLogout = async () => {
     await logout();
@@ -23,35 +33,25 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="w-full mx-auto max-w-7xl">
-      <header className="flex justify-between items-center py-4 px-6">
-        <nav className="flex justify-between gap-4">
-          <Link
-            className="cursor-pointer whitespace-nowrap py-3 hover:!text-devBlue-dark text-white"
-            href="/admin/"
-          >
-            Dashboard
-          </Link>
-          <Link
-            className="cursor-pointer whitespace-nowrap py-3 text-white hover:!text-devBlue-dark"
-            href="/admin/speakers"
-          >
-            Speakers
-          </Link>
-        </nav>
-        <div className="flex gap-8 items-center">
-          {user && <span className="text-sm">{user.email}</span>}{" "}
-          <button
-            onClick={handleLogout}
-            className="bg-devBlue-dark border-1 border-devBlue-dark rounded-xl text-white cursor-poiter text-md font-semibold py-2 px-4 hover:border-1 hover:border-white"
-          >
-            Logout
-          </button>
-        </div>
-      </header>
-      <main className="flex justify-between items-center py-4 px-6">
-        {children}
-      </main>
+    <div className="w-full mx-auto">
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+            <SidebarTrigger className="-ml-1" />
+            <div className="flex items-center justify-end gap-6 w-full">
+              <span className="text-xs">{user.email}</span>
+              <Button
+                onClick={handleLogout}
+                className="rounded-xl bg-devBlue-dark border-1 text-white border-devBlue-dark hover:border-1 hover:bg-devBlue-dark hover:!border-white text-sm"
+              >
+                Logout
+              </Button>
+            </div>
+          </header>
+          {children}
+        </SidebarInset>
+      </SidebarProvider>
     </div>
   );
 }
