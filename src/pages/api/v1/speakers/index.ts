@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import {
   createSpeaker,
   getSpeakers,
+  fetchSpeaker,
   deleteSpeaker,
   updateSpeaker,
 } from "back-features/speakers";
@@ -29,12 +30,6 @@ export default async function handler(
     if (req.method === "PUT") {
       const speaker = await updateSpeaker({ data: req.body });
       return res.status(200).json(speaker);
-    }
-
-    if (req.method === "DELETE") {
-      const { key } = req.body;
-      const deleted = await deleteSpeaker(key);
-      return res.status(200).json(deleted);
     }
 
     return res.status(405).json({ error: "Método não permitido" });

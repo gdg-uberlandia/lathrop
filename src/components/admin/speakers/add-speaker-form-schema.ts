@@ -10,6 +10,8 @@ export const speakerSchema = z.object({
   socialMedia: z.any().optional(),
   tech: z.any().optional(),
   title: z.string().optional(),
+  key: z.string().optional(),
+  id: z.string().optional(),
 });
 
 export type SpeakerFormValues = z.infer<typeof speakerSchema>;

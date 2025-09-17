@@ -17,14 +17,21 @@ import {
   IconBrandX,
   IconBrandGithub,
 } from "@tabler/icons-react";
+import { useEffect } from "react";
 
 interface SpeakerFormProps {
   onSubmit: (data: SpeakerFormValues) => void;
   loading?: boolean;
   error?: string | null;
+  speaker?: SpeakerFormValues;
 }
 
-export function SpeakerForm({ onSubmit, loading, error }: SpeakerFormProps) {
+export function SpeakerForm({
+  onSubmit,
+  loading,
+  error,
+  speaker,
+}: SpeakerFormProps) {
   const {
     register,
     handleSubmit,
@@ -34,11 +41,20 @@ export function SpeakerForm({ onSubmit, loading, error }: SpeakerFormProps) {
     watch,
   } = useForm<SpeakerFormValues>({
     resolver: zodResolver(speakerSchema),
+    defaultValues: speaker || {},
   });
 
+  useEffect(() => {
+    if (speaker) {
+      reset(speaker);
+    }
+  }, [speaker, reset]);
+
   const handleFormSubmit = async (data: SpeakerFormValues) => {
-    await onSubmit(data);
-    reset();
+    const res = await onSubmit(data);
+    if (!speaker) {
+      reset();
+    }
   };
 
   return (
@@ -88,12 +104,6 @@ export function SpeakerForm({ onSubmit, loading, error }: SpeakerFormProps) {
             <IconBrandGithub />
             <Input {...register("socialMedia.github")} />
           </div>
-          {/* <div>
-          <label className="block text-sm font-medium text-white mb-1">
-            Website
-          </label>
-          <Input {...register("socialMedia.website")} />
-        </div> */}
         </div>
 
         <div className="col-span-3">
@@ -160,21 +170,27 @@ export function SpeakerForm({ onSubmit, loading, error }: SpeakerFormProps) {
         )}
 
         <div className="col-span-8 md:col-span-8 flex gap-4 mt-4 justify-center">
-          <Button
-            type="button"
-            variant="outline"
-            disabled={loading}
-            className="w-full border-1 rounded-xl border-white  hover:border-white h-11"
-            onClick={() => reset()}
-          >
-            Limpar
-          </Button>
+          {!speaker && (
+            <Button
+              type="button"
+              variant="outline"
+              disabled={loading}
+              className="w-full border-1 rounded-xl border-white  hover:border-white h-11"
+              onClick={() => reset()}
+            >
+              Limpar
+            </Button>
+          )}
           <Button
             type="submit"
             disabled={loading}
             className="w-full text-white !bg-devBlue-dark rounded-xl border-1 border-devBlue-dark hover:border-white h-11"
           >
-            {loading ? "Salvando..." : "Cadastrar"}
+            {loading
+              ? "Salvando..."
+              : speaker
+                ? "Salvar alterações"
+                : "Cadastrar"}
           </Button>
         </div>
       </form>

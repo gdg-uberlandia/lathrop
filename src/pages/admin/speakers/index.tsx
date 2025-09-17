@@ -20,10 +20,12 @@ import Link from "next/link";
 import { Speaker } from "@/models/speaker";
 import { Checkbox } from "@/assets/components/ui/checkbox";
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 import Loading from "@/components/admin/loading-overlay";
 
 function Speakers() {
+  const router = useRouter();
   const { speakers, removeSpeaker, updateSpeaker, error, loading } =
     useSpeakers();
 
@@ -37,7 +39,7 @@ function Speakers() {
   const handleUpdateEvaluable = (speaker: Speaker) => {
     if (!speaker) return;
     speaker.canBeEvaluated = !speaker.canBeEvaluated;
-    updateSpeaker({ speaker });
+    updateSpeaker(speaker);
   };
 
   const handleOpenDialogDelete = (value: Speaker) => {
@@ -111,6 +113,9 @@ function Speakers() {
                       variant="secondary"
                       size="icon"
                       className="size-8 text-devGreen-dark hover:text-devGreen bg-transparent p-0"
+                      onClick={() =>
+                        router.push(`/admin/speakers/edit/${speaker.id}`)
+                      }
                     >
                       <Pencil />
                     </Button>

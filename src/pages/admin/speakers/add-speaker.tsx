@@ -6,11 +6,11 @@ import { useSpeakers } from "@/hooks/useSpeakers";
 import { SpeakerForm } from "../../../components/admin/speakers/add-speaker-form";
 import Loading from "@/components/admin/loading-overlay";
 
-function AddEditSpeakersPage() {
+export default function AddEditSpeakersPage() {
   const { addSpeaker, error, loading } = useSpeakers();
 
   return (
-    <>
+    <AdminLayout>
       {loading && <Loading />}
       <div className="p-4">
         <div className="flex w-full items-center gap-2 justify-between">
@@ -35,10 +35,6 @@ function AddEditSpeakersPage() {
           </div>
         </div>
       </div>
-    </>
+    </AdminLayout>
   );
 }
-
-AddEditSpeakersPage.layout = AdminLayout;
-
-export default AddEditSpeakersPage;

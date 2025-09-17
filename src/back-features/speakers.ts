@@ -41,6 +41,7 @@ const getSpeakers = async (): Promise<SpeakerPayload[]> => {
       .collection(SPEAKERS_COLLECTION)
       .get();
     const speakers: SpeakerPayload[] = [];
+
     speakersQuerySnapshot.forEach((doc) =>
       speakers.push({
         ...doc.data(),
@@ -56,7 +57,33 @@ const getSpeakers = async (): Promise<SpeakerPayload[]> => {
   }
 };
 
-const updateSpeaker = async ({ data }: { data: Speaker }): Promise<Speaker> => {
+const fetchSpeaker = async (speakerId: string): Promise<Speaker> => {
+  if (!speakerId) throw new Error("id is blank");
+  try {
+    const speakerDoc = await db
+      .collection(SPEAKERS_COLLECTION)
+      .doc(speakerId)
+      .get();
+
+    if (!speakerDoc.exists) {
+      throw new Error("Speaker not found");
+    }
+
+    return {
+      ...speakerDoc.data(),
+      key: speakerDoc.id,
+    } as Speaker;
+  } catch (error) {
+    console.error(error);
+    return {} as Speaker;
+  }
+};
+
+const updateSpeaker = async ({
+  data,
+}: {
+  data: SpeakerPayload | any;
+}): Promise<SpeakerPayload | null> => {
   if (data.key) {
     const doc = await db.collection(SPEAKERS_COLLECTION).doc(data.key).get();
 
@@ -74,7 +101,7 @@ const updateSpeaker = async ({ data }: { data: Speaker }): Promise<Speaker> => {
       return {
         ...speaker.data(),
         key: speaker.id,
-      } as Speaker;
+      } as SpeakerPayload;
     } else {
       throw new Error("Doc does not exist.");
     }
@@ -91,4 +118,10 @@ const deleteSpeaker = async (speakerId: string): Promise<{ key: string }> => {
   };
 };
 
-export { createSpeaker, getSpeakers, updateSpeaker, deleteSpeaker };
+export {
+  createSpeaker,
+  fetchSpeaker,
+  getSpeakers,
+  updateSpeaker,
+  deleteSpeaker,
+};

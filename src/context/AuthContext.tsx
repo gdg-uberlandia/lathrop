@@ -1,5 +1,11 @@
 // AuthProvider.tsx
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -22,6 +28,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const restoreUser = async () => {
+      setLoading(true);
+      const token = sessionStorage.getItem("devfest-2025-session");
+      if (token) {
+        try {
+          const res = await axios.post("/api/auth/verify", { token });
+          setUser(res.data.user);
+        } catch (err) {
+          setUser(null);
+        }
+      }
+      setLoading(false);
+    };
+    restoreUser();
+  }, []);
+
   const login = async (email: string, password: string) => {
     setLoading(true);
     const auth = getAuth(firebaseApp);
@@ -42,6 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const auth = getAuth(firebaseApp);
     await signOut(auth);
     setUser(null);
+    sessionStorage.removeItem("devfest-2025-session");
   };
 
   return (

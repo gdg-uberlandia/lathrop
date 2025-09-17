@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Speaker } from "models/speaker";
 import {
   getSpeakers,
+  fetchSpeakerAPI,
   createSpeakerAPI,
   deleteSpeakerAPI,
   updateSpeakerAPI,
@@ -9,10 +10,10 @@ import {
 
 export function useSpeakers() {
   const [speakers, setSpeakers] = useState<Speaker[]>([]);
-  const [loading, setLoading] = useState(!speakers.length);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchSpeakers = async () => {
+  const fetchSpeakers = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -27,7 +28,25 @@ export function useSpeakers() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  const fetchSpeaker = useCallback(async (speakerId: string) => {
+    try {
+      setLoading(true);
+
+      // TODO: Remover este timeout (foi colocado apenas para testes)
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      const speaker = await fetchSpeakerAPI(speakerId);
+      return speaker;
+    } catch (err) {
+      console.error(err);
+      setError("Erro ao buscar speaker específico");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const addSpeaker = async (speaker: any) => {
     try {
@@ -41,9 +60,11 @@ export function useSpeakers() {
         canBeEvaluated: false,
       });
       setSpeakers((prev) => [...prev, newSpeaker]);
+      return newSpeaker as Speaker;
     } catch (err) {
       console.error(err);
       setError("Erro ao criar speaker");
+      return null;
     } finally {
       setLoading(false);
     }
@@ -66,20 +87,21 @@ export function useSpeakers() {
     }
   };
 
-  const updateSpeaker = async ({ speaker }: { speaker: Speaker }) => {
+  const updateSpeaker = async (speaker: any) => {
     try {
       setLoading(true);
 
-      // TODO: Remover este timeout (foi colocado apenas para testes)
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       const updatedSpeaker = await updateSpeakerAPI(speaker);
       setSpeakers((prev) =>
         prev.map((s) => (s.key === updatedSpeaker.key ? updatedSpeaker : s)),
       );
+      return updatedSpeaker as Speaker;
     } catch (err) {
       console.error(err);
       setError("Erro ao atualizar speaker");
+      return null;
     } finally {
       setLoading(false);
     }
@@ -87,13 +109,14 @@ export function useSpeakers() {
 
   useEffect(() => {
     if (!speakers.length) fetchSpeakers();
-  }, [speakers]);
+  }, [fetchSpeakers, speakers.length]);
 
   return {
     speakers,
     loading,
     error,
     fetchSpeakers,
+    fetchSpeaker,
     addSpeaker,
     removeSpeaker,
     updateSpeaker,
