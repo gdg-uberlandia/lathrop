@@ -1,9 +1,5 @@
+import { getSponsors, createSponsor } from "back-features/sponsors";
 import type { NextApiRequest, NextApiResponse } from "next";
-import {
-  createSpeaker,
-  getSpeakers,
-  updateSpeaker,
-} from "back-features/speakers";
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,21 +12,14 @@ export default async function handler(
 
   try {
     if (req.method === "GET") {
-      const speakers = await getSpeakers();
-      return res.status(200).json(speakers);
+      const sponsors = await getSponsors();
+      return res.status(200).json(sponsors);
     }
 
     if (req.method === "POST") {
-      const speaker = await createSpeaker({ data: req.body });
-      return res.status(200).json(speaker);
+      const sponsor = await createSponsor({ data: req.body });
+      return res.status(200).json(sponsor);
     }
-
-    if (req.method === "PUT") {
-      const speaker = await updateSpeaker({ data: req.body });
-      return res.status(200).json(speaker);
-    }
-
-    return res.status(405).json({ error: "Método não permitido" });
   } catch (err) {
     console.error("Erro ao verificar token:", err);
     return res.status(403).json({ error: "Token inválido" });

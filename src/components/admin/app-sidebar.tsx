@@ -28,7 +28,7 @@ const items = [
   },
   {
     title: "Patrocinadores",
-    url: "#",
+    url: "/admin/sponsors/",
     icon: DollarSign,
   },
   {
