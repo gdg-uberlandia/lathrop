@@ -5,6 +5,7 @@ import { Tag } from "../Tag";
 import styles from "./SponsorsSection.module.css";
 import { SponsorCategory, type SponsorLevel } from "models/sponsor-level";
 import configValues from "@/helpers/config";
+import clsx from "clsx";
 
 interface SponsorsSectionsProps extends React.HTMLAttributes<HTMLDivElement> {
   sponsors: Array<SponsorLevel>;
@@ -68,21 +69,18 @@ export const SponsorsSection = ({
                 </p>
               </span>
 
-              <div className="d-flex gap-5 flex-wrap justify-center">
+              <div className="flex gap-3 flex-wrap justify-center">
                 {staffSponsor.items.map((item) => (
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    key={item.logo}
-                    className="mx-auto"
-                  >
-                    <Image
-                      className={styles.SponsorImage}
-                      src={item.logo}
-                      alt={item.name}
-                      height={40}
-                      width={120}
-                    />
+                  <a href={item.url} target="_blank" key={item.logo}>
+                    <div className="max-h-[80px] size-28 relative ">
+                      <Image
+                        className={clsx(styles.SponsorImage)}
+                        src={item.logo}
+                        alt={item.name}
+                        fill
+                        // style={{ filter: "grayscale(1)" }}
+                      />
+                    </div>
                   </a>
                 ))}
               </div>
@@ -103,16 +101,18 @@ const SponsorLevel = ({ sponsorLevel: { name, items } }: SponsorLevelProps) => {
     <section className="d-flex align-items-center flex-column gap-4 mb-4">
       <Tag>{name}</Tag>
 
-      <div className="d-flex flex-wrap gap-4">
+      <div className="flex gap-5 flex-wrap justify-center">
         {items.map((item) => (
           <a href={item.url} target="_blank" key={item.name}>
-            <Image
-              className={styles.SponsorImage}
-              src={item.logo}
-              alt={item.name}
-              height={80}
-              width={240}
-            />
+            <div className="size-64 relative max-h-[90px]">
+              <Image
+                className={clsx(styles.SponsorImage)}
+                src={item.logo}
+                alt={item.name}
+                fill
+                // style={{ filter: "grayscale(1)" }}
+              />
+            </div>
           </a>
         ))}
       </div>

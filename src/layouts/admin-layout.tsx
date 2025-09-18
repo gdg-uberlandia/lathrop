@@ -14,9 +14,11 @@ import { Button } from "@/assets/components/ui/button";
 function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, logout, loading } = useAuth();
   const router = useRouter();
+  console.log("AdminLayout", user);
 
   useEffect(() => {
     if (!loading && !user) {
+      console.log("loading", loading);
       router.push("/login");
     }
   }, [user, loading, router]);
