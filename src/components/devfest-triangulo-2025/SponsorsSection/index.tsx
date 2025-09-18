@@ -5,6 +5,7 @@ import { Tag } from "../Tag";
 import styles from "./SponsorsSection.module.css";
 import { SponsorCategory, type SponsorLevel } from "models/sponsor-level";
 import configValues from "@helpers/config";
+import clsx from "clsx";
 
 interface SponsorsSectionsProps extends React.HTMLAttributes<HTMLDivElement> {
   sponsors: Array<SponsorLevel>;
@@ -76,13 +77,14 @@ export const SponsorsSection = ({
                     key={item.logo}
                     className="mx-auto"
                   >
-                    <Image
-                      className={styles.SponsorImage}
-                      src={item.logo}
-                      alt={item.name}
-                      height={40}
-                      width={120}
-                    />
+                    <div className={styles.StaffImageWrapper}>
+                      <Image
+                        className={styles.SponsorImage}
+                        src={item.logo}
+                        alt={item.name}
+                        fill
+                      />
+                    </div>
                   </a>
                 ))}
               </div>
@@ -106,13 +108,14 @@ const SponsorLevel = ({ sponsorLevel: { name, items } }: SponsorLevelProps) => {
       <div className="d-flex flex-wrap gap-4">
         {items.map((item) => (
           <a href={item.url} target="_blank" key={item.name}>
-            <Image
-              className={styles.SponsorImage}
-              src={item.logo}
-              alt={item.name}
-              height={80}
-              width={240}
-            />
+            <div className={styles.SponsorImageWrapper}>
+              <Image
+                className={clsx(styles.SponsorImage)}
+                src={item.logo}
+                alt={item.name}
+                fill
+              />
+            </div>
           </a>
         ))}
       </div>

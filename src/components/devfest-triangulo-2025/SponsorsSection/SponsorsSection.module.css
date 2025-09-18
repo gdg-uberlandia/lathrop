@@ -2,6 +2,18 @@
   color: var(--blue-1);
 }
 
+.SponsorImageWrapper {
+  height: 90px;
+  position: relative;
+  width: 250px;
+}
+
+.StaffImageWrapper {
+  height: 80px;
+  position: relative;
+  width: 120px;
+}
+
 .SponsorImage {
   object-fit: contain;
 }
