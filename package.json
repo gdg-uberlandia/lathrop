@@ -16,7 +16,7 @@
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "prettier": "prettier src --check",
-    "prettier:fix": "prettier src --write"
+    "prettify": "prettier src --write"
   },
   "dependencies": {
     "@firebase/database-types": "^0.10.3",
