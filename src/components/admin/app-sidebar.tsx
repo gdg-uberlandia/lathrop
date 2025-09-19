@@ -1,17 +1,15 @@
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/assets/components/ui/sidebar";
 import { LogoGDG } from "@/assets/images/LogoGDG";
-import { Home, Megaphone, Calendar, Tag, DollarSign } from "lucide-react";
+import { Home, Megaphone, Calendar, Map, DollarSign } from "lucide-react";
 
 import Link from "next/link";
 
@@ -32,14 +30,14 @@ const items = [
     icon: DollarSign,
   },
   {
-    title: "Programação",
-    url: "#",
-    icon: Calendar,
+    title: "Trilhas",
+    url: "/admin/paths",
+    icon: Map,
   },
   {
-    title: "Tags",
-    url: "#",
-    icon: Tag,
+    title: "Programação",
+    url: "/admin/schedule",
+    icon: Calendar,
   },
 ];
 
