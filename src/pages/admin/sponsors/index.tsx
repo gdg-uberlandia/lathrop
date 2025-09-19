@@ -32,7 +32,7 @@ type TableRowType = {
 
 export default function Sponsors() {
   const router = useRouter();
-  const { sponsors, error, loading, removeSponsor } = useSponsors();
+  const { sponsors, loading, removeSponsor } = useSponsors();
 
   const [sponsor, setSponsor] = useState<TableRowType | null>();
   const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false);
@@ -63,6 +63,21 @@ export default function Sponsors() {
     setDialogDeleteOpen(false);
   };
 
+  const getLevelColor = (levelName: string) => {
+    return (
+      {
+        superior: "border-1 border-devBlue-dark text-white",
+        diamond: "border-1 border-blue-300 text-white",
+        gold: "border-1 border-yellow-500 text-white",
+        silver: "border-1 border-gray-300 text-white",
+        bronze: "border-1 border-orange-400 text-white",
+        iron: "border-1 border-gray-500 text-white",
+        ruby: "border-1 border-red-500 text-white",
+        support: "border-1 border-teal-500 text-white",
+      }[levelName] || "border-1 border-devGreen-light text-white"
+    );
+  };
+
   return (
     <AdminLayout>
       {loading && <Loading />}
@@ -75,7 +90,7 @@ export default function Sponsors() {
             <h1 className="text-xl text-white/80">Patrocinadores</h1>
           </div>
           <Link
-            href="/admin/sponsors/add-sponsors"
+            href="/admin/sponsors/add-sponsor"
             className="text-white bg-devBlue-dark border-1 border-devBlue-dark hover:border-1 hover:border-white/60 size-12 flex items-center justify-center rounded-full"
           >
             <HandCoins />
@@ -87,7 +102,9 @@ export default function Sponsors() {
             <TableCaption />
             <TableHeader className="bg-devGray-dark text-white">
               <TableRow>
-                <TableHead className="p-3 text-white w-24">Level</TableHead>
+                <TableHead className="p-3 text-white w-24 text-center">
+                  Level
+                </TableHead>
                 <TableHead className="p-3 text-white ">Nome</TableHead>
                 <TableHead className="p-3 text-white text-center w-14"></TableHead>
                 <TableHead className="p-3 text-white text-center w-14"></TableHead>
@@ -96,10 +113,14 @@ export default function Sponsors() {
             <TableBody>
               {tableRows.map((sponsor) => (
                 <TableRow key={sponsor.id}>
-                  <TableCell className="p-3 text-white/80 font-medium">
-                    {sponsor.level}
+                  <TableCell className="p-3 text-white/80 font-medium text-center">
+                    <span
+                      className={`py-1 px-2 text-xs rounded-2xl ${getLevelColor(sponsor.levelName)}`}
+                    >
+                      {sponsor.level}
+                    </span>
                   </TableCell>
-                  <TableCell className="p-3 text-white/80 ">
+                  <TableCell className="p-3 text-white/80 font-bold">
                     {sponsor.name}
                   </TableCell>
                   <TableCell className="px-3 text-white/80 text-right">
@@ -109,7 +130,9 @@ export default function Sponsors() {
                       size="icon"
                       className="size-8 text-devGreen-dark hover:text-devGreen bg-transparent p-0"
                       onClick={() =>
-                        router.push(`/admin/sponsors/edit/${sponsor.id}`)
+                        router.push(
+                          `/admin/sponsors/edit/${sponsor.levelName}?id=${sponsor.id}`,
+                        )
                       }
                     >
                       <Pencil />

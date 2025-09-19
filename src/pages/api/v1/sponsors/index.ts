@@ -1,4 +1,8 @@
-import { getSponsors, createSponsor } from "back-features/sponsors";
+import {
+  getSponsors,
+  createSponsor,
+  updateSponsor,
+} from "back-features/sponsors";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -18,6 +22,11 @@ export default async function handler(
 
     if (req.method === "POST") {
       const sponsor = await createSponsor({ data: req.body });
+      return res.status(200).json(sponsor);
+    }
+
+    if (req.method === "PUT") {
+      const sponsor = await updateSponsor({ data: req.body });
       return res.status(200).json(sponsor);
     }
   } catch (err) {

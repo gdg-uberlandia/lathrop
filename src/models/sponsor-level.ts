@@ -8,10 +8,13 @@ export interface SponsorLevel {
 }
 
 export enum SponsorCategory {
+  SUPERIOR = "superior",
+  DIAMOND = "diamond",
+  GOLD = "gold",
+  SILVER = "silver",
   BRONZE = "bronze",
   IRON = "iron",
   RUBY = "ruby",
-  STAFF = "staff",
-  SUPERIOR = "superior",
   SUPPORT = "support",
+  STAFF = "staff",
 }
