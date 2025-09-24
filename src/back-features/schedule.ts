@@ -1,4 +1,4 @@
-const SCHEDULE_COLLECTION = "schedule";
+const SCHEDULE_COLLECTION = "schedule_test";
 import { db } from "@/utils/db";
 
 const getSchedule = async () => {

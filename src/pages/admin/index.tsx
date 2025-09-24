@@ -2,10 +2,13 @@ import { useSpeakers } from "@/hooks/useSpeakers";
 import AdminLayout from "layouts/admin-layout";
 import { IconLoader2 } from "@tabler/icons-react";
 import { useSponsors } from "@/hooks/useSponsors";
+import { useSchedule } from "@/hooks/useSchedule";
+import { ScheduleSection } from "@/components/devfest-triangulo-2023/schedule-section/schedule-section";
 
 function AdminIndex() {
   const { speakers, loading: loadingSpeakers } = useSpeakers();
   const { sponsors, loading: loadingSponsors } = useSponsors();
+  const { schedule, loading: loadingSchedule } = useSchedule();
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
@@ -44,7 +47,9 @@ function AdminIndex() {
           <div className="text-md ">participantes</div>
         </div>
       </div>
-      <div className="bg-muted/50 aspect-video min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
+      <div className="bg-muted/50 aspect-video min-h-[100vh] flex-1 rounded-xl md:min-h-min">
+        <ScheduleSection speakers={speakers} schedule={schedule} />
+      </div>
     </div>
   );
 }

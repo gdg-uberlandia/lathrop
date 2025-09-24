@@ -124,7 +124,8 @@ export function SpeakerForm({
           <label className="block text-sm font-medium text-white mb-1">
             Tech
           </label>
-          <Select
+          <Input {...register("tech")} />
+          {/* <Select
             value={watch("tech") || ""}
             onValueChange={(value) => setValue("tech", value)}
           >
@@ -133,12 +134,13 @@ export function SpeakerForm({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Career">Carreira</SelectItem>
-              <SelectItem value="MachineLearning">Machine Learning</SelectItem>
+              <SelectItem value="Machine_Learning">Machine Learning</SelectItem>
               <SelectItem value="Web">Web</SelectItem>
               <SelectItem value="UI_UX">UI/UX</SelectItem>
               <SelectItem value="Infra_Devops">Infra/Devops</SelectItem>
+              <SelectItem value="Tecnologina_Web">Tecnologias Web</SelectItem>
             </SelectContent>
-          </Select>
+          </Select> */}
         </div>
 
         <div className="col-span-8">

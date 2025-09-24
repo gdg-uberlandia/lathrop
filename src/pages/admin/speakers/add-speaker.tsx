@@ -21,7 +21,7 @@ export default function AddEditSpeakersPage() {
             <ChevronLeft />
           </Link>
           <div className="grow">
-            <h1 className="text-xl text-white/80">Cadastro de Palestrantes</h1>
+            <h1 className="text-xl text-white/80">Cadastro de Palestrante</h1>
           </div>
         </div>
 

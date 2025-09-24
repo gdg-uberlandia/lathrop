@@ -30,15 +30,15 @@ const items = [
     icon: DollarSign,
   },
   {
-    title: "Trilhas",
-    url: "/admin/paths",
-    icon: Map,
-  },
-  {
     title: "Programação",
     url: "/admin/schedule",
     icon: Calendar,
   },
+  // {
+  //   title: "Trilhas",
+  //   url: "/admin/paths",
+  //   icon: Map,
+  // },
 ];
 
 export function AppSidebar() {
@@ -50,14 +50,14 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           {/* <SidebarGroupLabel>Application</SidebarGroupLabel> */}
-          <SidebarGroupContent className="px-2">
-            <SidebarMenu>
+          <SidebarGroupContent className="px-1">
+            <SidebarMenu className="gap-1">
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <Link
                       href={item.url}
-                      className="text-white hover:!text-devBlue h-12 rounded-xl"
+                      className="text-white h-14 rounded-xl px-3"
                     >
                       <item.icon className="!size-5 mr-1" />
                       <span>{item.title}</span>

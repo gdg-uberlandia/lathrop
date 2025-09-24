@@ -124,7 +124,7 @@ const SpeakerScheduleCard = ({ speech, speakers }: ScheduleCardProps) => {
               />
               <div className={styles.card_speaker_info_content}>
                 <h5>{name}</h5>
-                <Row noGutters>
+                <Row className="g-0">
                   <p className={styles.speaker_title}>
                     {title} {company && <strong>@{company} </strong>}
                   </p>

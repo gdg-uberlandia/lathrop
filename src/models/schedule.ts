@@ -2,6 +2,7 @@ export interface Schedule {
   start: string;
   end: string;
   speeches: Speeches[];
+  id: string;
 }
 
 export type Speeches = ScheduleSpeech | ScheduleSpeedSpeech;

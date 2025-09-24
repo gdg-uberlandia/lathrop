@@ -25,6 +25,11 @@ module.exports = {
           DEFAULT: "#FFDE75",
           dark: "#F3C42E",
         },
+        devPink: {
+          light: "#FAD0FF",
+          DEFAULT: "#E77FF4",
+          dark: "#BD4999",
+        },
         devGray: {
           light: "#717171",
           DEFAULT: "#373737",
