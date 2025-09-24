@@ -14,4 +14,5 @@ export enum SponsorCategory {
   STAFF = "staff",
   SUPERIOR = "superior",
   SUPPORT = "support",
+  CARAVANS = "caravans",
 }
