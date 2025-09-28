@@ -1,5 +1,5 @@
 import { getSchedule } from "back-features/schedule";
-import { getSpeakers } from "../back-features/speakers";
+import { getAllSpeakers } from "../back-features/speakers";
 import { getSponsors } from "back-features/sponsors";
 
 import { CountdownTimer } from "components/devfest-triangulo-2025/CountdownTimer";
@@ -164,7 +164,7 @@ export async function getServerSideProps() {
   try {
     return {
       props: {
-        initialSpeakers: await getSpeakers(),
+        initialSpeakers: await getAllSpeakers(),
         initialSponsors: await getSponsors(),
         initialSchedule: await getSchedule(),
       },

@@ -1,26 +1,23 @@
-import { useEffect, useState, useCallback } from "react";
-import { Speaker } from "models/speaker";
+import { Speaker } from "@/models/speaker";
+import { useCallback, useEffect, useState } from "react";
 import {
-  getSpeakers,
-  fetchSpeakerAPI,
   createSpeakerAPI,
   deleteSpeakerAPI,
+  getSpeakersAPI,
+  readSpeakerAPI,
   updateSpeakerAPI,
 } from "../front-features/speakers";
 
 export function useSpeakers() {
-  const [speakers, setSpeakers] = useState<Speaker[]>([]);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [speakers, setSpeakers] = useState<Speaker[]>([]);
 
   const fetchSpeakers = useCallback(async () => {
     try {
       setLoading(true);
 
-      // TODO: Remover este timeout (foi colocado apenas para testes)
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      const data = await getSpeakers();
+      const data = await getSpeakersAPI();
       setSpeakers(data);
     } catch (err) {
       console.error(err);
@@ -34,10 +31,7 @@ export function useSpeakers() {
     try {
       setLoading(true);
 
-      // TODO: Remover este timeout (foi colocado apenas para testes)
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      const speaker = await fetchSpeakerAPI(speakerId);
+      const speaker = await readSpeakerAPI(speakerId);
       return speaker;
     } catch (err) {
       console.error(err);
@@ -51,9 +45,6 @@ export function useSpeakers() {
   const addSpeaker = async (speaker: any) => {
     try {
       setLoading(true);
-
-      // TODO: Remover este timeout (foi colocado apenas para testes)
-      await new Promise((resolve) => setTimeout(resolve, 500));
 
       const newSpeaker = await createSpeakerAPI({
         ...speaker,
@@ -70,17 +61,14 @@ export function useSpeakers() {
     }
   };
 
-  const removeSpeaker = async (key: string) => {
+  const removeSpeaker = async (speakerId: string) => {
     try {
       setLoading(true);
 
-      // TODO: Remover este timeout (foi colocado apenas para testes)
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      await deleteSpeakerAPI(key);
-      setSpeakers((prev) => prev.filter((s) => s.key !== key));
-    } catch (err) {
-      console.error(err);
+      await deleteSpeakerAPI(speakerId);
+      setSpeakers((prev) => prev.filter((s) => s.id !== speakerId));
+    } catch (error) {
+      console.error(error);
       setError("Erro ao deletar speaker");
     } finally {
       setLoading(false);
@@ -91,11 +79,9 @@ export function useSpeakers() {
     try {
       setLoading(true);
 
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
       const updatedSpeaker = await updateSpeakerAPI(speaker);
       setSpeakers((prev) =>
-        prev.map((s) => (s.key === updatedSpeaker.key ? updatedSpeaker : s)),
+        prev.map((s) => (s.id === updatedSpeaker.id ? updatedSpeaker : s)),
       );
       return updatedSpeaker as Speaker;
     } catch (err) {

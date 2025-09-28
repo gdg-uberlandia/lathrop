@@ -1,6 +1,5 @@
 import { cn } from "@/assets/lib/utils";
 import { Button } from "@/assets/components/ui/button";
-import { Card, CardContent } from "@/assets/components/ui/card";
 import { Input } from "@/assets/components/ui/input";
 import { Label } from "@/assets/components/ui/label";
 import Image from "next/image";
@@ -49,8 +48,8 @@ export default function LoginPage({
       )}
       {...props}
     >
-      <Card className="overflow-hidden bg-devGray-dark w-[40rem] border-devGray border-1">
-        <CardContent className="grid p-0 md:grid-cols-2 ">
+      <div className="overflow-hidden bg-devGray-dark w-[40rem] border-devGray border-1 rounded-2xl">
+        <div className="grid p-0 md:grid-cols-2 ">
           <form onSubmit={handleLogin} className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
@@ -67,6 +66,7 @@ export default function LoginPage({
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className=" bg-devGray-dark"
                 />
               </div>
               <div className="grid gap-2">
@@ -99,8 +99,7 @@ export default function LoginPage({
             <Image
               alt="Imagem do DevFest triângulo de 2024"
               src={DroidPhone}
-              priority={true}
-              layout="responsive"
+              priority
               style={{
                 objectFit: "contain",
                 maxWidth: "300px",
@@ -108,8 +107,8 @@ export default function LoginPage({
               }}
             />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

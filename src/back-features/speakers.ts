@@ -1,127 +1,115 @@
-import { db } from "@/utils/db";
 const SPEAKERS_COLLECTION = "speakers_test";
+import { db } from "@/utils/db/index";
 import { Speaker } from "@/models/speaker";
-interface SpeakerPayload {
-  companyTitle: string;
-  id: string;
-  key?: string;
-  location: string;
-  mini_bio: string;
-  name: string;
-  photo: string;
-  tech: string;
-  title: string;
-  topic: string;
-}
 
-const createSpeaker = async ({
-  data,
-}: {
-  data: SpeakerPayload | any;
-}): Promise<SpeakerPayload | null> => {
+/**
+ * Busca todos os speakers
+ */
+export const getAllSpeakers = async (): Promise<Speaker[]> => {
   try {
-    const speakerRef = await db
-      .collection(SPEAKERS_COLLECTION)
-      .add(JSON.parse(JSON.stringify(data)));
-    const speaker = await speakerRef.get();
-
-    return {
-      ...speaker.data(),
-      key: speaker.id,
-    } as SpeakerPayload;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-};
-
-const getSpeakers = async (): Promise<SpeakerPayload[]> => {
-  try {
-    const speakersQuerySnapshot = await db
-      .collection(SPEAKERS_COLLECTION)
-      .get();
-    const speakers: SpeakerPayload[] = [];
-
-    speakersQuerySnapshot.forEach((doc) =>
-      speakers.push({
-        ...doc.data(),
-        key: doc.id,
-        id: doc.id,
-      } as SpeakerPayload),
-    );
-
+    const snapshot = await db.collection(SPEAKERS_COLLECTION).get();
+    const speakers: Speaker[] = [];
+    snapshot.forEach((doc: FirebaseFirestore.QueryDocumentSnapshot) => {
+      const data = doc.data();
+      if (data && data.id) {
+        speakers.push(data as Speaker);
+      } else {
+        console.warn(`[getAllSpeakers] Documento sem id: ${doc.id}`);
+      }
+    });
     return speakers;
   } catch (error) {
-    console.error(error);
-    return [];
+    console.error("[getAllSpeakers] Erro ao buscar speakers:", error);
+    throw error;
   }
 };
 
-const fetchSpeaker = async (speakerId: string): Promise<Speaker> => {
-  if (!speakerId) throw new Error("id is blank");
+/**
+ * Cria um novo speaker
+ */
+export const createSpeaker = async (speaker: Speaker): Promise<Speaker> => {
   try {
-    const speakerDoc = await db
-      .collection(SPEAKERS_COLLECTION)
-      .doc(speakerId)
-      .get();
-
-    if (!speakerDoc.exists) {
-      throw new Error("Speaker not found");
+    if (!speaker || !speaker.id) {
+      throw new Error("Speaker inválido: id obrigatório");
     }
-
-    return {
-      ...speakerDoc.data(),
-      key: speakerDoc.id,
-    } as Speaker;
-  } catch (error) {
-    console.error(error);
-    return {} as Speaker;
-  }
-};
-
-const updateSpeaker = async ({
-  data,
-}: {
-  data: SpeakerPayload | any;
-}): Promise<SpeakerPayload | null> => {
-  if (data.key) {
-    const doc = await db.collection(SPEAKERS_COLLECTION).doc(data.key).get();
-
+    const docRef = db.collection(SPEAKERS_COLLECTION).doc(speaker.id);
+    const doc = await docRef.get();
     if (doc.exists) {
-      await db
-        .collection(SPEAKERS_COLLECTION)
-        .doc(data.key)
-        .set(data, { merge: true });
-
-      const speaker = await db
-        .collection(SPEAKERS_COLLECTION)
-        .doc(data.key)
-        .get();
-
-      return {
-        ...speaker.data(),
-        key: speaker.id,
-      } as SpeakerPayload;
-    } else {
-      throw new Error("Doc does not exist.");
+      throw new Error(`Speaker com id ${speaker.id} já existe.`);
     }
+    await docRef.set(speaker);
+    console.log(`[createSpeaker] Speaker criado: ${speaker.id}`);
+    return speaker;
+  } catch (error) {
+    console.error("[createSpeaker] Erro ao criar speaker:", error);
+    throw error;
   }
-  throw new Error("Speaker key is missing.");
 };
 
-const deleteSpeaker = async (speakerId: string): Promise<{ key: string }> => {
-  if (!speakerId) throw new Error("id is blank");
-  await db.collection(SPEAKERS_COLLECTION).doc(speakerId.toString()).delete();
-
-  return {
-    key: speakerId,
-  };
+/**
+ * Lê um speaker pelo id
+ */
+export const getSpeakerById = async (speakerId: string): Promise<Speaker> => {
+  try {
+    if (!speakerId) {
+      throw new Error("Id do speaker obrigatório");
+    }
+    const docRef = db.collection(SPEAKERS_COLLECTION).doc(speakerId);
+    const doc = await docRef.get();
+    if (!doc.exists) {
+      throw new Error(`Speaker com id ${speakerId} não encontrado.`);
+    }
+    const data = doc.data();
+    if (!data || !data.id) {
+      throw new Error(`Dados inválidos para speaker ${speakerId}`);
+    }
+    return data as Speaker;
+  } catch (error) {
+    console.error("[getSpeakerById] Erro ao buscar speaker:", error);
+    throw error;
+  }
 };
 
-export {
-  createSpeaker,
-  fetchSpeaker,
-  getSpeakers,
-  updateSpeaker,
-  deleteSpeaker,
+/**
+ * Atualiza um speaker
+ */
+export const updateSpeaker = async (speaker: Speaker): Promise<Speaker> => {
+  try {
+    if (!speaker || !speaker.id) {
+      throw new Error("Speaker inválido: id obrigatório");
+    }
+    const docRef = db.collection(SPEAKERS_COLLECTION).doc(speaker.id);
+    const doc = await docRef.get();
+    if (!doc.exists) {
+      throw new Error(`Speaker com id ${speaker.id} não encontrado.`);
+    }
+    await docRef.set(speaker, { merge: true });
+    console.log(`[updateSpeaker] Speaker atualizado: ${speaker.id}`);
+    return speaker;
+  } catch (error) {
+    console.error("[updateSpeaker] Erro ao atualizar speaker:", error);
+    throw error;
+  }
+};
+
+/**
+ * Remove um speaker
+ */
+export const deleteSpeaker = async (speakerId: string): Promise<string> => {
+  try {
+    if (!speakerId) {
+      throw new Error("Id do speaker obrigatório");
+    }
+    const docRef = db.collection(SPEAKERS_COLLECTION).doc(speakerId);
+    const doc = await docRef.get();
+    if (!doc.exists) {
+      throw new Error(`Speaker com id ${speakerId} não encontrado.`);
+    }
+    await docRef.delete();
+    console.log(`[deleteSpeaker] Speaker removido: ${speakerId}`);
+    return speakerId;
+  } catch (error) {
+    console.error("[deleteSpeaker] Erro ao remover speaker:", error);
+    throw error;
+  }
 };

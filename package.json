@@ -19,6 +19,9 @@
     "prettify": "prettier src --write"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/modifiers": "^9.0.0",
+    "@dnd-kit/sortable": "^10.0.0",
     "@firebase/database-types": "^0.10.3",
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-brands-svg-icons": "^6.2.0",
@@ -32,6 +35,7 @@
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-switch": "^1.2.6",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@tabler/icons-react": "^3.35.0",
     "@vercel/analytics": "^0.1.3",
@@ -41,6 +45,8 @@
     "firebase": "^12.2.1",
     "firebase-admin": "^13.5.0",
     "firebase-functions": "^6.4.0",
+    "formidable": "^3.5.4",
+    "framer-motion": "^12.23.22",
     "lucide-react": "^0.544.0",
     "motion": "^12.23.12",
     "next": "^13.4.7",
@@ -54,6 +60,7 @@
     "zod": "^4.1.9"
   },
   "devDependencies": {
+    "@types/formidable": "^3.4.5",
     "@types/node": "18.7.3",
     "@types/react": "^18.2.33",
     "@types/react-dom": "18.0.6",

@@ -3,11 +3,11 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
 import { useSpeakers } from "@/hooks/useSpeakers";
-import { SpeakerForm } from "../../../components/admin/speakers/add-speaker-form";
+import { SpeakersForm } from "@/components/admin/speakers/speakers-form";
 import Loading from "@/components/admin/loading-overlay";
 
 export default function AddEditSpeakersPage() {
-  const { addSpeaker, error, loading } = useSpeakers();
+  const { addSpeaker, loading } = useSpeakers();
 
   return (
     <AdminLayout>
@@ -27,11 +27,7 @@ export default function AddEditSpeakersPage() {
 
         <div className="mt-12 flex flex-col lg:flex-row lg:justify-center lg:items-start gap-8">
           <div className="w-full max-w-[900px] mx-auto">
-            <SpeakerForm
-              onSubmit={addSpeaker}
-              loading={loading}
-              error={error}
-            />
+            <SpeakersForm onSubmit={addSpeaker} loading={loading} />
           </div>
         </div>
       </div>

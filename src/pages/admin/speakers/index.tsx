@@ -21,7 +21,7 @@ import { Speaker } from "@/models/speaker";
 import { Checkbox } from "@/assets/components/ui/checkbox";
 import { useState } from "react";
 import { useRouter } from "next/router";
-
+import Image from "next/image";
 import Loading from "@/components/admin/loading-overlay";
 
 function Speakers() {
@@ -31,10 +31,6 @@ function Speakers() {
 
   const [speaker, setSpeaker] = useState<Speaker | null>();
   const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false);
-
-  const orderedSpeakers: Speaker[] = [...speakers].sort((a, b) =>
-    a.name.localeCompare(b.name),
-  );
 
   const handleUpdateEvaluable = (speaker: Speaker) => {
     if (!speaker) return;
@@ -79,6 +75,7 @@ function Speakers() {
             <TableCaption />
             <TableHeader className="bg-devGray-dark text-white">
               <TableRow>
+                <TableHead className="p-3 text-white "></TableHead>
                 <TableHead className="p-3 text-white ">Nome</TableHead>
                 <TableHead className="p-3 text-white ">Palestra</TableHead>
                 <TableHead className="p-3 text-white text-center">
@@ -89,8 +86,21 @@ function Speakers() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {orderedSpeakers.map((speaker) => (
+              {speakers.map((speaker) => (
                 <TableRow key={speaker.id}>
+                  <TableCell className="p-3 text-white/80 font-medium">
+                    <Image
+                      src={speaker.photo ?? "/default-speaker.png"}
+                      width={40}
+                      height={40}
+                      alt={
+                        speaker.name
+                          ? `Foto de ${speaker.name}`
+                          : "Foto do palestrante"
+                      }
+                      className="rounded-full object-cover outline outline-offset-2 outline-1 outline-devGray-light"
+                    />
+                  </TableCell>
                   <TableCell className="p-3 text-white/80 font-medium">
                     {speaker.name}
                   </TableCell>
@@ -188,7 +198,7 @@ function DeleteDialog({
           </AlertDialogTitle>
           <AlertDialogDescription>
             Esta ação não pode ser desfeita. Isso irá remover permanentemente os
-            dados do palestrante.
+            dados do registro.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="flex grow gap-3">

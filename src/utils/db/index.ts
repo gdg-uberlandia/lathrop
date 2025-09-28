@@ -26,4 +26,6 @@ if (!admin.apps.length) {
 }
 
 const auth = admin.auth();
-export { db, admin, auth };
+const storage = admin.storage();
+
+export { admin, auth, db, storage };

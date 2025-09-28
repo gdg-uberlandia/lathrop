@@ -1,9 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import {
-  createSpeaker,
-  getSpeakers,
-  updateSpeaker,
-} from "back-features/speakers";
+import { createSpeaker, getAllSpeakers } from "back-features/speakers";
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,17 +12,13 @@ export default async function handler(
 
   try {
     if (req.method === "GET") {
-      const speakers = await getSpeakers();
+      const speakers = await getAllSpeakers();
       return res.status(200).json(speakers);
     }
 
     if (req.method === "POST") {
-      const speaker = await createSpeaker({ data: req.body });
-      return res.status(200).json(speaker);
-    }
-
-    if (req.method === "PUT") {
-      const speaker = await updateSpeaker({ data: req.body });
+      const data = req.body;
+      const speaker = await createSpeaker(data);
       return res.status(200).json(speaker);
     }
 

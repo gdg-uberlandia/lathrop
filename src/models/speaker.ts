@@ -3,28 +3,27 @@ export interface Speaker {
   company?: string;
   content: string;
   id: string;
-  key: string;
   miniBio?: string;
   name: string;
   photo?: string;
   socialMedia?: SpeakerSocialMedia;
-  tech?: SpeakerTech;
+  tech?: string;
   title?: string;
   topic: string;
 }
 
 export enum SpeakerTech {
   Career = "Carreira",
-  MachineLearning = "Machine Learning",
-  Web = "Web",
-  UI_UX = "UI/UX",
   Infra_Devops = "Infra/Devops",
+  MachineLearning = "Machine Learning",
+  UI_UX = "UI/UX",
+  Web = "Web",
 }
 
 export interface SpeakerSocialMedia {
-  linkedIn?: string;
-  instagram?: string;
-  twitter?: string;
   github?: string;
+  instagram?: string;
+  linkedIn?: string;
+  twitter?: string;
   website?: string;
 }

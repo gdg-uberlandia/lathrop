@@ -1,16 +1,16 @@
 import Loading from "@/components/admin/loading-overlay";
+import { SpeakersForm } from "@/components/admin/speakers/speakers-form";
 import { useSpeakers } from "@/hooks/useSpeakers";
+import { Speaker } from "@/models/speaker";
 import AdminLayout from "layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
-import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Speaker } from "@/models/speaker";
-import { SpeakerForm } from "@/components/admin/speakers/add-speaker-form";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 export default function EditSpeakerPage() {
   const router = useRouter();
-  const { loading, fetchSpeaker, error, updateSpeaker } = useSpeakers();
+  const { loading, fetchSpeaker, updateSpeaker } = useSpeakers();
   const { speakerId } = router.query;
   const [speaker, setSpeaker] = useState<Speaker | null>(null);
 
@@ -47,12 +47,11 @@ export default function EditSpeakerPage() {
             ) : (
               speaker && (
                 <div>
-                  SpeakerId: {speaker.name}
-                  <SpeakerForm
+                  <SpeakersForm
                     onSubmit={updateSpeaker}
                     loading={loading}
-                    error={error}
                     speaker={speaker}
+                    editing
                   />
                 </div>
               )
