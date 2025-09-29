@@ -1,10 +1,9 @@
+import Loading from "@/components/admin/loading-overlay";
+import { SpeakersForm } from "@/components/admin/speakers/speakers-form";
+import { useSpeakers } from "@/hooks/useSpeakers";
 import AdminLayout from "layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-
-import { useSpeakers } from "@/hooks/useSpeakers";
-import { SpeakersForm } from "@/components/admin/speakers/speakers-form";
-import Loading from "@/components/admin/loading-overlay";
 
 export default function AddEditSpeakersPage() {
   const { addSpeaker, loading } = useSpeakers();

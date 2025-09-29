@@ -16,7 +16,6 @@ export function useSpeakers() {
   const fetchSpeakers = useCallback(async () => {
     try {
       setLoading(true);
-
       const data = await getSpeakersAPI();
       setSpeakers(data);
     } catch (err) {
@@ -30,7 +29,6 @@ export function useSpeakers() {
   const fetchSpeaker = useCallback(async (speakerId: string) => {
     try {
       setLoading(true);
-
       const speaker = await readSpeakerAPI(speakerId);
       return speaker;
     } catch (err) {
@@ -42,14 +40,10 @@ export function useSpeakers() {
     }
   }, []);
 
-  const addSpeaker = async (speaker: any) => {
+  const addSpeaker = async (speaker: Speaker) => {
     try {
       setLoading(true);
-
-      const newSpeaker = await createSpeakerAPI({
-        ...speaker,
-        canBeEvaluated: false,
-      });
+      const newSpeaker = await createSpeakerAPI(speaker);
       setSpeakers((prev) => [...prev, newSpeaker]);
       return newSpeaker as Speaker;
     } catch (err) {
@@ -64,7 +58,6 @@ export function useSpeakers() {
   const removeSpeaker = async (speakerId: string) => {
     try {
       setLoading(true);
-
       await deleteSpeakerAPI(speakerId);
       setSpeakers((prev) => prev.filter((s) => s.id !== speakerId));
     } catch (error) {
@@ -75,15 +68,10 @@ export function useSpeakers() {
     }
   };
 
-  const updateSpeaker = async (speaker: any) => {
+  const updateSpeaker = async (speaker: Speaker) => {
     try {
       setLoading(true);
-
       const updatedSpeaker = await updateSpeakerAPI(speaker);
-      setSpeakers((prev) =>
-        prev.map((s) => (s.id === updatedSpeaker.id ? updatedSpeaker : s)),
-      );
-      return updatedSpeaker as Speaker;
     } catch (err) {
       console.error(err);
       setError("Erro ao atualizar speaker");

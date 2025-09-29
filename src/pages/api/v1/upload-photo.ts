@@ -40,7 +40,7 @@ export default async function handler(
       process.env.NEXT_PUBLIC_FIREBASE_BUCKET,
     );
 
-    const fileName = `${folder}/speaker-${file.originalFilename}`;
+    const fileName = `${folder}/${file.originalFilename}`;
     const upload = bucket.file(fileName);
 
     await upload.save(fs.readFileSync(file.filepath), {

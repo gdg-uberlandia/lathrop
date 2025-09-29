@@ -1,13 +1,13 @@
 import Loading from "@/components/admin/loading-overlay";
+import { SponsorsForm } from "@/components/admin/sponsors/sponsors-form";
 import { useSponsors } from "@/hooks/useSponsors";
+import { Sponsor } from "@/models/sponsor";
 import AdminLayout from "layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
-import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
 import Link from "next/link";
-import { SponsorForm } from "@/components/admin/sponsors/add-sponsor-form";
-import { SponsorsrFormValues } from "@/components/admin/sponsors/add-sponsor-form-schema";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 export default function EditSpeakerPage() {
   const router = useRouter();
@@ -16,7 +16,7 @@ export default function EditSpeakerPage() {
   const searchParams = useSearchParams();
   const sponsorId = searchParams.get("id");
 
-  const [sponsor, setSponsor] = useState<SponsorsrFormValues | null>(null);
+  const [sponsor, setSponsor] = useState<Sponsor | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,10 +54,11 @@ export default function EditSpeakerPage() {
             ) : (
               sponsor && (
                 <div>
-                  <SponsorForm
-                    onSubmitForm={updateSponsor}
+                  <SponsorsForm
+                    onSubmit={updateSponsor}
                     loading={loading}
                     sponsor={sponsor}
+                    editing
                   />
                 </div>
               )

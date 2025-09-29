@@ -1,26 +1,22 @@
-import { useEffect, useState, useCallback } from "react";
-import { Sponsor } from "models/sponsor";
+import { Sponsor, SponsorLevel } from "@/models/sponsor";
+import { useCallback, useEffect, useState } from "react";
 import {
-  getSponsorsAPI,
   createSponsorAPI,
-  updateSponsorAPI,
   deleteSponsorAPI,
-  fetchSponsorAPI,
+  getSponsorsAPI,
+  readSponsorAPI,
+  updateSponsorAPI,
 } from "../front-features/sponsors";
-import { SponsorLevel } from "@/models/sponsor-level";
 
 export function useSponsors() {
-  const [sponsors, setSponsors] = useState<SponsorLevel[]>([]);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [sponsors, setSponsors] = useState<SponsorLevel[]>([]);
+  const [sponsorship, setSponsorship] = useState(0);
 
   const fetchSponsors = useCallback(async () => {
     try {
       setLoading(true);
-
-      // TODO: Remover este timeout (foi colocado apenas para testes)
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
       const data = await getSponsorsAPI();
       setSponsors(data);
     } catch (err) {
@@ -30,34 +26,6 @@ export function useSponsors() {
       setLoading(false);
     }
   }, []);
-
-  const removeSponsor = async ({
-    sponsorId,
-    sponsorLevel,
-  }: {
-    sponsorId: string;
-    sponsorLevel: string;
-  }) => {
-    try {
-      setLoading(true);
-
-      // TODO: Remover este timeout (foi colocado apenas para testes)
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      await deleteSponsorAPI({ sponsorId, sponsorLevel });
-      setSponsors((data) =>
-        data.map((group) => ({
-          ...group,
-          items: group.items.filter((item) => item.id !== sponsorId),
-        })),
-      );
-    } catch (err) {
-      console.error(err);
-      setError("Erro ao deletar speaker");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const fetchSponsor = useCallback(
     async ({
@@ -69,11 +37,7 @@ export function useSponsors() {
     }) => {
       try {
         setLoading(true);
-
-        // TODO: Remover este timeout (foi colocado apenas para testes)
-        await new Promise((resolve) => setTimeout(resolve, 500));
-
-        const sponsor = await fetchSponsorAPI({ sponsorId, sponsorLevel });
+        const sponsor = await readSponsorAPI({ sponsorId, sponsorLevel });
         return sponsor;
       } catch (err) {
         console.error(err);
@@ -86,18 +50,12 @@ export function useSponsors() {
     [],
   );
 
-  const addSponsor = async (sponsor: any) => {
+  const addSponsor = async (sponsor: Sponsor) => {
     try {
       setLoading(true);
-
-      // TODO: Remover este timeout (foi colocado apenas para testes)
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      const newSponsor = await createSponsorAPI({
-        ...sponsor,
-      });
+      const newSponsor = await createSponsorAPI(sponsor);
       setSponsors((prev) => [...prev, newSponsor]);
-      return {} as Sponsor;
+      return newSponsor;
     } catch (err) {
       console.error(err);
       setError("Erro ao criar sponsor");
@@ -107,10 +65,27 @@ export function useSponsors() {
     }
   };
 
-  const updateSponsor = async (sponsor: any) => {
+  const removeSponsor = async (sponsorId: string) => {
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await deleteSponsorAPI(sponsorId);
+      setSponsors((data) =>
+        data.map((group) => ({
+          ...group,
+          items: group.items.filter((item) => item.id !== sponsorId),
+        })),
+      );
+    } catch (error) {
+      console.error(error);
+      setError("Erro ao deletar sponsor");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateSponsor = async (sponsor: Sponsor) => {
+    try {
+      setLoading(true);
       const updatedSponsor = await updateSponsorAPI(sponsor);
     } catch (err) {
       console.error(err);
@@ -125,6 +100,28 @@ export function useSponsors() {
     if (!sponsors.length) fetchSponsors();
   }, [fetchSponsors, sponsors.length]);
 
+  useEffect(() => {
+    let total = 0;
+    const levelValues: Record<string, number> = {
+      diamond: 40,
+      gold: 30,
+      silver: 20,
+      bronze: 10,
+      iron: 8,
+      ruby: 5,
+    };
+
+    sponsors.forEach((sponsor) => {
+      if (sponsor.items?.length) {
+        const multiplier = levelValues[sponsor.items[0].level] ?? 0;
+        const qtd = sponsor.items?.length;
+        total += multiplier * qtd;
+      }
+    });
+
+    setSponsorship(total);
+  }, [sponsors]);
+
   return {
     sponsors,
     loading,
@@ -134,5 +131,6 @@ export function useSponsors() {
     addSponsor,
     removeSponsor,
     updateSponsor,
+    sponsorship,
   };
 }

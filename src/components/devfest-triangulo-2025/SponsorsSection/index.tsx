@@ -3,7 +3,7 @@ import Image from "next/image";
 import MiniCheese from "@/public/devfest-2025/mini-cheese.svg";
 import { Tag } from "../Tag";
 import styles from "./SponsorsSection.module.css";
-import { SponsorCategory, type SponsorLevel } from "models/sponsor-level";
+import { SponsorCategory, type SponsorLevel } from "@/models/sponsor";
 import configValues from "@/helpers/config";
 import clsx from "clsx";
 
@@ -98,24 +98,28 @@ interface SponsorLevelProps {
 
 const SponsorLevel = ({ sponsorLevel: { name, items } }: SponsorLevelProps) => {
   return (
-    <section className="d-flex align-items-center flex-column gap-4 mb-4">
-      <Tag>{name}</Tag>
+    <>
+      {items.length > 0 && (
+        <section className="d-flex align-items-center flex-column gap-4 mb-4">
+          <Tag>{name}</Tag>
 
-      <div className="flex gap-5 flex-wrap justify-center">
-        {items.map((item) => (
-          <a href={item.url} target="_blank" key={item.name}>
-            <div className="size-64 relative max-h-[90px]">
-              <Image
-                className={clsx(styles.SponsorImage)}
-                src={item.logo}
-                alt={item.name}
-                fill
-                // style={{ filter: "grayscale(1)" }}
-              />
-            </div>
-          </a>
-        ))}
-      </div>
-    </section>
+          <div className="flex gap-5 flex-wrap justify-center">
+            {items.map((item) => (
+              <a href={item.url} target="_blank" key={item.name}>
+                <div className="size-64 relative max-h-[90px]">
+                  <Image
+                    className={clsx(styles.SponsorImage)}
+                    src={item.logo}
+                    alt={item.name}
+                    fill
+                    // style={{ filter: "grayscale(1)" }}
+                  />
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+    </>
   );
 };

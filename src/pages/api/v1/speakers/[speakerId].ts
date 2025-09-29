@@ -1,9 +1,9 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import {
+  deleteSpeaker,
   getSpeakerById,
   updateSpeaker,
-  deleteSpeaker,
 } from "back-features/speakers";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,

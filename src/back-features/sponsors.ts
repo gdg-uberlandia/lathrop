@@ -1,189 +1,169 @@
 const SPONSORS_COLLECTION = "sponsors_test";
-import { SponsorLevel } from "models/sponsor-level";
+import {
+  Sponsor,
+  SponsorCategory,
+  SponsorCategoryDisplayName,
+  SponsorLevel,
+} from "@/models/sponsor";
 import { db } from "@/utils/db";
 import { v4 as uuidv4 } from "uuid";
-import { SponsorsrFormValues } from "@/components/admin/sponsors/add-sponsor-form-schema";
-import z from "zod";
 
-interface SponsorPayload {
-  id?: number;
-  logo: string;
-  name: string;
-  url: string;
-  level: string;
-}
-
-export enum SponsorLevelName {
-  superior = "Organização",
-  diamond = "Diamante",
-  gold = "Ouro",
-  silver = "Prata",
-  bronze = "Bronze",
-  iron = "Ferro",
-  ruby = "Apoiador",
-  support = "Parceiros",
-  staff = "Staff",
-}
-
-const getSponsors = async () => {
+/**
+ * Busca todos os SponsorLevels
+ */
+export const getAllSponsorLevels = async (): Promise<SponsorLevel[]> => {
   try {
-    const sponsorsQuerySnapshot = await db
-      .collection(SPONSORS_COLLECTION)
-      .get();
-    const sponsors: Array<SponsorLevel> = [];
-
-    sponsorsQuerySnapshot.forEach((doc) =>
-      sponsors.push({
-        ...(doc.data() as SponsorLevel),
-        id: doc.id,
-      }),
-    );
-
-    return sponsors.sort((a, b) => a.order - b.order);
+    const snapshot = await db.collection(SPONSORS_COLLECTION).get();
+    const levels: SponsorLevel[] = [];
+    snapshot.forEach((doc: FirebaseFirestore.QueryDocumentSnapshot) => {
+      const data = doc.data();
+      if (data && data.id) {
+        levels.push(data as SponsorLevel);
+      } else {
+        console.warn(`[getAllSponsorLevels] Documento sem id: ${doc.id}`);
+      }
+    });
+    return levels;
   } catch (error) {
-    console.error(error);
-
-    return [];
+    console.error(
+      "[getAllSponsorLevels] Erro ao buscar sponsor levels:",
+      error,
+    );
+    throw error;
   }
 };
 
-const fetchSponsor = async ({
-  sponsorId,
-  sponsorLevel,
-}: {
-  sponsorId: string;
-  sponsorLevel: string;
-}): Promise<SponsorsrFormValues> => {
-  if (!sponsorId) throw new Error("id is blank");
+/**
+ * Cria um novo sponsor
+ */
+export const createSponsor = async (sponsor: Sponsor): Promise<Sponsor> => {
   try {
-    if (!sponsorId || !sponsorLevel) throw new Error("id is blank");
+    if (!sponsor || !sponsor.id)
+      throw new Error("Sponsor inválido: id obrigatório");
+    const docRef = db.collection(SPONSORS_COLLECTION).doc(sponsor.level);
+    const doc = await docRef.get();
+    if (!doc.exists) {
+      const displayName = Object.entries(SponsorCategoryDisplayName).find(
+        ([key]) => key === sponsor.level,
+      )?.[1];
 
-    const sponsorRef = await db
-      .collection(SPONSORS_COLLECTION)
-      .doc(sponsorLevel);
-    const docSnap = await sponsorRef.get();
-
-    if (!docSnap.exists) {
-      throw new Error("Documento não encontrado");
+      const newLevel: SponsorLevel = {
+        id: uuidv4(),
+        name: displayName as SponsorCategory,
+        order: 0,
+        items: [sponsor],
+      };
+      await docRef.set(newLevel);
+      return sponsor;
     } else {
-      const docData = docSnap.data();
-      const items = Array.isArray(docData?.items) ? docData.items : [];
-      const item = items.find((item) => item.id === sponsorId);
+      const level = doc.data() as SponsorLevel;
+      if (level.items.find((item) => item.id === sponsor.id)) {
+        throw new Error(`Sponsor com id ${sponsor.id} já existe.`);
+      }
+      level.items.push(sponsor);
+      await docRef.update({ items: level.items });
+      return sponsor;
+    }
+  } catch (error) {
+    console.error("[createSponsor] Erro ao criar sponsor:", error);
+    throw error;
+  }
+};
 
-      if (item && typeof item === "object") {
-        return {
-          ...item,
-          levelName: sponsorLevel,
-          level:
-            SponsorLevelName[sponsorLevel as keyof typeof SponsorLevelName],
-        } as SponsorsrFormValues;
-      } else {
-        throw new Error("Sponsor não encontrado");
+/**
+ * Busca um sponsor pelo id
+ */
+export const getSponsorById = async (sponsorId: string): Promise<Sponsor> => {
+  try {
+    if (!sponsorId) throw new Error("Id do sponsor obrigatório");
+    const snapshot = await db.collection(SPONSORS_COLLECTION).get();
+    for (const doc of snapshot.docs) {
+      const level = doc.data() as SponsorLevel;
+      const sponsor = level.items.find((item) => item.id === sponsorId);
+      if (sponsor) return sponsor;
+    }
+    throw new Error(`Sponsor com id ${sponsorId} não encontrado.`);
+  } catch (error) {
+    console.error("[getSponsorById] Erro ao buscar sponsor:", error);
+    throw error;
+  }
+};
+
+/**
+ * Atualiza um sponsor
+ */
+export const updateSponsor = async (sponsor: Sponsor): Promise<Sponsor> => {
+  try {
+    if (!sponsor || !sponsor.id)
+      throw new Error("Sponsor inválido: id obrigatório");
+
+    const snapshot = await db.collection(SPONSORS_COLLECTION).get();
+    let found = false;
+
+    for (const doc of snapshot.docs) {
+      const level = doc.data() as SponsorLevel;
+      const idx = level.items.findIndex((item) => item.id === sponsor.id);
+      if (idx !== -1) {
+        level.items.splice(idx, 1);
+        await db
+          .collection(SPONSORS_COLLECTION)
+          .doc(doc.id)
+          .update({ items: level.items });
+        found = true;
+        break;
       }
     }
+
+    if (!found) throw new Error(`Sponsor com id ${sponsor.id} não encontrado.`);
+
+    const newLevelDocRef = db
+      .collection(SPONSORS_COLLECTION)
+      .doc(sponsor.level);
+    const newLevelDoc = await newLevelDocRef.get();
+
+    if (!newLevelDoc.exists) {
+      await createSponsor(sponsor);
+    } else {
+      const newLevel = newLevelDoc.data() as SponsorLevel;
+      const idx = newLevel.items.findIndex((item) => item.id === sponsor.id);
+      if (idx !== -1) {
+        newLevel.items[idx] = sponsor;
+      } else {
+        newLevel.items.push(sponsor);
+      }
+      await newLevelDocRef.update({ items: newLevel.items });
+    }
+
+    return sponsor;
   } catch (error) {
-    console.error(error);
-    return {} as SponsorsrFormValues;
+    console.error("[updateSponsor] Erro ao atualizar sponsor:", error);
+    throw error;
   }
 };
 
-const createSponsor = async ({ data }: { data: SponsorPayload | any }) => {
+/**
+ * Remove um sponsor
+ */
+export const deleteSponsor = async (sponsorId: string): Promise<string> => {
   try {
-    const sponsorRef = db.collection(SPONSORS_COLLECTION).doc(data.levelName);
-    const docSnap = await sponsorRef.get();
+    if (!sponsorId) throw new Error("Id do sponsor obrigatório");
 
-    const newSponsor = {
-      id: uuidv4(),
-      logo: data.logo,
-      name: data.name,
-      url: data.url,
-    };
-
-    if (!docSnap.exists) {
-      await sponsorRef.set({
-        name: SponsorLevelName[data.levelName as keyof typeof SponsorLevelName],
-        items: [newSponsor],
-      });
-    } else {
-      const docData = docSnap.data();
-      const items = Array.isArray(docData?.items) ? docData.items : [];
-      await sponsorRef.update({
-        items: [...items, newSponsor],
-      });
+    const snapshot = await db.collection(SPONSORS_COLLECTION).get();
+    for (const doc of snapshot.docs) {
+      const level = doc.data() as SponsorLevel;
+      const idx = level.items.findIndex((item) => item.id === sponsorId);
+      if (idx !== -1) {
+        level.items.splice(idx, 1);
+        await db
+          .collection(SPONSORS_COLLECTION)
+          .doc(doc.id)
+          .update({ items: level.items });
+        return sponsorId;
+      }
     }
-
-    return newSponsor;
+    throw new Error(`Sponsor com id ${sponsorId} não encontrado.`);
   } catch (error) {
-    console.error(error);
-    return null;
+    console.error("[deleteSponsor] Erro ao remover sponsor:", error);
+    throw error;
   }
-};
-
-const updateSponsor = async ({ data }: { data: SponsorPayload | any }) => {
-  if (data.id) {
-    const sponsorRef = db.collection(SPONSORS_COLLECTION).doc(data.levelName);
-    const docSnap = await sponsorRef.get();
-
-    if (!docSnap.exists) {
-      throw new Error("Documento não encontrado");
-    } else {
-      const docData = docSnap.data();
-      const items = Array.isArray(docData?.items) ? docData.items : [];
-
-      const updatedItems = items.map((item: any) =>
-        item.id === data.id
-          ? { ...item, logo: data.logo, name: data.name, url: data.url }
-          : item,
-      );
-
-      await sponsorRef.update({
-        items: updatedItems,
-      });
-
-      return {
-        ...updatedItems.filter((item) => item.id === data.id)[0],
-        levelName: data.levelName,
-        level: data.level,
-      };
-    }
-  }
-  throw new Error("Sponsor key is missing.");
-};
-
-const deleteSponsor = async ({
-  sponsorId,
-  sponsorLevel,
-}: {
-  sponsorId: string;
-  sponsorLevel: string;
-}): Promise<{ key: string }> => {
-  if (!sponsorId || !sponsorLevel) throw new Error("id is blank");
-
-  const sponsorRef = await db.collection(SPONSORS_COLLECTION).doc(sponsorLevel);
-  const docSnap = await sponsorRef.get();
-
-  if (!docSnap.exists) {
-    throw new Error("Documento não encontrado");
-  }
-
-  const data = docSnap.data();
-  const items = data?.items || [];
-
-  const updatedItems = items.filter((item: any) => item.id !== sponsorId);
-
-  await sponsorRef.update({
-    items: updatedItems,
-  });
-
-  return {
-    key: sponsorId,
-  };
-};
-
-export {
-  getSponsors,
-  fetchSponsor,
-  createSponsor,
-  updateSponsor,
-  deleteSponsor,
 };

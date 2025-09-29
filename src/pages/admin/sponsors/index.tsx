@@ -1,26 +1,22 @@
+import { Button } from "@/assets/components/ui/button";
 import {
+  Table,
+  TableBody,
   TableCaption,
+  TableCell,
+  TableHead,
   TableHeader,
   TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-  Table,
 } from "@/assets/components/ui/table";
-import AdminLayout from "layouts/admin-layout";
-import {
-  DollarSign,
-  TriangleAlert,
-  Pencil,
-  Trash2,
-  HandCoins,
-} from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/router";
-
+import DeleteDialog from "@/components/admin/delete-dialog";
 import Loading from "@/components/admin/loading-overlay";
 import { useSponsors } from "@/hooks/useSponsors";
+import { SponsorCategoryDisplayName } from "@/models/sponsor";
+import AdminLayout from "layouts/admin-layout";
+import { DollarSign, HandCoins, Pencil, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 type TableRowType = {
   levelName: string;
@@ -41,8 +37,7 @@ export default function Sponsors() {
     group.items.map(
       (item) =>
         ({
-          levelName: group.id,
-          level: group.name,
+          level: item.level,
           name: item.name,
           url: item.url,
           id: item.id,
@@ -58,7 +53,7 @@ export default function Sponsors() {
 
   const handleDelete = () => {
     if (!sponsor) return;
-    removeSponsor({ sponsorId: sponsor.id, sponsorLevel: sponsor.levelName });
+    removeSponsor(sponsor.id);
     setSponsor(null);
     setDialogDeleteOpen(false);
   };
@@ -76,6 +71,12 @@ export default function Sponsors() {
         support: "border-1 border-teal-500 text-white",
       }[levelName] || "border-1 border-devGreen-light text-white"
     );
+  };
+
+  const getSponsorLevel = (levelName: string) => {
+    return Object.entries(SponsorCategoryDisplayName).find(
+      ([key]) => key === levelName,
+    )?.[1];
   };
 
   return (
@@ -115,9 +116,9 @@ export default function Sponsors() {
                 <TableRow key={sponsor.id}>
                   <TableCell className="p-3 text-white/80 font-medium text-center">
                     <span
-                      className={`py-1 px-2 text-xs rounded-2xl ${getLevelColor(sponsor.levelName)}`}
+                      className={`py-1 px-2 text-xs rounded-2xl ${getLevelColor(sponsor.level)}`}
                     >
-                      {sponsor.level}
+                      {getSponsorLevel(sponsor.level)}
                     </span>
                   </TableCell>
                   <TableCell className="p-3 text-white/80 font-bold">
@@ -162,67 +163,5 @@ export default function Sponsors() {
         onConfirm={handleDelete}
       />
     </AdminLayout>
-  );
-}
-
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/assets/components/ui/alert-dialog";
-import { Button } from "@/assets/components/ui/button";
-
-function DeleteDialog({
-  open,
-  onConfirm,
-  onClose,
-}: {
-  open: boolean;
-  onConfirm: () => void;
-  onClose: () => void;
-}) {
-  const handleCancel = () => {
-    onClose();
-  };
-  const handleConfirm = () => {
-    onConfirm();
-  };
-
-  return (
-    <AlertDialog open={open}>
-      <AlertDialogContent className="border-1 border-white/40 p-5 !rounded-xl">
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            <div className="size-12 rounded-full bg-devRed-dark text-devRed-light flex items-center justify-center mx-auto mb-4">
-              <TriangleAlert />
-            </div>
-            Tem certeza que deseja realizar a exclusão?
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            Esta ação não pode ser desfeita. Isso irá remover permanentemente os
-            dados de nossos registros do evento.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter className="flex grow gap-3">
-          <AlertDialogCancel
-            onClick={handleCancel}
-            className="m-0 w-full rounded-xl text-white"
-          >
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction
-            onClick={handleConfirm}
-            className="m-0 w-full rounded-xl text-white bg-devRed-dark hover:bg-devRed"
-          >
-            Continue
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
   );
 }

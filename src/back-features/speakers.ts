@@ -1,6 +1,6 @@
 const SPEAKERS_COLLECTION = "speakers_test";
-import { db } from "@/utils/db/index";
 import { Speaker } from "@/models/speaker";
+import { db } from "@/utils/db/index";
 
 /**
  * Busca todos os speakers
@@ -39,7 +39,6 @@ export const createSpeaker = async (speaker: Speaker): Promise<Speaker> => {
       throw new Error(`Speaker com id ${speaker.id} já existe.`);
     }
     await docRef.set(speaker);
-    console.log(`[createSpeaker] Speaker criado: ${speaker.id}`);
     return speaker;
   } catch (error) {
     console.error("[createSpeaker] Erro ao criar speaker:", error);
@@ -48,7 +47,7 @@ export const createSpeaker = async (speaker: Speaker): Promise<Speaker> => {
 };
 
 /**
- * Lê um speaker pelo id
+ * Busca um speaker pelo id
  */
 export const getSpeakerById = async (speakerId: string): Promise<Speaker> => {
   try {
@@ -85,7 +84,6 @@ export const updateSpeaker = async (speaker: Speaker): Promise<Speaker> => {
       throw new Error(`Speaker com id ${speaker.id} não encontrado.`);
     }
     await docRef.set(speaker, { merge: true });
-    console.log(`[updateSpeaker] Speaker atualizado: ${speaker.id}`);
     return speaker;
   } catch (error) {
     console.error("[updateSpeaker] Erro ao atualizar speaker:", error);
@@ -107,7 +105,6 @@ export const deleteSpeaker = async (speakerId: string): Promise<string> => {
       throw new Error(`Speaker com id ${speakerId} não encontrado.`);
     }
     await docRef.delete();
-    console.log(`[deleteSpeaker] Speaker removido: ${speakerId}`);
     return speakerId;
   } catch (error) {
     console.error("[deleteSpeaker] Erro ao remover speaker:", error);

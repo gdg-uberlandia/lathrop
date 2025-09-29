@@ -1,10 +1,9 @@
+import Loading from "@/components/admin/loading-overlay";
+import { SponsorsForm } from "@/components/admin/sponsors/sponsors-form";
+import { useSponsors } from "@/hooks/useSponsors";
 import AdminLayout from "layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-
-import { useSponsors } from "@/hooks/useSponsors";
-import { SponsorForm } from "../../../components/admin/sponsors/add-sponsor-form";
-import Loading from "@/components/admin/loading-overlay";
 
 export default function AddEditSpeakersPage() {
   const { addSponsor, loading } = useSponsors();
@@ -27,7 +26,7 @@ export default function AddEditSpeakersPage() {
 
         <div className="mt-12 flex flex-col lg:flex-row lg:justify-center lg:items-start gap-8">
           <div className="w-full max-w-[900px] mx-auto">
-            <SponsorForm onSubmitForm={addSponsor} loading={loading} />
+            <SponsorsForm onSubmit={addSponsor} loading={loading} />
           </div>
         </div>
       </div>

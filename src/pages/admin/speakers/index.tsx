@@ -1,5 +1,4 @@
 import { Button } from "@/assets/components/ui/button";
-import { Checkbox } from "@/assets/components/ui/checkbox";
 import { Switch } from "@/assets/components/ui/switch";
 import {
   Table,

@@ -114,6 +114,7 @@ export function SpeakersForm({
                 </FormItem>
               )}
             />
+
             <FormField
               name="photo"
               control={form.control}
@@ -320,7 +321,7 @@ export function SpeakersForm({
                 disabled={loading}
                 className="w-full text-white !bg-devBlue-dark rounded-xl border-1 border-devBlue-dark hover:border-white h-11"
               >
-                {editing ? "Salvar alterações" : "Cadastrar Speaker"}
+                {editing ? "Salvar alterações" : "Cadastrar"}
               </Button>
             </div>
           </form>

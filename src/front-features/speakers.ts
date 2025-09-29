@@ -1,9 +1,8 @@
+const SPEAKERS_COLLECTION = "speakers";
 import axios from "axios";
 import { getAuth } from "firebase/auth";
 import { server } from "helpers/config";
 import { Speaker } from "models/speaker";
-
-const SPEAKERS_COLLECTION = "speakers";
 
 const getToken = async (): Promise<string | undefined> => {
   const auth = getAuth();
@@ -62,7 +61,7 @@ export const readSpeakerAPI = async (speakerId: string): Promise<Speaker> => {
   }
 };
 
-export const updateSpeakerAPI = async (speaker: any): Promise<Speaker> => {
+export const updateSpeakerAPI = async (speaker: Speaker): Promise<Speaker> => {
   const token = await getToken();
   try {
     const res = await axios.put(
