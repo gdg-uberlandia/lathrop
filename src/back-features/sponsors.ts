@@ -23,6 +23,7 @@ export const getAllSponsorLevels = async (): Promise<SponsorLevel[]> => {
         console.warn(`[getAllSponsorLevels] Documento sem id: ${doc.id}`);
       }
     });
+    levels.sort((a, b) => a.order - b.order);
     return levels;
   } catch (error) {
     console.error(

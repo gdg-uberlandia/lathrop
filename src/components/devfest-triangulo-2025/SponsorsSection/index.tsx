@@ -15,7 +15,19 @@ export const SponsorsSection = ({
   className,
   sponsors = [],
 }: SponsorsSectionsProps) => {
-  const staffSponsor = sponsors.find(({ id }) => id === SponsorCategory.STAFF);
+  const staffSponsor = sponsors.find(
+    ({ items }) => items[0]?.level === SponsorCategory.STAFF,
+  );
+  const caravans = sponsors.find(
+    ({ items }) => items[0]?.level === SponsorCategory.CARAVANS,
+  );
+
+  const payingSponsors = sponsors.filter(
+    ({ items }) =>
+      items[0]?.level !== SponsorCategory.CARAVANS &&
+      items[0]?.level !== SponsorCategory.STAFF,
+  );
+
   return (
     <Presentation
       title={
@@ -42,7 +54,7 @@ export const SponsorsSection = ({
     >
       {!!sponsors.length && (
         <div className="d-grid gap-4 mt-5">
-          <span className="d-flex align-items-center justify-content-center gap-3 mb-3">
+          <span className="d-flex align-items-center justify-content-center gap-3 mb-2">
             <Image
               src={MiniCheese}
               alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
@@ -50,11 +62,9 @@ export const SponsorsSection = ({
             <p>Patrocinadores</p>
           </span>
 
-          {sponsors
-            .filter(({ id, name }) => id !== SponsorCategory.STAFF && name)
-            .map((sponsorLevel) => (
-              <SponsorLevel key={sponsorLevel.id} sponsorLevel={sponsorLevel} />
-            ))}
+          {payingSponsors.map((sponsorLevel) => (
+            <SponsorLevel key={sponsorLevel.id} sponsorLevel={sponsorLevel} />
+          ))}
 
           {!!staffSponsor && (
             <article className="mt-5 d-grid gap-3 mb-5">
@@ -79,6 +89,41 @@ export const SponsorsSection = ({
                         alt={item.name}
                         fill
                         // style={{ filter: "grayscale(1)" }}
+                      />
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </article>
+          )}
+
+          {!!caravans && (
+            <article className="mt-5 d-grid gap-3 mb-5">
+              <span className="d-flex align-items-center justify-content-center gap-3 mb-2">
+                <Image
+                  src={MiniCheese}
+                  alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
+                />
+                <p>
+                  Release
+                  <span className={styles.TextBlue}>Trains</span>
+                </p>
+              </span>
+
+              <div className="d-flex gap-5 flex-wrap justify-center">
+                {caravans.items.map((item) => (
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    key={item.logo}
+                    className="mx-auto"
+                  >
+                    <div className={styles.StaffImageWrapper}>
+                      <Image
+                        className={styles.SponsorImage}
+                        src={item.logo}
+                        alt={item.name}
+                        fill
                       />
                     </div>
                   </a>
