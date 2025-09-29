@@ -84,7 +84,7 @@ export function SpeakersForm({
     const file = e.target.files?.[0];
     if (!file) return;
     try {
-      const url = await uploadImage(file);
+      const url = await uploadImage(file, "speakers");
       form.setValue("photo", url, { shouldValidate: true });
     } catch (err) {
       console.error("Erro ao enviar foto", err);

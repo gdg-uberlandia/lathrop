@@ -11,11 +11,11 @@ export const speakerSchema = z.object({
   photo: z.string().url("URL da foto inválida").optional(),
   socialMedia: z
     .object({
-      github: z.string().url().optional(),
-      instagram: z.string().url().optional(),
-      linkedIn: z.string().url().optional(),
-      twitter: z.string().url().optional(),
-      website: z.string().url().optional(),
+      github: z.string().optional(),
+      instagram: z.string().optional(),
+      linkedIn: z.string().optional(),
+      twitter: z.string().optional(),
+      website: z.string().optional(),
     })
     .optional(),
   tech: z.string().optional(),

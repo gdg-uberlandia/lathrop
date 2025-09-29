@@ -5,12 +5,13 @@ export function useImageUpload() {
   const [loadingImage, setLoadingImage] = useState(false);
   const [error, setError] = useState("");
 
-  const uploadImage = async (file: File) => {
+  const uploadImage = async (file: File, folder: string) => {
     try {
       setLoadingImage(true);
 
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("folder", folder); // Adiciona o folder
 
       const response = await axios.post("/api/v1/upload-photo", formData, {
         headers: {

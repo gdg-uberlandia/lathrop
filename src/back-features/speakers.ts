@@ -17,6 +17,7 @@ export const getAllSpeakers = async (): Promise<Speaker[]> => {
         console.warn(`[getAllSpeakers] Documento sem id: ${doc.id}`);
       }
     });
+    speakers.sort((a, b) => a.name.localeCompare(b.name));
     return speakers;
   } catch (error) {
     console.error("[getAllSpeakers] Erro ao buscar speakers:", error);

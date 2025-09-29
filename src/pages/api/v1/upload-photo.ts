@@ -32,11 +32,15 @@ export default async function handler(
       return res.status(400).json({ error: "Arquivo não enviado" });
     }
 
+    const folder = Array.isArray(fields.folder)
+      ? fields.folder[0]
+      : fields.folder || "";
+
     const bucket = getStorage(admin.app()).bucket(
-      "devfest-triangulo-2025.firebasestorage.app",
+      process.env.NEXT_PUBLIC_FIREBASE_BUCKET,
     );
 
-    const fileName = `speakers2025/speaker-${file.originalFilename}`;
+    const fileName = `${folder}/speaker-${file.originalFilename}`;
     const upload = bucket.file(fileName);
 
     await upload.save(fs.readFileSync(file.filepath), {

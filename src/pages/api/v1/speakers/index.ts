@@ -24,7 +24,6 @@ export default async function handler(
 
     return res.status(405).json({ error: "Método não permitido" });
   } catch (err) {
-    console.error("Erro ao verificar token:", err);
     return res.status(403).json({ error: "Token inválido" });
   }
 }

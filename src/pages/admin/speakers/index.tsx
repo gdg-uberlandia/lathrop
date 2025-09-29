@@ -1,30 +1,27 @@
+import { Button } from "@/assets/components/ui/button";
+import { Checkbox } from "@/assets/components/ui/checkbox";
+import { Switch } from "@/assets/components/ui/switch";
 import {
+  Table,
+  TableBody,
   TableCaption,
+  TableCell,
+  TableHead,
   TableHeader,
   TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-  Table,
 } from "@/assets/components/ui/table";
-import { useSpeakers } from "@/hooks/useSpeakers";
-import AdminLayout from "layouts/admin-layout";
-import {
-  Megaphone,
-  TriangleAlert,
-  Pencil,
-  Trash2,
-  UserRoundPlus,
-} from "lucide-react";
-import Link from "next/link";
-import { Speaker } from "@/models/speaker";
-import { Checkbox } from "@/assets/components/ui/checkbox";
-import { useState } from "react";
-import { useRouter } from "next/router";
-import Image from "next/image";
+import DeleteDialog from "@/components/admin/delete-dialog";
 import Loading from "@/components/admin/loading-overlay";
+import { useSpeakers } from "@/hooks/useSpeakers";
+import { Speaker } from "@/models/speaker";
+import AdminLayout from "layouts/admin-layout";
+import { Megaphone, Pencil, Trash2, UserRoundPlus } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
-function Speakers() {
+export default function Speakers() {
   const router = useRouter();
   const { speakers, removeSpeaker, updateSpeaker, error, loading } =
     useSpeakers();
@@ -52,7 +49,7 @@ function Speakers() {
   };
 
   return (
-    <>
+    <AdminLayout>
       {loading && <Loading />}
       <div className="p-4">
         <div className="flex w-full items-center gap-2 justify-between">
@@ -110,11 +107,12 @@ function Speakers() {
                       : speaker.topic}
                   </TableCell>
                   <TableCell className=" text-white/80 text-center">
-                    <Checkbox
+                    <Switch
+                      id={`speaker-${speaker.id}-evaluable`}
                       disabled={loading}
                       checked={speaker.canBeEvaluated}
-                      onClick={() => handleUpdateEvaluable(speaker)}
-                      className="disabled:!pointer-events-none data-[state=checked]:text-white border-white/50 border-1 dark:data-[state=checked]:border-devBlue-dark dark:data-[state=checked]:bg-devBlue-dark size-5"
+                      onCheckedChange={() => handleUpdateEvaluable(speaker)}
+                      className="data-[state=checked]:bg-devBlue-dark disabled:!pointer-events-none"
                     />
                   </TableCell>
                   <TableCell className="px-3 text-white/80 text-right">
@@ -153,73 +151,6 @@ function Speakers() {
         onClose={() => setDialogDeleteOpen(false)}
         onConfirm={handleDelete}
       />
-    </>
+    </AdminLayout>
   );
 }
-
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/assets/components/ui/alert-dialog";
-import { Button } from "@/assets/components/ui/button";
-
-function DeleteDialog({
-  open,
-  onConfirm,
-  onClose,
-}: {
-  open: boolean;
-  onConfirm: () => void;
-  onClose: () => void;
-}) {
-  const handleCancel = () => {
-    onClose();
-  };
-  const handleConfirm = () => {
-    onConfirm();
-  };
-
-  return (
-    <AlertDialog open={open}>
-      <AlertDialogContent className="border-1 border-white/40 p-5 !rounded-xl">
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            <div className="size-12 rounded-full bg-devRed-dark text-devRed-light flex items-center justify-center mx-auto mb-4">
-              <TriangleAlert />
-            </div>
-            Tem certeza que deseja realizar a exclusão?
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            Esta ação não pode ser desfeita. Isso irá remover permanentemente os
-            dados do registro.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter className="flex grow gap-3">
-          <AlertDialogCancel
-            onClick={handleCancel}
-            className="m-0 w-full rounded-xl text-white"
-          >
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction
-            onClick={handleConfirm}
-            className="m-0 w-full rounded-xl text-white bg-devRed-dark hover:bg-devRed"
-          >
-            Continue
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-}
-
-Speakers.layout = AdminLayout;
-
-export default Speakers;
