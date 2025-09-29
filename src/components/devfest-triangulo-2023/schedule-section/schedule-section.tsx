@@ -28,15 +28,11 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({
     speakers.map((speaker) => [speaker.key, speaker]),
   );
 
-  console.log(speakersMap);
-
   const getSpeakers = (speeches: Speeches) => {
     const speakers = speeches.speakerSlugs
       ? speeches.speakerSlugs.map((slug) => speakersMap.get(slug)!)
       : [];
 
-    console.log("speakerSlugs", speeches.speakerSlugs);
-    console.log("speakers", speakers);
     return speakers;
   };
   return (

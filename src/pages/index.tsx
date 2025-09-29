@@ -1,6 +1,6 @@
 import { getSchedule } from "back-features/schedule";
-import { getAllSpeakers } from "../back-features/speakers";
-import { getSponsors } from "back-features/sponsors";
+import { getAllSpeakers } from "back-features/speakers";
+import { getAllSponsorLevels } from "back-features/sponsors";
 
 import { CountdownTimer } from "components/devfest-triangulo-2025/CountdownTimer";
 import { Header } from "components/devfest-triangulo-2025/Header";
@@ -24,7 +24,7 @@ import Mic from "@/public/devfest-2025/icons/mic.svg";
 import Trophy from "@/public/devfest-2025/icons/trophy.svg";
 import configValues from "@/helpers/config";
 import { SponsorsSection } from "@/components/devfest-triangulo-2025/SponsorsSection";
-import { SponsorLevel } from "models/sponsor-level";
+import { SponsorLevel } from "models/sponsor";
 
 import { devfest2023Images, devfest2024Images } from "@/helpers/carroussel";
 import { Faq } from "@/components/devfest-triangulo-2025/Faq";
@@ -165,7 +165,7 @@ export async function getServerSideProps() {
     return {
       props: {
         initialSpeakers: await getAllSpeakers(),
-        initialSponsors: await getSponsors(),
+        initialSponsors: await getAllSponsorLevels(),
         initialSchedule: await getSchedule(),
       },
     };

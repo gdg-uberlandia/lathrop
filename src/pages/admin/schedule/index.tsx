@@ -1,62 +1,89 @@
 import {
+  Table,
+  TableBody,
   TableCaption,
+  TableCell,
+  TableHead,
   TableHeader,
   TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-  Table,
 } from "@/assets/components/ui/table";
-import { useSpeakers } from "@/hooks/useSpeakers";
 import { useSchedule } from "@/hooks/useSchedule";
+import { useSpeakers } from "@/hooks/useSpeakers";
+import {
+  Schedule,
+  Speeches,
+  SpeechesPath,
+  SpeechTopicName,
+} from "@/models/schedule";
 import AdminLayout from "layouts/admin-layout";
 import {
   Calendar,
-  TriangleAlert,
+  CalendarPlus,
   Pencil,
   Trash2,
-  CalendarPlus,
+  TriangleAlert,
 } from "lucide-react";
 import Link from "next/link";
-import { Speaker } from "@/models/speaker";
-import { useState } from "react";
 import { useRouter } from "next/router";
-import { SpeechesPath } from "@/models/schedule";
+import { useState } from "react";
 
 import Loading from "@/components/admin/loading-overlay";
-import admin from "pages/admin";
 
-function Speakers() {
+export default function Schedules() {
   const router = useRouter();
+
   const { speakers } = useSpeakers();
+  const { schedule, deleteSchedule, loading } = useSchedule();
 
-  const { schedule, loading: loadingSchedule } = useSchedule();
-
-  const [speaker, setSpeaker] = useState<Speaker | null>();
+  const [scheduleObj, setScheduleObj] = useState<Schedule | null>();
   const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false);
 
-  const handleUpdateEvaluable = (speaker: Speaker) => {
-    if (!speaker) return;
-    speaker.canBeEvaluated = !speaker.canBeEvaluated;
-    // updateSpeaker(speaker);
-  };
+  const speakersMap = new Map(speakers.map((speaker) => [speaker.id, speaker]));
 
-  const handleOpenDialogDelete = (value: Speaker) => {
+  const handleOpenDialogDelete = (value: Schedule) => {
     if (!value) return;
-    setSpeaker(value);
+    setScheduleObj(value);
     setDialogDeleteOpen(true);
   };
 
   const handleDelete = () => {
-    if (!speaker) return;
-    // removeSpeaker(speaker.id);
-    setSpeaker(null);
+    if (!scheduleObj) return;
+    deleteSchedule(scheduleObj.id);
+    setScheduleObj(null);
     setDialogDeleteOpen(false);
   };
 
+  const getPathName = (path: SpeechesPath) => {
+    switch (path) {
+      case SpeechesPath.MINAS:
+        return "Minas";
+      case SpeechesPath.CURADO:
+        return "Curado";
+      case SpeechesPath.CANASTRA:
+        return "Canastra";
+      case SpeechesPath.TRANCA:
+        return "Trança";
+    }
+  };
+
+  function generateKey(speech: Speeches, speakerId: string) {
+    return `speech-${speech.path}-speaker-${speakerId}-${
+      speech.speakerSlugs
+        ? speech.speakerSlugs.map((slug) => slug).join("-")
+        : speech.topic
+    }`;
+  }
+
+  const findSpeakers = (speeches: Speeches) => {
+    const speakers = speeches.speakerSlugs
+      ? speeches.speakerSlugs.map((slug) => speakersMap.get(slug)!)
+      : [];
+    return speakers;
+  };
+
   return (
-    <>
-      {loadingSchedule && <Loading />}
+    <AdminLayout>
+      {loading && <Loading />}
       <div className="p-4">
         <div className="flex w-full items-center gap-2 justify-between">
           <div className="size-12 rounded-full bg-devGray-light/40 flex items-center justify-center">
@@ -66,7 +93,7 @@ function Speakers() {
             <h1 className="text-xl text-white/80">Programação</h1>
           </div>
           <Link
-            href="#"
+            href="schedule/add-schedule"
             className="text-white bg-devBlue-dark border-1 border-devBlue-dark hover:border-1 hover:border-white/60 size-12 flex items-center justify-center rounded-full"
           >
             <CalendarPlus />
@@ -85,60 +112,93 @@ function Speakers() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {schedule.map((schedule) => (
-                <TableRow key={schedule.id}>
+              {schedule.map((scheduleItem) => (
+                <TableRow key={scheduleItem.id}>
                   <TableCell className="p-3 text-white/80 font-medium">
-                    {schedule.start}
+                    {scheduleItem.start}
                     <br />
-                    {schedule.end}
+                    {scheduleItem.end}
                   </TableCell>
 
                   <TableCell className="p-3 text-white/80 font-medium">
-                    {schedule.speeches.map((speech, index) => {
+                    {scheduleItem.speeches.map((speech, index) => {
                       if (!speech.topic && !speech.path)
                         return <span key={index}></span>;
 
                       if (speech.topic && !speech.speakerSlugs) {
                         return (
-                          <div key={index} className="p-3 text-white/80 ">
-                            {speech.topic}
+                          <div
+                            key={index}
+                            className="p-3 text-white/80 my-3 rounded-2xl bg-devGray-dark relative grid grid-cols-12"
+                          >
+                            {
+                              SpeechTopicName[
+                                speech.topic as keyof typeof SpeechTopicName
+                              ]
+                            }
                           </div>
                         );
                       }
 
                       const pathStyle = {
-                        [SpeechesPath.CANASTRA]: "border-devPink-dark",
-                        [SpeechesPath.CURADO]: "border-devRed-dark",
-                        [SpeechesPath.MINAS]: "border-devYellow-dark",
-                        [SpeechesPath.TRANCA]: "border-devBlue-dark",
+                        [SpeechesPath.CANASTRA]:
+                          "border-devPink-dark !outline-devPink-dark",
+                        [SpeechesPath.CURADO]:
+                          "border-devRed-dark !outline-devRed-dark",
+                        [SpeechesPath.MINAS]:
+                          "border-devYellow-dark !outline-devYellow-dark",
+                        [SpeechesPath.TRANCA]:
+                          "border-devBlue-dark !outline-devBlue-dark",
                       };
+                      const speechSpeakers = findSpeakers(speech);
+
+                      const speakerInfo = speechSpeakers.find(
+                        (speaker) => speaker && speaker.tech,
+                      );
 
                       return (
                         <div
                           key={index}
-                          className={`p-4 my-3 rounded-xl bg-devGray-dark`}
+                          className={`my-3 rounded-2xl bg-devGray-dark relative grid grid-cols-12`}
                         >
                           {speech.path && (
                             <div
-                              className={`mb-1 px-3 py-1 rounded-2xl w-fit text-white border-1 ${pathStyle[speech.path]}`}
+                              className={`flex col-span-1 min-h-20 h-full rounded-2xl border-1 items-center justify-center ${pathStyle[speech.path]}`}
                             >
-                              {String(SpeechesPath[speech.path])}
+                              <span className={`px-3 py-2 -rotate-90 `}>
+                                {getPathName(SpeechesPath[speech.path])}
+                              </span>
                             </div>
                           )}
-
-                          <div className="flex flex-wrap gap-4">
-                            {speakers
-                              .filter((sp) =>
-                                speech.speakerSlugs?.includes(sp.id),
-                              )
-                              .map((sp) => (
-                                <div className="px-2 py-1" key={sp.id}>
-                                  <div className="w-full mb-3">{sp.topic}</div>
-                                  <span className=" text-white/40">
-                                    {sp.name}
-                                  </span>
-                                </div>
-                              ))}
+                          <div className="flex flex-col col-span-11 py-3 px-4">
+                            <span className="font-semibold text-sm mb-3">
+                              {speakerInfo?.topic}
+                            </span>
+                            <section>
+                              {speechSpeakers.length > 0 ? (
+                                speechSpeakers.map(
+                                  (speaker) =>
+                                    speaker && (
+                                      <div
+                                        key={generateKey(speech, speaker.id)}
+                                        className="text-white/90 flex items-center gap-2 mb-3"
+                                      >
+                                        <Image
+                                          src={speaker.photo!}
+                                          alt={`Foto ${speaker.name}`}
+                                          height={32}
+                                          width={32}
+                                          loading="lazy"
+                                          className={`rounded-full outline outline-offset-2 outline-1 outline-white ${pathStyle[speech.path!]}`}
+                                        />
+                                        {speaker?.name}
+                                      </div>
+                                    ),
+                                )
+                              ) : (
+                                <span>cavou</span>
+                              )}
+                            </section>
                           </div>
                         </div>
                       );
@@ -147,12 +207,12 @@ function Speakers() {
 
                   <TableCell className="px-3 text-white/80 text-right">
                     <Button
-                      disabled={loadingSchedule}
+                      disabled={loading}
                       variant="secondary"
                       size="icon"
                       className="size-8 text-devGreen-dark hover:text-devGreen bg-transparent p-0"
                       onClick={() =>
-                        router.push(`/admin/speakers/edit/${schedule.id}`)
+                        router.push(`/admin/schedule/edit/${scheduleItem.id}`)
                       }
                     >
                       <Pencil />
@@ -162,9 +222,9 @@ function Speakers() {
                     <Button
                       variant="secondary"
                       size="icon"
-                      disabled={loadingSchedule}
+                      disabled={loading}
                       className="size-8 text-devRed-dark hover:text-devRed bg-transparent p-0"
-                      // onClick={() => handleOpenDialogDelete(schedule)}
+                      onClick={() => handleOpenDialogDelete(scheduleItem)}
                     >
                       <Trash2 />
                     </Button>
@@ -181,7 +241,7 @@ function Speakers() {
         onClose={() => setDialogDeleteOpen(false)}
         onConfirm={handleDelete}
       />
-    </>
+    </AdminLayout>
   );
 }
 
@@ -196,8 +256,7 @@ import {
   AlertDialogTitle,
 } from "@/assets/components/ui/alert-dialog";
 import { Button } from "@/assets/components/ui/button";
-import { updateSpeaker } from "back-features/speakers";
-import { open } from "fs";
+import Image from "next/image";
 
 function DeleteDialog({
   open,
@@ -227,7 +286,7 @@ function DeleteDialog({
           </AlertDialogTitle>
           <AlertDialogDescription>
             Esta ação não pode ser desfeita. Isso irá remover permanentemente os
-            dados do palestrante.
+            dados do registro.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="flex grow gap-3">
@@ -248,7 +307,3 @@ function DeleteDialog({
     </AlertDialog>
   );
 }
-
-Speakers.layout = AdminLayout;
-
-export default Speakers;
