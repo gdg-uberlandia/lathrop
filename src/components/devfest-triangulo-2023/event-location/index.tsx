@@ -1,7 +1,7 @@
 import { Container } from "reactstrap";
 
 import styles from "./styles.module.css";
-import { Presentation } from "@components/devfest-triangulo-2025/Presentation";
+import { Presentation } from "@/components/devfest-triangulo-2025/Presentation";
 
 export const EventLocationSection = () => {
   return (

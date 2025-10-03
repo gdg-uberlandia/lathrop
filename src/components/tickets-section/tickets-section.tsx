@@ -5,7 +5,7 @@ import { Container, Row } from "reactstrap";
 import styles from "../../styles/Tickets.module.css";
 import TicketCard from "./ticket-card";
 
-import ticketList from "../../hooks/ticketBatches";
+import ticketList from "@/hooks/ticketBatches";
 import configValues from "helpers/config";
 
 const TicketsSection: React.FC = ({}) => {

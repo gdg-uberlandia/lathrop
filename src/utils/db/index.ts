@@ -3,18 +3,38 @@ import admin from "firebase-admin";
 interface Database extends admin.firestore.Firestore {}
 
 let db: Database;
+
 if (!admin.apps.length) {
-  if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
-    throw new Error("FIREBASE_SERVICE_ACCOUNT is not defined");
+  if (!process.env.FIREBASE_ADMIN_PRIVATE_KEY) {
+    throw new Error(
+      "Missing Firebase private key configuration in environment variables",
+    );
   }
+  if (!process.env.FIREBASE_ADMIN_DATABASE_URL) {
+    throw new Error(
+      "Missing Firebase database URL configuration in environment variables",
+    );
+  }
+  if (!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) {
+    throw new Error(
+      "Missing Firebase project ID configuration in environment variables",
+    );
+  }
+  if (!process.env.FIREBASE_ADMIN_CLIENT_EMAIL) {
+    throw new Error(
+      "Missing Firebase client email configuration in environment variables",
+    );
+  }
+  const appName = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+  const adminConfig = {
+    credential: admin.credential.cert({
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY,
+    }),
+    databaseURL: process.env.FIREBASE_ADMIN_DATABASE_URL,
+  };
 
-  const serviceAccountString = Buffer.from(
-    process.env.FIREBASE_SERVICE_ACCOUNT,
-    "base64",
-  ).toString();
-
-  const adminConfig = JSON.parse(serviceAccountString);
-  adminConfig.credential = admin.credential.cert(adminConfig);
   admin.initializeApp(adminConfig);
 
   db = admin.firestore();
@@ -24,4 +44,7 @@ if (!admin.apps.length) {
   db = admin.firestore();
 }
 
-export default db;
+const auth = admin.auth();
+const storage = admin.storage();
+
+export { admin, auth, db, storage };

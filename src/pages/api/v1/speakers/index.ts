@@ -1,50 +1,29 @@
-import { createSpeaker, getSpeakers } from "back-features/speakers";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { createSpeaker, getAllSpeakers } from "back-features/speakers";
 
-export default function handler(
-  request: NextApiRequest,
-  response: NextApiResponse,
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
 ) {
-  if (request.method === "GET") {
-    getSpeakers()
-      .then((speakers) => {
-        response.json(speakers);
-      })
-      .catch((error) => {
-        response.status(500).send(error);
-      });
-  } else if (request.method === "POST") {
-    const {
-      key,
-      id,
-      companyTitle,
-      mini_bio,
-      name,
-      photo,
-      tech,
-      title,
-      topic,
-      location,
-    } = request.body as any;
-    createSpeaker({
-      key,
-      id,
-      companyTitle,
-      mini_bio,
-      name,
-      photo,
-      tech,
-      title,
-      topic,
-      location,
-    })
-      .then((speaker) => {
-        response.json(speaker);
-      })
-      .catch((error) => {
-        response.status(500).send(error);
-      });
-  } else {
-    response.status(404);
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Token não informado" });
+  }
+
+  try {
+    if (req.method === "GET") {
+      const speakers = await getAllSpeakers();
+      return res.status(200).json(speakers);
+    }
+
+    if (req.method === "POST") {
+      const data = req.body;
+      const speaker = await createSpeaker(data);
+      return res.status(200).json(speaker);
+    }
+
+    return res.status(405).json({ error: "Método não permitido" });
+  } catch (err) {
+    return res.status(403).json({ error: "Token inválido" });
   }
 }

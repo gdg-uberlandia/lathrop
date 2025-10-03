@@ -1,24 +1,58 @@
-import React from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
-// reactstrap components
-import { Container } from "reactstrap";
-// core components
-//import AdminNavbar from "../components/navbars/admin-navbar";
-//import AdminFooter from "../components/footers/admin-footer";
-//import Sidebar from "../components/sidebar/sidebar";
+import { useEffect } from "react";
 
-/*const options = {
-    // you can also just use 'bottom center'
-    position: positions.TOP_RIGHT,
-    timeout: 5000,
-    offset: '30px',
-    transition: transitions.SCALE,
-}*/
+import { useAuth } from "../context/AuthContext";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/assets/components/ui/sidebar";
+import { AppSidebar } from "@/components/admin/app-sidebar";
+import { Button } from "@/assets/components/ui/button";
 
-function AdminLayout() {
-  let mainContentRef = React.createRef();
+function AdminLayout({ children }: { children: React.ReactNode }) {
+  const { user, logout, loading } = useAuth();
+  const router = useRouter();
 
-  return <></>;
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
+
+  if (loading) return <div>Carregando...</div>;
+  if (!loading && !user) {
+    return null;
+  }
+
+  const handleLogout = async () => {
+    await logout();
+    router.push("/login");
+  };
+
+  return (
+    <div className="w-full mx-auto">
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <header className="sticky bg-background top-0 flex h-16 shrink-0 items-center gap-2 border-b px-4 z-30">
+            <SidebarTrigger className="-ml-1" />
+            <div className="flex items-center justify-end gap-6 w-full">
+              <span className="text-xs">{user ? user.email : ""}</span>
+              <Button
+                onClick={handleLogout}
+                className="rounded-xl bg-devBlue-dark border-1 text-white border-devBlue-dark hover:border-1 hover:bg-devBlue-dark hover:!border-white text-sm"
+              >
+                Logout
+              </Button>
+            </div>
+          </header>
+          {children}
+        </SidebarInset>
+      </SidebarProvider>
+    </div>
+  );
 }
 
 export default AdminLayout;

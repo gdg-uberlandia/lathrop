@@ -1,10 +1,10 @@
 import { Presentation } from "../Presentation";
 import Image from "next/image";
-import MiniCheese from "@public/devfest-2025/mini-cheese.svg";
+import MiniCheese from "@/public/devfest-2025/mini-cheese.svg";
 import { Tag } from "../Tag";
 import styles from "./SponsorsSection.module.css";
-import { SponsorCategory, type SponsorLevel } from "models/sponsor-level";
-import configValues from "@helpers/config";
+import { SponsorCategory, type SponsorLevel } from "@/models/sponsor";
+import configValues from "@/helpers/config";
 import clsx from "clsx";
 
 interface SponsorsSectionsProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -15,8 +15,18 @@ export const SponsorsSection = ({
   className,
   sponsors = [],
 }: SponsorsSectionsProps) => {
-  const staffSponsor = sponsors.find(({ id }) => id === SponsorCategory.STAFF);
-  const caravans = sponsors.find(({ id }) => id === SponsorCategory.CARAVANS);
+  const staffSponsor = sponsors.find(
+    ({ items }) => items[0]?.level === SponsorCategory.STAFF,
+  );
+  const caravans = sponsors.find(
+    ({ items }) => items[0]?.level === SponsorCategory.CARAVANS,
+  );
+
+  const payingSponsors = sponsors.filter(
+    ({ items }) =>
+      items[0]?.level !== SponsorCategory.CARAVANS &&
+      items[0]?.level !== SponsorCategory.STAFF,
+  );
 
   return (
     <Presentation
@@ -52,16 +62,9 @@ export const SponsorsSection = ({
             <p>Patrocinadores</p>
           </span>
 
-          {sponsors
-            .filter(
-              ({ id, name }) =>
-                id !== SponsorCategory.STAFF &&
-                id !== SponsorCategory.CARAVANS &&
-                name,
-            )
-            .map((sponsorLevel) => (
-              <SponsorLevel key={sponsorLevel.id} sponsorLevel={sponsorLevel} />
-            ))}
+          {payingSponsors.map((sponsorLevel) => (
+            <SponsorLevel key={sponsorLevel.id} sponsorLevel={sponsorLevel} />
+          ))}
 
           {!!staffSponsor && (
             <article className="mt-5 d-grid gap-3 mb-5">
@@ -76,20 +79,16 @@ export const SponsorsSection = ({
                 </p>
               </span>
 
-              <div className="d-flex gap-5 flex-wrap justify-center">
+              <div className="flex gap-12 flex-wrap justify-center">
                 {staffSponsor.items.map((item) => (
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    key={item.logo}
-                    className="mx-auto"
-                  >
-                    <div className={styles.StaffImageWrapper}>
+                  <a href={item.url} target="_blank" key={item.logo}>
+                    <div className="max-h-[80px] size-28 relative ">
                       <Image
-                        className={styles.SponsorImage}
+                        className={clsx(styles.SponsorImage)}
                         src={item.logo}
                         alt={item.name}
                         fill
+                        // style={{ filter: "grayscale(1)" }}
                       />
                     </div>
                   </a>
@@ -110,6 +109,7 @@ export const SponsorsSection = ({
                   <span className={styles.TextBlue}>Trains</span>
                 </p>
               </span>
+              <p>Caravanas confirmadas para o DevFest Triângulo</p>
 
               <div className="d-flex gap-5 flex-wrap justify-center">
                 {caravans.items.map((item) => (
@@ -144,23 +144,30 @@ interface SponsorLevelProps {
 
 const SponsorLevel = ({ sponsorLevel: { name, items } }: SponsorLevelProps) => {
   return (
-    <section className="d-flex align-items-center flex-column gap-4 mb-4">
-      <Tag>{name}</Tag>
+    <>
+      {items.length > 0 && (
+        <section className="d-flex align-items-center flex-column gap-4 mb-4">
+          <Tag>{name}</Tag>
 
-      <div className="d-flex flex-wrap gap-4">
-        {items.map((item) => (
-          <a href={item.url} target="_blank" key={item.name}>
-            <div className={styles.SponsorImageWrapper}>
-              <Image
-                className={clsx(styles.SponsorImage)}
-                src={item.logo}
-                alt={item.name}
-                fill
-              />
-            </div>
-          </a>
-        ))}
-      </div>
-    </section>
+          <div className="flex gap-16 flex-wrap justify-center">
+            {items.map((item) => (
+              <a href={item.url} target="_blank" key={item.name}>
+                <div
+                  className={`w-48 h-24 relative max-h-[80px] ${styles[item.level]}`}
+                >
+                  <Image
+                    className={clsx(styles.SponsorImage)}
+                    src={item.logo}
+                    alt={item.name}
+                    fill
+                    // style={{ filter: "grayscale(1)" }}
+                  />
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+    </>
   );
 };

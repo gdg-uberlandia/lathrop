@@ -1,14 +1,99 @@
+const SPEAKERS_COLLECTION = "speakers";
+import axios from "axios";
+import { getAuth } from "firebase/auth";
 import { server } from "helpers/config";
 import { Speaker } from "models/speaker";
 
-export const getSpeakers = async (): Promise<Speaker[]> => {
+const getToken = async (): Promise<string | undefined> => {
+  const auth = getAuth();
+  return auth.currentUser?.getIdToken();
+};
+
+export const getSpeakersAPI = async (): Promise<Speaker[]> => {
+  const token = await getToken();
   try {
-    const url = `${server}/api/v1/speakers`;
-    const res = await fetch(url);
-    const speakers = await res.json();
-    return speakers;
+    const res = await axios.get(`${server}/api/v1/${SPEAKERS_COLLECTION}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
   } catch (error) {
-    console.log(error);
-    return [];
+    throw error;
+  }
+};
+
+export const createSpeakerAPI = async (speaker: Speaker): Promise<Speaker> => {
+  const token = await getToken();
+  try {
+    const res = await axios.post(
+      `${server}/api/v1/${SPEAKERS_COLLECTION}`,
+      speaker,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const readSpeakerAPI = async (speakerId: string): Promise<Speaker> => {
+  const token = await getToken();
+  try {
+    const res = await axios.get(
+      `${server}/api/v1/${SPEAKERS_COLLECTION}/${speakerId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateSpeakerAPI = async (speaker: Speaker): Promise<Speaker> => {
+  const token = await getToken();
+  try {
+    const res = await axios.put(
+      `${server}/api/v1/${SPEAKERS_COLLECTION}/${speaker.id}`,
+      speaker,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteSpeakerAPI = async (speakerId: string): Promise<string> => {
+  const token = await getToken();
+  try {
+    const res = await axios.delete(
+      `${server}/api/v1/${SPEAKERS_COLLECTION}/${speakerId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return res.data;
+  } catch (error) {
+    throw error;
   }
 };

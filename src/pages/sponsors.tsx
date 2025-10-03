@@ -1,8 +1,8 @@
 import React from "react";
 import BaseLayout from "../layouts/base-layout";
 import { Col, Row, Container } from "reactstrap";
-import { getSponsors } from "front-features/sponsors";
-import { SponsorLevel } from "models/sponsor-level";
+import { getSponsorsAPI } from "front-features/sponsors";
+import { SponsorLevel } from "models/sponsor";
 import configValues from "helpers/config";
 
 interface SponsorsPageProps {
@@ -54,7 +54,7 @@ export async function getServerSideProps() {
   try {
     return {
       props: {
-        sponsors: await getSponsors(),
+        sponsors: await getSponsorsAPI(),
       },
     };
   } catch (error) {

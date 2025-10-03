@@ -1,27 +1,57 @@
-import { deleteSpeaker } from "back-features/speakers";
+import {
+  deleteSpeaker,
+  getSpeakerById,
+  updateSpeaker,
+} from "back-features/speakers";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-export default function handler(
-  request: NextApiRequest,
-  response: NextApiResponse,
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
 ) {
-  if (request.method === "DELETE") {
-    // Process a POST request
-
-    const { speakerId } = request.query;
-    if (!speakerId) {
-      response.status(500).send({ error: "Id is blank" });
-      return;
-    }
-
-    deleteSpeaker(speakerId.toString())
-      .then(() => {
-        response.status(201);
-      })
-      .catch((error) => {
-        response.status(500).send(error);
-      });
-  } else {
-    response.status(404);
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Token não informado." });
   }
+
+  const { speakerId } = req.query;
+  if (typeof speakerId !== "string" || !speakerId) {
+    return res.status(400).json({ error: "speakerId não informado." });
+  }
+
+  if (req.method === "GET") {
+    try {
+      const speaker = await getSpeakerById(speakerId);
+      return res.status(200).json(speaker);
+    } catch (error: any) {
+      return res
+        .status(500)
+        .json({ error: error?.message || "Erro ao buscar speaker." });
+    }
+  }
+
+  if (req.method === "PUT") {
+    const speaker = req.body;
+    try {
+      const updated = await updateSpeaker(speaker);
+      return res.status(200).json(updated);
+    } catch (error: any) {
+      return res
+        .status(500)
+        .json({ error: error?.message || "Erro ao atualizar speaker." });
+    }
+  }
+
+  if (req.method === "DELETE") {
+    try {
+      const removedId = await deleteSpeaker(speakerId);
+      return res.status(200).json({ id: removedId });
+    } catch (error: any) {
+      return res
+        .status(500)
+        .json({ error: error?.message || "Erro ao remover speaker." });
+    }
+  }
+
+  return res.status(405).json({ error: "Método não permitido." });
 }

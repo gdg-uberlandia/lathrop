@@ -1,27 +1,43 @@
 export interface Schedule {
-  start: string;
   end: string;
-  speeches: Speeches[];
+  id: string;
+  speeches: ScheduleSpeech[];
+  start: string;
 }
 
 export type Speeches = ScheduleSpeech | ScheduleSpeedSpeech;
 
 export interface ScheduleSpeech {
+  end?: string;
+  id: string;
+  order: number;
+  path?: SpeechesPath;
+  speakerSlugs?: Array<string>;
+  start?: string;
   topic: string;
-  speakerSlugs: Array<string>;
-  path: SpeechesPath;
-  start: string;
-  end: string;
 }
 
 export interface ScheduleSpeedSpeech extends ScheduleSpeech {
   duration: number;
+  order: number;
 }
 
 // TODO: rename enum to correct path names
 export enum SpeechesPath {
-  MINAS = "MINAS", // principal
-  CURADO = "CURADO",
   CANASTRA = "CANASTRA",
+  CURADO = "CURADO",
+  MINAS = "MINAS", // principal
   TRANCA = "TRANCA",
+}
+
+export enum SpeechTopicName {
+  coffeeBreak = "Coffee Break",
+  finish = "Encerramento",
+  interval = "Intervalo",
+  keynote_end = "Keynote Encerramento",
+  keynote_start = "Keynote Abertura",
+  panel = "Painel",
+  registration = "Credenciamento",
+  speech = "Palestra",
+  start = "Abertura",
 }

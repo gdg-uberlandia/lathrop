@@ -4,7 +4,7 @@ import { Col, Row, Container } from "reactstrap";
 import styles from "../styles/Speakers.module.css";
 import SpeakerCard from "components/speakers-section/speaker-card";
 import { Speaker } from "models/speaker";
-import { getSpeakers } from "front-features/speakers";
+import { getSpeakersAPI } from "front-features/speakers";
 import configValues from "helpers/config";
 import HomeHeader from "components/headers/home-header";
 
@@ -69,7 +69,7 @@ export async function getServerSideProps() {
   try {
     return {
       props: {
-        speakers: await getSpeakers(),
+        speakers: await getSpeakersAPI(),
       },
     };
   } catch (error) {

@@ -60,7 +60,7 @@ const OlderEvenstsSection: React.FC = ({}) => {
         </Row>
         <Row></Row>
       </Container>
-      <Row noGutters={true}>
+      <Row className=".g-0">
         <iframe
           height="615"
           src="https://www.youtube.com/embed/Ov09g9WmFcE?si=dLtCtu7tJHmGeNRK"

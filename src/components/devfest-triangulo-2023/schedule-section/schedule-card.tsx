@@ -29,7 +29,7 @@ const getPillColor = (tech: SpeakerTech) => {
   }
 };
 
-const getPathColor = (path: SpeechesPath) => {
+const getPathColor = (path: SpeechesPath | undefined) => {
   switch (path) {
     case SpeechesPath.MINAS:
       return styles.path_one_color;
@@ -39,6 +39,8 @@ const getPathColor = (path: SpeechesPath) => {
       return styles.path_three_color;
     case SpeechesPath.TRANCA:
       return styles.path_SPEED_color;
+    default:
+      return styles.path_one_color;
   }
 };
 
@@ -83,6 +85,24 @@ const ScheduleCardChooser = (props: ScheduleCardProps) => {
   );
 };
 
+const getSpeakerTechFromString = (
+  techString: string,
+): SpeakerTech | undefined => {
+  const techMap: Record<string, SpeakerTech> = {
+    Career: SpeakerTech.Career,
+    MachineLearning: SpeakerTech.MachineLearning,
+    "Machine Learning": SpeakerTech.MachineLearning,
+    Web: SpeakerTech.Web,
+    UI_UX: SpeakerTech.UI_UX,
+    "UI/UX": SpeakerTech.UI_UX,
+    Infra_Devops: SpeakerTech.Infra_Devops,
+    DevOps: SpeakerTech.Infra_Devops,
+    Infrastructure: SpeakerTech.Infra_Devops,
+  };
+
+  return techMap[techString];
+};
+
 const SpeakerScheduleCard = ({ speech, speakers }: ScheduleCardProps) => {
   const speakerInfo = speakers.find(({ tech }) => tech);
 
@@ -100,7 +120,9 @@ const SpeakerScheduleCard = ({ speech, speakers }: ScheduleCardProps) => {
             {speakerInfo?.tech && (
               <Badge
                 className={styles.card_badge}
-                color={getPillColor(speakerInfo?.tech)}
+                color={getPillColor(
+                  getSpeakerTechFromString(speakerInfo?.tech)!,
+                )}
                 pill
               >
                 {speakerInfo?.tech}
@@ -112,11 +134,11 @@ const SpeakerScheduleCard = ({ speech, speakers }: ScheduleCardProps) => {
           </span>
         </header>
         <div>
-          {speakers.map(({ key, photo, name, title, company }) => (
-            <div key={key} className={styles.speaker_description}>
+          {speakers.map(({ id, photo, name, title, company }) => (
+            <div key={id} className={styles.speaker_description}>
               <Image
                 className={styles.card_image}
-                src={photo}
+                src={photo!}
                 alt={`Foto ${name}`}
                 height={40}
                 width={40}
@@ -124,7 +146,7 @@ const SpeakerScheduleCard = ({ speech, speakers }: ScheduleCardProps) => {
               />
               <div className={styles.card_speaker_info_content}>
                 <h5>{name}</h5>
-                <Row noGutters>
+                <Row className="g-0">
                   <p className={styles.speaker_title}>
                     {title} {company && <strong>@{company} </strong>}
                   </p>

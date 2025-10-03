@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { useEffect } from "react";
 
-import Instagram from "@public/devfest-2025/icons/instagram.svg";
-import LeftBracket from "@public/devfest-2025/left-bracket.svg";
-import RightBracket from "@public/devfest-2025/right-bracket.svg";
+import Instagram from "@/public/devfest-2025/icons/instagram.svg";
+import LeftBracket from "@/public/devfest-2025/left-bracket.svg";
+import RightBracket from "@/public/devfest-2025/right-bracket.svg";
 
 import styles from "./PastEvent.module.css";
 
@@ -50,11 +50,11 @@ export const PastEvent = ({ className, ...rest }: PastEventProps) => {
       <div className={styles.FullRow}>
         <section className={styles.Caroussel}>
           <div className={styles.CustomLeftBracket}>
-            <Image src={LeftBracket} alt="" layout="responsive" />
+            <Image src={LeftBracket} alt="" />
           </div>
           <div id="youtube-player" className={styles.IFrame}></div>
           <div className={styles.CustomRightBracket}>
-            <Image src={RightBracket} alt="" layout="responsive" />
+            <Image src={RightBracket} alt="" />
           </div>
         </section>
         <a

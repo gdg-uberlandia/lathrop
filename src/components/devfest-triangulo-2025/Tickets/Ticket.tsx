@@ -1,9 +1,9 @@
 import Image from "next/image";
 import styles from "./Ticket.module.css";
 
-import MiniCheese from "@public/devfest-2025/mini-cheese.svg";
-import SellIcon from "@public/icons/sell.svg";
-import TShirtIcon from "@public/icons/tshirt.svg";
+import MiniCheese from "@/public/devfest-2025/mini-cheese.svg";
+import SellIcon from "@/public/icons/sell.svg";
+import TShirtIcon from "@/public/icons/tshirt.svg";
 import configValues from "helpers/config";
 import clsx from "clsx";
 
@@ -57,7 +57,11 @@ export const Ticket = ({
                 src={SellIcon}
                 height={44}
                 width={44}
-                objectFit="cover"
+                style={{
+                  objectFit: "cover",
+                  maxWidth: "100%",
+                  height: "auto",
+                }}
               />
             )}
           </section>

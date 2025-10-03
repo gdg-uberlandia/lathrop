@@ -24,10 +24,15 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({
   speakers,
   schedule,
 }) => {
-  const speakersMap = new Map(
-    speakers.map((speaker) => [speaker.key, speaker]),
-  );
+  const speakersMap = new Map(speakers.map((speaker) => [speaker.id, speaker]));
 
+  const getSpeakers = (speeches: Speeches) => {
+    const speakers = speeches.speakerSlugs
+      ? speeches.speakerSlugs.map((slug) => speakersMap.get(slug)!)
+      : [];
+
+    return speakers;
+  };
   return (
     <>
       {speakers.length && (
@@ -60,13 +65,7 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({
                         <ScheduleCard
                           key={generateKey(speeches)}
                           speech={speeches}
-                          speakers={
-                            speeches.speakerSlugs
-                              ? speeches.speakerSlugs.map(
-                                  (slug) => speakersMap.get(slug)!,
-                                )
-                              : []
-                          }
+                          speakers={getSpeakers(speeches)}
                         />
                       ))}
                     </section>
@@ -77,13 +76,7 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({
                         <ScheduleCard
                           key={generateKey(speeches)}
                           speech={speeches}
-                          speakers={
-                            speeches.speakerSlugs
-                              ? speeches.speakerSlugs.map(
-                                  (slug) => speakersMap.get(slug)!,
-                                )
-                              : []
-                          }
+                          speakers={getSpeakers(speeches)}
                         />
                       ))}
                     </section>

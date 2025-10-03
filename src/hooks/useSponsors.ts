@@ -1,108 +1,136 @@
-const sponsors = {
-  superior: {
-    name: "",
-    items: [
-      {
-        name: "Google Developers",
-        logo: "https://firebasestorage.googleapis.com/v0/b/devfestcerrado2022.appspot.com/o/sponsors%2Fgoogle-developers.png?alt=media",
-        url: "https://developers.google.com",
-      },
-    ],
-  },
-  diamond: {
-    name: "Queijo Minas",
-    items: [
-      {
-        name: "TQI",
-        logo: "https://firebasestorage.googleapis.com/v0/b/devfestcerrado2022.appspot.com/o/sponsors%2Ftqi.png?alt=media",
-        url: "https://www.tqi.com.br/",
-      },
-    ],
-  },
-  golden: {
-    name: "Canastra",
-    items: [],
-  },
-  silver: {
-    name: "Minas Frescal",
-    items: [
-      {
-        name: "Sankhya",
-        logo: "https://firebasestorage.googleapis.com/v0/b/devfestcerrado2022.appspot.com/o/sponsors%2Fsankhya.png?alt=media",
-        url: "https://www.sankhya.com.br/",
-      },
-      {
-        name: "Aliare",
-        logo: "https://firebasestorage.googleapis.com/v0/b/devfestcerrado2022.appspot.com/o/sponsors%2Faliare.png?alt=media",
-        url: "https://www.aliare.co/",
-      },
-      {
-        name: "Asa Consultoria",
-        logo: "https://firebasestorage.googleapis.com/v0/b/devfestcerrado2022.appspot.com/o/sponsors%2Fasa.png?alt=media",
-        url: "https://www.asaconsultoria.com.br/",
-      },
-    ],
-  },
-  bronze: {
-    name: "Meia Cura",
-    items: [
-      {
-        name: "Zup",
-        logo: "https://firebasestorage.googleapis.com/v0/b/devfestcerrado2022.appspot.com/o/sponsors%2Fzup.png?alt=media",
-        url: "https://www.zup.com.br",
-      },
-      {
-        name: "CI&T",
-        logo: "https://firebasestorage.googleapis.com/v0/b/devfestcerrado2022.appspot.com/o/sponsors%2Fciet.png?alt=media",
-        url: "https://ciandt.com/br",
-      },
-    ],
-  },
-  ruby: {
-    name: "Queijo Curado",
-    items: [
-      {
-        name: "Globo",
-        logo: "https://firebasestorage.googleapis.com/v0/b/devfestcerrado2022.appspot.com/o/sponsors%2Fglobo.png?alt=media",
-        url: "https://vempraglobo.g.globo",
-      },
-      {
-        name: "ZG Soluções",
-        logo: "https://firebasestorage.googleapis.com/v0/b/devfestcerrado2022.appspot.com/o/sponsors%2Fzg-solucoes.png?alt=media",
-        url: "https://zgsolucoes.com.br/",
-      },
-    ],
-  },
-  ametista: {
-    name: "Queijo Trança",
-    items: [
-      {
-        name: "Jetbrains",
-        logo: "https://firebasestorage.googleapis.com/v0/b/devfestcerrado2022.appspot.com/o/sponsors%2Fjetbrains.svg?alt=media",
-        url: "https://www.jetbrains.com/",
-      },
-    ],
-  },
-  support: {
-    name: "Apoio",
-    items: [
-      {
-        name: "Brain",
-        logo: "https://firebasestorage.googleapis.com/v0/b/devfestcerrado2022.appspot.com/o/sponsors%2Fbrain.png?alt=media",
-        url: "http://inovacaobrain.com.br/",
-      },
-      {
-        name: "Uberhub",
-        logo: "https://firebasestorage.googleapis.com/v0/b/devfestcerrado2022.appspot.com/o/sponsors%2Fuberhub.png?alt=media",
-        url: "http://www.uberhub.com.br/",
-      },
-      {
-        name: "Techers",
-        logo: "https://firebasestorage.googleapis.com/v0/b/devfestcerrado2022.appspot.com/o/sponsors%2Ftechers.png?alt=media",
-        url: "https://www.techers.com.br/",
-      },
-    ],
-  },
-};
+import { Sponsor, SponsorLevel } from "@/models/sponsor";
+import { useCallback, useEffect, useState } from "react";
+import {
+  createSponsorAPI,
+  deleteSponsorAPI,
+  getSponsorsAPI,
+  readSponsorAPI,
+  updateSponsorAPI,
+} from "../front-features/sponsors";
 
-export default sponsors;
+export function useSponsors() {
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [sponsors, setSponsors] = useState<SponsorLevel[]>([]);
+  const [sponsorship, setSponsorship] = useState(0);
+
+  const fetchSponsors = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await getSponsorsAPI();
+      setSponsors(data);
+    } catch (err) {
+      console.error(err);
+      setError("Erro ao buscar sponsors");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchSponsor = useCallback(
+    async ({
+      sponsorId,
+      sponsorLevel,
+    }: {
+      sponsorId: string;
+      sponsorLevel: string;
+    }) => {
+      try {
+        setLoading(true);
+        const sponsor = await readSponsorAPI({ sponsorId, sponsorLevel });
+        return sponsor;
+      } catch (err) {
+        console.error(err);
+        setError("Erro ao buscar sponsor específico");
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
+
+  const addSponsor = async (sponsor: Sponsor) => {
+    try {
+      setLoading(true);
+      const newSponsor = await createSponsorAPI(sponsor);
+      setSponsors((prev) => [...prev, newSponsor]);
+      return newSponsor;
+    } catch (err) {
+      console.error(err);
+      setError("Erro ao criar sponsor");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const removeSponsor = async (sponsorId: string) => {
+    try {
+      setLoading(true);
+      await deleteSponsorAPI(sponsorId);
+      setSponsors((data) =>
+        data.map((group) => ({
+          ...group,
+          items: group.items.filter((item) => item.id !== sponsorId),
+        })),
+      );
+    } catch (error) {
+      console.error(error);
+      setError("Erro ao deletar sponsor");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateSponsor = async (sponsor: Sponsor) => {
+    try {
+      setLoading(true);
+      const updatedSponsor = await updateSponsorAPI(sponsor);
+    } catch (err) {
+      console.error(err);
+      setError("Erro ao atualizar sponsor");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!sponsors.length) fetchSponsors();
+  }, [fetchSponsors, sponsors.length]);
+
+  useEffect(() => {
+    let total = 0;
+    const levelValues: Record<string, number> = {
+      diamond: 40,
+      gold: 30,
+      silver: 20,
+      bronze: 10,
+      iron: 8,
+      ruby: 5,
+    };
+
+    sponsors.forEach((sponsor) => {
+      if (sponsor.items?.length) {
+        const multiplier = levelValues[sponsor.items[0].level] ?? 0;
+        const qtd = sponsor.items?.length;
+        total += multiplier * qtd;
+      }
+    });
+
+    setSponsorship(total);
+  }, [sponsors]);
+
+  return {
+    sponsors,
+    loading,
+    error,
+    fetchSponsors,
+    fetchSponsor,
+    addSponsor,
+    removeSponsor,
+    updateSponsor,
+    sponsorship,
+  };
+}

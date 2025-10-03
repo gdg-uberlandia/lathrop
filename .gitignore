@@ -50,3 +50,4 @@ firebase-debug.log
 hosting.*
 
 serviceAccount.json
+env.*

@@ -1,14 +1,14 @@
 import Image from "next/image";
 
-import { LogoGDG } from "@assets/images/LogoGDG";
-import config from "@helpers/config";
-import DevFest2023 from "@public/devfest-2025/devfest-2023.png";
-import DevFest2022 from "@public/devfest-2025/devfest-2022.png";
-import DevFest2024 from "@public/devfest-2025/devfest-2024.png";
-import AndroidCheese from "@public/devfest-2025/footer-image.png";
-import LinkedinIcon from "@public/devfest-2025/icons/linkedin-footer.svg";
-import InstagramIcon from "@public/devfest-2025/icons/instagram-footer.svg";
-import MailIcon from "@public/devfest-2025/icons/mail-footer.svg";
+import { LogoGDG } from "@/assets/images/LogoGDG";
+import config from "@/helpers/config";
+import DevFest2023 from "@/public/devfest-2025/devfest-2023.png";
+import DevFest2022 from "@/public/devfest-2025/devfest-2022.png";
+import DevFest2024 from "@/public/devfest-2025/devfest-2024.png";
+import AndroidCheese from "@/public/devfest-2025/footer-image.png";
+import LinkedinIcon from "@/public/devfest-2025/icons/linkedin-footer.svg";
+import InstagramIcon from "@/public/devfest-2025/icons/instagram-footer.svg";
+import MailIcon from "@/public/devfest-2025/icons/mail-footer.svg";
 
 import styles from "./Footer.module.css";
 

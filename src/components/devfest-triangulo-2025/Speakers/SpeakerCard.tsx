@@ -3,12 +3,12 @@ import { Speaker } from "models/speaker";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-import { TruncatedText } from "@components/TruncatedText";
-import AvatarFrame1 from "@public/devfest-2025/avatar-frame-1.svg";
-import AvatarFrame2 from "@public/devfest-2025/avatar-frame-2.svg";
-import AvatarFrame3 from "@public/devfest-2025/avatar-frame-3.svg";
-import AvatarFrame4 from "@public/devfest-2025/avatar-frame-4.svg";
-import AvatarNotFound from "@public/devfest-2025/icons/avatar-not-found.svg";
+import { TruncatedText } from "@/components/TruncatedText";
+import AvatarFrame1 from "@/public/devfest-2025/avatar-frame-1.svg";
+import AvatarFrame2 from "@/public/devfest-2025/avatar-frame-2.svg";
+import AvatarFrame3 from "@/public/devfest-2025/avatar-frame-3.svg";
+import AvatarFrame4 from "@/public/devfest-2025/avatar-frame-4.svg";
+import AvatarNotFound from "@/public/devfest-2025/icons/avatar-not-found.svg";
 
 import SpeakerModal from "./SpeakerModal";
 import styles from "./Speakers.module.css";

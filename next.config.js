@@ -10,6 +10,7 @@ const nextConfig = {
       "media.licdn.com",
       "raw.githubusercontent.com",
       "lh3.googleusercontent.com",
+      "storage.googleapis.com",
     ],
   },
   /*exportPathMap: async function (
