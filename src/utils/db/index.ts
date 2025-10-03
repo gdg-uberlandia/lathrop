@@ -5,25 +5,25 @@ interface Database extends admin.firestore.Firestore {}
 let db: Database;
 
 if (!admin.apps.length) {
-  if (
-    !process.env.FIREBASE_ADMIN_PRIVATE_KEY
-  ) {
-    throw new Error("Missing Firebase private key configuration in environment variables");
+  if (!process.env.FIREBASE_ADMIN_PRIVATE_KEY) {
+    throw new Error(
+      "Missing Firebase private key configuration in environment variables",
+    );
   }
-  if (
-    !process.env.FIREBASE_ADMIN_DATABASE_URL
-  ) {
-    throw new Error("Missing Firebase database URL configuration in environment variables");
+  if (!process.env.FIREBASE_ADMIN_DATABASE_URL) {
+    throw new Error(
+      "Missing Firebase database URL configuration in environment variables",
+    );
   }
-  if (
-    !process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
-  ) {
-    throw new Error("Missing Firebase project ID configuration in environment variables");
+  if (!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) {
+    throw new Error(
+      "Missing Firebase project ID configuration in environment variables",
+    );
   }
-  if (
-    !process.env.FIREBASE_ADMIN_CLIENT_EMAIL
-  ) {
-    throw new Error("Missing Firebase client email configuration in environment variables");
+  if (!process.env.FIREBASE_ADMIN_CLIENT_EMAIL) {
+    throw new Error(
+      "Missing Firebase client email configuration in environment variables",
+    );
   }
   const appName = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
   const adminConfig = {
@@ -34,8 +34,6 @@ if (!admin.apps.length) {
     }),
     databaseURL: process.env.FIREBASE_ADMIN_DATABASE_URL,
   };
-
-  
 
   admin.initializeApp(adminConfig);
 
