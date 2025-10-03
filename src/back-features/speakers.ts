@@ -1,4 +1,4 @@
-const SPEAKERS_COLLECTION = "speakers_test";
+const SPEAKERS_COLLECTION = `speakers${process.env.DEV_MODE ? '_test' : ''}`;
 import { Speaker } from "@/models/speaker";
 import { db } from "@/utils/db/index";
 

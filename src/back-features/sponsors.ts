@@ -1,4 +1,4 @@
-const SPONSORS_COLLECTION = "sponsors_test";
+const SPONSORS_COLLECTION = `sponsors${process.env.DEV_MODE ? '_test' : ''}`;
 import {
   Sponsor,
   SponsorCategory,
