@@ -14,7 +14,7 @@ export default function EditSpeakerPage() {
   const { loading, fetchSponsor, updateSponsor } = useSponsors();
   const { sponsorLevel } = router.query;
   const searchParams = useSearchParams();
-  const sponsorId = searchParams.get("id");
+  const sponsorId = searchParams?.get("id");
 
   const [sponsor, setSponsor] = useState<Sponsor | null>(null);
 

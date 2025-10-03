@@ -134,11 +134,11 @@ const SpeakerScheduleCard = ({ speech, speakers }: ScheduleCardProps) => {
           </span>
         </header>
         <div>
-          {speakers.map(({ key, photo, name, title, company }) => (
-            <div key={key} className={styles.speaker_description}>
+          {speakers.map(({ id, photo, name, title, company }) => (
+            <div key={id} className={styles.speaker_description}>
               <Image
                 className={styles.card_image}
-                src={photo}
+                src={photo!}
                 alt={`Foto ${name}`}
                 height={40}
                 width={40}

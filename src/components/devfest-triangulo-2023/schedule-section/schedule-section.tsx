@@ -24,9 +24,7 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({
   speakers,
   schedule,
 }) => {
-  const speakersMap = new Map(
-    speakers.map((speaker) => [speaker.key, speaker]),
-  );
+  const speakersMap = new Map(speakers.map((speaker) => [speaker.id, speaker]));
 
   const getSpeakers = (speeches: Speeches) => {
     const speakers = speeches.speakerSlugs

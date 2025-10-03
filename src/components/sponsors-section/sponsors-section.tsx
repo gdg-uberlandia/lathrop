@@ -1,8 +1,7 @@
 /*eslint-disable*/
-import { Sponsor } from "models/sponsor";
+import { Sponsor, SponsorLevel } from "models/sponsor";
 import { Container, Row, Col } from "reactstrap";
 import _supports from "@/hooks/userSupports";
-import { SponsorLevel } from "models/sponsor-level";
 import SponsorCard from "./sponsor-card";
 
 import styles from "./Sponsors.module.css";
