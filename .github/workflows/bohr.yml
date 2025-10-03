@@ -10,4 +10,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - run: scripts/generate_env.sh "${{ secrets.ENV_BASE64 }}"
       - uses: bohr-io/action@main
