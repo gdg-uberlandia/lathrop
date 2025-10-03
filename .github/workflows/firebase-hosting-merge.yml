@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - devfest-triangulo-2025
-      - feat/admin
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
