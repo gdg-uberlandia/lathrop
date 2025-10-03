@@ -188,7 +188,7 @@ export function SpeakersForm({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <FormItem>
-                    <FormLabel>Instagram</FormLabel>
+                    <FormLabel>Instagram @</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>

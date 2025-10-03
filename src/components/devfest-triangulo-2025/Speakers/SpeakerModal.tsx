@@ -87,7 +87,14 @@ const SpeakerModal: React.FC<ModalProps> = ({
                     </a>
                   )}
                   {speaker.socialMedia.instagram && (
-                    <a target="_blank" href={speaker.socialMedia.instagram}>
+                    <a
+                      target="_blank"
+                      href={
+                        speaker.socialMedia.instagram.includes("instagram.com")
+                          ? speaker.socialMedia.instagram
+                          : `https://instagram.com/${speaker.socialMedia.instagram.replace(/^@/, "")}`
+                      }
+                    >
                       <FontAwesomeIcon icon={faInstagram} size="2x" />
                     </a>
                   )}

@@ -56,7 +56,7 @@ export function SponsorsForm({
     const file = e.target.files?.[0];
     if (!file) return;
     try {
-      const url = await uploadImage(file, "speakers");
+      const url = await uploadImage(file, "sponsors");
       form.setValue("logo", url, { shouldValidate: true });
     } catch (err) {
       console.error("Erro ao enviar foto", err);

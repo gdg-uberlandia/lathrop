@@ -38,6 +38,7 @@ export const createSpeaker = async (speaker: Speaker): Promise<Speaker> => {
     if (doc.exists) {
       throw new Error(`Speaker com id ${speaker.id} já existe.`);
     }
+    speaker.canBeEvaluated = false;
     await docRef.set(speaker);
     return speaker;
   } catch (error) {

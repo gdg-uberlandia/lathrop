@@ -79,7 +79,7 @@ export const SponsorsSection = ({
                 </p>
               </span>
 
-              <div className="flex gap-3 flex-wrap justify-center">
+              <div className="flex gap-12 flex-wrap justify-center">
                 {staffSponsor.items.map((item) => (
                   <a href={item.url} target="_blank" key={item.logo}>
                     <div className="max-h-[80px] size-28 relative ">
@@ -109,6 +109,7 @@ export const SponsorsSection = ({
                   <span className={styles.TextBlue}>Trains</span>
                 </p>
               </span>
+              <p>Caravanas confirmadas para o DevFest Triângulo</p>
 
               <div className="d-flex gap-5 flex-wrap justify-center">
                 {caravans.items.map((item) => (
@@ -148,10 +149,12 @@ const SponsorLevel = ({ sponsorLevel: { name, items } }: SponsorLevelProps) => {
         <section className="d-flex align-items-center flex-column gap-4 mb-4">
           <Tag>{name}</Tag>
 
-          <div className="flex gap-5 flex-wrap justify-center">
+          <div className="flex gap-16 flex-wrap justify-center">
             {items.map((item) => (
               <a href={item.url} target="_blank" key={item.name}>
-                <div className="size-64 relative max-h-[90px]">
+                <div
+                  className={`w-48 h-24 relative max-h-[80px] ${styles[item.level]}`}
+                >
                   <Image
                     className={clsx(styles.SponsorImage)}
                     src={item.logo}

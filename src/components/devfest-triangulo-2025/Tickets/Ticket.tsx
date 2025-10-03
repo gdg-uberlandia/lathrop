@@ -57,7 +57,11 @@ export const Ticket = ({
                 src={SellIcon}
                 height={44}
                 width={44}
-                objectFit="cover"
+                style={{
+                  objectFit: "cover",
+                  maxWidth: "100%",
+                  height: "auto",
+                }}
               />
             )}
           </section>

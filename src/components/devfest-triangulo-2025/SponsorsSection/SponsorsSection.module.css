@@ -17,3 +17,8 @@
 .SponsorImage {
   object-fit: contain;
 }
+
+.superior {
+  max-height: 100px;
+  width:30rem
+}

@@ -21,7 +21,6 @@ export const Hero = () => {
               alt="Imagem do DevFest triângulo de 2024"
               src={SidePhoto}
               priority={true}
-              layout="responsive"
               style={{
                 objectFit: "contain",
                 maxWidth: "100%",
@@ -46,7 +45,11 @@ export const Hero = () => {
               alt="DevFest Triângulo 2025"
               src={Title}
               loading="eager"
-              layout="responsive"
+              style={{
+                objectFit: "contain",
+                maxWidth: "100%",
+                height: "auto",
+              }}
             />
             <a
               href={configValues.eventLinkRegistrationUrl}
@@ -91,7 +94,6 @@ export const Hero = () => {
           alt="DevFest Triângulo 2025"
           src={AndroidCheese}
           loading="eager"
-          layout="responsive"
         />
       </section>
       <a

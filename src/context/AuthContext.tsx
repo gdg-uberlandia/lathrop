@@ -1,4 +1,3 @@
-// AuthProvider.tsx
 import {
   createContext,
   useContext,

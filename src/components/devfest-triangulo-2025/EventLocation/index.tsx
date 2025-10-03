@@ -1,6 +1,7 @@
 import styles from "./styles.module.css";
 import { Presentation } from "../Presentation";
 import clsx from "clsx";
+import configValues from "@/helpers/config";
 
 interface EventLocationProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -38,9 +39,11 @@ export const EventLocation = ({ className, ...props }: EventLocationProps) => {
             </div>
 
             <div className={styles.LocationInfoText}>
-              <h3>Uberlândia - MG</h3>
-              <p>Gaudium Hall</p>
-              <p>Rua Anita, 25, Bairro Altamira, CEP 38411-122</p>
+              <h3>{configValues.placeCity}</h3>
+              <p>{configValues.place}</p>
+              <p>
+                {configValues.placeAddress}, {configValues.placeCEP}
+              </p>
             </div>
           </div>
 
@@ -61,7 +64,7 @@ export const EventLocation = ({ className, ...props }: EventLocationProps) => {
             </div>
 
             <div className={styles.LocationInfoText}>
-              <p>22 de Novembro de 2025</p>
+              <p>{configValues.formattedDate} de 2025</p>
             </div>
           </div>
 
@@ -82,7 +85,9 @@ export const EventLocation = ({ className, ...props }: EventLocationProps) => {
             </div>
 
             <div className={styles.LocationInfoText}>
-              <p>Das 9:00 às 19:00</p>
+              <p>
+                Das {configValues.eventStart} às {configValues.eventEnd}
+              </p>
             </div>
           </div>
         </article>

@@ -50,11 +50,11 @@ export const PastEvent = ({ className, ...rest }: PastEventProps) => {
       <div className={styles.FullRow}>
         <section className={styles.Caroussel}>
           <div className={styles.CustomLeftBracket}>
-            <Image src={LeftBracket} alt="" layout="responsive" />
+            <Image src={LeftBracket} alt="" />
           </div>
           <div id="youtube-player" className={styles.IFrame}></div>
           <div className={styles.CustomRightBracket}>
-            <Image src={RightBracket} alt="" layout="responsive" />
+            <Image src={RightBracket} alt="" />
           </div>
         </section>
         <a

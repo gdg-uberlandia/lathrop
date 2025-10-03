@@ -24,13 +24,13 @@ export interface ConfigValues {
 const configValues = {
   name: "Devfest Triângulo 2025",
   eventDate: "2025-11-22T08:00:00",
-  eventStart: "9:00",
-  eventEnd: "19:00",
+  eventStart: "08:00",
+  eventEnd: "18:00",
   eventLinkRegistrationUrl: "https://doity.com.br/devfest-triangulo-2025",
   eventLinkSponsorshipUrl:
     "https://wa.me//553491846822?text=Gostaria%20de%20saber%20mais%20sobre%20as%20op%C3%A7%C3%B5es%20de%20patroc%C3%ADnio%20para%20o%20Devfest%20Tri%C3%A2ngulo%202025",
   place: "Gaudium Hall",
-  placeAddress: "R. Anita, 25 Altamira",
+  placeAddress: "Rua Anita, 25, Bairro Altamira",
   placeCity: "Uberlândia - MG",
   placeCEP: "CEP 38411-122",
   formattedDate: "22 Novembro",
