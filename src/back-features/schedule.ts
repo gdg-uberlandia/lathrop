@@ -1,4 +1,4 @@
-const SCHEDULE_COLLECTION = `schedule${process.env.DEV_MODE ? '_test' : ''}`;
+const SCHEDULE_COLLECTION = `schedule${process.env.DEV_MODE ? "_test" : ""}`;
 import { db } from "@/utils/db";
 
 const getSchedule = async () => {
