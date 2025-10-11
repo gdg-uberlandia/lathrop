@@ -13,8 +13,8 @@ export const Tickets = () => {
           bestValue
           soldOut
         />
-        <Ticket name="Combo Completo" price={130} withShirt batch={1} />
-        <Ticket name="Básico, mas incrível" price={100} batch={1} />
+        <Ticket name="Combo Completo" price={130} withShirt batch={1} soldOut />
+        <Ticket name="Básico, mas incrível" price={160} batch={3} />
       </section>
     </section>
   );
