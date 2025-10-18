@@ -1,4 +1,4 @@
-const SPEAKERS_COLLECTION = "speakers";
+const SPEAKERS_COLLECTION = `speakers${process.env.DEV_MODE ? "_test" : ""}`;
 import axios from "axios";
 import { getAuth } from "firebase/auth";
 import { server } from "helpers/config";

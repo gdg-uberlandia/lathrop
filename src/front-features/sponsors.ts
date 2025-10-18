@@ -1,4 +1,4 @@
-const SPONSORS_COLLECTION = "sponsors";
+const SPONSORS_COLLECTION = `sponsors${process.env.DEV_MODE ? "_test" : ""}`;
 import { Sponsor, SponsorLevel } from "@/models/sponsor";
 import axios from "axios";
 import { getAuth } from "firebase/auth";

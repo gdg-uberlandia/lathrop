@@ -1,9 +1,4 @@
-.Section {
-  margin-top: 10.25rem;
-  scroll-margin-top: 200px;
-}
-
-.SpeakersWrapper {
+.ScheduleWrapper {
   max-width: var(--xl);
   padding: 1.5rem 1.5rem 4rem 1.5rem;
   gap: 1.5rem;
@@ -12,6 +7,7 @@
   text-align: center;
   align-items: center;
   margin-inline: auto;
+  margin-top: 10.25rem;
 }
 
 .Title {
@@ -21,15 +17,30 @@
   max-width: 54rem;
 }
 
-.Title span,
-.PresentationSubtitle span {
+.Title span {
   color: var(--blue-1);
 }
 
-.SpeakersWrapper p {
+.ScheduleWrapper p {
   margin: 0;
   padding: 0;
   max-width: 57rem;
   font-size: 1.125rem;
   font-weight: 400;
+}
+
+.Tag {
+  border: 1px solid transparent;
+  border-radius: 64px;
+  background:
+    linear-gradient(var(--black), var(--black)) padding-box,
+    linear-gradient(
+        270deg,
+        #4285f4 0%,
+        #af50bb 32.21%,
+        #d93a53 65.38%,
+        #f2c438 100%
+      )
+      border-box;
+  padding: 0.5rem 1rem;
 }

@@ -22,7 +22,7 @@ const NAV_ITEMS = [
   // },
   // {
   //   name: "Agenda",
-  //   ref: "#schedule",
+  //   ref: "/schedule",
   //   classes: "hide-md",
   // },
   {
@@ -63,7 +63,9 @@ export const Header = ({ isRoot = true }: { isRoot?: boolean }) => {
 
   return (
     <header className={clsx(styles.Header, !isVisible && styles.HeaderHidden)}>
-      <LogoGDG height={18} width={224} inverted />
+      <Link href="/">
+        <LogoGDG height={18} width={224} inverted />
+      </Link>
 
       <nav className={styles.HeaderNavContainer}>
         <ul className={styles.HeaderNav}>
@@ -92,7 +94,9 @@ export const Header = ({ isRoot = true }: { isRoot?: boolean }) => {
         ].join(" ")}
       >
         <div className={styles.CollapseHeader}>
-          <LogoGDG height={18} width={224} inverted />
+          <Link href="/">
+            <LogoGDG height={18} width={224} inverted />
+          </Link>
           <NavbarToggler className={styles.toggler_btn} onClick={toggle}>
             <CloseMenu color="#f0f0f0" width={24} height={24} />
           </NavbarToggler>

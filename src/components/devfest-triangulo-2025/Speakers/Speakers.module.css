@@ -73,17 +73,30 @@
 }
 
 .CardContent {
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid var(--gray-2);
+  cursor: pointer;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
   gap: 1.5rem;
-  padding: 1.25em 1rem 1.75rem;
-  border: 1px solid var(--gray-2);
-  border-radius: 8px;
-  width: 100%;
   max-width: 100%;
+  padding: 1.25em 1rem 1.75rem;
+  text-align: center;
+  width: 100%;
+}
+
+.CardContentVariant {
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid var(--gray-2);
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  max-width: 100%;
+  padding: 1.25em 1.5rem 1.75rem;
+  text-align: left;
 }
 
 .CardImageWrapper {
