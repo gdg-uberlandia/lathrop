@@ -53,8 +53,8 @@ export const SponsorsSection = ({
       id="sponsors"
     >
       {!!sponsors.length && (
-        <div className="d-grid gap-4 mt-5">
-          <span className="d-flex align-items-center justify-content-center gap-3 mb-2">
+        <div className="flex flex-col gap-4 mt-5 max-w-full ">
+          <span className="flex align-items-center justify-content-center gap-3 mb-2">
             <Image
               src={MiniCheese}
               alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
@@ -67,8 +67,8 @@ export const SponsorsSection = ({
           ))}
 
           {!!staffSponsor && (
-            <article className="mt-5 d-grid gap-3 mb-5">
-              <span className="d-flex align-items-center justify-content-center gap-3 mb-4">
+            <article className="my-5 flex flex-column gap-3 ">
+              <span className="flex align-items-center justify-content-center gap-3 mb-4">
                 <Image
                   src={MiniCheese}
                   alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
@@ -98,8 +98,8 @@ export const SponsorsSection = ({
           )}
 
           {!!caravans && (
-            <article className="mt-5 d-grid gap-3 mb-5">
-              <span className="d-flex align-items-center justify-content-center gap-3 mb-2">
+            <article className="my-5 flex flex-column gap-3 ">
+              <span className="flex align-items-center justify-content-center gap-3 mb-4">
                 <Image
                   src={MiniCheese}
                   alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
@@ -144,16 +144,15 @@ interface SponsorLevelProps {
 
 const SponsorLevel = ({ sponsorLevel: { name, items } }: SponsorLevelProps) => {
   return (
-    <>
+    <div className="my-3 flex">
       {items.length > 0 && (
-        <section className="d-flex align-items-center flex-column gap-4 mb-4">
+        <section className="flex flex-col items-center w-full">
           <Tag>{name}</Tag>
-
-          <div className="flex gap-16 flex-wrap justify-center">
+          <div className="flex flex-row flex-wrap gap-x-16 gap-y-5 items-center justify-center w-full">
             {items.map((item) => (
               <a href={item.url} target="_blank" key={item.name}>
                 <div
-                  className={`w-48 h-24 relative max-h-[80px] ${styles[item.level]}`}
+                  className={`w-48 h-24 relative max-h-[80px] max-w-full ${styles[item.level]}`}
                 >
                   <Image
                     className={clsx(styles.SponsorImage)}
@@ -168,6 +167,6 @@ const SponsorLevel = ({ sponsorLevel: { name, items } }: SponsorLevelProps) => {
           </div>
         </section>
       )}
-    </>
+    </div>
   );
 };
