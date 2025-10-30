@@ -1,3 +1,14 @@
+.Sponsors {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2rem 1rem;
+  gap: 1.5rem;
+  margin: 0 auto;
+  max-width: var(--xl);
+}
+
 .TextBlue {
   color: var(--blue-1);
 }
@@ -20,5 +31,27 @@
 
 .superior {
   max-height: 100px;
-  width:30rem
+  width: 20rem;
+}
+
+.bronze {
+  max-height: 80px;
+  width: 10rem;
+}
+
+.iron {
+  max-height: 70px;
+  width: 8rem;
+}
+
+@media (min-width: 860px) {
+  .Sponsors {
+    max-width: var(--xl);
+    padding: 4rem 1.5rem;
+  }
+
+  .superior {
+    max-height: 100px;
+    width: 30rem;
+  }
 }
