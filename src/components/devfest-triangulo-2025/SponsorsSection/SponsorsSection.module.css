@@ -44,6 +44,11 @@
   width: 8rem;
 }
 
+.ruby {
+  max-height: 60px;
+  width: 6rem;
+}
+
 @media (min-width: 860px) {
   .Sponsors {
     max-width: var(--xl);

@@ -22,11 +22,13 @@ export const SponsorsSection = ({
     ({ items }) => items[0]?.level === SponsorCategory.CARAVANS,
   );
 
-  const payingSponsors = sponsors.filter(
-    ({ items }) =>
-      items[0]?.level !== SponsorCategory.CARAVANS &&
-      items[0]?.level !== SponsorCategory.STAFF,
-  );
+  const payingSponsors = sponsors
+    .filter(
+      ({ items }) =>
+        items[0]?.level !== SponsorCategory.CARAVANS &&
+        items[0]?.level !== SponsorCategory.STAFF,
+    )
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
   return (
     <Presentation
