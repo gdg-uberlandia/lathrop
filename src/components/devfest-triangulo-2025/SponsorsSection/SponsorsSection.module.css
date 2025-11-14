@@ -29,24 +29,76 @@
   object-fit: contain;
 }
 
-.superior {
-  max-height: 100px;
-  width: 20rem;
+.superior.horizontal {
+  width: 320px;
+  height: 115px;
+}
+.superior.vertical {
+  width: 150px;
+  height: 150px;
 }
 
-.bronze {
-  max-height: 80px;
-  width: 10rem;
+.diamond.horizontal {
+  width: 275px;
+  height: 100px;
+}
+.diamond.vertical {
+  width: 135px;
+  height: 135px;
 }
 
-.iron {
-  max-height: 70px;
-  width: 8rem;
+.gold.horizontal {
+  width: 220px;
+  height: 80px;
+}
+.gold.vertical {
+  width: 120px;
+  height: 120px;
 }
 
-.ruby {
-  max-height: 60px;
-  width: 6rem;
+.silver.horizontal {
+  width: 190px;
+  height: 65px;
+}
+.silver.vertical {
+  width: 105px;
+  height: 105px;
+}
+
+.bronze.horizontal {
+  width: 155px;
+  height: 50px;
+}
+.bronze.vertical {
+  width: 90px;
+  height: 90px;
+}
+
+.iron.horizontal {
+  width: 115px;
+  height: 40px;
+}
+.iron.vertical {
+  width: 75px;
+  height: 75px;
+}
+
+.ruby.horizontal {
+  width: 90px;
+  height: 35px;
+}
+.ruby.vertical {
+  width: 60px;
+  height: 60px;
+}
+
+.support.horizontal {
+  width: 90px;
+  height: 35px;
+}
+.support.vertical {
+  width: 60px;
+  height: 60px;
 }
 
 @media (min-width: 860px) {
