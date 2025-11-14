@@ -55,7 +55,6 @@ const Home = ({
             { icon: BusinesCenter, text: "Estandes de empresas" },
             { icon: Trophy, text: "Dinâmicas interativas" },
             { icon: Handshake, text: "Networking sem fronteiras" },
-            { icon: ChildCare, text: "Área kids" },
           ]}
           title={
             <>

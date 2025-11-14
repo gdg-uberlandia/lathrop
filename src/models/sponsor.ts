@@ -4,6 +4,7 @@ export interface Sponsor {
   name: string;
   url: string;
   level: string;
+  format: string;
 }
 
 export enum SponsorCategory {

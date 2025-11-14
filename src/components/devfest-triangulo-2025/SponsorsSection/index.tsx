@@ -22,11 +22,13 @@ export const SponsorsSection = ({
     ({ items }) => items[0]?.level === SponsorCategory.CARAVANS,
   );
 
-  const payingSponsors = sponsors.filter(
-    ({ items }) =>
-      items[0]?.level !== SponsorCategory.CARAVANS &&
-      items[0]?.level !== SponsorCategory.STAFF,
-  );
+  const payingSponsors = sponsors
+    .filter(
+      ({ items }) =>
+        items[0]?.level !== SponsorCategory.CARAVANS &&
+        items[0]?.level !== SponsorCategory.STAFF,
+    )
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
   return (
     <Presentation
@@ -148,11 +150,11 @@ const SponsorLevel = ({ sponsorLevel: { name, items } }: SponsorLevelProps) => {
       {items.length > 0 && (
         <section className="flex flex-col items-center w-full">
           <Tag>{name}</Tag>
-          <div className="flex flex-row flex-wrap gap-x-16 gap-y-5 items-center justify-center w-full">
+          <div className="flex flex-row flex-wrap gap-x-16 gap-y-5 items-center justify-center w-full mt-4">
             {items.map((item) => (
               <a href={item.url} target="_blank" key={item.name}>
                 <div
-                  className={`w-48 h-24 relative max-h-[80px] max-w-full ${styles[item.level]}`}
+                  className={`relative ${styles[item.level]} ${styles[item.format]}`}
                 >
                   <Image
                     className={clsx(styles.SponsorImage)}
