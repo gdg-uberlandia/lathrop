@@ -35,6 +35,9 @@ module.exports = {
           DEFAULT: "#373737",
           dark: "#242424",
         },
+        devWhite: {
+          ice: "#f0f0f0",
+        },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {

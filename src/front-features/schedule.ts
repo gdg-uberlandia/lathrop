@@ -1,10 +1,9 @@
-import { ScheduleFormValues } from "@/components/admin/schedule/schedule-schema";
 import axios from "axios";
 import { getAuth } from "firebase/auth";
 import { server } from "helpers/config";
 import { Schedule } from "models/schedule";
 
-const SCHEDULE_COLLECTION = "schedule";
+const SCHEDULE_COLLECTION = `schedule${process.env.DEV_MODE ? "_test" : ""}`;
 
 const getToken = async (): Promise<string | undefined> => {
   const auth = getAuth();

@@ -18,9 +18,10 @@ const frames = [AvatarFrame1, AvatarFrame2, AvatarFrame3, AvatarFrame4];
 interface SpeakerCardProps {
   speaker: Speaker;
   index: number;
+  variant?: boolean;
 }
 
-const SpeakerCard = ({ speaker, index }: SpeakerCardProps) => {
+const SpeakerCard = ({ speaker, index, variant = false }: SpeakerCardProps) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [maxLength, setMaxLength] = useState(124);
 
@@ -41,7 +42,10 @@ const SpeakerCard = ({ speaker, index }: SpeakerCardProps) => {
 
   return (
     <>
-      <div className={styles.CardContent} onClick={modalToggle}>
+      <div
+        className={variant ? styles.CardContentVariant : styles.CardContent}
+        onClick={modalToggle}
+      >
         <div className={styles.CardImageWrapper}>
           <Image
             unoptimized
