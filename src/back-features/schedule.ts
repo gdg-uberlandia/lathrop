@@ -9,7 +9,7 @@ const getSchedule = async () => {
     const schedule: any[] = [];
     scheduleQuerySnapshot.forEach((doc) => schedule.push({ ...doc.data() }));
 
-    return schedule;
+    return schedule.sort((a, b) => a.end.localeCompare(b.end));
   } catch (error) {
     console.error(error);
     return null;

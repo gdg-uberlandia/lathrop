@@ -20,7 +20,8 @@ export function useSchedule() {
       // TODO: Remover este timeout (foi colocado apenas para testes)
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      const data = await getScheduleAPI();
+      let data = await getScheduleAPI();
+      data = data.sort((a, b) => a.end.localeCompare(b.end));
       setSchedule(data);
     } catch (error) {
       console.error(error);

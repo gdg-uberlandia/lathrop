@@ -54,6 +54,8 @@ const getPathLabel = (path: SpeechesPath) => {
       return styles.path_three_label;
     case SpeechesPath.TRANCA:
       return styles.path_SPEED_label;
+    case SpeechesPath.COMMUNITY:
+      return styles.path_COMMUNITY_label;
   }
 };
 
@@ -67,6 +69,8 @@ const getPathName = (path: SpeechesPath) => {
       return "Canastra";
     case SpeechesPath.TRANCA:
       return "Trança";
+    case SpeechesPath.COMMUNITY:
+      return "Área Comunidade";
   }
 };
 

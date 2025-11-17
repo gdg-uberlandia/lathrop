@@ -41,6 +41,7 @@ export enum SpeechesPath {
   CURADO = "CURADO",
   CANASTRA = "CANASTRA",
   TRANCA = "TRANCA",
+  COMMUNITY = "COMMUNITY",
 }
 
 export type SpeechTopicName =
