@@ -71,6 +71,7 @@ export function SponsorsForm({
       url: data.url,
       logo: data.logo ?? "",
       level: data.category,
+      format: "horizontal",
     };
     onSubmit(sponsorData);
     if (!editing) {
