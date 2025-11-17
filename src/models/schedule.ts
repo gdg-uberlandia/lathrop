@@ -28,6 +28,7 @@ export enum SpeechesPath {
   CURADO = "CURADO",
   MINAS = "MINAS", // principal
   TRANCA = "TRANCA",
+  COMMUNITY = "COMMUNITY",
 }
 
 export enum SpeechTopicName {

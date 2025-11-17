@@ -63,6 +63,8 @@ export default function Schedules() {
         return "Canastra";
       case SpeechesPath.TRANCA:
         return "Trança";
+      case SpeechesPath.COMMUNITY:
+        return "Área Comunidade";
     }
   };
 
@@ -149,6 +151,8 @@ export default function Schedules() {
                           "border-devYellow-dark !outline-devYellow-dark",
                         [SpeechesPath.TRANCA]:
                           "border-devBlue-dark !outline-devBlue-dark",
+                        [SpeechesPath.COMMUNITY]:
+                          "border-devGreen-dark !outline-devGreen-dark",
                       };
                       const speechSpeakers = findSpeakers(speech);
 
