@@ -127,7 +127,7 @@ const SortableSpeech = function (props: any) {
                             <SelectItem value="CURADO">CURADO</SelectItem>
                             <SelectItem value="TRANCA">TRANÇA</SelectItem>
                             <SelectItem value="COMMUNITY">
-                              ÁREA COMUNIDADE
+                              ARENA COMUNIDADE
                             </SelectItem>
                           </SelectContent>
                         </Select>
@@ -225,7 +225,7 @@ const SortableSpeech = function (props: any) {
                             <SelectItem value="CURADO">CURADO</SelectItem>
                             <SelectItem value="TRANCA">TRANÇA</SelectItem>
                             <SelectItem value="COMMUNITY">
-                              ÁREA COMUNIDADE
+                              ARENA COMUNIDADE
                             </SelectItem>
                           </SelectContent>
                         </Select>

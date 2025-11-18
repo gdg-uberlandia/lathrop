@@ -9,7 +9,14 @@ import {
   SidebarMenuItem,
 } from "@/assets/components/ui/sidebar";
 import { LogoGDG } from "@/assets/images/LogoGDG";
-import { Home, Megaphone, Calendar, Map, DollarSign } from "lucide-react";
+import {
+  Home,
+  Megaphone,
+  Calendar,
+  Map,
+  DollarSign,
+  Trophy,
+} from "lucide-react";
 
 import Link from "next/link";
 
@@ -33,6 +40,11 @@ const items = [
     title: "Programação",
     url: "/admin/schedule",
     icon: Calendar,
+  },
+  {
+    title: "Missoes",
+    url: "/admin/missions",
+    icon: Trophy,
   },
   // {
   //   title: "Trilhas",

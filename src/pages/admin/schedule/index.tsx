@@ -64,7 +64,7 @@ export default function Schedules() {
       case SpeechesPath.TRANCA:
         return "Trança";
       case SpeechesPath.COMMUNITY:
-        return "Área Comunidade";
+        return "Arena Comunidade";
     }
   };
 
