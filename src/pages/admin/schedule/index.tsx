@@ -169,7 +169,9 @@ export default function Schedules() {
                             <div
                               className={`flex col-span-1 min-h-20 h-full rounded-2xl border-1 items-center justify-center ${pathStyle[speech.path]}`}
                             >
-                              <span className={`px-3 py-2 -rotate-90 `}>
+                              <span
+                                className={`px-3 py-2 -rotate-90 text-center`}
+                              >
                                 {getPathName(SpeechesPath[speech.path])}
                               </span>
                             </div>

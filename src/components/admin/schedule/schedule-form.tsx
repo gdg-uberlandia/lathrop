@@ -89,7 +89,7 @@ export function ScheduleForm({
   }, [schedule, form]);
 
   const handleAddSpeech = () => {
-    if (fields.length < 4) {
+    if (fields.length < 5) {
       append({ id: uuidv4(), topic: "registration", order: fields.length });
     }
   };
@@ -99,6 +99,7 @@ export function ScheduleForm({
   };
 
   const handleFormSubmit = async (data: z.infer<typeof scheduleSchema>) => {
+    console.log("handleFormSubmit");
     const scheduleId = editing && data.id ? data.id : uuidv4();
     const newSchedule: Schedule = {
       id: scheduleId,
@@ -273,7 +274,7 @@ export function ScheduleForm({
         </DndContext>
 
         <div className="col-span-12 flex justify-end mb-4">
-          {fields.length < 4 && (
+          {fields.length < 5 && (
             <Button
               type="button"
               variant="outline"
