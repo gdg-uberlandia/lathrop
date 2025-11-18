@@ -6,7 +6,7 @@ export const missionSchema = z.object({
   description: z.string().min(2, "Descrição obrigatória"),
   details: z.string().min(2, "Detalhes obrigatórios"),
   qrMission: z.boolean(),
-  reviewers: z.array(z.string()).default([]),
+  reviewers: z.array(z.string()),
   image: z.string().url("URL da imagem inválida").optional().or(z.literal("")),
 });
 

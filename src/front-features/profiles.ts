@@ -22,4 +22,3 @@ export const getProfilesAPI = async (): Promise<Profile[]> => {
     throw error;
   }
 };
-
