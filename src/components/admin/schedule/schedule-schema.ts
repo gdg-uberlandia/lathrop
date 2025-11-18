@@ -56,7 +56,7 @@ export const scheduleSchema = z
         const [h, m] = val.split(":").map(Number);
         return h >= 8 && h <= 19 && m % 10 === 0;
       }, "Horário final deve ser entre 08:00 e 18:00 e minutos múltiplos de 10"),
-    speeches: z.array(speechSchema).min(1).max(4),
+    speeches: z.array(speechSchema).min(1).max(5),
   })
   .refine(
     (data) => {
