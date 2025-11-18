@@ -5,4 +5,3 @@ export interface Profile {
   photoURL?: string;
   createdAt?: string;
 }
-
