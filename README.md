@@ -71,3 +71,10 @@ To learn more about Next.js, take a look at the following resources:
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+
+
+
+
+# Obs:
+
+Para funcionar a busca de revisores, é necessário adicionar indices para os campos profiles.user.email e profiles.user.name no Firestore.

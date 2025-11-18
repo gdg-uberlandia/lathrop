@@ -49,7 +49,7 @@ export function MissionsForm({
       description: mission?.description ?? "",
       details: mission?.details ?? "",
       qrMission: mission?.qrMission ?? false,
-      reviewer: mission?.reviewer ?? [],
+      reviewers: mission?.reviewers ?? [],
       image: mission?.image ?? "",
     },
   });
@@ -66,7 +66,7 @@ export function MissionsForm({
         description: "",
         details: "",
         qrMission: false,
-        reviewer: [],
+        reviewers: [],
         image: "",
       });
     }
@@ -90,7 +90,7 @@ export function MissionsForm({
         description: "",
         details: "",
         qrMission: false,
-        reviewer: [],
+        reviewers: [],
         image: "",
       });
     }
@@ -254,7 +254,7 @@ export function MissionsForm({
           />
 
           <FormField
-            name="reviewer"
+            name="reviewers"
             control={form.control}
             render={({ field }) => (
               <FormItem className="col-span-8">

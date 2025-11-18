@@ -13,8 +13,6 @@ export const getAllMissions = async (): Promise<Mission[]> => {
       const data = doc.data();
       if (data) {
         const mission = { ...data, id: doc.id } as Mission;
-
-        console.log(mission);
         missions.push(mission);
       } else {
         console.warn(`[getAllMissions] Documento sem id: ${doc.id}`);

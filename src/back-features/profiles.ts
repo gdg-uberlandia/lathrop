@@ -25,8 +25,9 @@ export const getAllProfiles = async (): Promise<Profile[]> => {
 };
 
 /**
- * Busca profiles por email (busca parcial usando range query)
- * Firestore não suporta LIKE, então usamos range query para buscar emails que começam com o termo
+ * Busca profiles por email ou nome usando queries nativas do Firestore
+ * Usa range queries para buscar termos que COMEÇAM com o searchTerm
+ * Executa 2 queries em paralelo (email e nome) e combina os resultados
  */
 export const searchProfilesByEmail = async (
   searchTerm: string,
@@ -37,23 +38,35 @@ export const searchProfilesByEmail = async (
     }
 
     const searchLower = searchTerm.toLowerCase();
-
-    // Firestore range query: busca emails que começam com o termo
-    // Para buscar "john", pega todos entre "john" e "john\uf8ff"
     const endTerm = searchLower + "\uf8ff";
 
-    const snapshot = await db
-      .collection(PROFILES_COLLECTION)
-      .where("user.email", ">=", searchLower)
-      .where("user.email", "<=", endTerm)
-      .limit(20) // Limitar resultados para performance
-      .get();
+    // Executar 2 queries em paralelo: busca por email E por nome
+    const [emailSnapshot, nameSnapshot] = await Promise.all([
+      // Query 1: Buscar por email que começa com o termo
+      db
+        .collection(PROFILES_COLLECTION)
+        .where("user.email", ">=", searchLower)
+        .where("user.email", "<=", endTerm)
+        .limit(10)
+        .get(),
 
-    const profiles: Profile[] = [];
-    snapshot.forEach((doc: FirebaseFirestore.QueryDocumentSnapshot) => {
+      // Query 2: Buscar por nome que começa com o termo
+      db
+        .collection(PROFILES_COLLECTION)
+        .where("user.name", ">=", searchLower)
+        .where("user.name", "<=", endTerm)
+        .limit(10)
+        .get(),
+    ]);
+
+    // Usar Map para evitar duplicatas (mesmo profile pode aparecer nas 2 queries)
+    const profilesMap = new Map<string, Profile>();
+
+    // Processar resultados da busca por email
+    emailSnapshot.forEach((doc: FirebaseFirestore.QueryDocumentSnapshot) => {
       const data = doc.data();
-      if (data && data.id) {
-        profiles.push({
+      if (data && data.user) {
+        profilesMap.set(doc.id, {
           id: doc.id,
           email: data.user.email,
           name: data.user.name,
@@ -62,8 +75,25 @@ export const searchProfilesByEmail = async (
       }
     });
 
+    // Processar resultados da busca por nome
+    nameSnapshot.forEach((doc: FirebaseFirestore.QueryDocumentSnapshot) => {
+      const data = doc.data();
+      if (data && doc.id && data.user) {
+        profilesMap.set(doc.id, {
+          id: doc.id,
+          email: data.user.email,
+          name: data.user.name,
+          photoURL: data.user.photoUrl,
+        } as Profile);
+      }
+    });
+
+    // Converter Map para array e ordenar
+    const profiles = Array.from(profilesMap.values());
     profiles.sort((a, b) => a.email.localeCompare(b.email));
-    return profiles;
+
+    // Limitar a 20 resultados
+    return profiles.slice(0, 20);
   } catch (error) {
     console.error("[searchProfilesByEmail] Erro ao buscar profiles:", error);
     throw error;
@@ -84,7 +114,7 @@ export const getProfileById = async (profileId: string): Promise<Profile> => {
       throw new Error(`Profile com id ${profileId} não encontrado.`);
     }
     const data = doc.data();
-    if (!data || !data.id) {
+    if (!data || !doc.id) {
       throw new Error(`Dados inválidos para profile ${profileId}`);
     }
     return data as Profile;

@@ -24,6 +24,13 @@ export default function EditMissionPage() {
     fetchData();
   }, [missionId, fetchMission]);
 
+  const handleUpdateMission = async (missionData: Mission) => {
+    const result = await updateMission(missionData);
+    if (result) {
+      router.push("/admin/missions");
+    }
+  };
+
   return (
     <AdminLayout>
       {loading && <Loading />}
@@ -48,7 +55,7 @@ export default function EditMissionPage() {
               mission && (
                 <div>
                   <MissionsForm
-                    onSubmit={updateMission}
+                    onSubmit={handleUpdateMission}
                     loading={loading}
                     mission={mission}
                     editing
