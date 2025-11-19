@@ -10,6 +10,7 @@ export interface Speaker {
   tech?: string;
   title?: string;
   topic: string;
+  showSpeaker?: boolean;
 }
 
 export enum SpeakerTech {
