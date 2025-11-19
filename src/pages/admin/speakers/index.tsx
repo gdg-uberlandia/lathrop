@@ -34,6 +34,12 @@ export default function Speakers() {
     updateSpeaker(speaker);
   };
 
+  const handleUpdateVisible = (speaker: Speaker) => {
+    if (!speaker) return;
+    speaker.showSpeaker = !speaker.showSpeaker;
+    updateSpeaker(speaker);
+  };
+
   const handleOpenDialogDelete = (value: Speaker) => {
     if (!value) return;
     setSpeaker(value);
@@ -77,6 +83,9 @@ export default function Speakers() {
                 <TableHead className="p-3 text-white text-center">
                   Avaliável
                 </TableHead>
+                <TableHead className="p-3 text-white text-center">
+                  Visível
+                </TableHead>
                 <TableHead className="p-3 text-white text-center"></TableHead>
                 <TableHead className="p-3 text-white text-center"></TableHead>
               </TableRow>
@@ -111,6 +120,15 @@ export default function Speakers() {
                       disabled={loading}
                       checked={speaker.canBeEvaluated}
                       onCheckedChange={() => handleUpdateEvaluable(speaker)}
+                      className="data-[state=checked]:bg-devBlue-dark disabled:!pointer-events-none"
+                    />
+                  </TableCell>
+                  <TableCell className=" text-white/80 text-center">
+                    <Switch
+                      id={`speaker-${speaker.id}-visible`}
+                      disabled={loading}
+                      checked={speaker.showSpeaker}
+                      onCheckedChange={() => handleUpdateVisible(speaker)}
                       className="data-[state=checked]:bg-devBlue-dark disabled:!pointer-events-none"
                     />
                   </TableCell>

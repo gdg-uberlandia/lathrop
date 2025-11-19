@@ -21,6 +21,7 @@ export const speakerSchema = z.object({
   tech: z.string().optional(),
   title: z.string().optional(),
   canBeEvaluated: z.boolean().optional(),
+  showSpeaker: z.boolean().optional(),
 });
 
 export type SpeakerFormType = z.infer<typeof speakerSchema>;
