@@ -12,7 +12,7 @@ export const TruncatedText: React.FC<TruncatedTextProps> = ({
   maxChars = 68,
 }) => {
   const truncated =
-    text.length > maxChars ? text.slice(0, maxChars).trimEnd() + "..." : text;
+    text?.length > maxChars ? text.slice(0, maxChars).trimEnd() + "..." : text;
 
   return <span className={styles.TruncatedText}>{truncated}</span>;
 };
