@@ -62,7 +62,7 @@ const SchedulePage = ({ schedule, speakers }: SpeakersPageProps) => {
 
   return (
     <BaseLayout>
-      <Header />
+      <Header isRoot={false} />
 
       <div className={styles.ScheduleWrapper}>
         <section className="py-16">
@@ -102,10 +102,7 @@ const SchedulePage = ({ schedule, speakers }: SpeakersPageProps) => {
                   }
 
                   const speechSpeakers = findSpeakers(speech);
-
-                  const speakerInfo = speechSpeakers.find(
-                    (speaker) => speaker && speaker.tech,
-                  );
+                  const speakerInfo = speechSpeakers.find((speaker) => speaker);
 
                   const getPathStyle = (path: string) => {
                     let pathStyle = "";
@@ -122,6 +119,9 @@ const SchedulePage = ({ schedule, speakers }: SpeakersPageProps) => {
                       case "TRANCA":
                         pathStyle = "border-devBlue-dark";
                         break;
+                      case "COMMUNITY":
+                        pathStyle = "border-devGreen-dark";
+                        break;
                     }
                     return pathStyle;
                   };
@@ -129,7 +129,7 @@ const SchedulePage = ({ schedule, speakers }: SpeakersPageProps) => {
                   return (
                     <div
                       key={index}
-                      className={`my-3 p-6 rounded-2xl border-1 border-devGray w-80 flex flex-col`}
+                      className={`my-3 p-6 rounded-2xl border-1 border-devGray flex flex-col ${["keynote_start", "keynote_end"].includes(speech.topic) ? "" : "w-80"}`}
                     >
                       {(speech.path || speakerInfo) && (
                         <div
@@ -147,15 +147,23 @@ const SchedulePage = ({ schedule, speakers }: SpeakersPageProps) => {
                             : "Trilhas Integradas"}
                         </div>
                       )}
-                      <div className="flex flex-col col-span-11 text-lg font-bold mt-10 mb-3 leading-tight min-h-[13.5rem]">
+                      <div
+                        className={`flex flex-col col-span-11 text-lg font-bold mt-10 mb-3 leading-tight  ${["keynote_start", "keynote_end"].includes(speech.topic) ? "" : "min-h-[13.5rem]"}`}
+                      >
                         <span className="font-semibold mb-3">
-                          {speakerInfo?.topic}
+                          {speech.title ? speech.title : speakerInfo?.topic}
                         </span>
-                        <div className="font-normal mb-3 text-devGray-light leading-none">
-                          <TruncatedText
-                            text={speakerInfo?.content!}
-                            maxChars={124}
-                          />
+                        <div className="font-normal mb-3 text-devGray-light">
+                          {["keynote_start", "keynote_end"].includes(
+                            speech.topic,
+                          ) ? (
+                            speakerInfo?.content!
+                          ) : (
+                            <TruncatedText
+                              text={speakerInfo?.content!}
+                              maxChars={124}
+                            />
+                          )}
                         </div>
                       </div>{" "}
                       <footer className="bottom-0">

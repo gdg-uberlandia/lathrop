@@ -30,7 +30,6 @@ const HomeHeader = ({ isRoot = true }: { isRoot?: boolean }) => {
 
   const generateRef = (ref: string) => {
     if (isRoot) return ref;
-
     return `/${ref}`;
   };
 

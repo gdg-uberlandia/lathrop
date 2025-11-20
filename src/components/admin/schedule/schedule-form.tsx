@@ -99,7 +99,6 @@ export function ScheduleForm({
   };
 
   const handleFormSubmit = async (data: z.infer<typeof scheduleSchema>) => {
-    console.log("handleFormSubmit");
     const scheduleId = editing && data.id ? data.id : uuidv4();
     const newSchedule: Schedule = {
       id: scheduleId,
@@ -114,6 +113,7 @@ export function ScheduleForm({
             ...speech,
             id: speech.id || uuidv4(),
             speakerSlugs: validSlugs,
+            title: speech.title,
             order: typeof speech.order === "number" ? speech.order : idx,
           };
         }

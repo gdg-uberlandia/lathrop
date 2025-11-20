@@ -178,7 +178,7 @@ export default function Schedules() {
                           )}
                           <div className="flex flex-col col-span-11 py-3 px-4">
                             <span className="font-semibold text-sm mb-3">
-                              {speakerInfo?.topic}
+                              {speech.title ? speech.title : speakerInfo?.topic}
                             </span>
                             <section>
                               {speechSpeakers.length > 0 ? (

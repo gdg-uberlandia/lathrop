@@ -30,6 +30,7 @@ export type Speech =
     }
   | {
       id: string;
+      title?: string;
       topic: "panel";
       path?: SpeechesPath;
       speakerSlugs: string[];
