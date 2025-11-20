@@ -15,6 +15,7 @@ export interface ScheduleSpeech {
   speakerSlugs?: Array<string>;
   start?: string;
   topic: string;
+  title?: string;
 }
 
 export interface ScheduleSpeedSpeech extends ScheduleSpeech {

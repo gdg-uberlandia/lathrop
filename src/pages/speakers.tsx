@@ -17,7 +17,7 @@ interface SpeakersPageProps {
 const SpeakersPage = ({ speakers }: SpeakersPageProps) => {
   return (
     <BaseLayout>
-      <Header />
+      <Header isRoot={false} />
 
       <div className={styles.SpeakersWrapper}>
         <div className={styles.Section}></div>

@@ -1,6 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Button } from "@/assets/components/ui/button";
+import { Input } from "@/assets/components/ui/input";
 import {
   FormField,
   FormItem,
@@ -136,8 +137,23 @@ const SortableSpeech = function (props: any) {
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name={`speeches.${idx}.title`}
+                  render={({ field, fieldState }) => (
+                    <FormItem className="col-span-4">
+                      <FormLabel>Título</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      {fieldState.error && (
+                        <span>{fieldState.error.message}</span>
+                      )}
+                    </FormItem>
+                  )}
+                />
                 <FormItem>
-                  <FormLabel>Palestrantes (até 4)</FormLabel>
+                  <FormLabel>Palestrantes (até 3)</FormLabel>
                   <div className="grid grid-cols-1 gap-3">
                     {[0, 1, 2].map((panelIdx) => (
                       <FormField

@@ -28,6 +28,7 @@ export const speechSchema = z.discriminatedUnion("topic", [
   }),
   z.object({
     id: z.string(),
+    title: z.string().optional(),
     topic: z.literal("panel"),
     path: z.nativeEnum(SpeechesPath).optional(),
     speakerSlugs: z
