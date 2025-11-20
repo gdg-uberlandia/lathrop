@@ -15,16 +15,16 @@ const NAV_ITEMS = [
     name: "O que é o Devfest?",
     ref: "#about",
   },
-  // {
-  //   name: "Palestrantes",
-  //   ref: "#speakers",
-  //   classes: "hide-md",
-  // },
-  // {
-  //   name: "Agenda",
-  //   ref: "/schedule",
-  //   classes: "hide-md",
-  // },
+  {
+    name: "Palestrantes",
+    ref: "/speakers",
+    classes: "hide-md",
+  },
+  {
+    name: "Agenda",
+    ref: "/schedule",
+    classes: "hide-md",
+  },
   {
     name: "Patrocinadores",
     ref: "#sponsors",

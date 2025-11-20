@@ -46,7 +46,7 @@ const SchedulePage = ({ schedule, speakers }: SpeakersPageProps) => {
       case SpeechesPath.TRANCA:
         return "Trança";
       case SpeechesPath.COMMUNITY:
-        return "Área Comunidade";
+        return "Arena Comunidade";
       default:
         return "Trilhas Integradas";
     }

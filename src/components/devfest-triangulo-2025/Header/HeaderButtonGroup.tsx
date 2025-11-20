@@ -14,7 +14,7 @@ export const HeaderButtonGroup = ({
 }: HeaderButtonGroup) => {
   return (
     <div className={styles.HeaderButtonGroup}>
-      <a
+      {/* <a
         target="_blank"
         href={configValues.eventLinkSponsorshipUrl}
         className={clsx(
@@ -24,7 +24,7 @@ export const HeaderButtonGroup = ({
         )}
       >
         Seja patrocinador
-      </a>
+      </a> */}
 
       <a
         href={configValues.eventLinkRegistrationUrl}
