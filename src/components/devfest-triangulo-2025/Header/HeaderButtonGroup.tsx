@@ -27,14 +27,14 @@ export const HeaderButtonGroup = ({
       </a> */}
 
       <a
-        href={configValues.eventLinkRegistrationUrl}
+        href={"https://pokedex.devfesttriangulo.com.br/profile"}
         className={clsx(
           styles.HeaderButton,
           styles.HeaderSubscribeButton,
           hideRegistration ? "hide-sm" : "",
         )}
       >
-        Inscreva-se
+        Pokedex
       </a>
     </div>
   );
