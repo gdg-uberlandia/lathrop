@@ -58,6 +58,7 @@ Antes de iniciar o processo de deploy no Firebase, garanta tambem os seguintes p
 
 - O artifact precisa estar adicionado/configurado.
 - A `Cloud Build API` precisa estar habilitada no projeto.
+- Cloud Run Admin API precisa estar habilitado no projeto
 
 ### 1. Instalar Firebase CLI
 
