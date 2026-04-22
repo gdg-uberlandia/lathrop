@@ -35,7 +35,7 @@ export const ScheduleSection: React.FC<SpeakersSectionProps> = ({
   };
   return (
     <>
-      {speakers.length && (
+      {speakers?.length && (
         <Container>
           <div id="schedule">
             <h2 className="gdg-line">Agenda</h2>

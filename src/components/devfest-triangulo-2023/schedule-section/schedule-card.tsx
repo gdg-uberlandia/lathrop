@@ -82,7 +82,7 @@ const formatDate = (str: number) => {
 };
 
 const ScheduleCardChooser = (props: ScheduleCardProps) => {
-  return props.speakers.length > 0 ? (
+  return props.speakers?.length > 0 ? (
     <SpeakerScheduleCard {...props} />
   ) : (
     <RegularScheduleCard {...props} />

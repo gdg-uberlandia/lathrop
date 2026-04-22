@@ -36,7 +36,7 @@ export const Speakers = ({ speakers }: SpeakersProps) => {
       {speakers.length ? (
         <section className={styles.SpeakersList}>
           {speakers
-            .filter((speaker) => speaker.showSpeaker === true)
+            ?.filter((speaker) => speaker.showSpeaker === true)
             .map((speaker, idx) => (
               <SpeakerCard key={idx} speaker={speaker} index={idx} />
             ))}
