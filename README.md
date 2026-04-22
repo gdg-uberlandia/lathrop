@@ -54,6 +54,11 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 ## Deploy Inicial
 
+Antes de iniciar o processo de deploy no Firebase, garanta tambem os seguintes pre-requisitos:
+
+- O artifact precisa estar adicionado/configurado.
+- A `Cloud Build API` precisa estar habilitada no projeto.
+
 ### 1. Instalar Firebase CLI
 
 ```bash

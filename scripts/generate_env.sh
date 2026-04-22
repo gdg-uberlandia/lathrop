@@ -25,7 +25,7 @@ show_usage() {
     echo ""
     echo -e "${BLUE}Variáveis de ambiente esperadas no GitHub Actions:${NC}"
     echo -e "  - ${GREEN}ENV_BASE64${NC}: String base64 com todas as variáveis"
-    echo -e "  - ${GREEN}FIREBASE_CONFIG_BASE64${NC}: Config do Firebase em base64"
+    echo -e "  - ${GREEN}FB_CONFIG_BASE64${NC}: Config do Firebase em base64"
 }
 
 # Função para decodificar base64
@@ -59,10 +59,10 @@ validate_env_file() {
     
     # Verificar se contém variáveis essenciais do Firebase
     local required_vars=(
-        "NEXT_PUBLIC_FIREBASE_PROJECT_ID"
-        "FIREBASE_ADMIN_CLIENT_EMAIL"
-        "FIREBASE_ADMIN_PRIVATE_KEY"
-        "FIREBASE_ADMIN_DATABASE_URL"
+        "NEXT_PUBLIC_FB_PROJECT_ID"
+        "FB_ADMIN_CLIENT_EMAIL"
+        "FB_ADMIN_PRIVATE_KEY"
+        "FB_ADMIN_DATABASE_URL"
     )
     
     echo -e "${BLUE}Validando variáveis essenciais...${NC}"
@@ -114,9 +114,9 @@ main() {
             if [[ -n "${ENV_BASE64:-}" ]]; then
                 base64_string="$ENV_BASE64"
                 echo -e "${BLUE}Usando ENV_BASE64 das variáveis de ambiente${NC}"
-            elif [[ -n "${FIREBASE_CONFIG_BASE64:-}" ]]; then
-                base64_string="$FIREBASE_CONFIG_BASE64"
-                echo -e "${BLUE}Usando FIREBASE_CONFIG_BASE64 das variáveis de ambiente${NC}"
+            elif [[ -n "${FB_CONFIG_BASE64:-}" ]]; then
+                base64_string="$FB_CONFIG_BASE64"
+                echo -e "${BLUE}Usando FB_CONFIG_BASE64 das variáveis de ambiente${NC}"
             else
                 echo -e "${RED}Erro: Nenhuma string base64 fornecida${NC}"
                 show_usage

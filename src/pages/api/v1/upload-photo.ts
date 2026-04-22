@@ -37,7 +37,7 @@ export default async function handler(
       : fields.folder || "";
 
     const bucket = getStorage(admin.app()).bucket(
-      process.env.NEXT_PUBLIC_FIREBASE_BUCKET,
+      process.env.NEXT_PUBLIC_FB_BUCKET,
     );
 
     const fileName = `${folder}/${file.originalFilename}`;
