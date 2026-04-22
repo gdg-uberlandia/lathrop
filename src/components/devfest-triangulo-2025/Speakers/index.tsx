@@ -23,7 +23,7 @@ interface SpeakersProps {
   speakers: Array<Speaker>;
 }
 
-export const Speakers = ({ speakers }: SpeakersProps) => {
+export const Speakers = ({ speakers = [] }: SpeakersProps) => {
   return (
     <section className={styles.Speakers}>
       <h1 className={styles.Title}>

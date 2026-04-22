@@ -169,7 +169,7 @@ export async function getServerSideProps() {
       },
     };
   } catch (error) {
-    console.error(error);
+    console.error("Erro ao ler props iniciais:", error);
     return { props: { speakers: [], sponsors: [] } };
   }
 }
