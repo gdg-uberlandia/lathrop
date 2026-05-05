@@ -29,26 +29,36 @@ export const Speakers = ({ speakers = [] }: SpeakersProps) => {
       <h1 className={styles.Title}>
         <span>Quem</span> inspira o presente e constrói o futuro, está aqui
       </h1>
-      <p>
-        Conheça as mentes e os temas incríveis que subirão ao palco do
-        {` ${configValues.name}`}.
-      </p>
+
       {speakers.length ? (
-        <section className={styles.SpeakersList}>
-          {speakers
-            ?.filter((speaker) => speaker.showSpeaker === true)
-            .map((speaker, idx) => (
-              <SpeakerCard key={idx} speaker={speaker} index={idx} />
-            ))}
-        </section>
+        <>
+          <p>
+            Conheça as mentes e os temas incríveis que subirão ao palco do
+            {` ${configValues.name}`}.
+          </p>
+          <section className={styles.SpeakersList}>
+            {speakers
+              ?.filter((speaker) => speaker.showSpeaker === true)
+              .map((speaker, idx) => (
+                <SpeakerCard key={idx} speaker={speaker} index={idx} />
+              ))}
+          </section>
+        </>
       ) : (
-        <section className={styles.TagList}>
-          {tags.map((tag, idx) => (
-            <div key={idx} className={styles.Tag}>
-              {tag}
-            </div>
-          ))}
-        </section>
+        <>
+          <p>
+            Em breve conheça as mentes e os temas incríveis que subirão ao palco
+            do
+            {` ${configValues.name}`}.
+          </p>
+          <section className={styles.TagList}>
+            {tags.map((tag, idx) => (
+              <div key={idx} className={styles.Tag}>
+                {tag}
+              </div>
+            ))}
+          </section>
+        </>
       )}
     </section>
   );
