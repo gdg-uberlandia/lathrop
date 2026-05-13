@@ -1,0 +1,48 @@
+.wrapper {
+  position: relative;
+  width: 100vw;
+  height: calc(56.25vw); /* 16:9 ratio */
+  min-height: 700px; /* 16:9 ratio */
+  overflow: hidden;
+  max-width: 1920px;
+  min-width: 360px;
+  margin:0  auto
+}
+
+.video,
+.overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 56.25vw; /* 16:9 */
+  min-width: 177.77vh; /* garante cobertura */
+  min-height: 100vh;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.overlay {
+  background: rgba(0, 0, 0, 0.8); /* controla a intensidade */
+  z-index: 1;
+}
+
+.content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+  width: 30%;
+  max-width: 600px;
+  min-width: 300px !important;
+}
+
+.content img {
+  margin: 0;
+  width: 100%;
+}

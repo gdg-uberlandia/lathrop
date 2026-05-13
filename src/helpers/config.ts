@@ -22,8 +22,9 @@ export interface ConfigValues {
 }
 
 const configValues = {
-  name: "Devfest Triângulo 2025",
-  eventDate: "2025-11-22T08:00:00",
+  name: "Devfest Triângulo 2026",
+  lastEvent: "Devfest Triângulo 2025",
+  eventDate: "2026-10-31T08:00:00",
   eventStart: "08:00",
   eventEnd: "18:00",
   eventLinkRegistrationUrl: "https://doity.com.br/devfest-triangulo-2025",
@@ -33,7 +34,7 @@ const configValues = {
   placeAddress: "Rua Anita, 25, Bairro Altamira",
   placeCity: "Uberlândia - MG",
   placeCEP: "CEP 38411-122",
-  formattedDate: "22 Novembro",
+  formattedDate: "31 Outubro",
   email: "gdg.uberlandia@gmail.com",
   organizedBy: "gdg", // options
   midiaKit:

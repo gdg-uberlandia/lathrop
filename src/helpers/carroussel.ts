@@ -46,6 +46,37 @@ const googlePhotos2024Urls: string[] = [
   "https://lh3.googleusercontent.com/pw/AP1GczMLeSYsZbMjlsV_uzlXtap1nCDUV-VwbSM8uWiIW1ur3smY7JBv_53VRBeH804aLcbaVa3G3gYqy3Bz9ESIh2HxOnnSbrwKumvNxutvPQccRp4-G7XpWfB2_sS1LStK9wU_ga3PRWGfMrATEjKduoKY=w1078-h719-s-no-gm?authuser=0",
 ];
 
+const googlePhotos20251Urls: string[] = [
+  "https://lh3.googleusercontent.com/pw/AP1GczM1PRmtEya6SfG1_YZe38nGdxv_TD2JakET9D8iA60QMEc16XONoF194RnuetQq2PQzm8UtiQX881wAH7IXL5heqJ-wU_mf67QS-yM4mVt_pfZIOPZTVQTMerpwCGnQ4P1POkDcouaKAkh_ZLdQA4-_=w1078-h719-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczP7lnIMq0VKBJA9zoabQPxH7kKkmZZlvdqk_re5GOF6RcmKbAiEN25UA1e2F8719ABtakd1gowGQxry4zG0NwRwvEEe7BmBT3tHoG0_gCiqokhNCwhf1M6ExlFF0sVAYOqyjd7JChEanzvXLbOvZEuU=w1078-h719-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczNvBk_1WtyGYRFKf3ohmCSa2_3p4slVzvMDF8hC2H2x1YbDb3XwVOSk7OwQSSfrfTYH7g1iZc5JdV4VN4p7Wd6LeTHN1G8r127T6fgkJAdbGSz9uz5iFLTHKhY0UJhRi7niEWJjeGVAdvXVn1RB8i06=w1078-h719-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczMyeOnQ22El1eJH49UPDsUsEaldXVg6xprLEiwAyJg8tXjZpL0PXdY09v2snG9cJYQUgnydCeAAYlmnmV3lpUmez3GpCgW-aDjl6PiKXzq_QES6Nl6QjALSjpIREKjsEopmForjLL2AB6fMxAZuIW6r=w1078-h719-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczOPYLuK6-iP1LVi48Sy2kxI36-a56IzokLBT-s7CpE-FJWhVIES-IvDefDdgqO7-wuUfgtkvaemqd4N3iXIAncp0uzjfnD2Oh9_qWJ7tOYVFAGM8d_s79ZJh2a1UWsYVnRVGJ5P1oZAdRuJR0mPJIPc=w1078-h719-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczPibRMXB3TXXZtxAK24A8J5_N-4ib5NzdTEIpzzeqZWQowRXHyVSKwhYKAFg2faiYIGAP27TETIeBNM0x0bGcIBVrS4s_QG3VKCid_03qXIWCMPsH9s8vOQ5IgWmhzM8YeTY98lc-UUapmb_WX_HVOy=w1078-h719-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczPVfYVzd_Ifu0D_RfYGJ1z0z_qOo7arKA9pWOgj3kjX7e26wmWk6WatOsqdzlpmqNoUCIDfPZChu2roCAiQ2rgC0Goze85xm_dDkeMjZBsWLGlcTK_jJBFNqF1fC6w5gsKhVGQ92qT4kYDU6_OyTP4v=w1078-h719-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczPuK631Oof1sVhPNK-IV8QiiEs6GO-mtrVU1W9ZQmOqgoRHo1OOiPhjfwobyMqOg8BZRnCChA5toGF_26pUCCfw_1aZSUynd7XC77Fgx_5SAwcu37r9Ux3qVdMVZW89T0iU2Rzv-0OpKG5fdAcqRY61=w1078-h719-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczOshcaA3paidJgL4Xpms-KHxR52lLlmkaZ97_JR2DEzoWCkA3uNoynNU4VX3wtYUlJHssJLBclSTnabF88ntvfUeG6yIqW6qtxLgpjOvKrpzotZYKnytCvsGm2Wt6Slzu2UyETyX422JlJ_MQ4yGvDw=w1078-h717-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczNZZaWcv63-raBxmgT92yJGOY0p3lwvKddBqJu7L2ea5CJj4ZPQiu4xfU38QePeJo9-XDpgADZpV-zPcU-v_iV63J-mgbQLb1aTTEYQp3lq6a6smxQf4H0a_wESP24iLixcnhxKvxr4JrR-1ffZGcwn=w1078-h717-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczNAJXq2couqsERD5mGVpSzrL67UTJFmmqdN9rX_S5mynKPyIdP1S3cxvYXrQxCWq98Qm0T-Z-aig8o-2Ku4bJwBLZvVW5DCCshCJanrxX8Oc2fZppL6St7hdPWc3hkeXwV3N-NJoikoPe6cyMbNRwZj=w1078-h719-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczP_GL6NWMc0PfDVSqhmDYnRhlReIlnl-UUUJUzSbQlDwuXICuThPsTUU1RG-mjLi9nUbeWXMgvCI7CSL3H-GsYnmG5NVTJP3u55Z1t2EwXclOffliJI7yFAtYz3qkBPEtG_Gdmyuhi3gkp3wPqMoiAU=w1078-h719-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczN2kiGv_i_ZCNhANSmEgnGc85iP0DcKs3G9tcIsPiZCRN7rUSTEHrqwZQUhn6G6_BpnllKCNiokF6K9GZmvUa67tbF_nqvI6pzIAeWrSCaX_pqJyd7Uj3w8oAZb3cgeWJ69gBh0K4LfIjHI-Bfbl3kj=w1078-h717-s-no-gm?authuser=0",
+];
+const googlePhotos20252Urls: string[] = [
+  "https://lh3.googleusercontent.com/pw/AP1GczNMd8jEMa6wnqH0N_f-NSLIoKvX5AC5wG6G8WgMGb1JeVG39FHl9ZuexCSDvNSBu3hbVNrFczMJbPUylzJQBscCEAr14_mJU9jywmjOZrT2mc9HH7LTOcn-JZXGEu5_jJHzWdjSG2rRKbM4aPV-Y1Ka=w1078-h717-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczNtWDqc095ZGbm2FcdvimrzenH70T7nwUI3nOrvui3Xm_7QMvfUXBi0ztYai_gTVVBDYSyyMHLDTixz2G-PsjVAkProEowafssiuyNV7RWoIHn9NW-LNKe5VjcRF0mTL4SngIzkdqatxMnFLzUyZQkF=w1078-h718-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczNKD42zDBl2GGFVzaiHqlSzt9Xn9JRieGDCuXq3zqBZcltWmTUsgZWeww7DMRDDwD-RsQbEUYIw-M6NhdxdiGxEHUDWA8l9y3EfIQpg_vPWWjb3zVZNL03SngZqKlCMhuRWCdMje6Frkxhj3daLlTht=w1078-h717-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczPZeYLaKBDrP7M33JqvwXsfziGK8m3-f6hj42nPtlXjZkbNdXD6xE_R4c0hyIR54PHQx_UtZVe18sUhtmrxnJvCCaXnHuqSCI0lJPbcS9uwYxX_RmEXJGU8TTlGQhAJzIQ3nSdI8Z_vSKNRFUBA8Ana=w1078-h717-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczPZPh7TPuvliPwxzrH7zSqouwiIJNUAz5yn8KkNRDUpYWnpmMt1vZ2_M7lLlUECmpIkqEhv1Y3rwBu6gHnapzaqxVjp-3_QfYsDOlwalXyOnf3_qygtwPoO3GGRVtDay8f1yCJgGNmTzQge1768Rtfy=w1078-h717-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczModxchoVNJw9c_wHQAKitvyQyoLaBfBIRblCux9yX0uwT94n4VflAF34cZOE9-k4r54ZJMetMxXhssO7p_aH8JcH-LjmNBpAGn4gfXzvuRVgYVwvq0900Hn19SBXBzGSm914yijGjLsAnaBb570_To=w1078-h718-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczMyNJoaMuEnT-v3RTL8JDbStgmHOBVTsxwXGRAMwx6KPNjvTegN914r3VvSY92EHqbUww0z2n283yBWYh5TEHslhWEFgBeece1nxfPjnWONyMGrSGvig0ICKoVLHGTBP4Y8GN1mEgeZO89KbCycEFy5=w1078-h717-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczPgLHIrleXElPDvXnpMy7ZU3WJsGJp_o-sFxkpsdOU36y7LB-F5gp3OnSvcxbKeadgwoOgyVfUevvPwe79S4VvvAuoWZxmsHspRbaY_iWBcRUl0hDuMQJ4nqNpkdhsKU0-zwgzBGZ1A3BMdcJAxQSMq=w1078-h718-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczOSM2ZxLHsWlGfVQLAdu3W5W6-jOjkcpD_ZRAewE0kvN95bbRnPxH7A3OretL_8fTCnlvd07Pnbg_gESXwpjYPhY4xhSSTSHm7juOVpx4tNyH22OUb5nN2hyMOFaMneMiG4CKIQhnspQFUeQQyvAQhg=w1078-h718-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczOWIAvUB8I0hF_CKG8n59a7nAFPthekqdH7I_fbLqvk0Mc3Z16f3ERFz_IsNXCVPTeHn-J1V1nQUjNeVs0bCVA8nt98itk4qWhBRum2SW2Rz2fum5pNMN90gnjVipBNeDSG9fkiGjuvqRbCndW1TyEy=w1078-h718-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczMFVuuIrBJyHiPziPcgmUUC94nW_hj_Rgz_zWMAjVYgDB2eKLwghAYiEP6PhU9rAZRTYXXRRaLe6ezj3XSgkfEEgCKWEh7dSVgoEIyaQQlvsAMqj1T2XULkWneh_1SNo87LIHg0otsuEt1vKF_5fh3D=w1078-h718-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczNU-1s9nV0MqtxC4zALskO-_k1mcQ8JSycEffuJHdDtNQgEcLzvdiF42w-v03knGtGJVJ4UKNmsUCv-jKavz9KdFR2vnlIqLlAaSYjwojVbTO5_0t0qfaA48SAeKIbHEmE70gjz0nu2ew3serQScSxG=w1078-h717-s-no-gm?authuser=0",
+  "https://lh3.googleusercontent.com/pw/AP1GczOBlDgiw-CHm9-RDuvsQoMjt-ccdMsn-c3ZNDa3oUqK7_RX6xJ49l3APUH-epzJVvf9ZSuCxrEzqVc-3Nczlz0MkKi0v3k2bK5qSjGJ8KArkLKBfeFugLw2hL83VDlPAd4q7pZwgsXoLWIIUrno1iyH=w1078-h717-s-no-gm?authuser=0",
+];
+
 export const devfest2023Images: BannerItem[] = googlePhotos2023Urls.map(
   (url) => ({
     type: "image",
@@ -54,6 +85,20 @@ export const devfest2023Images: BannerItem[] = googlePhotos2023Urls.map(
 );
 
 export const devfest2024Images: BannerItem[] = googlePhotos2024Urls.map(
+  (url) => ({
+    type: "image",
+    src: url,
+  }),
+);
+
+export const devfest2025Images1: BannerItem[] = googlePhotos20251Urls.map(
+  (url) => ({
+    type: "image",
+    src: url,
+  }),
+);
+
+export const devfest2025Images2: BannerItem[] = googlePhotos20252Urls.map(
   (url) => ({
     type: "image",
     src: url,

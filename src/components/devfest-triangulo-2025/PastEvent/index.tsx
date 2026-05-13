@@ -10,7 +10,7 @@ import styles from "./PastEvent.module.css";
 interface PastEventProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const PastEvent = ({ className, ...rest }: PastEventProps) => {
-  const youtubeVideoId = "csAx-6rJ1L8";
+  const youtubeVideoId = "QCYaPiFo_4k";
   useEffect(() => {
     const isMobile = /iPhone|Android|Mobile/i.test(navigator.userAgent);
 

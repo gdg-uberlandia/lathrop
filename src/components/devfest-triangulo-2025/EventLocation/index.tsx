@@ -17,7 +17,7 @@ export const EventLocation = ({ className, ...props }: EventLocationProps) => {
             <span>Onde</span> e <span>quando</span> tudo vai acontecer
           </>
         }
-        subtitle="O DevFest Triângulo 2025 já tem hora e lugar marcados, e tudo o que falta é você!"
+        subtitle={`O ${configValues.name} já tem hora e lugar marcados, e tudo o que falta é você!`}
       />
 
       <div className={styles.LocationContainer}>

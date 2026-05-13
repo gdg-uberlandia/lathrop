@@ -1,10 +1,13 @@
-.Header {
+.HeaderWrapper {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
+  background-color: var(--black);
+}
 
+.Header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -15,9 +18,6 @@
 
   transition: transform 0.3s ease-in-out;
   transform: translateY(0);
-  background-color: var(--black);
-
-  padding-bottom: 90px;
 }
 
 .HeaderHidden {

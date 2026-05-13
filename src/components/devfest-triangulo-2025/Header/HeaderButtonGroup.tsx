@@ -26,7 +26,7 @@ export const HeaderButtonGroup = ({
         Seja patrocinador
       </a> */}
 
-      <a
+      {/* <a
         href={"https://pokedex.devfesttriangulo.com.br/profile"}
         className={clsx(
           styles.HeaderButton,
@@ -35,7 +35,7 @@ export const HeaderButtonGroup = ({
         )}
       >
         Pokedex
-      </a>
+      </a> */}
     </div>
   );
 };
