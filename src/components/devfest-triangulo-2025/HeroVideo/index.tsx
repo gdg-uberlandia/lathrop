@@ -6,7 +6,7 @@ import styles from "./HeroVideo.module.css";
 import Image from "next/image";
 
 import AndroidCheese from "@/public/devfest-2025/android-cheese.png";
-import Title from "@/public/devfest-2025/devfest-logo.png";
+import Title from "@/public/devfest-2025/logo-2026.png";
 
 interface Props {
   videoUrl: string;
@@ -45,13 +45,13 @@ export const HeroVideo = ({ videoUrl, children }: Props) => {
       {/* conteúdo */}
       <div className={styles.content}>
         <Image
-          alt="DevFest Triângulo 2025"
+          alt="DevFest Triângulo 2026"
           src={AndroidCheese}
           loading="eager"
-          className="mr-6 "
+          className="mr-6 top-0 left-0"
         />
         <Image
-          alt="DevFest Triângulo 2025"
+          alt="DevFest Triângulo 2026"
           src={Title}
           loading="eager"
           style={{
