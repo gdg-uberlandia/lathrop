@@ -5,8 +5,9 @@ import ReactPlayer from "react-player";
 import styles from "./HeroVideo.module.css";
 import Image from "next/image";
 
-import AndroidCheese from "@/public/devfest-2025/android-cheese.png";
+import AndroidCheese from "@/public/devfest-2026/android_queijo_.png";
 import Title from "@/public/devfest-2025/logo-2026.png";
+import { CalendarDays, MapPin } from "lucide-react";
 
 interface Props {
   videoUrl: string;
@@ -60,6 +61,16 @@ export const HeroVideo = ({ videoUrl, children }: Props) => {
             height: "auto",
           }}
         />
+        <footer className="flex gap-4 mt-2">
+          <span className="flex items-center gap-2">
+            <CalendarDays />
+            <span className="pt-1">31 de Outubro</span>
+          </span>
+          <span className="flex items-center gap-2">
+            <MapPin />
+            <span className="pt-1">Uberlândia - MG</span>
+          </span>
+        </footer>
       </div>
     </div>
   );

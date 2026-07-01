@@ -5,6 +5,7 @@ import config from "@/helpers/config";
 import DevFest2023 from "@/public/devfest-2025/devfest-2023.png";
 import DevFest2022 from "@/public/devfest-2025/devfest-2022.png";
 import DevFest2024 from "@/public/devfest-2025/devfest-2024.png";
+import AndroidCheeseHalloween from "@/public/devfest-2026/android_queijo_.png";
 import AndroidCheese from "@/public/devfest-2025/footer-image.png";
 import LinkedinIcon from "@/public/devfest-2025/icons/linkedin-footer.svg";
 import InstagramIcon from "@/public/devfest-2025/icons/instagram-footer.svg";
@@ -16,8 +17,8 @@ export const Footer = () => {
   return (
     <section className={styles.Footer}>
       <Image
-        alt="Um boneco amarelo estilizado, que lembra o logotipo do sistema operacional Android, acena com a mão esquerda levantada. O boneco tem um corpo cilíndrico, uma cabeça arredondada com duas pequenas antenas e duas pernas curtas e grossas. Há algumas manchas texturizadas em sua superfície, dando a impressão de ser feito de um material rústico ou envelhecido. O fundo da imagem é transparente, indicado pelo padrão quadriculado"
-        src={AndroidCheese}
+        alt="Um boneco amarelo estilizado, que lembra o logotipo do sistema operacional Android, acena com a mão esquerda levantada. O boneco tem um corpo cilíndrico, uma cabeça arredondada com duas pequenas antenas e duas pernas curtas e grossas. Há algumas manchas texturizadas em sua superfície, dando a impressão de ser feito de queijo. O boneco veste uma capa preta com o interior roxo e em seu peito há um símbolo de uma abóbara de halloween. O fundo da imagem é transparente, indicado pelo padrão quadriculado"
+        src={AndroidCheeseHalloween}
         className={styles.Media}
       />
 
@@ -36,6 +37,11 @@ export const Footer = () => {
           alt="Ilustração estilizada de um confronto entre um boneco amarelo, que lembra o mascote do Android, e a silhueta preta de um dinossauro T-Rex. O dinossauro avança com a boca aberta, enquanto o boneco amarelo está inclinado para trás, como se estivesse caindo ou em meio a uma luta. Ao fundo, um círculo branco com linhas curvas cinzas indica movimento. O fundo da imagem é transparente"
           src={DevFest2024}
           height={89}
+        />
+        <Image
+          alt="Um boneco amarelo estilizado, que lembra o logotipo do sistema operacional Android, acena com a mão esquerda levantada. O boneco tem um corpo cilíndrico, uma cabeça arredondada com duas pequenas antenas e duas pernas curtas e grossas. Há algumas manchas texturizadas em sua superfície, dando a impressão de ser feito de um material rústico ou envelhecido. O fundo da imagem é transparente, indicado pelo padrão quadriculado"
+          src={AndroidCheese}
+          height={100}
         />
       </div>
 

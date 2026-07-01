@@ -35,6 +35,7 @@ import {
 import { Faq } from "@/components/devfest-triangulo-2025/Faq";
 import { Tickets } from "@/components/devfest-triangulo-2025/Tickets";
 import { Speakers } from "@/components/devfest-triangulo-2025/Speakers";
+import { HeroSection } from "@/components/hero-section";
 
 interface HomePageProps {
   initialSpeakers: Array<Speaker>;
@@ -95,7 +96,7 @@ const Home = ({
           className={styles.Section}
           id="infinite-banner"
         />
-        {/* <CountdownTimer className={styles.Section} id="countdown" /> */}
+        <CountdownTimer className={styles.Section} id="countdown" />
 
         <Presentation
           tags={[
