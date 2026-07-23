@@ -64,7 +64,7 @@ export const HeroVideo = ({ videoUrl, children }: Props) => {
         <footer className="flex gap-4 mt-2">
           <span className="flex items-center gap-2">
             <CalendarDays />
-            <span className="pt-1">31 de Outubro</span>
+            <span className="pt-1">29 de Outubro</span>
           </span>
           <span className="flex items-center gap-2">
             <MapPin />
