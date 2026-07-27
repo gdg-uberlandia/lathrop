@@ -95,7 +95,7 @@ export const Faq = ({ className, ...rest }: FaqProps) => {
         />
         <FaqItem
           title="Posso transferir minha inscrição para outra pessoa?"
-          content="Sim! A transferência da inscrição para outra pessoa é permitida até o dia 20 de novembro. Importante: se o ingresso incluir camiseta, o tamanho não poderá ser alterado na transferência."
+          content="Sim! A transferência da inscrição para outra pessoa é permitida até o dia 29 de outubro. Importante: se o ingresso incluir camiseta, o tamanho não poderá ser alterado na transferência."
         />
       </div>
     </section>
