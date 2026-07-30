@@ -8,13 +8,18 @@ export const Tickets = () => {
       <section className={styles.TicketsWrapper}>
         <Ticket
           name="Deploy no Escuro"
-          price={100}
+          price={135}
+          priceBadge="Full Package"
           withShirt
           bestValue
-          soldOut
         />
-        <Ticket name="Combo Completo" price={130} withShirt batch={1} soldOut />
-        <Ticket name="Básico, mas incrível" price={160} batch={3} />
+        <Ticket
+          name="Deploy no Escuro"
+          price={100}
+          priceBadge="Minimal Build"
+        />
+        {/* <Ticket name="Combo Completo" price={130} withShirt batch={1} soldOut />
+        <Ticket name="Básico, mas incrível" price={160} batch={3} /> */}
       </section>
     </section>
   );

@@ -131,7 +131,7 @@ const Home = ({
           id="registration"
         ></Presentation>
 
-        {/* <Tickets /> */}
+        <Tickets />
 
         <InfiniteBanner
           direction="leftToRight"

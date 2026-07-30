@@ -14,6 +14,7 @@ interface TicketProps {
   soldOut?: boolean;
   bestValue?: boolean;
   batch?: number;
+  priceBadge?: string;
 }
 
 export const Ticket = ({
@@ -23,6 +24,7 @@ export const Ticket = ({
   soldOut = false,
   bestValue = false,
   batch,
+  priceBadge,
 }: TicketProps) => {
   const formattedPrice = price ? `R$${price},00` : "";
 
@@ -39,6 +41,13 @@ export const Ticket = ({
           </section>
           <section className={styles.Price}>
             {batch && <span className={styles.PriceBatch}>{batch}º Lote</span>}
+            {priceBadge && (
+              <>
+                <div className="rounded-full bg-white/10 py-1 px-1 text-2xl w-40 mr-2">
+                  {priceBadge}
+                </div>
+              </>
+            )}
             <span
               className={clsx(
                 styles.PriceValue,
@@ -47,7 +56,7 @@ export const Ticket = ({
             >
               {formattedPrice}
             </span>
-            {bestValue && (
+            {/* {bestValue && (
               <Image
                 className={clsx(
                   styles.SellIcon,
@@ -63,15 +72,15 @@ export const Ticket = ({
                   height: "auto",
                 }}
               />
-            )}
+            )} */}
           </section>
 
-          {withShirt && (
+          {/* {withShirt && (
             <div className={styles.Shirt}>
               <Image src={TShirtIcon} alt="" />
               Inclui a camiseta oficial
             </div>
-          )}
+          )} */}
 
           <ul className={styles.Benefits}>
             <li>Café da manhã</li>
@@ -80,6 +89,11 @@ export const Ticket = ({
             <li>Acesso às empresas</li>
             <li>Brindes</li>
             <li>Certificado de participação</li>
+            {withShirt && (
+              <li className="font-bold text-yellow-500">
+                Camiseta oficial do evento
+              </li>
+            )}
           </ul>
 
           <div
