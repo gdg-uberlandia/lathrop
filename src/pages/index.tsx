@@ -69,7 +69,7 @@ const Home = ({
             </>
           }
           button={{
-            text: "Fazer parte do DevFest",
+            text: "Patrocine o DevFest Triângulo",
             href: configValues.eventLinkSponsorshipUrl,
           }}
           description=" O DevFest é um super festival de tecnologia feito por e para a

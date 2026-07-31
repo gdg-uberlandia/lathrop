@@ -48,7 +48,7 @@ export const SponsorsSection = ({
         </>
       }
       button={{
-        text: "Quero apoiar o DevFest",
+        text: "Patrocine o DevFest Triângulo",
         href: configValues.eventLinkSponsorshipUrl,
       }}
       className={className}
