@@ -56,7 +56,7 @@
 }
 
 .PriceValue {
-  font-size: 3rem;
+  font-size: 2.5rem;
   line-height: 3.75rem;
   background: var(--gradient-1);
   -webkit-background-clip: text;
