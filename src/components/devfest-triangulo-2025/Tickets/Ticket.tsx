@@ -39,41 +39,47 @@ export const Ticket = ({
             />
             <p>{name}</p>
           </section>
-          <section className={styles.Price}>
-            {batch && <span className={styles.PriceBatch}>{batch}º Lote</span>}
-            {priceBadge && (
-              <>
-                <div className="rounded-full bg-white/10 py-1 px-1 text-2xl w-40 mr-2">
-                  {priceBadge}
-                </div>
-              </>
-            )}
-            <span
-              className={clsx(
-                styles.PriceValue,
-                soldOut ? styles.SoldOutPrice : "",
+          {soldOut ? (
+            <span className={styles.PriceValueSoldOut}>Esgotado</span>
+          ) : (
+            <section className={styles.Price}>
+              {batch && (
+                <span className={styles.PriceBatch}>{batch}º Lote</span>
               )}
-            >
-              {formattedPrice}
-            </span>
-            {/* {bestValue && (
-              <Image
+              {priceBadge && (
+                <>
+                  <div className="rounded-full bg-white/10 py-1 px-1 text-2xl w-40 mr-2">
+                    {priceBadge}
+                  </div>
+                </>
+              )}
+              <span
                 className={clsx(
-                  styles.SellIcon,
-                  soldOut ? styles.SoldOutSellIcon : "",
+                  styles.PriceValue,
+                  soldOut ? styles.SoldOutPrice : "",
                 )}
-                alt=""
-                src={SellIcon}
-                height={44}
-                width={44}
-                style={{
-                  objectFit: "cover",
-                  maxWidth: "100%",
-                  height: "auto",
-                }}
-              />
-            )} */}
-          </section>
+              >
+                {formattedPrice}
+              </span>
+              {bestValue && (
+                <Image
+                  className={clsx(
+                    styles.SellIcon,
+                    soldOut ? styles.SoldOutSellIcon : "",
+                  )}
+                  alt=""
+                  src={SellIcon}
+                  height={44}
+                  width={44}
+                  style={{
+                    objectFit: "cover",
+                    maxWidth: "100%",
+                    height: "auto",
+                  }}
+                />
+              )}
+            </section>
+          )}
 
           {/* {withShirt && (
             <div className={styles.Shirt}>
@@ -82,7 +88,9 @@ export const Ticket = ({
             </div>
           )} */}
 
-          <ul className={styles.Benefits}>
+          <ul
+            className={clsx(soldOut ? styles.BenefitsSoldOut : styles.Benefits)}
+          >
             <li>Café da manhã</li>
             <li>Lanche da tarde</li>
             <li>Acesso aos palcos</li>
@@ -90,7 +98,7 @@ export const Ticket = ({
             <li>Brindes</li>
             <li>Certificado de participação</li>
             {withShirt && (
-              <li className="font-bold text-yellow-500">
+              <li className={clsx(soldOut ? "" : "font-bold text-yellow-500")}>
                 Camiseta oficial do evento
               </li>
             )}

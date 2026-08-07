@@ -63,6 +63,15 @@
   -webkit-text-fill-color: transparent;
 }
 
+.PriceValueSoldOut {
+  font-size: 2.5rem;
+  line-height: 3.75rem;
+  color: var(--gray-2);
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: initial;
+}
+
 .SoldOutPrice {
   color: var(--gray-2);
   background: none;
@@ -115,10 +124,10 @@
 }
 
 .NoShirt {
-  margin-top: 74px;
+  margin-top: 43px;
 }
 
-.Benefits {
+.Benefits, .BenefitsSoldOut {
   font-size: 1.125rem;
   width: 100%;
   text-align: left;
@@ -129,11 +138,16 @@
   padding: 0;
   margin-bottom: 24px;
 }
-.Benefits li {
+
+.BenefitsSoldOut {
+  color: var(--gray-3) !important;
+}
+
+.Benefits li, .BenefitsSoldOut li {
   position: relative;
   padding-left: 22px;
 }
-.Benefits li:before {
+.Benefits li:before, .BenefitsSoldOut li:before {
   content: "";
   width: 12px;
   height: 12px;
