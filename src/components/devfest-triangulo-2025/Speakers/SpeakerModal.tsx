@@ -1,17 +1,12 @@
-import { Speaker } from "models/speaker";
+import { PublicSpeaker } from "models/speaker";
+import { PublicTalk } from "models/talk";
 import Image from "next/image";
 import React from "react";
 import { Modal, ModalBody, ModalHeader } from "reactstrap";
 
 import { CloseMenu } from "@/assets/images/CloseMenu";
 import { Tag } from "@/components/devfest-triangulo-2025/Tag";
-import {
-  faGithub,
-  faInstagram,
-  faLinkedin,
-  faTwitter,
-} from "@fortawesome/free-brands-svg-icons";
-import { faArrowPointer } from "@fortawesome/free-solid-svg-icons";
+import { faInstagram, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AvatarFrame1 from "@/public/devfest-2025/avatar-frame-1.svg";
 import AvatarFrame2 from "@/public/devfest-2025/avatar-frame-2.svg";
@@ -27,12 +22,14 @@ interface ModalProps {
   index: number;
   modalOpen: boolean;
   modalToggle: () => void;
-  speaker: Speaker;
+  speaker: PublicSpeaker;
+  talks: PublicTalk[];
 }
 
 const SpeakerModal: React.FC<ModalProps> = ({
   index,
   speaker,
+  talks,
   modalOpen,
   modalToggle,
 }) => {
@@ -65,7 +62,7 @@ const SpeakerModal: React.FC<ModalProps> = ({
               <Image
                 unoptimized
                 className={styles.CardImage}
-                src={speaker.photo || AvatarNotFound}
+                src={speaker.photoUrl || AvatarNotFound}
                 alt={`Foto ${speaker.name}`}
                 height={200}
                 width={200}
@@ -74,43 +71,27 @@ const SpeakerModal: React.FC<ModalProps> = ({
                 className={styles.AvatarOverlay}
                 src={selectedFrame}
                 alt="Moldura do avatar"
-                height={200}
-                width={200}
               />
             </div>
             <div className={styles.SocialMedia}>
               {speaker.socialMedia && (
                 <>
-                  {speaker.socialMedia.twitter && (
-                    <a target="_blank" href={speaker.socialMedia.twitter}>
-                      <FontAwesomeIcon icon={faTwitter} size="2x" />
-                    </a>
-                  )}
                   {speaker.socialMedia.instagram && (
                     <a
                       target="_blank"
-                      href={
-                        speaker.socialMedia.instagram.includes("instagram.com")
-                          ? speaker.socialMedia.instagram
-                          : `https://instagram.com/${speaker.socialMedia.instagram.replace(/^@/, "")}`
-                      }
+                      rel="noreferrer"
+                      href={speaker.socialMedia.instagram}
                     >
                       <FontAwesomeIcon icon={faInstagram} size="2x" />
                     </a>
                   )}
-                  {speaker.socialMedia.github && (
-                    <a target="_blank" href={speaker.socialMedia.github}>
-                      <FontAwesomeIcon icon={faGithub} size="2x" />
-                    </a>
-                  )}
                   {speaker.socialMedia.linkedIn && (
-                    <a target="_blank" href={speaker.socialMedia.linkedIn}>
+                    <a
+                      target="_blank"
+                      rel="noreferrer"
+                      href={speaker.socialMedia.linkedIn}
+                    >
                       <FontAwesomeIcon icon={faLinkedin} size="2x" />
-                    </a>
-                  )}
-                  {speaker.socialMedia.website && (
-                    <a target="_blank" href={speaker.socialMedia.website}>
-                      <FontAwesomeIcon icon={faArrowPointer} size="2x" />
                     </a>
                   )}
                 </>
@@ -127,30 +108,36 @@ const SpeakerModal: React.FC<ModalProps> = ({
                 ) : (
                   <>
                     {" "}
-                    {speaker.tech}
-                    {speaker.tech && speaker.company ? " - " : ""}
+                    {speaker.company && " · "}
                     {speaker.company}
                   </>
                 )}
               </span>
             </div>
             <div>
-              {speaker.content && (
-                <>
+              {talks.map((talk) => (
+                <div key={talk.id}>
                   <Tag>
-                    <>Palestra</>
+                    <>
+                      {talk.format === "keynote"
+                        ? "Keynote"
+                        : talk.format === "panel"
+                          ? "Painel"
+                          : "Talk"}
+                    </>
                   </Tag>
-                  <p>{speaker.content}</p>
-                </>
-              )}
+                  <h2 className="mt-2">{talk.title}</h2>
+                  <p>{talk.description}</p>
+                </div>
+              ))}
 
               {speaker.miniBio && (
-                <>
+                <div className="mt-4">
                   <Tag>
                     <>Sobre mim</>
                   </Tag>
                   <p>{speaker.miniBio}</p>
-                </>
+                </div>
               )}
             </div>
           </div>

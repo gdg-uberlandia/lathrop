@@ -19,7 +19,7 @@ const SpeakerCard: React.FC<SpeakerCardProps> = ({ speaker }) => {
         <Image
           unoptimized
           className={styles.card_image}
-          src={speaker.photo ? speaker.photo : ""}
+          src={speaker.photoUrl ?? ""}
           alt={`Foto ${speaker.name}`}
           height={120}
           width={120}
@@ -29,7 +29,9 @@ const SpeakerCard: React.FC<SpeakerCardProps> = ({ speaker }) => {
           {speaker.title}
           {speaker?.company ? ` - ${speaker?.company}` : ""}
         </p>
-        <p className={styles.card_profile}>{speaker.topic}</p>
+        {speaker.miniBio && (
+          <p className={styles.card_profile}>{speaker.miniBio}</p>
+        )}
       </div>
       <SpeakerModal
         speaker={speaker}

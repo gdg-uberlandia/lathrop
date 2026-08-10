@@ -1,8 +1,8 @@
-const SPEAKERS_COLLECTION = `speakers${process.env.DEV_MODE ? "_test" : ""}`;
+const SPEAKERS_API_PATH = "speakers";
 import axios from "axios";
 import { getAuth } from "firebase/auth";
 import { server } from "helpers/config";
-import { Speaker } from "models/speaker";
+import { Speaker, SpeakerInput } from "models/speaker";
 
 const getToken = async (): Promise<string | undefined> => {
   const auth = getAuth();
@@ -12,7 +12,7 @@ const getToken = async (): Promise<string | undefined> => {
 export const getSpeakersAPI = async (): Promise<Speaker[]> => {
   const token = await getToken();
   try {
-    const res = await axios.get(`${server}/api/v1/${SPEAKERS_COLLECTION}`, {
+    const res = await axios.get(`${server}/api/v1/${SPEAKERS_API_PATH}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -24,11 +24,13 @@ export const getSpeakersAPI = async (): Promise<Speaker[]> => {
   }
 };
 
-export const createSpeakerAPI = async (speaker: Speaker): Promise<Speaker> => {
+export const createSpeakerAPI = async (
+  speaker: SpeakerInput,
+): Promise<Speaker> => {
   const token = await getToken();
   try {
     const res = await axios.post(
-      `${server}/api/v1/${SPEAKERS_COLLECTION}`,
+      `${server}/api/v1/${SPEAKERS_API_PATH}`,
       speaker,
       {
         headers: {
@@ -47,7 +49,7 @@ export const readSpeakerAPI = async (speakerId: string): Promise<Speaker> => {
   const token = await getToken();
   try {
     const res = await axios.get(
-      `${server}/api/v1/${SPEAKERS_COLLECTION}/${speakerId}`,
+      `${server}/api/v1/${SPEAKERS_API_PATH}/${speakerId}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -61,11 +63,13 @@ export const readSpeakerAPI = async (speakerId: string): Promise<Speaker> => {
   }
 };
 
-export const updateSpeakerAPI = async (speaker: Speaker): Promise<Speaker> => {
+export const updateSpeakerAPI = async (
+  speaker: SpeakerInput,
+): Promise<Speaker> => {
   const token = await getToken();
   try {
     const res = await axios.put(
-      `${server}/api/v1/${SPEAKERS_COLLECTION}/${speaker.id}`,
+      `${server}/api/v1/${SPEAKERS_API_PATH}/${speaker.id}`,
       speaker,
       {
         headers: {
@@ -84,7 +88,7 @@ export const deleteSpeakerAPI = async (speakerId: string): Promise<string> => {
   const token = await getToken();
   try {
     const res = await axios.delete(
-      `${server}/api/v1/${SPEAKERS_COLLECTION}/${speakerId}`,
+      `${server}/api/v1/${SPEAKERS_API_PATH}/${speakerId}`,
       {
         headers: {
           "Content-Type": "application/json",

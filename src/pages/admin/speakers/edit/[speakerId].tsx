@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 
 export default function EditSpeakerPage() {
   const router = useRouter();
-  const { loading, fetchSpeaker, updateSpeaker } = useSpeakers();
+  const { error, loading, fetchSpeaker, updateSpeaker } = useSpeakers();
   const { speakerId } = router.query;
   const [speaker, setSpeaker] = useState<Speaker | null>(null);
 
@@ -42,13 +42,21 @@ export default function EditSpeakerPage() {
 
         <div className="mt-12 flex flex-col lg:flex-row lg:justify-center lg:items-start gap-8">
           <div className="w-full max-w-[900px] mx-auto">
+            {error && (
+              <p role="alert" className="mb-4 text-devRed">
+                {error}
+              </p>
+            )}
             {!speaker && !loading ? (
               <h2>Palestrante não encontrado</h2>
             ) : (
               speaker && (
                 <div>
                   <SpeakersForm
-                    onSubmit={updateSpeaker}
+                    onSubmit={async (input) => {
+                      const updatedSpeaker = await updateSpeaker(input);
+                      if (updatedSpeaker) await router.push("/admin/speakers");
+                    }}
                     loading={loading}
                     speaker={speaker}
                     editing

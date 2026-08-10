@@ -31,13 +31,12 @@ export default async function handler(
   }
 
   if (req.method === "PUT") {
-    const speaker = req.body;
     try {
-      const updated = await updateSpeaker(speaker);
+      const updated = await updateSpeaker({ ...req.body, id: speakerId });
       return res.status(200).json(updated);
     } catch (error: any) {
       return res
-        .status(500)
+        .status(400)
         .json({ error: error?.message || "Erro ao atualizar speaker." });
     }
   }

@@ -1,4 +1,5 @@
-import { Speaker } from "models/speaker";
+import { PublicSpeaker } from "models/speaker";
+import { PublicTalk } from "models/talk";
 
 import configValues from "@/helpers/config";
 
@@ -20,10 +21,11 @@ const tags: string[] = [
 ];
 
 interface SpeakersProps {
-  speakers: Array<Speaker>;
+  speakers: Array<PublicSpeaker>;
+  talks: Array<PublicTalk>;
 }
 
-export const Speakers = ({ speakers = [] }: SpeakersProps) => {
+export const Speakers = ({ speakers = [], talks = [] }: SpeakersProps) => {
   return (
     <section className={styles.Speakers}>
       <h1 className={styles.Title}>
@@ -38,9 +40,17 @@ export const Speakers = ({ speakers = [] }: SpeakersProps) => {
           </p>
           <section className={styles.SpeakersList}>
             {speakers
-              ?.filter((speaker) => speaker.showSpeaker === true)
+              ?.filter((speaker) => speaker.isVisible)
               .map((speaker, idx) => (
-                <SpeakerCard key={idx} speaker={speaker} index={idx} />
+                <SpeakerCard
+                  key={speaker.id}
+                  speaker={speaker}
+                  talks={talks.filter(
+                    (talk) =>
+                      talk.isActive && talk.speakerIds.includes(speaker.id),
+                  )}
+                  index={idx}
+                />
               ))}
           </section>
         </>

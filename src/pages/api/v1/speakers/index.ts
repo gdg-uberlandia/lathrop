@@ -23,7 +23,9 @@ export default async function handler(
     }
 
     return res.status(405).json({ error: "Método não permitido" });
-  } catch (err) {
-    return res.status(403).json({ error: "Token inválido" });
+  } catch (error) {
+    return res.status(400).json({
+      error: error instanceof Error ? error.message : "Dados inválidos",
+    });
   }
 }

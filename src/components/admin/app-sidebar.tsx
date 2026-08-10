@@ -12,6 +12,7 @@ import { LogoGDG } from "@/assets/images/LogoGDG";
 import {
   Home,
   Megaphone,
+  Presentation,
   Calendar,
   Map,
   DollarSign,
@@ -30,6 +31,11 @@ const items = [
     title: "Palestrantes",
     url: "/admin/speakers/",
     icon: Megaphone,
+  },
+  {
+    title: "Palestras",
+    url: "/admin/talks/",
+    icon: Presentation,
   },
   {
     title: "Patrocinadores",

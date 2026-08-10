@@ -10,74 +10,78 @@ import {
 import DeleteDialog from "@/components/admin/delete-dialog";
 import Loading from "@/components/admin/loading-overlay";
 import { useSpeakers } from "@/hooks/useSpeakers";
-import { Speaker } from "@/models/speaker";
+import { useTalks } from "@/hooks/useTalks";
+import { Talk } from "@/models/talk";
 import AdminLayout from "layouts/admin-layout";
-import { Megaphone, Pencil, Trash2, UserRoundPlus } from "lucide-react";
-import Image from "next/image";
+import { Pencil, Plus, Presentation, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
-export default function Speakers() {
+const formatLabels = {
+  talk: "Talk",
+  panel: "Painel",
+  keynote: "Keynote",
+} as const;
+export default function TalksPage() {
   const router = useRouter();
-  const { speakers, removeSpeaker, loading } = useSpeakers();
-  const [speaker, setSpeaker] = useState<Speaker | null>(null);
-
+  const { talks, removeTalk, loading } = useTalks();
+  const { speakers } = useSpeakers();
+  const [selected, setSelected] = useState<Talk | null>(null);
+  const names = useMemo(
+    () => new Map(speakers.map((speaker) => [speaker.id, speaker.name])),
+    [speakers],
+  );
   return (
     <AdminLayout>
       {loading && <Loading />}
       <div className="p-4">
         <div className="flex items-center gap-2">
           <div className="flex size-12 items-center justify-center rounded-full bg-devGray-light/40">
-            <Megaphone />
+            <Presentation />
           </div>
-          <h1 className="grow text-xl text-white/80">Palestrantes</h1>
+          <h1 className="grow text-xl text-white/80">Palestras</h1>
           <Link
-            href="/admin/speakers/add-speaker"
-            aria-label="Cadastrar palestrante"
+            href="/admin/talks/add-talk"
+            aria-label="Cadastrar palestra"
             className="flex size-12 items-center justify-center rounded-full bg-devBlue-dark text-white"
           >
-            <UserRoundPlus />
+            <Plus />
           </Link>
         </div>
         <div className="mt-12">
           <Table>
             <TableHeader className="bg-devGray-dark">
               <TableRow>
-                <TableHead />
-                <TableHead className="text-white">Nome</TableHead>
-                <TableHead className="text-white">Cargo / empresa</TableHead>
-                <TableHead className="text-white">Visível</TableHead>
+                <TableHead className="text-white">Título</TableHead>
+                <TableHead className="text-white">Formato</TableHead>
+                <TableHead className="text-white">Palestrantes</TableHead>
+                <TableHead className="text-white">Status</TableHead>
                 <TableHead />
                 <TableHead />
               </TableRow>
             </TableHeader>
             <TableBody>
-              {speakers.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>
-                    <Image
-                      src={item.photoUrl ?? "/default-speaker.png"}
-                      width={40}
-                      height={40}
-                      alt={`Foto de ${item.name}`}
-                      className="size-10 rounded-full object-cover"
-                    />
-                  </TableCell>
-                  <TableCell className="text-white/80">{item.name}</TableCell>
+              {talks.map((talk) => (
+                <TableRow key={talk.id}>
+                  <TableCell className="text-white/80">{talk.title}</TableCell>
                   <TableCell className="text-white/80">
-                    {[item.title, item.company].filter(Boolean).join(" · ") ||
-                      "—"}
+                    {formatLabels[talk.format]}
                   </TableCell>
                   <TableCell className="text-white/80">
-                    {item.isVisible ? "Sim" : "Não"}
+                    {talk.speakerIds
+                      .map((id) => names.get(id) ?? "Palestrante removido")
+                      .join(", ")}
+                  </TableCell>
+                  <TableCell className="text-white/80">
+                    {talk.isActive ? "Ativa" : "Inativa"}
                   </TableCell>
                   <TableCell>
                     <Button
                       variant="secondary"
                       size="icon"
                       onClick={() =>
-                        router.push(`/admin/speakers/edit/${item.id}`)
+                        router.push(`/admin/talks/edit/${talk.id}`)
                       }
                     >
                       <Pencil />
@@ -87,7 +91,7 @@ export default function Speakers() {
                     <Button
                       variant="secondary"
                       size="icon"
-                      onClick={() => setSpeaker(item)}
+                      onClick={() => setSelected(talk)}
                     >
                       <Trash2 />
                     </Button>
@@ -99,11 +103,11 @@ export default function Speakers() {
         </div>
       </div>
       <DeleteDialog
-        open={Boolean(speaker)}
-        onClose={() => setSpeaker(null)}
+        open={Boolean(selected)}
+        onClose={() => setSelected(null)}
         onConfirm={async () => {
-          if (speaker) await removeSpeaker(speaker.id);
-          setSpeaker(null);
+          if (selected) await removeTalk(selected.id);
+          setSelected(null);
         }}
       />
     </AdminLayout>

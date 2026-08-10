@@ -151,18 +151,15 @@ const SchedulePage = ({ schedule, speakers }: SpeakersPageProps) => {
                         className={`flex flex-col col-span-11 text-lg font-bold mt-10 mb-3 leading-tight  ${["keynote_start", "keynote_end"].includes(speech.topic) ? "" : "min-h-[13.5rem]"}`}
                       >
                         <span className="font-semibold mb-3">
-                          {speech.title ? speech.title : speakerInfo?.topic}
+                          {speech.title ?? speech.topic}
                         </span>
                         <div className="font-normal mb-3 text-devGray-light">
                           {["keynote_start", "keynote_end"].includes(
                             speech.topic,
                           ) ? (
-                            speakerInfo?.content!
+                            speech.topic
                           ) : (
-                            <TruncatedText
-                              text={speakerInfo?.content!}
-                              maxChars={124}
-                            />
+                            <TruncatedText text={speech.topic} maxChars={124} />
                           )}
                         </div>
                       </div>{" "}
@@ -199,7 +196,7 @@ const SpeakerCard = ({
     <>
       <div className="text-white/90 flex items-center gap-2 mb-3 justify-between w-full">
         <Image
-          src={speaker.photo!}
+          src={speaker.photoUrl!}
           alt={`Foto ${speaker.name}`}
           height={32}
           width={32}
@@ -231,6 +228,7 @@ const SpeakerCard = ({
       <SpeakerModal
         index={frameId}
         speaker={speaker!}
+        talks={[]}
         modalOpen={modalOpen}
         modalToggle={modalToggle}
       />

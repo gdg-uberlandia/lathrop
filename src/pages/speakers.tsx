@@ -3,18 +3,21 @@ import React from "react";
 import styles from "../styles/Speakers.module.css";
 import SpeakerCard from "@/components/devfest-triangulo-2025/Speakers/SpeakerCard";
 
-import { Speaker } from "models/speaker";
+import { PublicSpeaker, toPublicSpeaker } from "models/speaker";
+import { PublicTalk, toPublicTalk } from "models/talk";
 
 import configValues from "helpers/config";
 import { Header } from "@/components/devfest-triangulo-2025/Header";
 import BaseLayout from "layouts/base-layout";
 import { getAllSpeakers } from "back-features/speakers";
+import { getAllTalks } from "back-features/talks";
 
 interface SpeakersPageProps {
-  speakers: Array<Speaker>;
+  speakers: Array<PublicSpeaker>;
+  talks: Array<PublicTalk>;
 }
 
-const SpeakersPage = ({ speakers }: SpeakersPageProps) => {
+const SpeakersPage = ({ speakers, talks }: SpeakersPageProps) => {
   return (
     <BaseLayout>
       <Header isRoot={false} />
@@ -32,14 +35,20 @@ const SpeakersPage = ({ speakers }: SpeakersPageProps) => {
           Leads, pessoas desenvolvedoras e resolvedores de problemas.
         </p>
         <section className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {speakers.map((speaker, index) => (
-            <SpeakerCard
-              speaker={speaker}
-              index={index}
-              key={speaker.id}
-              variant
-            />
-          ))}
+          {speakers
+            .filter((speaker) => speaker.isVisible)
+            .map((speaker, index) => (
+              <SpeakerCard
+                speaker={speaker}
+                talks={talks.filter(
+                  (talk) =>
+                    talk.isActive && talk.speakerIds.includes(speaker.id),
+                )}
+                index={index}
+                key={speaker.id}
+                variant
+              />
+            ))}
         </section>
       </div>
     </BaseLayout>
@@ -48,14 +57,20 @@ const SpeakersPage = ({ speakers }: SpeakersPageProps) => {
 
 export async function getServerSideProps() {
   try {
+    const [speakers, talks] = await Promise.all([
+      getAllSpeakers(),
+      getAllTalks(),
+    ]);
+
     return {
       props: {
-        speakers: await getAllSpeakers(),
+        speakers: speakers.map(toPublicSpeaker),
+        talks: talks.map(toPublicTalk),
       },
     };
   } catch (error) {
     console.error(error);
-    return { props: { speakers: [] } };
+    return { props: { speakers: [], talks: [] } };
   }
 }
 
