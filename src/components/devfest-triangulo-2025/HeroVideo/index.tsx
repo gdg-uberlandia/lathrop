@@ -15,7 +15,7 @@ export const HeroVideo = ({ videoId, children }: Props) => {
     videoId,
   )}?autoplay=1&mute=1&controls=0&loop=1&playlist=${encodeURIComponent(
     videoId,
-  )}&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1&playsinline=1`;
+  )}&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1&playsinline=1&vq=hd720`;
 
   return (
     <section className="relative isolate min-h-[600px] w-full overflow-hidden bg-black md:min-h-[700px] lg:aspect-video lg:min-h-0">
