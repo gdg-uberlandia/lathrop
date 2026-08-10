@@ -36,9 +36,14 @@ const SpeakerModal: React.FC<ModalProps> = ({
   const selectedFrame = frames[index % frames.length];
 
   const closeBtn = (
-    <span onClick={modalToggle}>
+    <button
+      type="button"
+      onClick={modalToggle}
+      className="inline-flex cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-devBlue-dark"
+      aria-label={`Fechar detalhes de ${speaker.name}`}
+    >
       <CloseMenu color="#4285F4" width={24} height={24} />
-    </span>
+    </button>
   );
 
   return (
@@ -81,6 +86,7 @@ const SpeakerModal: React.FC<ModalProps> = ({
                       target="_blank"
                       rel="noreferrer"
                       href={speaker.socialMedia.instagram}
+                      aria-label={`Instagram de ${speaker.name}`}
                     >
                       <FontAwesomeIcon icon={faInstagram} size="2x" />
                     </a>
@@ -90,6 +96,7 @@ const SpeakerModal: React.FC<ModalProps> = ({
                       target="_blank"
                       rel="noreferrer"
                       href={speaker.socialMedia.linkedIn}
+                      aria-label={`LinkedIn de ${speaker.name}`}
                     >
                       <FontAwesomeIcon icon={faLinkedin} size="2x" />
                     </a>

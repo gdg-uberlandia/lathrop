@@ -43,7 +43,11 @@ export const CountdownItem = ({
   }, [value, max, totalMarkers]);
 
   return (
-    <div className={styles.CountdownItem}>
+    <div
+      className={styles.CountdownItem}
+      role="timer"
+      aria-label={`${value} ${label}`}
+    >
       <div className={styles.CircleTimerContainer}>
         {createMarkers(totalMarkers).map((_, mIdx) => (
           <div

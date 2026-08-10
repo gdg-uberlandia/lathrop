@@ -49,10 +49,19 @@ const SpeakerCard = ({
 
   return (
     <>
-      <div
-        className={variant ? styles.CardContentVariant : styles.CardContent}
-        onClick={modalToggle}
+      <article
+        className={clsx(
+          variant ? styles.CardContentVariant : styles.CardContent,
+          "relative",
+        )}
       >
+        <button
+          type="button"
+          className="absolute inset-0 z-10 cursor-pointer rounded-[inherit] border-0 bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-devBlue-dark"
+          onClick={modalToggle}
+          aria-label={`Ver detalhes de ${speaker.name}`}
+          aria-haspopup="dialog"
+        />
         <div className={styles.CardImageWrapper}>
           <Image
             unoptimized
@@ -104,7 +113,7 @@ const SpeakerCard = ({
             </div>
           )}
         </div>
-      </div>
+      </article>
 
       <SpeakerModal
         index={index}

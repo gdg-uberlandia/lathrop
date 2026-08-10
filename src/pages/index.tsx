@@ -49,9 +49,19 @@ const Home = ({ initialSpeakers, initialTalks }: HomePageProps) => {
   return (
     <>
       <ErrorBoundary>
+        <a
+          href="#main-content"
+          className="sr-only fixed left-4 top-4 z-[2000] rounded-lg bg-devBlue-dark px-4 py-3 font-bold text-white focus:not-sr-only focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+        >
+          Pular para o conteúdo
+        </a>
         <Header />
 
-        <main className="overflow-x-clip bg-black text-devWhite-ice">
+        <main
+          id="main-content"
+          tabIndex={-1}
+          className="overflow-x-clip bg-black text-devWhite-ice"
+        >
           <HeroVideo videoId="QCYaPiFo_4k" />
 
           <Presentation

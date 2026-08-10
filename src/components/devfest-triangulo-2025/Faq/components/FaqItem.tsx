@@ -40,6 +40,7 @@ export const FaqItem = ({ title, content }: FaqItemProps) => {
       </div>
       <div
         id={contentId}
+        aria-hidden={!expanded}
         className={clsx(
           "grid transition-[grid-template-rows] duration-200 ease-in-out motion-reduce:transition-none",
           expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
