@@ -1,5 +1,5 @@
-import { PublicSpeaker } from "models/speaker";
-import { PublicTalk } from "models/talk";
+import { PublicSpeakerSummary } from "models/speaker";
+import { PublicTalkSummary } from "models/talk";
 
 import configValues from "@/helpers/config";
 
@@ -22,8 +22,8 @@ const tags: string[] = [
 ];
 
 interface SpeakersProps {
-  speakers: Array<PublicSpeaker>;
-  talks: Array<PublicTalk>;
+  speakers: Array<PublicSpeakerSummary>;
+  talks: Array<PublicTalkSummary>;
   className?: string;
 }
 
@@ -51,19 +51,16 @@ export const Speakers = ({
             {` ${configValues.name}`}.
           </p>
           <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
-            {speakers
-              ?.filter((speaker) => speaker.isVisible)
-              .map((speaker, idx) => (
-                <SpeakerCard
-                  key={speaker.id}
-                  speaker={speaker}
-                  talks={talks.filter(
-                    (talk) =>
-                      talk.isActive && talk.speakerIds.includes(speaker.id),
-                  )}
-                  index={idx}
-                />
-              ))}
+            {speakers?.map((speaker, idx) => (
+              <SpeakerCard
+                key={speaker.id}
+                speaker={speaker}
+                talks={talks.filter((talk) =>
+                  talk.speakerIds.includes(speaker.id),
+                )}
+                index={idx}
+              />
+            ))}
           </div>
         </>
       ) : (

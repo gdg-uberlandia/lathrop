@@ -1,28 +1,26 @@
 import { getAllSpeakers } from "back-features/speakers";
 import { getAllTalks } from "back-features/talks";
+import type { GetServerSidePropsContext } from "next";
+import dynamic from "next/dynamic";
 
 import { CountdownTimer } from "components/devfest-triangulo-2025/CountdownTimer";
 import { Header } from "components/devfest-triangulo-2025/Header";
 import { Presentation } from "components/devfest-triangulo-2025/Presentation";
-import { PublicSpeaker, toPublicSpeaker } from "models/speaker";
-import { PublicTalk, toPublicTalk } from "models/talk";
+import { PublicSpeakerSummary } from "models/speaker";
+import { PublicTalkSummary } from "models/talk";
 import styles from "styles/Home.module.css";
 
 import { HeroVideo } from "@/components/devfest-triangulo-2025/HeroVideo";
 import { InfiniteBanner } from "@/components/devfest-triangulo-2025/InfiniteBanner";
-import { PastEvent } from "@/components/devfest-triangulo-2025/PastEvent";
-import { EventLocation } from "@/components/devfest-triangulo-2025/EventLocation";
 
 import ErrorBoundary from "../components/error-boundary";
 import BaseLayout from "../layouts/base-layout";
 
 import BusinesCenter from "@/public/devfest-2025/icons/business_center.svg";
-import ChildCare from "@/public/devfest-2025/icons/child_care.svg";
 import Handshake from "@/public/devfest-2025/icons/handshake.svg";
 import Mic from "@/public/devfest-2025/icons/mic.svg";
 import Trophy from "@/public/devfest-2025/icons/trophy.svg";
 import configValues from "@/helpers/config";
-import { SponsorsSection } from "@/components/devfest-triangulo-2025/SponsorsSection";
 
 import {
   devfest2023Images,
@@ -30,18 +28,40 @@ import {
   devfest2025Images1,
   devfest2025Images2,
 } from "@/helpers/carroussel";
-import { Faq } from "@/components/devfest-triangulo-2025/Faq";
-import { Tickets } from "@/components/devfest-triangulo-2025/Tickets";
-import { Speakers } from "@/components/devfest-triangulo-2025/Speakers";
-import { HeroSection } from "@/components/hero-section";
 import {
   deferredHomepageSectionClassName,
   homepageSectionClassName,
 } from "@/components/devfest-triangulo-2025/ui/section-styles";
 
+const PastEvent = dynamic(() =>
+  import("@/components/devfest-triangulo-2025/PastEvent").then(
+    (module) => module.PastEvent,
+  ),
+);
+const Tickets = dynamic(() =>
+  import("@/components/devfest-triangulo-2025/Tickets").then(
+    (module) => module.Tickets,
+  ),
+);
+const Speakers = dynamic(() =>
+  import("@/components/devfest-triangulo-2025/Speakers").then(
+    (module) => module.Speakers,
+  ),
+);
+const SponsorsSection = dynamic(() =>
+  import("@/components/devfest-triangulo-2025/SponsorsSection").then(
+    (module) => module.SponsorsSection,
+  ),
+);
+const Faq = dynamic(() =>
+  import("@/components/devfest-triangulo-2025/Faq").then(
+    (module) => module.Faq,
+  ),
+);
+
 interface HomePageProps {
-  initialSpeakers: Array<PublicSpeaker>;
-  initialTalks: Array<PublicTalk>;
+  initialSpeakers: Array<PublicSpeakerSummary>;
+  initialTalks: Array<PublicTalkSummary>;
 }
 
 const Home = ({ initialSpeakers, initialTalks }: HomePageProps) => {
@@ -95,14 +115,14 @@ const Home = ({ initialSpeakers, initialTalks }: HomePageProps) => {
             items={devfest2025Images1}
             speed={2000}
             className={styles.Section}
-            id="infinite-banner"
+            id="gallery-2025-primary"
           />
           <InfiniteBanner
             direction="rightToLeft"
             items={devfest2025Images2}
             speed={2000}
             className={styles.Section}
-            id="infinite-banner"
+            id="gallery-2025-secondary"
           />
           <CountdownTimer
             className={deferredHomepageSectionClassName}
@@ -158,7 +178,7 @@ const Home = ({ initialSpeakers, initialTalks }: HomePageProps) => {
             ]}
             speed={140}
             className={styles.Section}
-            id="infinite-banner"
+            id="ticket-benefits"
           />
 
           <Speakers
@@ -172,7 +192,7 @@ const Home = ({ initialSpeakers, initialTalks }: HomePageProps) => {
             items={devfest2023Images}
             speed={2000}
             className={styles.Section}
-            id="infinite-banner"
+            id="gallery-2023"
           />
 
           <InfiniteBanner
@@ -180,7 +200,7 @@ const Home = ({ initialSpeakers, initialTalks }: HomePageProps) => {
             items={devfest2024Images}
             speed={2000}
             className={styles.Section}
-            id="infinite-banner"
+            id="gallery-2024"
           />
 
           <SponsorsSection
@@ -198,21 +218,49 @@ const Home = ({ initialSpeakers, initialTalks }: HomePageProps) => {
   );
 };
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ res }: GetServerSidePropsContext) {
   try {
     const [speakers, talks] = await Promise.all([
       getAllSpeakers(),
       getAllTalks(),
     ]);
 
+    const publicSpeakers = speakers.filter((speaker) => speaker.isVisible);
+    const visibleSpeakerIds = new Set(
+      publicSpeakers.map((speaker) => speaker.id),
+    );
+    const publicTalks = talks.filter(
+      (talk) =>
+        talk.isActive &&
+        talk.speakerIds.some((speakerId) => visibleSpeakerIds.has(speakerId)),
+    );
+
+    res.setHeader(
+      "Cache-Control",
+      "public, s-maxage=300, stale-while-revalidate=3600",
+    );
+
     return {
       props: {
-        initialSpeakers: speakers.map(toPublicSpeaker),
-        initialTalks: talks.map(toPublicTalk),
+        initialSpeakers: publicSpeakers.map(
+          ({ id, name, company, title, photoUrl }) => ({
+            id,
+            name,
+            company,
+            title,
+            photoUrl,
+          }),
+        ),
+        initialTalks: publicTalks.map(({ id, title, speakerIds }) => ({
+          id,
+          title,
+          speakerIds,
+        })),
       },
     };
   } catch (error) {
     console.error("Erro ao ler props iniciais:", error);
+    res.setHeader("Cache-Control", "no-store");
     return {
       props: {
         initialSpeakers: [],

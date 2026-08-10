@@ -35,6 +35,10 @@ export const speakerInputSchema = speakerFieldsSchema.omit({
 export type Speaker = z.infer<typeof speakerFieldsSchema>;
 export type SpeakerInput = z.infer<typeof speakerInputSchema>;
 export type PublicSpeaker = Omit<Speaker, "createdAt" | "updatedAt">;
+export type PublicSpeakerSummary = Pick<
+  PublicSpeaker,
+  "id" | "name" | "company" | "title" | "photoUrl"
+>;
 
 export function toPublicSpeaker({
   createdAt: _createdAt,
