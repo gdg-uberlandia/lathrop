@@ -45,7 +45,7 @@ export const PastEvent = ({ className, ...rest }: PastEventProps) => {
                 src="https://i.ytimg.com/vi/QCYaPiFo_4k/maxresdefault.jpg"
                 alt="Prévia do vídeo do DevFest Triângulo"
                 fill
-                quality={100}
+                quality={80}
                 sizes="(min-width: 1280px) 1152px, 90vw"
                 className="object-cover transition-transform duration-300 group-hover:scale-[1.02] motion-reduce:transition-none"
               />

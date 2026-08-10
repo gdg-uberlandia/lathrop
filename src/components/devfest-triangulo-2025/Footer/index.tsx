@@ -2,11 +2,11 @@ import Image from "next/image";
 
 import { LogoGDG } from "@/assets/images/LogoGDG";
 import config from "@/helpers/config";
-import DevFest2023 from "@/public/devfest-2025/devfest-2023.png";
-import DevFest2022 from "@/public/devfest-2025/devfest-2022.png";
-import DevFest2024 from "@/public/devfest-2025/devfest-2024.png";
+import DevFest2023 from "@/public/devfest-2025/devfest-2023.webp";
+import DevFest2022 from "@/public/devfest-2025/devfest-2022.webp";
+import DevFest2024 from "@/public/devfest-2025/devfest-2024.webp";
 import AndroidCheeseHalloween from "@/public/devfest-2026/android_queijo_.webp";
-import AndroidCheese from "@/public/devfest-2025/footer-image.png";
+import AndroidCheese from "@/public/devfest-2025/footer-image.webp";
 import LinkedinIcon from "@/public/devfest-2025/icons/linkedin-footer.svg";
 import InstagramIcon from "@/public/devfest-2025/icons/instagram-footer.svg";
 import MailIcon from "@/public/devfest-2025/icons/mail-footer.svg";

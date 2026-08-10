@@ -5,10 +5,10 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import { TruncatedText } from "@/components/TruncatedText";
-import AvatarFrame1 from "@/public/devfest-2025/avatar-frame-1.svg";
-import AvatarFrame2 from "@/public/devfest-2025/avatar-frame-2.svg";
-import AvatarFrame3 from "@/public/devfest-2025/avatar-frame-3.svg";
-import AvatarFrame4 from "@/public/devfest-2025/avatar-frame-4.svg";
+import AvatarFrame1 from "@/public/devfest-2025/avatar-frame-1.webp";
+import AvatarFrame2 from "@/public/devfest-2025/avatar-frame-2.webp";
+import AvatarFrame3 from "@/public/devfest-2025/avatar-frame-3.webp";
+import AvatarFrame4 from "@/public/devfest-2025/avatar-frame-4.webp";
 import AvatarNotFound from "@/public/devfest-2025/icons/avatar-not-found.webp";
 
 import SpeakerModal from "./SpeakerModal";
@@ -64,7 +64,6 @@ const SpeakerCard = ({
         />
         <div className={styles.CardImageWrapper}>
           <Image
-            unoptimized
             className={styles.CardImage}
             src={speaker.photoUrl || AvatarNotFound}
             alt={`Foto ${speaker.name}`}
