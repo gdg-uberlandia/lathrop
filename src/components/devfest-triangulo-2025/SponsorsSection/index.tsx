@@ -113,6 +113,7 @@ export const SponsorsSection = ({
                         src={item.logo}
                         alt={item.name}
                         fill
+                        sizes="120px"
                         // style={{ filter: "grayscale(1)" }}
                       />
                     </div>
@@ -151,6 +152,7 @@ export const SponsorsSection = ({
                         src={item.logo}
                         alt={item.name}
                         fill
+                        sizes="120px"
                       />
                     </div>
                   </a>
@@ -191,6 +193,7 @@ const SponsorLevel = ({ sponsorLevel: { name, items } }: SponsorLevelProps) => {
                     src={item.logo}
                     alt={item.name}
                     fill
+                    sizes="320px"
                     // style={{ filter: "grayscale(1)" }}
                   />
                 </div>

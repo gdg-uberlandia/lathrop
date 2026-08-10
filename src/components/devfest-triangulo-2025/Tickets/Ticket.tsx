@@ -29,7 +29,7 @@ export const Ticket = ({
   const formattedPrice = price ? `R$${price},00` : "";
 
   return (
-    <article className="relative w-full min-w-[280px] max-w-[410px] overflow-hidden rounded-lg px-[30px] py-[82px] text-xs sm:px-10">
+    <article className="relative min-h-[724px] w-full min-w-[280px] max-w-[410px] overflow-hidden rounded-lg px-[30px] py-[82px] text-xs sm:px-10">
       <Image
         src={TicketBackground}
         alt=""
