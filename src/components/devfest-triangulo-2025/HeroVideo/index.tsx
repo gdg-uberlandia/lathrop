@@ -15,6 +15,7 @@ interface Props {
 export const HeroVideo = ({ videoId, children }: Props) => {
   const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
   const [isHeroVisible, setIsHeroVisible] = useState(true);
+  const [isVideoReady, setIsVideoReady] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const videoUrl = `https://www.youtube.com/embed/${encodeURIComponent(
@@ -72,8 +73,8 @@ export const HeroVideo = ({ videoId, children }: Props) => {
   }, []);
 
   useEffect(() => {
-    if (shouldLoadVideo) controlVideo(isHeroVisible);
-  }, [isHeroVisible, shouldLoadVideo]);
+    if (isVideoReady) controlVideo(isHeroVisible);
+  }, [isHeroVisible, isVideoReady]);
 
   return (
     <section
@@ -94,7 +95,7 @@ export const HeroVideo = ({ videoId, children }: Props) => {
             frameBorder="0"
             width="100%"
             height="100%"
-            onLoad={() => controlVideo(isHeroVisible)}
+            onLoad={() => setIsVideoReady(true)}
           />
         )}
       </div>

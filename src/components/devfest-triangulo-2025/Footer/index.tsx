@@ -28,22 +28,23 @@ export const Footer = () => {
         <Image
           alt="Um boneco amarelo estilizado, que lembra o logotipo do sistema operacional Android, acena com a mão esquerda levantada. O boneco tem um corpo cilíndrico, uma cabeça arredondada com duas pequenas antenas e duas pernas curtas e grossas. Há algumas manchas texturizadas em sua superfície, dando a impressão de ser feito de um material rústico ou envelhecido. O fundo da imagem é transparente, indicado pelo padrão quadriculado"
           src={DevFest2022}
-          height={100}
+          style={{ height: 100, width: "auto" }}
         />
         <Image
           alt="Ilustração de uma lanterna amarela com aparência rústica. No topo, um pequeno boneco amarelo, semelhante ao mascote do Android, acena no lugar do botão. A lanterna projeta um feixe de luz para baixo, revelando a silhueta branca e desgastada de um dinossauro Tiranossauro Rex. O fundo da imagem é transparente."
           src={DevFest2023}
-          height={172}
+          priority
+          style={{ height: 172, width: "auto" }}
         />
         <Image
           alt="Ilustração estilizada de um confronto entre um boneco amarelo, que lembra o mascote do Android, e a silhueta preta de um dinossauro T-Rex. O dinossauro avança com a boca aberta, enquanto o boneco amarelo está inclinado para trás, como se estivesse caindo ou em meio a uma luta. Ao fundo, um círculo branco com linhas curvas cinzas indica movimento. O fundo da imagem é transparente"
           src={DevFest2024}
-          height={89}
+          style={{ height: 89, width: "auto" }}
         />
         <Image
           alt="Um boneco amarelo estilizado, que lembra o logotipo do sistema operacional Android, acena com a mão esquerda levantada. O boneco tem um corpo cilíndrico, uma cabeça arredondada com duas pequenas antenas e duas pernas curtas e grossas. Há algumas manchas texturizadas em sua superfície, dando a impressão de ser feito de um material rústico ou envelhecido. O fundo da imagem é transparente, indicado pelo padrão quadriculado"
           src={AndroidCheese}
-          height={100}
+          style={{ height: 100, width: "auto" }}
         />
       </div>
 
@@ -55,7 +56,7 @@ export const Footer = () => {
               alt="Ícone de um envelope fechado"
               src={MailIcon}
               width={24}
-              height={24}
+              style={{ height: "auto" }}
             />
           </a>
           <a href={config.socialMedia.instagram} target="_blank">
@@ -63,7 +64,7 @@ export const Footer = () => {
               alt="Logomarca do Instagram"
               src={InstagramIcon}
               width={24}
-              height={24}
+              style={{ height: "auto" }}
             />
           </a>
           <a href={config.socialMedia.linkedin} target="_blank">
@@ -71,7 +72,7 @@ export const Footer = () => {
               alt="Logomarca do Linkedin"
               src={LinkedinIcon}
               width={24}
-              height={24}
+              style={{ height: "auto" }}
             />
           </a>
         </div>
