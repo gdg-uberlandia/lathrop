@@ -1,26 +1,35 @@
 import clsx from "clsx";
-import { PublicSpeaker } from "models/speaker";
-import { PublicTalk } from "models/talk";
+import { PublicSpeaker, PublicSpeakerSummary } from "models/speaker";
+import { PublicTalk, PublicTalkSummary } from "models/talk";
+import dynamic from "next/dynamic";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { TruncatedText } from "@/components/TruncatedText";
-import AvatarFrame1 from "@/public/devfest-2025/avatar-frame-1.svg";
-import AvatarFrame2 from "@/public/devfest-2025/avatar-frame-2.svg";
-import AvatarFrame3 from "@/public/devfest-2025/avatar-frame-3.svg";
-import AvatarFrame4 from "@/public/devfest-2025/avatar-frame-4.svg";
-import AvatarNotFound from "@/public/devfest-2025/icons/avatar-not-found.svg";
+import AvatarFrame1 from "@/public/devfest-2025/avatar-frame-1.webp";
+import AvatarFrame2 from "@/public/devfest-2025/avatar-frame-2.webp";
+import AvatarFrame3 from "@/public/devfest-2025/avatar-frame-3.webp";
+import AvatarFrame4 from "@/public/devfest-2025/avatar-frame-4.webp";
+import AvatarNotFound from "@/public/devfest-2025/icons/avatar-not-found.webp";
 
-import SpeakerModal from "./SpeakerModal";
 import styles from "./Speakers.module.css";
+
+const SpeakerModal = dynamic(() => import("./SpeakerModal"), {
+  ssr: false,
+});
 
 const frames = [AvatarFrame1, AvatarFrame2, AvatarFrame3, AvatarFrame4];
 
 interface SpeakerCardProps {
-  speaker: PublicSpeaker;
+  speaker: PublicSpeakerSummary;
   index: number;
-  talks: PublicTalk[];
+  talks: PublicTalkSummary[];
   variant?: boolean;
+}
+
+interface SpeakerDetails {
+  speaker: PublicSpeaker;
+  talks: PublicTalk[];
 }
 
 const SpeakerCard = ({
@@ -30,32 +39,61 @@ const SpeakerCard = ({
   variant = false,
 }: SpeakerCardProps) => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [maxLength, setMaxLength] = useState(124);
+  const [details, setDetails] = useState<SpeakerDetails | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadError, setLoadError] = useState("");
 
-  const modalToggle = () => setModalOpen(!modalOpen);
+  const closeModal = () => setModalOpen(false);
+
+  const openModal = async () => {
+    if (details) {
+      setModalOpen(true);
+      return;
+    }
+
+    setIsLoading(true);
+    setLoadError("");
+    try {
+      const response = await fetch(
+        `/api/public/speakers/${encodeURIComponent(speaker.id)}/`,
+      );
+      if (!response.ok) throw new Error("Não foi possível carregar os dados.");
+
+      const speakerDetails = (await response.json()) as SpeakerDetails;
+      setDetails(speakerDetails);
+      setModalOpen(true);
+    } catch {
+      setLoadError("Não foi possível carregar os detalhes. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const selectedFrame = frames[index % frames.length];
 
-  useEffect(() => {
-    const updateLength = () => {
-      setMaxLength(window.innerWidth < 860 ? 68 : 124);
-    };
-
-    updateLength();
-    window.addEventListener("resize", updateLength);
-
-    return () => window.removeEventListener("resize", updateLength);
-  }, []);
-
   return (
     <>
-      <div
-        className={variant ? styles.CardContentVariant : styles.CardContent}
-        onClick={modalToggle}
+      <article
+        className={clsx(
+          variant ? styles.CardContentVariant : styles.CardContent,
+          "relative",
+        )}
       >
+        <button
+          type="button"
+          className="absolute inset-0 z-10 cursor-pointer rounded-[inherit] border-0 bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-devBlue-dark"
+          onClick={openModal}
+          disabled={isLoading}
+          aria-label={
+            isLoading
+              ? `Carregando detalhes de ${speaker.name}`
+              : `Ver detalhes de ${speaker.name}`
+          }
+          aria-haspopup="dialog"
+          aria-busy={isLoading}
+        />
         <div className={styles.CardImageWrapper}>
           <Image
-            unoptimized
             className={styles.CardImage}
             src={speaker.photoUrl || AvatarNotFound}
             alt={`Foto ${speaker.name}`}
@@ -70,7 +108,7 @@ const SpeakerCard = ({
         </div>
 
         <div className={styles.CardText}>
-          <h2 className={styles.CardName}>{speaker.name}</h2>
+          <h3 className={styles.CardName}>{speaker.name}</h3>
 
           <p className={clsx(styles.CardTech)}>
             {speaker.title ? (
@@ -85,10 +123,18 @@ const SpeakerCard = ({
           </p>
           {talks.length > 0 && (
             <div className={styles.CardDescription}>
-              <TruncatedText
-                text={talks.map((talk) => talk.title).join(" · ")}
-                maxChars={maxLength}
-              />
+              <span className="min-[860px]:hidden">
+                <TruncatedText
+                  text={talks.map((talk) => talk.title).join(" · ")}
+                  maxChars={68}
+                />
+              </span>
+              <span className="hidden min-[860px]:inline">
+                <TruncatedText
+                  text={talks.map((talk) => talk.title).join(" · ")}
+                  maxChars={124}
+                />
+              </span>
               <svg
                 width="24"
                 height="24"
@@ -104,15 +150,23 @@ const SpeakerCard = ({
             </div>
           )}
         </div>
-      </div>
+      </article>
 
-      <SpeakerModal
-        index={index}
-        speaker={speaker}
-        talks={talks}
-        modalOpen={modalOpen}
-        modalToggle={modalToggle}
-      />
+      {loadError && (
+        <p className="mt-2 text-sm text-devRed" role="alert">
+          {loadError}
+        </p>
+      )}
+
+      {modalOpen && details && (
+        <SpeakerModal
+          index={index}
+          speaker={details.speaker}
+          talks={details.talks}
+          modalOpen={modalOpen}
+          modalToggle={closeModal}
+        />
+      )}
     </>
   );
 };

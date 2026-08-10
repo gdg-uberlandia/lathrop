@@ -2,10 +2,27 @@ import { Presentation } from "../Presentation";
 import Image from "next/image";
 import MiniCheese from "@/public/devfest-2025/mini-cheese.svg";
 import { Tag } from "../Tag";
-import styles from "./SponsorsSection.module.css";
 import { SponsorCategory, type SponsorLevel } from "@/models/sponsor";
 import configValues from "@/helpers/config";
-import clsx from "clsx";
+
+const sponsorSizeClasses: Record<string, string> = {
+  "superior:horizontal": "h-[115px] w-[320px]",
+  "superior:vertical": "size-[150px]",
+  "diamond:horizontal": "h-[100px] w-[275px]",
+  "diamond:vertical": "size-[135px]",
+  "gold:horizontal": "h-20 w-[220px]",
+  "gold:vertical": "size-[120px]",
+  "silver:horizontal": "h-[65px] w-[190px]",
+  "silver:vertical": "size-[105px]",
+  "bronze:horizontal": "h-[50px] w-[155px]",
+  "bronze:vertical": "size-[90px]",
+  "iron:horizontal": "h-10 w-[115px]",
+  "iron:vertical": "size-[75px]",
+  "ruby:horizontal": "h-[35px] w-[90px]",
+  "ruby:vertical": "size-[60px]",
+  "support:horizontal": "h-[35px] w-[90px]",
+  "support:vertical": "size-[60px]",
+};
 
 interface SponsorsSectionsProps extends React.HTMLAttributes<HTMLDivElement> {
   sponsors: Array<SponsorLevel>;
@@ -55,8 +72,8 @@ export const SponsorsSection = ({
       id="sponsors"
     >
       {!!sponsors.length && (
-        <div className="flex flex-col gap-4 mt-5 max-w-full ">
-          <span className="flex align-items-center justify-content-center gap-3 mb-2">
+        <div className="mt-5 flex max-w-full flex-col gap-4">
+          <span className="mb-2 flex items-center justify-center gap-3">
             <Image
               src={MiniCheese}
               alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
@@ -69,27 +86,34 @@ export const SponsorsSection = ({
           ))}
 
           {!!staffSponsor && (
-            <article className="my-5 flex flex-column gap-3 ">
-              <span className="flex align-items-center justify-content-center gap-3 mb-4">
+            <article className="my-5 flex flex-col gap-3">
+              <span className="mb-4 flex items-center justify-center gap-3">
                 <Image
                   src={MiniCheese}
                   alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
                 />
                 <p>
                   Empresas que investem em seus{" "}
-                  <span className={styles.TextBlue}>colaboradores</span>
+                  <span className="text-devBlue-dark">colaboradores</span>
                 </p>
               </span>
 
-              <div className="flex gap-12 flex-wrap justify-center">
+              <div className="flex flex-wrap justify-center gap-12">
                 {staffSponsor.items.map((item) => (
-                  <a href={item.url} target="_blank" key={item.logo}>
-                    <div className="max-h-[80px] size-28 relative ">
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    key={item.logo}
+                    className="transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-devBlue-dark motion-reduce:transition-none"
+                  >
+                    <div className="relative h-20 w-[120px]">
                       <Image
-                        className={clsx(styles.SponsorImage)}
+                        className="object-contain"
                         src={item.logo}
                         alt={item.name}
                         fill
+                        sizes="120px"
                         // style={{ filter: "grayscale(1)" }}
                       />
                     </div>
@@ -100,33 +124,35 @@ export const SponsorsSection = ({
           )}
 
           {!!caravans && (
-            <article className="my-5 flex flex-column gap-3 ">
-              <span className="flex align-items-center justify-content-center gap-3 mb-4">
+            <article className="my-5 flex flex-col gap-3">
+              <span className="mb-4 flex items-center justify-center gap-3">
                 <Image
                   src={MiniCheese}
                   alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
                 />
                 <p>
                   Release
-                  <span className={styles.TextBlue}>Trains</span>
+                  <span className="text-devBlue-dark">Trains</span>
                 </p>
               </span>
               <p>Caravanas confirmadas para o DevFest Triângulo</p>
 
-              <div className="d-flex gap-5 flex-wrap justify-center">
+              <div className="flex flex-wrap justify-center gap-5">
                 {caravans.items.map((item) => (
                   <a
                     href={item.url}
                     target="_blank"
+                    rel="noreferrer"
                     key={item.logo}
-                    className="mx-auto"
+                    className="mx-auto transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-devBlue-dark motion-reduce:transition-none"
                   >
-                    <div className={styles.StaffImageWrapper}>
+                    <div className="relative h-20 w-[120px]">
                       <Image
-                        className={styles.SponsorImage}
+                        className="object-contain"
                         src={item.logo}
                         alt={item.name}
                         fill
+                        sizes="120px"
                       />
                     </div>
                   </a>
@@ -146,21 +172,28 @@ interface SponsorLevelProps {
 
 const SponsorLevel = ({ sponsorLevel: { name, items } }: SponsorLevelProps) => {
   return (
-    <div className="my-3 flex">
+    <div className="my-3 flex w-full">
       {items.length > 0 && (
-        <section className="flex flex-col items-center w-full">
+        <section className="flex w-full flex-col items-center">
           <Tag>{name}</Tag>
-          <div className="flex flex-row flex-wrap gap-x-16 gap-y-5 items-center justify-center w-full mt-4">
+          <div className="mt-4 flex w-full flex-row flex-wrap items-center justify-center gap-x-16 gap-y-5">
             {items.map((item) => (
-              <a href={item.url} target="_blank" key={item.name}>
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noreferrer"
+                key={item.name}
+                className="transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-devBlue-dark motion-reduce:transition-none"
+              >
                 <div
-                  className={`relative ${styles[item.level]} ${styles[item.format]}`}
+                  className={`relative ${sponsorSizeClasses[`${item.level}:${item.format}`] ?? "h-20 w-[120px]"}`}
                 >
                   <Image
-                    className={clsx(styles.SponsorImage)}
+                    className="object-contain"
                     src={item.logo}
                     alt={item.name}
                     fill
+                    sizes="320px"
                     // style={{ filter: "grayscale(1)" }}
                   />
                 </div>

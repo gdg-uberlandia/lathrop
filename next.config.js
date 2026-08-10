@@ -5,11 +5,14 @@ const nextConfig = {
   swcMinify: true,
   trailingSlash: true,
   images: {
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 2592000,
     domains: [
       "firebasestorage.googleapis.com",
       "media.licdn.com",
       "raw.githubusercontent.com",
       "lh3.googleusercontent.com",
+      "i.ytimg.com",
       "storage.googleapis.com",
     ],
   },

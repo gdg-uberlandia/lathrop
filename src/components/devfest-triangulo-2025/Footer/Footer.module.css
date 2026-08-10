@@ -21,6 +21,8 @@
 }
 
 .Media {
+  width: auto;
+  height: auto;
   max-width: 300px;
   max-height: 364px;
   margin-bottom: 10.75rem;

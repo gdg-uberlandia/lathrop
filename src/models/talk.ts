@@ -36,6 +36,7 @@ export type TalkInput = z.infer<typeof talkInputSchema>;
 export type TalkEvaluationStatus = z.infer<typeof talkEvaluationStatusSchema>;
 export type TalkFormat = z.infer<typeof talkFormatSchema>;
 export type PublicTalk = Omit<Talk, "createdAt" | "updatedAt">;
+export type PublicTalkSummary = Pick<PublicTalk, "id" | "title" | "speakerIds">;
 
 export function toPublicTalk({
   createdAt: _createdAt,

@@ -1,157 +1,143 @@
 import { clsx } from "clsx";
-import { HeaderButtonGroup } from "components/devfest-triangulo-2025/Header/HeaderButtonGroup";
-import { useEffect, useState } from "react";
-import { Collapse, Nav, NavbarToggler, NavItem, NavLink } from "reactstrap";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 import { CloseMenu } from "@/assets/images/CloseMenu";
 import { LogoGDG } from "@/assets/images/LogoGDG";
 import LogoMenu from "@/assets/images/LogoMenu";
 
-import styles from "./Header.module.css";
-import Link from "next/link";
-
 const NAV_ITEMS = [
-  {
-    name: "O que é o Devfest?",
-    ref: "#about",
-  },
-  // {
-  //   name: "Palestrantes",
-  //   ref: "/speakers",
-  //   classes: "hide-md",
-  // },
-  // {
-  //   name: "Agenda",
-  //   ref: "/schedule",
-  //   classes: "hide-md",
-  // },
-  {
-    name: "Patrocinadores",
-    ref: "#sponsors",
-    classes: "hide-sm",
-  },
-  // {
-  //   name: "Local",
-  //   ref: "#place",
-  //   classes: "",
-  // },
+  { name: "O que é o Devfest?", ref: "#about" },
+  { name: "Patrocinadores", ref: "#sponsors" },
 ];
 
 export const Header = ({ isRoot = true }: { isRoot?: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isFixed, setIsFixed] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollY = useRef(0);
 
-  const toggle = () => setIsOpen(!isOpen);
   const generateRef = (ref: string) => (isRoot ? ref : `/${ref}`);
 
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     const currentScrollY = window.scrollY;
-  //     if (currentScrollY < lastScrollY) {
-  //       setIsVisible(true);
-  //     } else if (currentScrollY > lastScrollY) {
-  //       setIsVisible(false);
-  //     }
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const heroHasPassed = currentScrollY > window.innerHeight;
 
-  //     setLastScrollY(currentScrollY);
-  //   };
+      setIsFixed(heroHasPassed);
+      setIsVisible(
+        !heroHasPassed || currentScrollY < lastScrollY.current || isOpen,
+      );
+      lastScrollY.current = currentScrollY;
+    };
 
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => window.removeEventListener("scroll", handleScroll);
-  // }, [lastScrollY]);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isOpen]);
+
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  const closeMenu = () => setIsOpen(false);
 
   return (
-    <div className={styles.HeaderWrapper}>
-      <header
-        className={clsx(styles.Header, !isVisible && styles.HeaderHidden)}
-      >
-        <Link href="/">
+    <div
+      className={clsx(
+        "z-[1000] w-full bg-black transition-transform duration-300 motion-reduce:transition-none",
+        isFixed ? "fixed inset-x-0 top-0" : "relative",
+        isFixed && !isVisible && "-translate-y-full",
+      )}
+    >
+      <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
+        <Link
+          href="/"
+          aria-label="Ir para a página inicial"
+          className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-devBlue-dark"
+        >
           <LogoGDG height={18} width={224} inverted />
         </Link>
 
-        <nav className={styles.HeaderNavContainer}>
-          <ul className={styles.HeaderNav}>
-            {NAV_ITEMS.map(({ ref, name, classes }) => (
-              <li
-                key={name}
-                className={clsx(styles.HeaderNavItem, classes ? classes : "")}
-              >
-                <Link href={generateRef(ref)}>{name}</Link>
+        <nav
+          className="hidden items-center md:flex"
+          aria-label="Navegação principal"
+        >
+          <ul className="m-0 flex list-none items-center p-0">
+            {NAV_ITEMS.map(({ ref, name }) => (
+              <li key={name}>
+                <Link
+                  href={generateRef(ref)}
+                  className="inline-flex cursor-pointer px-4 py-3 font-medium leading-none text-white transition-colors hover:text-devBlue-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-devBlue-dark motion-reduce:transition-none"
+                >
+                  {name}
+                </Link>
               </li>
             ))}
           </ul>
-          <HeaderButtonGroup hideSponsorship />
         </nav>
 
-        <NavbarToggler className={styles.toggler_btn} onClick={toggle}>
-          <LogoMenu color="#f0f0f0" width={24} height={24} />
-        </NavbarToggler>
-
-        <Collapse
-          isOpen
-          navbar
-          className={[
-            styles.Collapse,
-            isOpen && styles.HeaderNavContainerOpened,
-          ].join(" ")}
+        <button
+          type="button"
+          onClick={() => setIsOpen(true)}
+          className="inline-flex cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-2 text-devWhite-ice hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-devBlue-dark md:hidden"
+          aria-label="Abrir menu"
+          aria-expanded={isOpen}
+          aria-controls="mobile-navigation"
         >
-          <div className={styles.CollapseHeader}>
-            <Link href="/">
-              <LogoGDG height={18} width={224} inverted />
-            </Link>
-            <NavbarToggler className={styles.toggler_btn} onClick={toggle}>
-              <CloseMenu color="#f0f0f0" width={24} height={24} />
-            </NavbarToggler>
-          </div>
-
-          <div style={{ display: "flex", padding: "1rem 1.5rem" }}>
-            <HeaderButtonGroup />
-          </div>
-
-          <Nav navbar className={styles.HeaderNavBar}>
-            {NAV_ITEMS.map(({ name, ref }, index) => (
-              <NavItem
-                key={"nav-item-" + index}
-                className={styles.HeaderNavItem}
-                onClick={toggle}
-              >
-                <NavLink href={generateRef(ref)}>
-                  {name}
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <mask
-                      id="mask0_8503_12621"
-                      maskUnits="userSpaceOnUse"
-                      x="0"
-                      y="0"
-                      width="24"
-                      height="24"
-                    >
-                      <rect width="24" height="24" fill="#D9D9D9" />
-                    </mask>
-                    <g mask="url(#mask0_8503_12621)">
-                      <path
-                        d="M16.175 13H4V11H16.175L10.575 5.4L12 4L20 12L12 20L10.575 18.6L16.175 13Z"
-                        fill="#F0F0F0"
-                      />
-                    </g>
-                  </svg>
-                </NavLink>
-              </NavItem>
-            ))}
-          </Nav>
-        </Collapse>
-
-        <div className={styles.ButtonGroupMobileOnly}>
-          <HeaderButtonGroup />
-        </div>
+          <LogoMenu color="#f0f0f0" width={24} height={24} />
+        </button>
       </header>
+
+      <div
+        id="mobile-navigation"
+        className={clsx(
+          "fixed inset-0 z-[1100] flex flex-col bg-black transition-transform duration-300 md:hidden motion-reduce:transition-none",
+          isOpen ? "translate-x-0" : "translate-x-full",
+        )}
+        aria-hidden={!isOpen}
+      >
+        <div className="flex items-center justify-between px-6 py-5">
+          <Link
+            href="/"
+            onClick={closeMenu}
+            aria-label="Ir para a página inicial"
+            tabIndex={isOpen ? 0 : -1}
+          >
+            <LogoGDG height={18} width={224} inverted />
+          </Link>
+          <button
+            type="button"
+            onClick={closeMenu}
+            className="inline-flex cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-2 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-devBlue-dark"
+            aria-label="Fechar menu"
+            tabIndex={isOpen ? 0 : -1}
+          >
+            <CloseMenu color="#f0f0f0" width={24} height={24} />
+          </button>
+        </div>
+
+        <nav className="px-6 py-8" aria-label="Navegação mobile">
+          <ul className="m-0 flex list-none flex-col gap-3 p-0">
+            {NAV_ITEMS.map(({ name, ref }) => (
+              <li key={name}>
+                <Link
+                  href={generateRef(ref)}
+                  onClick={closeMenu}
+                  className="flex items-center justify-between border-b border-white/10 px-3 py-4 text-lg font-medium text-white transition-colors hover:text-devBlue-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-devBlue-dark"
+                  tabIndex={isOpen ? 0 : -1}
+                >
+                  {name}
+                  <span aria-hidden="true">→</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
     </div>
   );
 };

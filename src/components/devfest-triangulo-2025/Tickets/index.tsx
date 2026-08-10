@@ -1,11 +1,12 @@
-import styles from "./Ticket.module.css";
-
 import { Ticket } from "@/components/devfest-triangulo-2025/Tickets/Ticket";
 
 export const Tickets = () => {
   return (
-    <section className="m-4">
-      <section className={styles.TicketsWrapper}>
+    <section
+      className="w-full py-16 text-center"
+      aria-label="Opções de ingresso"
+    >
+      <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-center gap-10 xl:flex-nowrap xl:gap-6">
         <Ticket
           name="Deploy no Escuro"
           price={135}
@@ -27,7 +28,7 @@ export const Tickets = () => {
           batch={1}
           bestValue
         />
-      </section>
+      </div>
     </section>
   );
 };

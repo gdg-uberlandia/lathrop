@@ -35,8 +35,24 @@
 }
 
 .InfiniteBannerTrack {
-  display: inline-flex;
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.LeftToRight {
+  animation: marquee-left-to-right var(--marquee-duration) linear infinite;
+}
+
+.RightToLeft {
+  animation: marquee-right-to-left var(--marquee-duration) linear infinite;
+}
+
+.InfiniteBannerGroup {
+  display: flex;
+  flex-shrink: 0;
   gap: 2rem;
+  padding-right: 2rem;
 }
 
 .InfiniteBannerItem {
@@ -66,4 +82,29 @@
   background-image: url("/devfest-2025/ticket.svg");
   background-repeat: no-repeat;
   background-size: contain;
+}
+
+@keyframes marquee-left-to-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes marquee-right-to-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .InfiniteBannerTrack {
+    animation: none;
+    transform: none;
+  }
 }

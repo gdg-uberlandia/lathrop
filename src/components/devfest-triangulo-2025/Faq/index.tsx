@@ -1,15 +1,22 @@
 import React from "react";
 
-import styles from "./styles.module.css";
 import { Presentation } from "../Presentation";
 import { FaqItem } from "./components/FaqItem";
 
 type FaqProps = React.HTMLAttributes<HTMLDivElement>;
 
-export const Faq = ({ className, ...rest }: FaqProps) => {
+export const Faq = ({ className, id, ...rest }: FaqProps) => {
+  const headingId = id ? `${id}-title` : "faq-title";
+
   return (
-    <section className={className} {...rest}>
+    <section
+      className={className}
+      id={id}
+      aria-labelledby={headingId}
+      {...rest}
+    >
       <Presentation
+        headingId={headingId}
         title={
           <>
             <span>Perguntas</span> Frequentes
@@ -18,7 +25,7 @@ export const Faq = ({ className, ...rest }: FaqProps) => {
         subtitle="Ficou com dúvida? A gente pensou nisso também! Confira as respostas para as perguntas mais frequentes e venha pro DevFest com tudo resolvido."
       />
 
-      <div className={styles.FaqContainer}>
+      <div className="mx-auto grid w-full max-w-7xl gap-4 px-4 pb-10 sm:px-6 sm:pb-16 lg:px-8">
         <FaqItem
           title="O evento será presencial, online ou híbrido?"
           content="O DevFest Triângulo 2025 será presencial, proporcionando uma experiência completa de networking, palestras e atividades interativas no local."
