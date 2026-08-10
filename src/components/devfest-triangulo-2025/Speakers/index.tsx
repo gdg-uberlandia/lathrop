@@ -38,8 +38,9 @@ export const Speakers = ({
         "flex w-full flex-col items-center gap-6 text-center",
         className,
       )}
+      aria-labelledby="speakers-title"
     >
-      <SectionHeading>
+      <SectionHeading id="speakers-title">
         <span>Quem</span> inspira o presente e constrói o futuro, está aqui
       </SectionHeading>
 

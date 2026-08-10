@@ -108,7 +108,7 @@ const SpeakerModal: React.FC<ModalProps> = ({
 
           <div className={styles.ModalSpeakerInfo}>
             <div className={styles.SpeakerInfo}>
-              <h1>{speaker.name}</h1>
+              <h2>{speaker.name}</h2>
               <span className={styles.CardTech}>
                 {speaker.title ? (
                   <>{speaker.title}</>
@@ -133,7 +133,7 @@ const SpeakerModal: React.FC<ModalProps> = ({
                           : "Talk"}
                     </>
                   </Tag>
-                  <h2 className="mt-2">{talk.title}</h2>
+                  <h3 className="mt-2">{talk.title}</h3>
                   <p>{talk.description}</p>
                 </div>
               ))}

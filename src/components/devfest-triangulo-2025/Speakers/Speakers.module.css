@@ -179,7 +179,7 @@
   position: relative;
 }
 
-.SpeakerInfo h1 {
+.SpeakerInfo h2 {
   font-size: 1.5rem;
   color: var(--ice);
   margin-bottom: 4px;

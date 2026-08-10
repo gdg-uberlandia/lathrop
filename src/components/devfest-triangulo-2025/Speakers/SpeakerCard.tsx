@@ -79,7 +79,7 @@ const SpeakerCard = ({
         </div>
 
         <div className={styles.CardText}>
-          <h2 className={styles.CardName}>{speaker.name}</h2>
+          <h3 className={styles.CardName}>{speaker.name}</h3>
 
           <p className={clsx(styles.CardTech)}>
             {speaker.title ? (

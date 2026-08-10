@@ -5,10 +5,18 @@ import { FaqItem } from "./components/FaqItem";
 
 type FaqProps = React.HTMLAttributes<HTMLDivElement>;
 
-export const Faq = ({ className, ...rest }: FaqProps) => {
+export const Faq = ({ className, id, ...rest }: FaqProps) => {
+  const headingId = id ? `${id}-title` : "faq-title";
+
   return (
-    <section className={className} {...rest}>
+    <section
+      className={className}
+      id={id}
+      aria-labelledby={headingId}
+      {...rest}
+    >
       <Presentation
+        headingId={headingId}
         title={
           <>
             <span>Perguntas</span> Frequentes

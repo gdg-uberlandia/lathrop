@@ -19,6 +19,7 @@ export const HeroVideo = ({ videoId, children }: Props) => {
 
   return (
     <section className="relative isolate min-h-[600px] w-full overflow-hidden bg-black md:min-h-[700px] lg:aspect-video lg:min-h-0">
+      <h1 className="sr-only">DevFest Triângulo 2026</h1>
       <div className="pointer-events-none absolute inset-0 scale-125">
         <iframe
           src={videoUrl}

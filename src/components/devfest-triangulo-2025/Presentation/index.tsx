@@ -14,6 +14,7 @@ interface PresentationProps
   tags?: Tag[];
   description?: string;
   button?: PresentationButton;
+  headingId?: string;
 }
 
 interface PresentationButton {
@@ -27,10 +28,13 @@ export const Presentation = ({
   description,
   tags = [],
   button,
+  headingId,
   className,
   children,
+  id,
   ...rest
 }: PresentationProps) => {
+  const resolvedHeadingId = headingId ?? (id ? `${id}-title` : undefined);
   const renderButton = () => {
     if (!button) return null;
 
@@ -47,9 +51,11 @@ export const Presentation = ({
         "mx-auto flex w-full max-w-7xl flex-col items-center gap-6 px-4 py-12 text-center sm:px-6 md:py-16 lg:px-8",
         className,
       )}
+      id={id}
+      aria-labelledby={resolvedHeadingId}
       {...rest}
     >
-      <SectionHeading>{title}</SectionHeading>
+      <SectionHeading id={resolvedHeadingId}>{title}</SectionHeading>
       {description && (
         <p className="max-w-3xl text-pretty text-base leading-relaxed text-white/70 sm:text-lg">
           {description}

@@ -16,7 +16,11 @@ export const PastEvent = ({ className, ...rest }: PastEventProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <section className={className} {...rest}>
+    <section
+      className={className}
+      aria-label="Vídeo de eventos passados"
+      {...rest}
+    >
       <div className="flex flex-col items-center bg-devGray-dark py-10">
         <div className="relative aspect-video w-[90%] max-w-6xl">
           <div className="absolute -left-4 top-1/2 z-10 w-9 -translate-y-1/2">

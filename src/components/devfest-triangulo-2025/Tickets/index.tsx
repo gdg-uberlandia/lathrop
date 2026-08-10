@@ -2,7 +2,10 @@ import { Ticket } from "@/components/devfest-triangulo-2025/Tickets/Ticket";
 
 export const Tickets = () => {
   return (
-    <section className="w-full py-16 text-center">
+    <section
+      className="w-full py-16 text-center"
+      aria-label="Opções de ingresso"
+    >
       <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-center gap-10">
         <Ticket
           name="Deploy no Escuro"

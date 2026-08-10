@@ -107,6 +107,7 @@ const Home = ({ initialSpeakers, initialTalks }: HomePageProps) => {
           <CountdownTimer
             className={deferredHomepageSectionClassName}
             id="countdown"
+            aria-label="Contagem regressiva para o evento"
           />
 
           <Presentation
