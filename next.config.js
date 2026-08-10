@@ -10,6 +10,7 @@ const nextConfig = {
       "media.licdn.com",
       "raw.githubusercontent.com",
       "lh3.googleusercontent.com",
+      "i.ytimg.com",
       "storage.googleapis.com",
     ],
   },

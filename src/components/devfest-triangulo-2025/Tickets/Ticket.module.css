@@ -159,26 +159,6 @@
   border-radius: 12px;
 }
 
-.TicketButton {
-  border-radius: 0.75rem;
-  cursor: pointer;
-  line-height: 1.125rem;
-  padding: 0.75rem 1.5rem;
-  text-decoration: none;
-  transition: all 150ms ease-out;
-  font-weight: 700;
-  font-size: 0.875rem;
-  background: var(--blue-1);
-  border: 1px solid var(--blue-1);
-  color: var(--white);
-  width: 194px;
-}
-
-.TicketButton:hover {
-  border: 1px solid var(--white);
-  color: var(--white);
-}
-
 .TicketButtonDisabled,
 .TicketButtonDisabled:hover {
   pointer-events: none;

@@ -6,6 +6,7 @@ import SellIcon from "@/public/icons/sell.svg";
 import TShirtIcon from "@/public/icons/tshirt.svg";
 import configValues from "helpers/config";
 import clsx from "clsx";
+import { primaryCtaClassName } from "../primary-cta";
 
 interface TicketProps {
   name: string;
@@ -112,7 +113,8 @@ export const Ticket = ({
             href={configValues.eventLinkRegistrationUrl}
             target="_blank"
             className={clsx(
-              styles.TicketButton,
+              primaryCtaClassName,
+              "w-[194px]",
               soldOut ? styles.TicketButtonDisabled : "",
             )}
           >

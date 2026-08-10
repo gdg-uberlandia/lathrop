@@ -46,6 +46,11 @@ interface HomePageProps {
   initialTalks: Array<PublicTalk>;
 }
 
+const sectionClassName =
+  "mx-auto mt-24 w-full max-w-7xl scroll-mt-24 px-4 sm:px-6 lg:mt-40 lg:px-8";
+const deferredSectionClassName =
+  "[content-visibility:auto] [contain-intrinsic-size:800px]";
+
 const Home = ({
   initialSpeakers,
   initialSponsors,
@@ -57,127 +62,143 @@ const Home = ({
       <ErrorBoundary>
         <Header />
 
-        <HeroVideo videoId="QCYaPiFo_4k" />
+        <main className="overflow-x-clip bg-black text-devWhite-ice">
+          <HeroVideo videoId="QCYaPiFo_4k" />
 
-        <Presentation
-          tags={[
-            { icon: Mic, text: "Palestras inspiradoras" },
-            { icon: BusinesCenter, text: "Estandes de empresas" },
-            { icon: Trophy, text: "Dinâmicas interativas" },
-            { icon: Handshake, text: "Networking sem fronteiras" },
-          ]}
-          title={
-            <>
-              Onde mentes curiosas se conectam e{" "}
-              <span>o futuro é programado em comunidade</span>
-            </>
-          }
-          button={{
-            text: "Patrocine o DevFest Triângulo",
-            href: configValues.eventLinkSponsorshipUrl,
-          }}
-          description=" O DevFest é um super festival de tecnologia feito por e para a
+          <Presentation
+            tags={[
+              { icon: Mic, text: "Palestras inspiradoras" },
+              { icon: BusinesCenter, text: "Estandes de empresas" },
+              { icon: Trophy, text: "Dinâmicas interativas" },
+              { icon: Handshake, text: "Networking sem fronteiras" },
+            ]}
+            title={
+              <>
+                Onde mentes curiosas se conectam e{" "}
+                <span>o futuro é programado em comunidade</span>
+              </>
+            }
+            button={{
+              text: "Patrocine o DevFest Triângulo",
+              href: configValues.eventLinkSponsorshipUrl,
+            }}
+            description=" O DevFest é um super festival de tecnologia feito por e para a
         comunidade, com o apoio do Google Developer Groups (GDG). É onde ideias
         ganham vida, conexões acontecem e o futuro da tecnologia é construído
         com colaboração, diversidade e muita energia criativa."
-          subtitle="Se você ama tecnologia, adora aprender e quer fazer parte de algo
+            subtitle="Se você ama tecnologia, adora aprender e quer fazer parte de algo
         transformador, esse evento é pra você!"
-          className={styles.Section}
-          id="about"
-        />
+            className={sectionClassName}
+            id="about"
+          />
 
-        <InfiniteBanner
-          direction="leftToRight"
-          items={devfest2025Images1}
-          speed={2000}
-          className={styles.Section}
-          id="infinite-banner"
-        />
-        <InfiniteBanner
-          direction="rightToLeft"
-          items={devfest2025Images2}
-          speed={2000}
-          className={styles.Section}
-          id="infinite-banner"
-        />
-        <CountdownTimer className={styles.Section} id="countdown" />
+          <InfiniteBanner
+            direction="leftToRight"
+            items={devfest2025Images1}
+            speed={2000}
+            className={styles.Section}
+            id="infinite-banner"
+          />
+          <InfiniteBanner
+            direction="rightToLeft"
+            items={devfest2025Images2}
+            speed={2000}
+            className={styles.Section}
+            id="infinite-banner"
+          />
+          <CountdownTimer
+            className={`${sectionClassName} ${deferredSectionClassName}`}
+            id="countdown"
+          />
 
-        <Presentation
-          tags={[
-            { text: "O maior da América Latina" },
-            { text: "+ 2.000 participantes" },
-            { text: "4 trilhas de conteúdo" },
-            { text: "+ 20 palestras" },
-          ]}
-          title={
-            <>
-              Como foi a <span>última edição</span>
-            </>
-          }
-          description={`O ${configValues.lastEvent}, em Uberlândia, foi um verdadeiro marco e
+          <Presentation
+            tags={[
+              { text: "O maior da América Latina" },
+              { text: "+ 2.000 participantes" },
+              { text: "4 trilhas de conteúdo" },
+              { text: "+ 20 palestras" },
+            ]}
+            title={
+              <>
+                Como foi a <span>última edição</span>
+              </>
+            }
+            description={`O ${configValues.lastEvent}, em Uberlândia, foi um verdadeiro marco e
           mostrou o poder da comunidade em ação:`}
-          className={styles.Section}
-          id="past-event"
-        ></Presentation>
+            className={`${sectionClassName} ${deferredSectionClassName}`}
+            id="past-event"
+          ></Presentation>
 
-        <PastEvent />
+          <PastEvent
+            className={`${sectionClassName} ${deferredSectionClassName}`}
+          />
 
-        <Presentation
-          title={
-            <>
-              <span>Garanta a sua vaga</span> no DevFest
-            </>
-          }
-          subtitle="O maior DevFest da América Latina está chegando, e o melhor é que você
+          <Presentation
+            title={
+              <>
+                <span>Garanta a sua vaga</span> no DevFest
+              </>
+            }
+            subtitle="O maior DevFest da América Latina está chegando, e o melhor é que você
         pode fazer parte disso tudo. Aprendizado, conexão, experiências únicas e
         muita inovação te esperam."
-          className={styles.Section}
-          id="registration"
-        ></Presentation>
+            className={`${sectionClassName} ${deferredSectionClassName}`}
+            id="registration"
+          ></Presentation>
 
-        <Tickets />
+          <div className={`${sectionClassName} ${deferredSectionClassName}`}>
+            <Tickets />
+          </div>
 
-        <InfiniteBanner
-          direction="leftToRight"
-          items={[
-            { type: "text", content: "Café da Manhã" },
-            { type: "text", content: "Lanche da Tarde" },
-            { type: "text", content: "Acesso aos Palcos" },
-            { type: "text", content: "Certificado de Participação" },
-            { type: "text", content: "Brindes" },
-          ]}
-          speed={140}
-          className={styles.Section}
-          id="infinite-banner"
-        />
+          <InfiniteBanner
+            direction="leftToRight"
+            items={[
+              { type: "text", content: "Café da Manhã" },
+              { type: "text", content: "Lanche da Tarde" },
+              { type: "text", content: "Acesso aos Palcos" },
+              { type: "text", content: "Certificado de Participação" },
+              { type: "text", content: "Brindes" },
+            ]}
+            speed={140}
+            className={styles.Section}
+            id="infinite-banner"
+          />
 
-        <Speakers speakers={initialSpeakers} talks={initialTalks} />
+          <Speakers
+            speakers={initialSpeakers}
+            talks={initialTalks}
+            className={`${sectionClassName} ${deferredSectionClassName}`}
+          />
 
-        <InfiniteBanner
-          direction="rightToLeft"
-          items={devfest2023Images}
-          speed={2000}
-          className={styles.Section}
-          id="infinite-banner"
-        />
+          <InfiniteBanner
+            direction="rightToLeft"
+            items={devfest2023Images}
+            speed={2000}
+            className={styles.Section}
+            id="infinite-banner"
+          />
 
-        <InfiniteBanner
-          direction="leftToRight"
-          items={devfest2024Images}
-          speed={2000}
-          className={styles.Section}
-          id="infinite-banner"
-        />
+          <InfiniteBanner
+            direction="leftToRight"
+            items={devfest2024Images}
+            speed={2000}
+            className={styles.Section}
+            id="infinite-banner"
+          />
 
-        <SponsorsSection
-          className={styles.Section}
-          sponsors={[]}
-          id="sponsors"
-        />
+          <SponsorsSection
+            className={`${sectionClassName} ${deferredSectionClassName}`}
+            sponsors={[]}
+            id="sponsors"
+          />
 
-        {/* <EventLocation className={styles.Section} id="place" /> */}
+          {/* <EventLocation className={styles.Section} id="place" /> */}
 
-        <Faq className={styles.Section} id="faq" />
+          <Faq
+            className={`${sectionClassName} ${deferredSectionClassName}`}
+            id="faq"
+          />
+        </main>
       </ErrorBoundary>
     </>
   );

@@ -62,7 +62,7 @@ export const Header = ({ isRoot = true }: { isRoot?: boolean }) => {
   // }, [lastScrollY]);
 
   return (
-    <div className={styles.HeaderWrapper}>
+    <div className="relative z-[1000] w-full bg-black">
       <header
         className={clsx(styles.Header, !isVisible && styles.HeaderHidden)}
       >

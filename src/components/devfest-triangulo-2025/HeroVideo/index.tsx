@@ -1,5 +1,4 @@
 import React from "react";
-import styles from "./HeroVideo.module.css";
 import Image from "next/image";
 
 import AndroidCheese from "@/public/devfest-2026/android_queijo_.png";
@@ -19,8 +18,8 @@ export const HeroVideo = ({ videoId, children }: Props) => {
   )}&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1&playsinline=1`;
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.video}>
+    <section className="relative isolate min-h-[600px] w-full overflow-hidden bg-black md:min-h-[700px] lg:aspect-video lg:min-h-0">
+      <div className="pointer-events-none absolute inset-0 scale-125">
         <iframe
           src={videoUrl}
           title="Vídeo do DevFest Triângulo"
@@ -34,40 +33,34 @@ export const HeroVideo = ({ videoId, children }: Props) => {
         />
       </div>
 
-      {/* overlay escuro */}
-      <div className={styles.overlay} />
+      <div className="absolute inset-0 z-10 bg-black/80" />
 
-      {/* conteúdo */}
-      <div className={styles.content}>
+      <div className="absolute inset-0 z-20 mx-auto flex w-full max-w-xl flex-col items-center justify-center px-6 text-center text-devWhite-ice">
         <Image
           alt="DevFest Triângulo 2026"
           src={AndroidCheese}
           priority
-          className="mr-6 top-0 left-0"
+          className="h-auto w-48 object-contain sm:w-64 lg:w-72"
         />
         <Image
           alt="DevFest Triângulo 2026"
           src={Title}
           priority
-          style={{
-            objectFit: "contain",
-            maxWidth: "100%",
-            height: "auto",
-          }}
+          className="h-auto w-full max-w-lg object-contain"
         />
-        <footer className="flex gap-4 mt-2">
+        <div className="mt-4 flex flex-col items-center gap-3 text-sm sm:flex-row sm:gap-6 sm:text-base">
           <span className="flex items-center gap-2">
-            <CalendarDays />
-            <span className="pt-1">31 de Outubro</span>
+            <CalendarDays className="size-5 text-devYellow" />
+            <span>31 de Outubro</span>
           </span>
           <span className="flex items-center gap-2">
-            <MapPin />
-            <span className="pt-1">Uberlândia - MG</span>
+            <MapPin className="size-5 text-devYellow" />
+            <span>Uberlândia - MG</span>
           </span>
-        </footer>
+        </div>
       </div>
 
       {children}
-    </div>
+    </section>
   );
 };

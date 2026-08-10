@@ -4,7 +4,7 @@ import { PublicTalk } from "models/talk";
 import configValues from "@/helpers/config";
 
 import SpeakerCard from "./SpeakerCard";
-import styles from "./Speakers.module.css";
+import clsx from "clsx";
 
 const tags: string[] = [
   "Arquitetura",
@@ -23,22 +23,32 @@ const tags: string[] = [
 interface SpeakersProps {
   speakers: Array<PublicSpeaker>;
   talks: Array<PublicTalk>;
+  className?: string;
 }
 
-export const Speakers = ({ speakers = [], talks = [] }: SpeakersProps) => {
+export const Speakers = ({
+  speakers = [],
+  talks = [],
+  className,
+}: SpeakersProps) => {
   return (
-    <section className={styles.Speakers}>
-      <h1 className={styles.Title}>
+    <section
+      className={clsx(
+        "flex w-full flex-col items-center gap-6 text-center",
+        className,
+      )}
+    >
+      <h2 className="max-w-4xl text-balance text-3xl font-normal leading-tight sm:text-4xl lg:text-5xl [&_span]:text-devBlue-dark">
         <span>Quem</span> inspira o presente e constrói o futuro, está aqui
-      </h1>
+      </h2>
 
       {speakers.length ? (
         <>
-          <p>
+          <p className="max-w-3xl text-pretty text-base leading-relaxed text-white/70 sm:text-lg">
             Conheça as mentes e os temas incríveis que subirão ao palco do
             {` ${configValues.name}`}.
           </p>
-          <section className={styles.SpeakersList}>
+          <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
             {speakers
               ?.filter((speaker) => speaker.isVisible)
               .map((speaker, idx) => (
@@ -52,22 +62,27 @@ export const Speakers = ({ speakers = [], talks = [] }: SpeakersProps) => {
                   index={idx}
                 />
               ))}
-          </section>
+          </div>
         </>
       ) : (
         <>
-          <p>
+          <p className="max-w-3xl text-pretty text-base leading-relaxed text-white/70 sm:text-lg">
             Em breve conheça as mentes e os temas incríveis que subirão ao palco
             do
             {` ${configValues.name}`}.
           </p>
-          <section className={styles.TagList}>
+          <div className="flex max-w-4xl flex-wrap justify-center gap-3">
             {tags.map((tag, idx) => (
-              <div key={idx} className={styles.Tag}>
-                {tag}
+              <div
+                key={idx}
+                className="inline-flex rounded-full bg-devfest-gradient p-px"
+              >
+                <div className="inline-flex min-h-9 items-center rounded-full bg-black px-4 py-2 text-sm text-white/80 sm:text-base">
+                  {tag}
+                </div>
               </div>
             ))}
-          </section>
+          </div>
         </>
       )}
     </section>
