@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 
-import AndroidCheese from "@/public/devfest-2026/android_queijo_.png";
+import AndroidCheese from "@/public/devfest-2026/android_queijo_.webp";
 import Title from "@/public/devfest-2025/logo-2026.png";
 import { CalendarDays, MapPin } from "lucide-react";
 

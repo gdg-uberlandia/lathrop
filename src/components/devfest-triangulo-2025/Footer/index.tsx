@@ -5,7 +5,7 @@ import config from "@/helpers/config";
 import DevFest2023 from "@/public/devfest-2025/devfest-2023.png";
 import DevFest2022 from "@/public/devfest-2025/devfest-2022.png";
 import DevFest2024 from "@/public/devfest-2025/devfest-2024.png";
-import AndroidCheeseHalloween from "@/public/devfest-2026/android_queijo_.png";
+import AndroidCheeseHalloween from "@/public/devfest-2026/android_queijo_.webp";
 import AndroidCheese from "@/public/devfest-2025/footer-image.png";
 import LinkedinIcon from "@/public/devfest-2025/icons/linkedin-footer.svg";
 import InstagramIcon from "@/public/devfest-2025/icons/instagram-footer.svg";
