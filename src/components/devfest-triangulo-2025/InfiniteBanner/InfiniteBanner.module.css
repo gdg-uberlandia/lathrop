@@ -50,6 +50,12 @@
   border-radius: 1rem;
 }
 
+.InfiniteBannerImage {
+  position: relative;
+  width: 300px;
+  height: 200px;
+}
+
 .InfiniteBannerItemSpan {
   display: flex;
   justify-content: center;

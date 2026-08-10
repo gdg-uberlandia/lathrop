@@ -1,7 +1,4 @@
-"use client";
-
 import React from "react";
-import ReactPlayer from "react-player";
 import styles from "./HeroVideo.module.css";
 import Image from "next/image";
 
@@ -10,33 +7,30 @@ import Title from "@/public/devfest-2025/logo-2026.png";
 import { CalendarDays, MapPin } from "lucide-react";
 
 interface Props {
-  videoUrl: string;
+  videoId: string;
   children?: React.ReactNode;
 }
 
-export const HeroVideo = ({ videoUrl, children }: Props) => {
+export const HeroVideo = ({ videoId, children }: Props) => {
+  const videoUrl = `https://www.youtube.com/embed/${encodeURIComponent(
+    videoId,
+  )}?autoplay=1&mute=1&controls=0&loop=1&playlist=${encodeURIComponent(
+    videoId,
+  )}&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1&playsinline=1`;
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.video}>
-        <ReactPlayer
+        <iframe
           src={videoUrl}
-          playing
-          loop
-          muted
-          controls={false}
+          title="Vídeo do DevFest Triângulo"
+          allow="autoplay; encrypted-media; picture-in-picture"
+          referrerPolicy="strict-origin-when-cross-origin"
+          tabIndex={-1}
+          aria-hidden="true"
+          frameBorder="0"
           width="100%"
           height="100%"
-          config={{
-            youtube: {
-              playerVars: {
-                controls: 0,
-                modestbranding: 1,
-                rel: 0,
-                iv_load_policy: 3,
-                disablekb: 1,
-              },
-            } as any,
-          }}
         />
       </div>
 
@@ -48,13 +42,13 @@ export const HeroVideo = ({ videoUrl, children }: Props) => {
         <Image
           alt="DevFest Triângulo 2026"
           src={AndroidCheese}
-          loading="eager"
+          priority
           className="mr-6 top-0 left-0"
         />
         <Image
           alt="DevFest Triângulo 2026"
           src={Title}
-          loading="eager"
+          priority
           style={{
             objectFit: "contain",
             maxWidth: "100%",
@@ -72,6 +66,8 @@ export const HeroVideo = ({ videoUrl, children }: Props) => {
           </span>
         </footer>
       </div>
+
+      {children}
     </div>
   );
 };

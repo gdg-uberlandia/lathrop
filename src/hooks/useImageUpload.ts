@@ -8,16 +8,13 @@ export function useImageUpload() {
   const uploadImage = async (file: File, folder: string) => {
     try {
       setLoadingImage(true);
+      setError("");
 
       const formData = new FormData();
       formData.append("file", file);
       formData.append("folder", folder); // Adiciona o folder
 
-      const response = await axios.post("/api/v1/upload-photo", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post("/api/v1/upload-photo/", formData);
 
       if (response.status < 200 || response.status >= 300) {
         throw new Error("Falha ao enviar foto");
@@ -29,7 +26,7 @@ export function useImageUpload() {
     } catch (error) {
       console.error("Erro ao enviar foto:", error);
       setError("Erro ao enviar foto");
-      return "";
+      throw error;
     } finally {
       setLoadingImage(false);
     }

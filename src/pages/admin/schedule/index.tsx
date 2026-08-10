@@ -156,9 +156,7 @@ export default function Schedules() {
                       };
                       const speechSpeakers = findSpeakers(speech);
 
-                      const speakerInfo = speechSpeakers.find(
-                        (speaker) => speaker && speaker.tech,
-                      );
+                      const speakerInfo = speechSpeakers.find(Boolean);
 
                       return (
                         <div
@@ -178,7 +176,7 @@ export default function Schedules() {
                           )}
                           <div className="flex flex-col col-span-11 py-3 px-4">
                             <span className="font-semibold text-sm mb-3">
-                              {speech.title ? speech.title : speakerInfo?.topic}
+                              {speech.title ?? speech.topic}
                             </span>
                             <section>
                               {speechSpeakers.length > 0 ? (
@@ -190,7 +188,7 @@ export default function Schedules() {
                                         className="text-white/90 flex items-center gap-2 mb-3"
                                       >
                                         <Image
-                                          src={speaker.photo!}
+                                          src={speaker.photoUrl!}
                                           alt={`Foto ${speaker.name}`}
                                           height={32}
                                           width={32}

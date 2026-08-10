@@ -1,114 +1,103 @@
-const SPEAKERS_COLLECTION = `speakers${process.env.DEV_MODE ? "_test" : ""}`;
-import { Speaker } from "@/models/speaker";
+import { CURRENT_EVENT_ID } from "@/helpers/event";
+import {
+  Speaker,
+  SpeakerInput,
+  speakerFieldsSchema,
+  speakerInputSchema,
+} from "@/models/speaker";
 import { db } from "@/utils/db/index";
+import { Timestamp } from "firebase-admin/firestore";
 
-/**
- * Busca todos os speakers
- */
+const SPEAKERS_COLLECTION = `speakers${process.env.DEV_MODE ? "_test" : ""}`;
+
+const parseSpeaker = (id: string, value: FirebaseFirestore.DocumentData) => {
+  return speakerFieldsSchema.parse({
+    ...value,
+    id,
+    createdAt:
+      value.createdAt instanceof Timestamp
+        ? value.createdAt.toDate()
+        : value.createdAt,
+    updatedAt:
+      value.updatedAt instanceof Timestamp
+        ? value.updatedAt.toDate()
+        : value.updatedAt,
+  });
+};
+
 export const getAllSpeakers = async (): Promise<Speaker[]> => {
-  try {
-    const snapshot = await db.collection(SPEAKERS_COLLECTION).get();
-    const speakers: Speaker[] = [];
-    snapshot.forEach((doc: FirebaseFirestore.QueryDocumentSnapshot) => {
-      const data = doc.data();
-      if (data && data.id) {
-        speakers.push(data as Speaker);
-      } else {
-        console.warn(`[getAllSpeakers] Documento sem id: ${doc.id}`);
-      }
-    });
-    speakers.sort((a, b) => a.name.localeCompare(b.name));
-    return speakers;
-  } catch (error) {
-    console.error("[getAllSpeakers] Erro ao buscar speakers:", error);
-    throw error;
-  }
+  const snapshot = await db
+    .collection(SPEAKERS_COLLECTION)
+    .where("eventId", "==", CURRENT_EVENT_ID)
+    .get();
+
+  return snapshot.docs
+    .map((doc) => parseSpeaker(doc.id, doc.data()))
+    .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
 };
 
-/**
- * Cria um novo speaker
- */
-export const createSpeaker = async (speaker: Speaker): Promise<Speaker> => {
-  try {
-    if (!speaker || !speaker.id) {
-      throw new Error("Speaker inválido: id obrigatório");
-    }
-    const docRef = db.collection(SPEAKERS_COLLECTION).doc(speaker.id);
-    const doc = await docRef.get();
-    if (doc.exists) {
-      throw new Error(`Speaker com id ${speaker.id} já existe.`);
-    }
-    speaker.canBeEvaluated = false;
-    await docRef.set(speaker);
-    return speaker;
-  } catch (error) {
-    console.error("[createSpeaker] Erro ao criar speaker:", error);
-    throw error;
+export const createSpeaker = async (input: SpeakerInput): Promise<Speaker> => {
+  const data = speakerInputSchema.parse(input);
+  const docRef = db.collection(SPEAKERS_COLLECTION).doc(data.id);
+  const existing = await docRef.get();
+
+  if (existing.exists) {
+    throw new Error(`Palestrante com id ${data.id} já existe.`);
   }
+
+  const now = new Date();
+  const speaker = speakerFieldsSchema.parse({
+    ...data,
+    eventId: CURRENT_EVENT_ID,
+    createdAt: now,
+    updatedAt: now,
+  });
+  await docRef.create(speaker);
+  return speaker;
 };
 
-/**
- * Busca um speaker pelo id
- */
 export const getSpeakerById = async (speakerId: string): Promise<Speaker> => {
-  try {
-    if (!speakerId) {
-      throw new Error("Id do speaker obrigatório");
-    }
-    const docRef = db.collection(SPEAKERS_COLLECTION).doc(speakerId);
-    const doc = await docRef.get();
-    if (!doc.exists) {
-      throw new Error(`Speaker com id ${speakerId} não encontrado.`);
-    }
-    const data = doc.data();
-    if (!data || !data.id) {
-      throw new Error(`Dados inválidos para speaker ${speakerId}`);
-    }
-    return data as Speaker;
-  } catch (error) {
-    console.error("[getSpeakerById] Erro ao buscar speaker:", error);
-    throw error;
+  const doc = await db.collection(SPEAKERS_COLLECTION).doc(speakerId).get();
+
+  if (!doc.exists) {
+    throw new Error(`Palestrante com id ${speakerId} não encontrado.`);
   }
+
+  const speaker = parseSpeaker(doc.id, doc.data()!);
+  if (speaker.eventId !== CURRENT_EVENT_ID) {
+    throw new Error(`Palestrante com id ${speakerId} não encontrado.`);
+  }
+  return speaker;
 };
 
-/**
- * Atualiza um speaker
- */
-export const updateSpeaker = async (speaker: Speaker): Promise<Speaker> => {
-  try {
-    if (!speaker || !speaker.id) {
-      throw new Error("Speaker inválido: id obrigatório");
-    }
-    const docRef = db.collection(SPEAKERS_COLLECTION).doc(speaker.id);
-    const doc = await docRef.get();
-    if (!doc.exists) {
-      throw new Error(`Speaker com id ${speaker.id} não encontrado.`);
-    }
-    await docRef.set(speaker, { merge: true });
-    return speaker;
-  } catch (error) {
-    console.error("[updateSpeaker] Erro ao atualizar speaker:", error);
-    throw error;
-  }
+export const updateSpeaker = async (input: SpeakerInput): Promise<Speaker> => {
+  const data = speakerInputSchema.parse(input);
+  const current = await getSpeakerById(data.id);
+  const speaker = speakerFieldsSchema.parse({
+    ...data,
+    eventId: CURRENT_EVENT_ID,
+    createdAt: current.createdAt,
+    updatedAt: new Date(),
+  });
+  await db.collection(SPEAKERS_COLLECTION).doc(data.id).set(speaker);
+  return speaker;
 };
 
-/**
- * Remove um speaker
- */
 export const deleteSpeaker = async (speakerId: string): Promise<string> => {
-  try {
-    if (!speakerId) {
-      throw new Error("Id do speaker obrigatório");
-    }
-    const docRef = db.collection(SPEAKERS_COLLECTION).doc(speakerId);
-    const doc = await docRef.get();
-    if (!doc.exists) {
-      throw new Error(`Speaker com id ${speakerId} não encontrado.`);
-    }
-    await docRef.delete();
-    return speakerId;
-  } catch (error) {
-    console.error("[deleteSpeaker] Erro ao remover speaker:", error);
-    throw error;
+  await getSpeakerById(speakerId);
+  const linkedTalk = await db
+    .collection(`talks${process.env.DEV_MODE ? "_test" : ""}`)
+    .where("speakerIds", "array-contains", speakerId)
+    .get();
+
+  if (
+    linkedTalk.docs.some(
+      (document) => document.data().eventId === CURRENT_EVENT_ID,
+    )
+  ) {
+    throw new Error("Remova o palestrante das palestras antes de excluí-lo.");
   }
+
+  await db.collection(SPEAKERS_COLLECTION).doc(speakerId).delete();
+  return speakerId;
 };

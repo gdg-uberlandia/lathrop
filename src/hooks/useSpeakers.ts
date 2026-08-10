@@ -1,4 +1,4 @@
-import { Speaker } from "@/models/speaker";
+import { Speaker, SpeakerInput } from "@/models/speaker";
 import { useCallback, useEffect, useState } from "react";
 import {
   createSpeakerAPI,
@@ -16,6 +16,7 @@ export function useSpeakers() {
   const fetchSpeakers = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
       const data = await getSpeakersAPI();
       setSpeakers(data);
     } catch (err) {
@@ -29,6 +30,7 @@ export function useSpeakers() {
   const fetchSpeaker = useCallback(async (speakerId: string) => {
     try {
       setLoading(true);
+      setError(null);
       const speaker = await readSpeakerAPI(speakerId);
       return speaker;
     } catch (err) {
@@ -40,9 +42,10 @@ export function useSpeakers() {
     }
   }, []);
 
-  const addSpeaker = async (speaker: Speaker) => {
+  const addSpeaker = async (speaker: SpeakerInput) => {
     try {
       setLoading(true);
+      setError(null);
       const newSpeaker = await createSpeakerAPI(speaker);
       setSpeakers((prev) => [...prev, newSpeaker]);
       return newSpeaker as Speaker;
@@ -58,6 +61,7 @@ export function useSpeakers() {
   const removeSpeaker = async (speakerId: string) => {
     try {
       setLoading(true);
+      setError(null);
       await deleteSpeakerAPI(speakerId);
       setSpeakers((prev) => prev.filter((s) => s.id !== speakerId));
     } catch (error) {
@@ -68,10 +72,17 @@ export function useSpeakers() {
     }
   };
 
-  const updateSpeaker = async (speaker: Speaker) => {
+  const updateSpeaker = async (speaker: SpeakerInput) => {
     try {
       setLoading(true);
+      setError(null);
       const updatedSpeaker = await updateSpeakerAPI(speaker);
+      setSpeakers((current) =>
+        current.map((item) =>
+          item.id === updatedSpeaker.id ? updatedSpeaker : item,
+        ),
+      );
+      return updatedSpeaker;
     } catch (err) {
       console.error(err);
       setError("Erro ao atualizar speaker");

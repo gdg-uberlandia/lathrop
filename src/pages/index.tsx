@@ -1,12 +1,14 @@
 import { getSchedule } from "back-features/schedule";
 import { getAllSpeakers } from "back-features/speakers";
+import { getAllTalks } from "back-features/talks";
 import { getAllSponsorLevels } from "back-features/sponsors";
 
 import { CountdownTimer } from "components/devfest-triangulo-2025/CountdownTimer";
 import { Header } from "components/devfest-triangulo-2025/Header";
 import { Presentation } from "components/devfest-triangulo-2025/Presentation";
 import { Schedule } from "models/schedule";
-import { Speaker } from "models/speaker";
+import { PublicSpeaker, toPublicSpeaker } from "models/speaker";
+import { PublicTalk, toPublicTalk } from "models/talk";
 import styles from "styles/Home.module.css";
 
 import { HeroVideo } from "@/components/devfest-triangulo-2025/HeroVideo";
@@ -38,22 +40,24 @@ import { Speakers } from "@/components/devfest-triangulo-2025/Speakers";
 import { HeroSection } from "@/components/hero-section";
 
 interface HomePageProps {
-  initialSpeakers: Array<Speaker>;
+  initialSpeakers: Array<PublicSpeaker>;
   initialSponsors: Array<SponsorLevel>;
   initialSchedule: Array<Schedule>;
+  initialTalks: Array<PublicTalk>;
 }
 
 const Home = ({
   initialSpeakers,
   initialSponsors,
   initialSchedule,
+  initialTalks,
 }: HomePageProps) => {
   return (
     <>
       <ErrorBoundary>
         <Header />
 
-        <HeroVideo videoUrl="https://www.youtube.com/watch?v=QCYaPiFo_4k" />
+        <HeroVideo videoId="QCYaPiFo_4k" />
 
         <Presentation
           tags={[
@@ -147,7 +151,7 @@ const Home = ({
           id="infinite-banner"
         />
 
-        <Speakers speakers={[]} />
+        <Speakers speakers={initialSpeakers} talks={initialTalks} />
 
         <InfiniteBanner
           direction="rightToLeft"
@@ -181,16 +185,31 @@ const Home = ({
 
 export async function getServerSideProps() {
   try {
+    const [speakers, sponsors, schedule, talks] = await Promise.all([
+      getAllSpeakers(),
+      getAllSponsorLevels(),
+      getSchedule(),
+      getAllTalks(),
+    ]);
+
     return {
       props: {
-        initialSpeakers: await getAllSpeakers(),
-        initialSponsors: await getAllSponsorLevels(),
-        initialSchedule: await getSchedule(),
+        initialSpeakers: speakers.map(toPublicSpeaker),
+        initialTalks: talks.map(toPublicTalk),
+        initialSponsors: sponsors,
+        initialSchedule: schedule,
       },
     };
   } catch (error) {
     console.error("Erro ao ler props iniciais:", error);
-    return { props: { speakers: [], sponsors: [] } };
+    return {
+      props: {
+        initialSpeakers: [],
+        initialTalks: [],
+        initialSponsors: [],
+        initialSchedule: [],
+      },
+    };
   }
 }
 

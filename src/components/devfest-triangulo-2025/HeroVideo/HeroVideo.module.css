@@ -6,7 +6,7 @@
   overflow: hidden;
   max-width: 1920px;
   min-width: 360px;
-  margin:0  auto
+  margin: 0 auto;
 }
 
 .video,
@@ -45,4 +45,5 @@
 .content img {
   margin: 0;
   width: 100%;
+  height: auto;
 }

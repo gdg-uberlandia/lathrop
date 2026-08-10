@@ -1,4 +1,5 @@
 import { Button } from "@/assets/components/ui/button";
+import { Checkbox } from "@/assets/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -10,21 +11,31 @@ import { Input } from "@/assets/components/ui/input";
 import { Textarea } from "@/assets/components/ui/textarea";
 import Loading from "@/components/admin/loading-overlay";
 import { useImageUpload } from "@/hooks/useImageUpload";
-import { Speaker } from "@/models/speaker";
+import { Speaker, SpeakerInput } from "@/models/speaker";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
-import router from "next/router";
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
-import { SpeakerFormType, speakerSchema } from "./speakers-schema";
+import { SpeakerFormType, speakerFormSchema } from "./speakers-schema";
 
-export interface SpeakerFormProps {
+interface SpeakerFormProps {
   editing?: boolean;
   loading?: boolean;
-  onSubmit: (data: Speaker) => void;
+  onSubmit: (data: SpeakerInput) => void | Promise<unknown>;
   speaker?: Speaker;
 }
+
+const emptyValues = (): SpeakerFormType => ({
+  id: uuidv4(),
+  name: "",
+  company: "",
+  title: "",
+  miniBio: "",
+  photoUrl: "",
+  socialMedia: { instagram: "", linkedIn: "" },
+  isVisible: true,
+});
 
 export function SpeakersForm({
   editing = false,
@@ -32,301 +43,210 @@ export function SpeakersForm({
   onSubmit,
   speaker,
 }: SpeakerFormProps) {
-  const { uploadImage, loadingImage } = useImageUpload();
-
+  const { uploadImage, loadingImage, error: uploadError } = useImageUpload();
+  const [validationError, setValidationError] = useState("");
   const form = useForm<SpeakerFormType>({
-    resolver: zodResolver(speakerSchema),
-    defaultValues: {
-      id: editing && speaker?.id ? speaker.id : uuidv4(),
-      name: speaker?.name ?? "",
-      content: speaker?.content ?? "",
-      topic: speaker?.topic ?? "",
-    },
+    resolver: zodResolver(speakerFormSchema),
+    defaultValues: emptyValues(),
   });
 
   useEffect(() => {
-    if (editing && speaker) {
-      Object.entries(speaker).forEach(([key, value]) => {
-        if (key !== "id") form.setValue(key as keyof SpeakerFormType, value);
-      });
-    } else {
-      form.reset({ id: uuidv4() });
-    }
-  }, [editing, speaker, form]);
+    if (!speaker) return;
+    form.reset({
+      id: speaker.id,
+      name: speaker.name,
+      company: speaker.company ?? "",
+      title: speaker.title ?? "",
+      miniBio: speaker.miniBio ?? "",
+      photoUrl: speaker.photoUrl ?? "",
+      socialMedia: {
+        instagram: speaker.socialMedia.instagram ?? "",
+        linkedIn: speaker.socialMedia.linkedIn ?? "",
+      },
+      isVisible: speaker.isVisible,
+    });
+  }, [form, speaker]);
 
-  const submitHandler = (data: SpeakerFormType) => {
-    onSubmit(data);
-    if (!editing) {
-      form.reset({
-        id: uuidv4(),
-        name: "",
-        photo: "",
-        miniBio: "",
-        socialMedia: {
-          github: "",
-          instagram: "",
-          linkedIn: "",
-          twitter: "",
-          website: "",
-        },
-        company: "",
-        title: "",
-        tech: "",
-        topic: "",
-        content: "",
-      });
+  const submitHandler = async (data: SpeakerFormType) => {
+    setValidationError("");
+    await onSubmit({
+      ...data,
+      company: data.company || null,
+      title: data.title || null,
+      miniBio: data.miniBio || null,
+      photoUrl: data.photoUrl || null,
+      socialMedia: {
+        instagram: data.socialMedia.instagram || null,
+        linkedIn: data.socialMedia.linkedIn || null,
+      },
+    });
+    if (!editing) form.reset(emptyValues());
+  };
+
+  const uploadPhoto = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      try {
+        const url = await uploadImage(file, "speakers");
+        form.setValue("photoUrl", url, {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+      } catch {
+        // O hook expõe a mensagem de erro junto ao campo.
+      }
     }
   };
 
-  const handlePhotoFileChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      const url = await uploadImage(file, "speakers");
-      form.setValue("photo", url, { shouldValidate: true });
-    } catch (err) {
-      console.error("Erro ao enviar foto", err);
-    }
-  };
+  if (loadingImage) return <Loading />;
 
   return (
-    <>
-      {loadingImage ? (
-        <Loading />
-      ) : (
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(submitHandler)}
-            className="grid grid-cols-1 md:grid-cols-8 gap-6 p-4"
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(submitHandler, () => {
+          setValidationError(
+            "Revise os campos destacados antes de salvar o palestrante.",
+          );
+        })}
+        className="grid grid-cols-1 gap-6 p-4 md:grid-cols-8"
+      >
+        <FormField
+          name="name"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <FormItem className="md:col-span-4">
+              <FormLabel>Nome</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              {fieldState.error && <span>{fieldState.error.message}</span>}
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="photoUrl"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <FormItem className="md:col-span-4">
+              <FormLabel>Foto</FormLabel>
+              <FormControl>
+                <div className="flex items-center gap-2">
+                  <Input type="file" accept="image/*" onChange={uploadPhoto} />
+                  {field.value && (
+                    <Image
+                      src={field.value}
+                      alt="Preview"
+                      width={40}
+                      height={40}
+                      className="size-10 rounded-full object-cover"
+                    />
+                  )}
+                  <input type="hidden" {...field} />
+                </div>
+              </FormControl>
+              {fieldState.error && <span>{fieldState.error.message}</span>}
+              {uploadError && <span>{uploadError}</span>}
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="company"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem className="md:col-span-4">
+              <FormLabel>Empresa</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="title"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem className="md:col-span-4">
+              <FormLabel>Cargo</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="miniBio"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <FormItem className="md:col-span-8">
+              <FormLabel>Mini bio</FormLabel>
+              <FormControl>
+                <Textarea {...field} rows={5} />
+              </FormControl>
+              {fieldState.error && <span>{fieldState.error.message}</span>}
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="socialMedia.instagram"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <FormItem className="md:col-span-4">
+              <FormLabel>Instagram (URL)</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              {fieldState.error && <span>{fieldState.error.message}</span>}
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="socialMedia.linkedIn"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <FormItem className="md:col-span-4">
+              <FormLabel>LinkedIn (URL)</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              {fieldState.error && <span>{fieldState.error.message}</span>}
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="isVisible"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem className="flex items-center gap-2 md:col-span-8">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={(value) => field.onChange(value === true)}
+                />
+              </FormControl>
+              <FormLabel>Exibir palestrante no site</FormLabel>
+            </FormItem>
+          )}
+        />
+        <div className="md:col-span-8">
+          {validationError && (
+            <p role="alert" className="mb-3 text-devRed">
+              {validationError}
+            </p>
+          )}
+          {form.formState.errors.id && (
+            <p role="alert" className="mb-3 text-devRed">
+              {form.formState.errors.id.message}
+            </p>
+          )}
+          <Button
+            type="submit"
+            disabled={loading}
+            className="h-11 w-full rounded-xl !bg-devBlue-dark text-white"
           >
-            <FormField
-              name="name"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <FormItem className="col-span-4">
-                  <FormLabel>Nome</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  {fieldState.error && <span>{fieldState.error.message}</span>}
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              name="photo"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <FormItem className="col-span-4">
-                  <FormLabel>Foto</FormLabel>
-                  <FormControl>
-                    <div className="flex items-center gap-2">
-                      <Input
-                        id="picture"
-                        type="file"
-                        accept="image/*"
-                        onChange={handlePhotoFileChange}
-                      />
-
-                      {field.value && (
-                        <Image
-                          src={field.value}
-                          alt="Preview"
-                          width={32}
-                          height={32}
-                          style={{
-                            maxWidth: 32,
-                            maxHeight: 32,
-                            objectFit: "cover",
-                          }}
-                          className="rounded-full"
-                        />
-                      )}
-                      {/* Hidden input to keep photo URL in form state */}
-                      <input type="hidden" {...field} />
-                    </div>
-                  </FormControl>
-                  {fieldState.error && <span>{fieldState.error.message}</span>}
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              name="miniBio"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <FormItem className="col-span-8">
-                  <FormLabel>Mini Bio</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} rows={4} />
-                  </FormControl>
-                  {fieldState.error && <span>{fieldState.error.message}</span>}
-                </FormItem>
-              )}
-            />
-
-            <div className="col-span-1 md:col-span-8 grid grid-cols-5 gap-4">
-              <FormField
-                name="socialMedia.github"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>GitHub</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    {fieldState.error && (
-                      <span>{fieldState.error.message}</span>
-                    )}
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name="socialMedia.instagram"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>Instagram @</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    {fieldState.error && (
-                      <span>{fieldState.error.message}</span>
-                    )}
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name="socialMedia.linkedIn"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>LinkedIn</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    {fieldState.error && (
-                      <span>{fieldState.error.message}</span>
-                    )}
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name="socialMedia.twitter"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>Twitter</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    {fieldState.error && (
-                      <span>{fieldState.error.message}</span>
-                    )}
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name="socialMedia.website"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>Website</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    {fieldState.error && (
-                      <span>{fieldState.error.message}</span>
-                    )}
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              name="company"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <FormItem className="col-span-3">
-                  <FormLabel>Empresa</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  {fieldState.error && <span>{fieldState.error.message}</span>}
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              name="title"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <FormItem className="col-span-3">
-                  <FormLabel>Título</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  {fieldState.error && <span>{fieldState.error.message}</span>}
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              name="tech"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <FormItem className="col-span-2">
-                  <FormLabel>Tech</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  {fieldState.error && <span>{fieldState.error.message}</span>}
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              name="topic"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <FormItem className="col-span-8">
-                  <FormLabel>Tópico</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  {fieldState.error && <span>{fieldState.error.message}</span>}
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              name="content"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <FormItem className="col-span-1 md:col-span-8">
-                  <FormLabel>Conteúdo</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} rows={5} />
-                  </FormControl>
-                  {fieldState.error && <span>{fieldState.error.message}</span>}
-                </FormItem>
-              )}
-            />
-
-            <div className="col-span-8 md:col-span-8 flex gap-4 mt-4 justify-center">
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full text-white !bg-devBlue-dark rounded-xl border-1 border-devBlue-dark hover:border-white h-11"
-              >
-                {editing ? "Salvar alterações" : "Cadastrar"}
-              </Button>
-            </div>
-          </form>
-        </Form>
-      )}
-    </>
+            {editing ? "Salvar alterações" : "Cadastrar palestrante"}
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 }

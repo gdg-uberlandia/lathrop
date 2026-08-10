@@ -1,4 +1,4 @@
-import { Speaker, SpeakerTech } from "models/speaker";
+import { LegacySpeaker as Speaker, SpeakerTech } from "models/speaker";
 import Image from "next/image";
 import React from "react";
 import { Badge, Row } from "reactstrap";

@@ -1,5 +1,6 @@
 import clsx from "clsx";
-import { Speaker } from "models/speaker";
+import { PublicSpeaker } from "models/speaker";
+import { PublicTalk } from "models/talk";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -16,12 +17,18 @@ import styles from "./Speakers.module.css";
 const frames = [AvatarFrame1, AvatarFrame2, AvatarFrame3, AvatarFrame4];
 
 interface SpeakerCardProps {
-  speaker: Speaker;
+  speaker: PublicSpeaker;
   index: number;
+  talks: PublicTalk[];
   variant?: boolean;
 }
 
-const SpeakerCard = ({ speaker, index, variant = false }: SpeakerCardProps) => {
+const SpeakerCard = ({
+  speaker,
+  talks,
+  index,
+  variant = false,
+}: SpeakerCardProps) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [maxLength, setMaxLength] = useState(124);
 
@@ -50,7 +57,7 @@ const SpeakerCard = ({ speaker, index, variant = false }: SpeakerCardProps) => {
           <Image
             unoptimized
             className={styles.CardImage}
-            src={speaker.photo || AvatarNotFound}
+            src={speaker.photoUrl || AvatarNotFound}
             alt={`Foto ${speaker.name}`}
             height={200}
             width={200}
@@ -59,8 +66,6 @@ const SpeakerCard = ({ speaker, index, variant = false }: SpeakerCardProps) => {
             className={styles.AvatarOverlay}
             src={selectedFrame}
             alt="Moldura do avatar"
-            height={200}
-            width={200}
           />
         </div>
 
@@ -73,15 +78,17 @@ const SpeakerCard = ({ speaker, index, variant = false }: SpeakerCardProps) => {
             ) : (
               <>
                 {" "}
-                {speaker.tech}
-                {speaker.tech && speaker.company ? " - " : ""}
+                {speaker.company && " · "}
                 {speaker.company}
               </>
             )}
           </p>
-          {speaker.content && (
+          {talks.length > 0 && (
             <div className={styles.CardDescription}>
-              <TruncatedText text={speaker.topic} maxChars={maxLength} />
+              <TruncatedText
+                text={talks.map((talk) => talk.title).join(" · ")}
+                maxChars={maxLength}
+              />
               <svg
                 width="24"
                 height="24"
@@ -102,6 +109,7 @@ const SpeakerCard = ({ speaker, index, variant = false }: SpeakerCardProps) => {
       <SpeakerModal
         index={index}
         speaker={speaker}
+        talks={talks}
         modalOpen={modalOpen}
         modalToggle={modalToggle}
       />
