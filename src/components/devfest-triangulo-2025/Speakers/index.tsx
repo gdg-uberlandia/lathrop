@@ -4,6 +4,7 @@ import { PublicTalkSummary } from "models/talk";
 import configValues from "@/helpers/config";
 
 import SpeakerCard from "./SpeakerCard";
+import styles from "./Speakers.module.css";
 import clsx from "clsx";
 import { SectionHeading } from "../ui/SectionHeading";
 
@@ -50,7 +51,7 @@ export const Speakers = ({
             Conheça as mentes e os temas incríveis que subirão ao palco do
             {` ${configValues.name}`}.
           </p>
-          <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
+          <div className={styles.SpeakersList}>
             {speakers?.map((speaker, idx) => (
               <SpeakerCard
                 key={speaker.id}

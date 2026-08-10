@@ -55,7 +55,7 @@ const SpeakerCard = ({
     setLoadError("");
     try {
       const response = await fetch(
-        `/api/public/speakers/${encodeURIComponent(speaker.id)}`,
+        `/api/public/speakers/${encodeURIComponent(speaker.id)}/`,
       );
       if (!response.ok) throw new Error("Não foi possível carregar os dados.");
 

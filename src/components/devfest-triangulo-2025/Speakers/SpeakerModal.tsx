@@ -2,6 +2,7 @@ import { PublicSpeaker } from "models/speaker";
 import { PublicTalk } from "models/talk";
 import Image from "next/image";
 import React, { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 
 import { CloseMenu } from "@/assets/images/CloseMenu";
 import { Tag } from "@/components/devfest-triangulo-2025/Tag";
@@ -77,7 +78,7 @@ const SpeakerModal: React.FC<ModalProps> = ({
     </button>
   );
 
-  return (
+  return createPortal(
     <div
       className={styles.ModalBackdrop}
       role="presentation"
@@ -178,7 +179,8 @@ const SpeakerModal: React.FC<ModalProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 

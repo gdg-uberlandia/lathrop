@@ -8,8 +8,9 @@ import {
 import { db } from "@/utils/db/index";
 import { Timestamp } from "firebase-admin/firestore";
 
-const TALKS_COLLECTION = `talks${process.env.DEV_MODE ? "_test" : ""}`;
-const SPEAKERS_COLLECTION = `speakers${process.env.DEV_MODE ? "_test" : ""}`;
+const IS_DEV_MODE = process.env.DEV_MODE === "true";
+const TALKS_COLLECTION = `talks${IS_DEV_MODE ? "_test" : ""}`;
+const SPEAKERS_COLLECTION = `speakers${IS_DEV_MODE ? "_test" : ""}`;
 
 const parseTalk = (id: string, value: FirebaseFirestore.DocumentData) =>
   talkFieldsSchema.parse({

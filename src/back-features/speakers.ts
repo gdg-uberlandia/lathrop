@@ -8,7 +8,8 @@ import {
 import { db } from "@/utils/db/index";
 import { Timestamp } from "firebase-admin/firestore";
 
-const SPEAKERS_COLLECTION = `speakers${process.env.DEV_MODE ? "_test" : ""}`;
+const IS_DEV_MODE = process.env.DEV_MODE === "true";
+const SPEAKERS_COLLECTION = `speakers${IS_DEV_MODE ? "_test" : ""}`;
 
 const parseSpeaker = (id: string, value: FirebaseFirestore.DocumentData) => {
   return speakerFieldsSchema.parse({
@@ -86,7 +87,7 @@ export const updateSpeaker = async (input: SpeakerInput): Promise<Speaker> => {
 export const deleteSpeaker = async (speakerId: string): Promise<string> => {
   await getSpeakerById(speakerId);
   const linkedTalk = await db
-    .collection(`talks${process.env.DEV_MODE ? "_test" : ""}`)
+    .collection(`talks${IS_DEV_MODE ? "_test" : ""}`)
     .where("speakerIds", "array-contains", speakerId)
     .get();
 
