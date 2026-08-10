@@ -1,12 +1,9 @@
-import { getSchedule } from "back-features/schedule";
 import { getAllSpeakers } from "back-features/speakers";
 import { getAllTalks } from "back-features/talks";
-import { getAllSponsorLevels } from "back-features/sponsors";
 
 import { CountdownTimer } from "components/devfest-triangulo-2025/CountdownTimer";
 import { Header } from "components/devfest-triangulo-2025/Header";
 import { Presentation } from "components/devfest-triangulo-2025/Presentation";
-import { Schedule } from "models/schedule";
 import { PublicSpeaker, toPublicSpeaker } from "models/speaker";
 import { PublicTalk, toPublicTalk } from "models/talk";
 import styles from "styles/Home.module.css";
@@ -26,7 +23,6 @@ import Mic from "@/public/devfest-2025/icons/mic.svg";
 import Trophy from "@/public/devfest-2025/icons/trophy.svg";
 import configValues from "@/helpers/config";
 import { SponsorsSection } from "@/components/devfest-triangulo-2025/SponsorsSection";
-import { SponsorLevel } from "models/sponsor";
 
 import {
   devfest2023Images,
@@ -41,8 +37,6 @@ import { HeroSection } from "@/components/hero-section";
 
 interface HomePageProps {
   initialSpeakers: Array<PublicSpeaker>;
-  initialSponsors: Array<SponsorLevel>;
-  initialSchedule: Array<Schedule>;
   initialTalks: Array<PublicTalk>;
 }
 
@@ -51,12 +45,7 @@ const sectionClassName =
 const deferredSectionClassName =
   "[content-visibility:auto] [contain-intrinsic-size:800px]";
 
-const Home = ({
-  initialSpeakers,
-  initialSponsors,
-  initialSchedule,
-  initialTalks,
-}: HomePageProps) => {
+const Home = ({ initialSpeakers, initialTalks }: HomePageProps) => {
   return (
     <>
       <ErrorBoundary>
@@ -206,10 +195,8 @@ const Home = ({
 
 export async function getServerSideProps() {
   try {
-    const [speakers, sponsors, schedule, talks] = await Promise.all([
+    const [speakers, talks] = await Promise.all([
       getAllSpeakers(),
-      getAllSponsorLevels(),
-      getSchedule(),
       getAllTalks(),
     ]);
 
@@ -217,8 +204,6 @@ export async function getServerSideProps() {
       props: {
         initialSpeakers: speakers.map(toPublicSpeaker),
         initialTalks: talks.map(toPublicTalk),
-        initialSponsors: sponsors,
-        initialSchedule: schedule,
       },
     };
   } catch (error) {
@@ -227,8 +212,6 @@ export async function getServerSideProps() {
       props: {
         initialSpeakers: [],
         initialTalks: [],
-        initialSponsors: [],
-        initialSchedule: [],
       },
     };
   }
