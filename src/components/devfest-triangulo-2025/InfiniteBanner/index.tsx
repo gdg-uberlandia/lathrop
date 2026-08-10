@@ -61,18 +61,15 @@ export const InfiniteBanner = ({
                 </span>
               )}
               {item.type === "image" && (
-                <Image
-                  src={item.src}
-                  alt={item.alt ?? ""}
-                  width={300}
-                  height={100}
-                  style={{
-                    objectFit: "contain",
-                    width: "100%",
-                    maxWidth: "300px",
-                    height: "auto",
-                  }}
-                />
+                <div className={styles.InfiniteBannerImage}>
+                  <Image
+                    src={item.src}
+                    alt={item.alt ?? ""}
+                    fill
+                    sizes="300px"
+                    style={{ objectFit: "contain" }}
+                  />
+                </div>
               )}
               {item.type === "video" && (
                 <video

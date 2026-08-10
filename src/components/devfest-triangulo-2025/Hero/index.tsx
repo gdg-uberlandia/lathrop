@@ -20,7 +20,7 @@ export const Hero = () => {
             <Image
               alt="Imagem do DevFest triângulo de 2024"
               src={SidePhoto}
-              priority={true}
+              loading="eager"
               style={{
                 objectFit: "contain",
                 maxWidth: "100%",

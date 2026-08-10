@@ -18,7 +18,9 @@ export const Footer = () => {
     <section className={styles.Footer}>
       <Image
         alt="Um boneco amarelo estilizado, que lembra o logotipo do sistema operacional Android, acena com a mão esquerda levantada. O boneco tem um corpo cilíndrico, uma cabeça arredondada com duas pequenas antenas e duas pernas curtas e grossas. Há algumas manchas texturizadas em sua superfície, dando a impressão de ser feito de queijo. O boneco veste uma capa preta com o interior roxo e em seu peito há um símbolo de uma abóbara de halloween. O fundo da imagem é transparente, indicado pelo padrão quadriculado"
-        src={AndroidCheeseHalloween}
+        src={`${AndroidCheeseHalloween.src}?footer`}
+        width={AndroidCheeseHalloween.width}
+        height={AndroidCheeseHalloween.height}
         className={styles.Media}
       />
 

@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { useEffect } from "react";
 
 import Instagram from "@/public/devfest-2025/icons/instagram.svg";
 import LeftBracket from "@/public/devfest-2025/left-bracket.svg";
@@ -10,41 +9,6 @@ import styles from "./PastEvent.module.css";
 interface PastEventProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const PastEvent = ({ className, ...rest }: PastEventProps) => {
-  const youtubeVideoId = "QCYaPiFo_4k";
-  useEffect(() => {
-    const isMobile = /iPhone|Android|Mobile/i.test(navigator.userAgent);
-
-    function createPlayer() {
-      new (window as any).YT.Player("youtube-player", {
-        videoId: youtubeVideoId,
-        events: {
-          onStateChange: (event: any) => {
-            if (event.data === 1 && isMobile) {
-              const iframe = event.target.getIframe();
-              if (iframe.requestFullscreen) {
-                iframe.requestFullscreen();
-              } else if ((iframe as any).webkitRequestFullscreen) {
-                (iframe as any).webkitRequestFullscreen();
-              } else if ((iframe as any).mozRequestFullScreen) {
-                (iframe as any).mozRequestFullScreen();
-              } else if ((iframe as any).msRequestFullscreen) {
-                (iframe as any).msRequestFullscreen();
-              }
-            }
-          },
-        },
-      });
-    }
-
-    if (!(window as any).YT) {
-      const tag = document.createElement("script");
-      tag.src = "https://www.youtube.com/iframe_api";
-      document.body.appendChild(tag);
-      (window as any).onYouTubeIframeAPIReady = createPlayer;
-    } else {
-      createPlayer();
-    }
-  }, [youtubeVideoId]);
   return (
     <section className={className} {...rest}>
       <div className={styles.FullRow}>
@@ -52,7 +16,13 @@ export const PastEvent = ({ className, ...rest }: PastEventProps) => {
           <div className={styles.CustomLeftBracket}>
             <Image src={LeftBracket} alt="" />
           </div>
-          <div id="youtube-player" className={styles.IFrame}></div>
+          <iframe
+            className={styles.IFrame}
+            src="https://www.youtube.com/embed/QCYaPiFo_4k?modestbranding=1&rel=0"
+            title="Como foi o DevFest Triângulo"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+          />
           <div className={styles.CustomRightBracket}>
             <Image src={RightBracket} alt="" />
           </div>
