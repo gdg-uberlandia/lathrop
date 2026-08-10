@@ -34,16 +34,15 @@ import { Faq } from "@/components/devfest-triangulo-2025/Faq";
 import { Tickets } from "@/components/devfest-triangulo-2025/Tickets";
 import { Speakers } from "@/components/devfest-triangulo-2025/Speakers";
 import { HeroSection } from "@/components/hero-section";
+import {
+  deferredHomepageSectionClassName,
+  homepageSectionClassName,
+} from "@/components/devfest-triangulo-2025/ui/section-styles";
 
 interface HomePageProps {
   initialSpeakers: Array<PublicSpeaker>;
   initialTalks: Array<PublicTalk>;
 }
-
-const sectionClassName =
-  "mx-auto mt-24 w-full max-w-7xl scroll-mt-24 px-4 sm:px-6 lg:mt-40 lg:px-8";
-const deferredSectionClassName =
-  "[content-visibility:auto] [contain-intrinsic-size:800px]";
 
 const Home = ({ initialSpeakers, initialTalks }: HomePageProps) => {
   return (
@@ -87,7 +86,7 @@ const Home = ({ initialSpeakers, initialTalks }: HomePageProps) => {
         com colaboração, diversidade e muita energia criativa."
             subtitle="Se você ama tecnologia, adora aprender e quer fazer parte de algo
         transformador, esse evento é pra você!"
-            className={sectionClassName}
+            className={homepageSectionClassName}
             id="about"
           />
 
@@ -106,7 +105,7 @@ const Home = ({ initialSpeakers, initialTalks }: HomePageProps) => {
             id="infinite-banner"
           />
           <CountdownTimer
-            className={`${sectionClassName} ${deferredSectionClassName}`}
+            className={deferredHomepageSectionClassName}
             id="countdown"
           />
 
@@ -124,13 +123,11 @@ const Home = ({ initialSpeakers, initialTalks }: HomePageProps) => {
             }
             description={`O ${configValues.lastEvent}, em Uberlândia, foi um verdadeiro marco e
           mostrou o poder da comunidade em ação:`}
-            className={`${sectionClassName} ${deferredSectionClassName}`}
+            className={deferredHomepageSectionClassName}
             id="past-event"
           ></Presentation>
 
-          <PastEvent
-            className={`${sectionClassName} ${deferredSectionClassName}`}
-          />
+          <PastEvent className={deferredHomepageSectionClassName} />
 
           <Presentation
             title={
@@ -141,11 +138,11 @@ const Home = ({ initialSpeakers, initialTalks }: HomePageProps) => {
             subtitle="O maior DevFest da América Latina está chegando, e o melhor é que você
         pode fazer parte disso tudo. Aprendizado, conexão, experiências únicas e
         muita inovação te esperam."
-            className={`${sectionClassName} ${deferredSectionClassName}`}
+            className={deferredHomepageSectionClassName}
             id="registration"
           ></Presentation>
 
-          <div className={`${sectionClassName} ${deferredSectionClassName}`}>
+          <div className={deferredHomepageSectionClassName}>
             <Tickets />
           </div>
 
@@ -166,7 +163,7 @@ const Home = ({ initialSpeakers, initialTalks }: HomePageProps) => {
           <Speakers
             speakers={initialSpeakers}
             talks={initialTalks}
-            className={`${sectionClassName} ${deferredSectionClassName}`}
+            className={deferredHomepageSectionClassName}
           />
 
           <InfiniteBanner
@@ -186,17 +183,14 @@ const Home = ({ initialSpeakers, initialTalks }: HomePageProps) => {
           />
 
           <SponsorsSection
-            className={`${sectionClassName} ${deferredSectionClassName}`}
+            className={deferredHomepageSectionClassName}
             sponsors={[]}
             id="sponsors"
           />
 
           {/* <EventLocation className={styles.Section} id="place" /> */}
 
-          <Faq
-            className={`${sectionClassName} ${deferredSectionClassName}`}
-            id="faq"
-          />
+          <Faq className={deferredHomepageSectionClassName} id="faq" />
         </main>
       </ErrorBoundary>
     </>

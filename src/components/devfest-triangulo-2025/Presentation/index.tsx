@@ -2,7 +2,8 @@ import ToolTip from "../ToolTip";
 import { ReactNode } from "react";
 import clsx from "clsx";
 import { Tag } from "../Tag";
-import { primaryCtaClassName } from "../primary-cta";
+import { PrimaryCta } from "../ui/PrimaryCta";
+import { SectionHeading } from "../ui/SectionHeading";
 
 type Tag = { icon?: string; text: string };
 
@@ -34,14 +35,9 @@ export const Presentation = ({
     if (!button) return null;
 
     return (
-      <a
-        className={primaryCtaClassName}
-        href={button.href}
-        target="_blank"
-        rel="noreferrer"
-      >
+      <PrimaryCta href={button.href} target="_blank" rel="noreferrer">
         {button.text}
-      </a>
+      </PrimaryCta>
     );
   };
 
@@ -53,9 +49,7 @@ export const Presentation = ({
       )}
       {...rest}
     >
-      <h2 className="max-w-4xl text-balance text-3xl font-normal leading-tight sm:text-4xl lg:text-5xl [&_span]:text-devBlue-dark">
-        {title}
-      </h2>
+      <SectionHeading>{title}</SectionHeading>
       {description && (
         <p className="max-w-3xl text-pretty text-base leading-relaxed text-white/70 sm:text-lg">
           {description}

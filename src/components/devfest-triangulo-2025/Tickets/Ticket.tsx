@@ -5,7 +5,7 @@ import SellIcon from "@/public/icons/sell.svg";
 import TicketBackground from "@/assets/images/ticket.svg";
 import configValues from "helpers/config";
 import clsx from "clsx";
-import { primaryCtaClassName } from "../primary-cta";
+import { PrimaryCta } from "../ui/PrimaryCta";
 
 interface TicketProps {
   name: string;
@@ -125,19 +125,15 @@ export const Ticket = ({
           )}
         />
 
-        <a
+        <PrimaryCta
           href={configValues.eventLinkRegistrationUrl}
           target="_blank"
-          className={clsx(
-            primaryCtaClassName,
-            "w-[194px]",
-            soldOut && "pointer-events-none bg-devGray hover:ring-0",
-          )}
-          aria-disabled={soldOut}
+          className="w-[194px]"
+          disabled={soldOut}
           rel="noreferrer"
         >
           {soldOut ? "Esgotado" : "Comprar ingressos"}
-        </a>
+        </PrimaryCta>
       </div>
     </article>
   );

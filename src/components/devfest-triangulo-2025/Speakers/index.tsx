@@ -5,6 +5,7 @@ import configValues from "@/helpers/config";
 
 import SpeakerCard from "./SpeakerCard";
 import clsx from "clsx";
+import { SectionHeading } from "../ui/SectionHeading";
 
 const tags: string[] = [
   "Arquitetura",
@@ -38,9 +39,9 @@ export const Speakers = ({
         className,
       )}
     >
-      <h2 className="max-w-4xl text-balance text-3xl font-normal leading-tight sm:text-4xl lg:text-5xl [&_span]:text-devBlue-dark">
+      <SectionHeading>
         <span>Quem</span> inspira o presente e constrói o futuro, está aqui
-      </h2>
+      </SectionHeading>
 
       {speakers.length ? (
         <>
