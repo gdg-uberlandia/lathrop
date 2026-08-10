@@ -1,9 +1,8 @@
 import Image from "next/image";
-import styles from "./Ticket.module.css";
 
 import MiniCheese from "@/public/devfest-2025/mini-cheese.svg";
 import SellIcon from "@/public/icons/sell.svg";
-import TShirtIcon from "@/public/icons/tshirt.svg";
+import TicketBackground from "@/assets/images/ticket.svg";
 import configValues from "helpers/config";
 import clsx from "clsx";
 import { primaryCtaClassName } from "../primary-cta";
@@ -30,98 +29,116 @@ export const Ticket = ({
   const formattedPrice = price ? `R$${price},00` : "";
 
   return (
-    <>
-      <article className={styles.TicketWrapper}>
-        <header className="d-flex align-items-center justify-content-center gap-3 mb-3">
-          <section className={styles.Title}>
-            <Image
-              src={MiniCheese}
-              alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
-            />
-            <p>{name}</p>
-          </section>
-          {soldOut ? (
-            <span className={styles.PriceValueSoldOut}>Esgotado</span>
-          ) : (
-            <section className={styles.Price}>
-              {batch && (
-                <span className={styles.PriceBatch}>{batch}º Lote</span>
-              )}
-              {priceBadge && (
-                <>
-                  <div className="rounded-full bg-white/10 py-1 px-1 text-2xl w-40 mr-2">
-                    {priceBadge}
-                  </div>
-                </>
-              )}
-              <span
-                className={clsx(
-                  styles.PriceValue,
-                  soldOut ? styles.SoldOutPrice : "",
-                )}
-              >
-                {formattedPrice}
+    <article className="relative w-full min-w-[280px] max-w-[410px] overflow-hidden rounded-lg px-[30px] py-[82px] text-xs sm:px-10">
+      <Image
+        src={TicketBackground}
+        alt=""
+        fill
+        sizes="(min-width: 460px) 410px, 100vw"
+        className="pointer-events-none object-fill"
+      />
+
+      <div className="relative z-10 mb-3 flex flex-col items-center justify-center gap-2">
+        <div className="flex items-center gap-4">
+          <Image
+            src={MiniCheese}
+            alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
+          />
+          <p className="text-2xl">{name}</p>
+        </div>
+        {soldOut ? (
+          <span className="text-[2.5rem] leading-[3.75rem] text-devGray">
+            Esgotado
+          </span>
+        ) : (
+          <div className="mb-2 flex items-center">
+            {batch && (
+              <span className="mr-2 rounded-full bg-devGray px-4 py-2 text-sm text-devWhite-ice">
+                {batch}º Lote
               </span>
-              {bestValue && (
-                <Image
-                  className={clsx(
-                    styles.SellIcon,
-                    soldOut ? styles.SoldOutSellIcon : "",
-                  )}
-                  alt=""
-                  src={SellIcon}
-                  height={44}
-                  width={44}
-                  style={{
-                    objectFit: "cover",
-                    maxWidth: "100%",
-                    height: "auto",
-                  }}
-                />
+            )}
+            {priceBadge && (
+              <div className="mr-2 w-40 rounded-full bg-white/10 px-1 py-1 text-2xl">
+                {priceBadge}
+              </div>
+            )}
+            <span
+              className={clsx(
+                "bg-devfest-gradient bg-clip-text text-[2.5rem] leading-[3.75rem] text-transparent",
+                soldOut && "bg-none text-devGray",
               )}
-            </section>
+            >
+              {formattedPrice}
+            </span>
+            {bestValue && (
+              <Image
+                className={clsx(
+                  "-ml-[5px] h-auto max-w-full rounded-full border-2 border-devGray-dark bg-devGreen-dark p-2",
+                  soldOut && "bg-devGray",
+                )}
+                alt=""
+                src={SellIcon}
+                height={44}
+                width={44}
+              />
+            )}
+          </div>
+        )}
+
+        <ul
+          className={clsx(
+            "mb-6 flex w-full list-none flex-col gap-4 p-0 text-left text-lg",
+            soldOut && "text-white/40",
           )}
+        >
+          {[
+            "Café da manhã",
+            "Lanche da tarde",
+            "Acesso aos palcos",
+            "Acesso às empresas",
+            "Brindes",
+            "Certificado de participação",
+          ].map((benefit) => (
+            <li
+              key={benefit}
+              className="relative pl-[22px] before:absolute before:left-0 before:top-[7px] before:size-3 before:rounded-full before:bg-devfest-gradient before:content-['']"
+            >
+              {benefit}
+            </li>
+          ))}
+          {withShirt && (
+            <li
+              className={clsx(
+                "relative pl-[22px] before:absolute before:left-0 before:top-[7px] before:size-3 before:rounded-full before:bg-devfest-gradient before:content-['']",
+                !soldOut && "font-bold text-devYellow-dark",
+              )}
+            >
+              Camiseta oficial do evento
+            </li>
+          )}
+        </ul>
 
-          {/* {withShirt && (
-            <div className={styles.Shirt}>
-              <Image src={TShirtIcon} alt="" />
-              Inclui a camiseta oficial
-            </div>
-          )} */}
+        <div
+          className={clsx(
+            "mb-2 w-full border-t-2 border-dashed border-devGray",
+            !withShirt && "mt-[43px]",
+          )}
+        />
 
-          <ul
-            className={clsx(soldOut ? styles.BenefitsSoldOut : styles.Benefits)}
-          >
-            <li>Café da manhã</li>
-            <li>Lanche da tarde</li>
-            <li>Acesso aos palcos</li>
-            <li>Acesso às empresas</li>
-            <li>Brindes</li>
-            <li>Certificado de participação</li>
-            {withShirt && (
-              <li className={clsx(soldOut ? "" : "font-bold text-yellow-500")}>
-                Camiseta oficial do evento
-              </li>
-            )}
-          </ul>
-
-          <div
-            className={clsx(styles.Separator, withShirt ? "" : styles.NoShirt)}
-          ></div>
-
-          <a
-            href={configValues.eventLinkRegistrationUrl}
-            target="_blank"
-            className={clsx(
-              primaryCtaClassName,
-              "w-[194px]",
-              soldOut ? styles.TicketButtonDisabled : "",
-            )}
-          >
-            {soldOut ? "Esgotado" : "Comprar ingressos"}
-          </a>
-        </header>
-      </article>
-    </>
+        <a
+          href={configValues.eventLinkRegistrationUrl}
+          target="_blank"
+          className={clsx(
+            primaryCtaClassName,
+            "w-[194px]",
+            soldOut && "pointer-events-none bg-devGray hover:ring-0",
+          )}
+          aria-disabled={soldOut}
+          rel="noreferrer"
+        >
+          {soldOut ? "Esgotado" : "Comprar ingressos"}
+        </a>
+      </div>
+    </article>
   );
 };
