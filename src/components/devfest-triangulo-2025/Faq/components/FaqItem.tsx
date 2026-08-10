@@ -15,7 +15,7 @@ export const FaqItem = ({ title, content }: FaqItemProps) => {
     <article
       className={clsx(
         "rounded-2xl border p-6 transition-colors duration-200 sm:px-16 motion-reduce:transition-none",
-        expanded ? "border-devBlue-dark" : "border-devGray",
+        expanded ? "!border-devBlue-dark" : "!border-devGray",
       )}
     >
       <div className="flex items-center justify-between gap-4 text-devWhite-ice">

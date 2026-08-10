@@ -17,8 +17,8 @@ export const Tag = ({ children, icon }: TagProps) => {
     >
       <div
         className={clsx(
-          "inline-flex min-h-9 items-center gap-2.5 bg-black text-sm leading-none text-white/80 sm:text-base",
-          icon ? "rounded-[7px] px-6 py-4" : "rounded-full px-4 py-2",
+          "inline-flex min-h-2 items-center gap-2.5 bg-black text-sm leading-none text-white/80 sm:text-base",
+          icon ? "rounded-[7px] px-6 py-3" : "rounded-full px-4 py-2",
         )}
       >
         {icon && <Image src={icon} alt="" />}
