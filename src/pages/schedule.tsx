@@ -1,6 +1,6 @@
 import styles from "../styles/Schedule.module.css";
 
-import { Speaker } from "@/models/speaker";
+import { Speaker } from "@/contracts/speaker";
 
 import { Header } from "@/components/devfest-triangulo-2025/Header";
 import BaseLayout from "@/layouts/base-layout";

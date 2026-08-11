@@ -15,8 +15,8 @@ import {
   SelectValue,
 } from "@/assets/components/ui/select";
 import { Textarea } from "@/assets/components/ui/textarea";
-import { Speaker } from "@/models/speaker";
-import { Talk, TalkInput } from "@/models/talk";
+import { Speaker } from "@/contracts/speaker";
+import { Talk, TalkInput } from "@/contracts/talk";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";

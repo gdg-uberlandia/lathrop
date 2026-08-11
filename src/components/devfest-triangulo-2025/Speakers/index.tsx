@@ -1,5 +1,5 @@
-import { PublicSpeakerSummary } from "@/models/speaker";
-import { PublicTalkSummary } from "@/models/talk";
+import { PublicSpeakerSummary } from "@/contracts/speaker";
+import { PublicTalkSummary } from "@/contracts/talk";
 
 import configValues from "@/helpers/config";
 

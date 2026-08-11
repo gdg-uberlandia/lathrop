@@ -2,7 +2,7 @@ import React from "react";
 import { Col, Container, Row } from "reactstrap";
 import ScheduleCard from "./schedule-card";
 import ScheduleTime from "./schedule-time";
-import { Speaker } from "@/models/speaker";
+import { Speaker } from "@/contracts/speaker";
 
 import { Schedule, Speeches, SpeechesPath } from "@/models/schedule";
 import styles from "./Schedule.module.css";

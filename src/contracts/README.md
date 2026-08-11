@@ -19,8 +19,8 @@ correspondente no repositório da Pokedex:
 | Palestrante       | `modules/talks/speaker.schema.ts`     |
 | Palestra          | `modules/talks/talk.schema.ts`        |
 
-Palestrantes e palestras ainda são exportados de `src/models`, mas seguem o
-mesmo formato dos contratos da Pokedex.
+Palestrantes e palestras possuem contratos locais em `src/contracts`, seguindo
+o mesmo formato dos contratos da Pokedex.
 
 ## Processo de atualização
 

@@ -1,7 +1,7 @@
 import { getSpeakerById } from "@/back-features/speakers";
 import { getAllTalks } from "@/back-features/talks";
-import { toPublicSpeaker } from "@/models/speaker";
-import { toPublicTalk } from "@/models/talk";
+import { toPublicSpeaker } from "@/contracts/speaker";
+import { toPublicTalk } from "@/contracts/talk";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(

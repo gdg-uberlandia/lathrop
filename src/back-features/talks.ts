@@ -1,16 +1,18 @@
 import { CURRENT_EVENT_ID } from "@/helpers/event";
 import {
   Talk,
-  TalkInput,
+  TalkCreate,
+  TalkUpdate,
+  talkCreateSchema,
   talkFieldsSchema,
-  talkInputSchema,
-} from "@/models/talk";
+  talkUpdateSchema,
+} from "@/contracts/talk";
 import { db } from "@/utils/db/index";
+import { getFirestoreCollectionName } from "@/utils/db/collection-name";
 import { Timestamp } from "firebase-admin/firestore";
 
-const IS_DEV_MODE = process.env.DEV_MODE === "true";
-const TALKS_COLLECTION = `talks${IS_DEV_MODE ? "_test" : ""}`;
-const SPEAKERS_COLLECTION = `speakers${IS_DEV_MODE ? "_test" : ""}`;
+const TALKS_COLLECTION = getFirestoreCollectionName("talks");
+const SPEAKERS_COLLECTION = getFirestoreCollectionName("speakers");
 
 const parseTalk = (id: string, value: FirebaseFirestore.DocumentData) =>
   talkFieldsSchema.parse({
@@ -59,8 +61,8 @@ export const getTalkById = async (talkId: string): Promise<Talk> => {
   return talk;
 };
 
-export const createTalk = async (input: TalkInput): Promise<Talk> => {
-  const data = talkInputSchema.parse(input);
+export const createTalk = async (input: TalkCreate): Promise<Talk> => {
+  const data = talkCreateSchema.parse(input);
   await validateSpeakers(data.speakerIds);
   const ref = db.collection(TALKS_COLLECTION).doc(data.id);
   if ((await ref.get()).exists) {
@@ -77,8 +79,8 @@ export const createTalk = async (input: TalkInput): Promise<Talk> => {
   return talk;
 };
 
-export const updateTalk = async (input: TalkInput): Promise<Talk> => {
-  const data = talkInputSchema.parse(input);
+export const updateTalk = async (input: TalkUpdate): Promise<Talk> => {
+  const data = talkUpdateSchema.parse(input);
   const current = await getTalkById(data.id);
   await validateSpeakers(data.speakerIds);
   const talk = talkFieldsSchema.parse({

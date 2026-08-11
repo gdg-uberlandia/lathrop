@@ -1,6 +1,6 @@
 import clsx from "clsx";
-import { PublicSpeaker, PublicSpeakerSummary } from "@/models/speaker";
-import { PublicTalk, PublicTalkSummary } from "@/models/talk";
+import { PublicSpeaker, PublicSpeakerSummary } from "@/contracts/speaker";
+import { PublicTalk, PublicTalkSummary } from "@/contracts/talk";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useState } from "react";

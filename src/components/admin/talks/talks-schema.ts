@@ -1,4 +1,4 @@
-import { talkInputSchema } from "@/models/talk";
+import { talkInputSchema } from "@/contracts/talk";
 import { z } from "zod";
 
 export const talkFormSchema = talkInputSchema;

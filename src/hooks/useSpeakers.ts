@@ -1,4 +1,4 @@
-import { Speaker, SpeakerInput } from "@/models/speaker";
+import { Speaker, SpeakerInput } from "@/contracts/speaker";
 import { useCallback, useEffect, useState } from "react";
 import {
   createSpeakerAPI,

@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import { Speaker } from "@/models/speaker";
+import { Speaker } from "@/contracts/speaker";
 import Image from "next/image";
 import React, { useState } from "react";
 

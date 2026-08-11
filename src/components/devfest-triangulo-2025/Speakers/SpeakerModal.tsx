@@ -1,5 +1,5 @@
-import { PublicSpeaker } from "@/models/speaker";
-import { PublicTalk } from "@/models/talk";
+import { PublicSpeaker } from "@/contracts/speaker";
+import { PublicTalk } from "@/contracts/talk";
 import Image from "next/image";
 import React, { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";

@@ -7,7 +7,7 @@ import { faInstagram, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import styles from "./styles/Speakers.module.css";
-import { Speaker } from "@/models/speaker";
+import { Speaker } from "@/contracts/speaker";
 
 interface ModalProps {
   modalOpen: boolean;

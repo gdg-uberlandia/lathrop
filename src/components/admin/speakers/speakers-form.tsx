@@ -11,7 +11,7 @@ import { Input } from "@/assets/components/ui/input";
 import { Textarea } from "@/assets/components/ui/textarea";
 import Loading from "@/components/admin/loading-overlay";
 import { useImageUpload } from "@/hooks/useImageUpload";
-import { Speaker, SpeakerInput } from "@/models/speaker";
+import { Speaker, SpeakerInput } from "@/contracts/speaker";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useEffect, useState } from "react";

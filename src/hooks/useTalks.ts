@@ -1,4 +1,4 @@
-import { Talk, TalkInput } from "@/models/talk";
+import { Talk, TalkInput } from "@/contracts/talk";
 import {
   createTalkAPI,
   deleteTalkAPI,

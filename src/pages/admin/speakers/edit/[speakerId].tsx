@@ -1,7 +1,7 @@
 import Loading from "@/components/admin/loading-overlay";
 import { SpeakersForm } from "@/components/admin/speakers/speakers-form";
 import { useSpeakers } from "@/hooks/useSpeakers";
-import { Speaker } from "@/models/speaker";
+import { Speaker } from "@/contracts/speaker";
 import AdminLayout from "@/layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";

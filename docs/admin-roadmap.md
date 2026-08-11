@@ -70,11 +70,11 @@ automaticamente durante o build ou deploy de hosting.
 
 ### 3. Contratos locais
 
-- [ ] Mover os contratos de palestrantes e palestras para `src/contracts`.
-- [ ] Criar schemas separados de documento, criação e atualização.
+- [x] Mover os contratos de palestrantes e palestras para `src/contracts`.
+- [x] Criar schemas separados de documento, criação e atualização.
 - [ ] Adicionar fixtures válidas para cada entidade.
 - [ ] Adicionar testes de compatibilidade e regras relacionais.
-- [ ] Centralizar a resolução do nome das coleções por ambiente.
+- [x] Centralizar a resolução do nome das coleções por ambiente.
 - [ ] Documentar o processo de sincronização com a Pokedex.
 
 Critério de aceite: nenhum endpoint grava um documento sem validar seu contrato.

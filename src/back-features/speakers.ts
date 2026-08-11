@@ -1,15 +1,18 @@
 import { CURRENT_EVENT_ID } from "@/helpers/event";
 import {
   Speaker,
-  SpeakerInput,
+  SpeakerCreate,
+  SpeakerUpdate,
+  speakerCreateSchema,
   speakerFieldsSchema,
-  speakerInputSchema,
-} from "@/models/speaker";
+  speakerUpdateSchema,
+} from "@/contracts/speaker";
 import { db } from "@/utils/db/index";
+import { getFirestoreCollectionName } from "@/utils/db/collection-name";
 import { Timestamp } from "firebase-admin/firestore";
 
-const IS_DEV_MODE = process.env.DEV_MODE === "true";
-const SPEAKERS_COLLECTION = `speakers${IS_DEV_MODE ? "_test" : ""}`;
+const SPEAKERS_COLLECTION = getFirestoreCollectionName("speakers");
+const TALKS_COLLECTION = getFirestoreCollectionName("talks");
 
 const parseSpeaker = (id: string, value: FirebaseFirestore.DocumentData) => {
   return speakerFieldsSchema.parse({
@@ -37,8 +40,8 @@ export const getAllSpeakers = async (): Promise<Speaker[]> => {
     .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
 };
 
-export const createSpeaker = async (input: SpeakerInput): Promise<Speaker> => {
-  const data = speakerInputSchema.parse(input);
+export const createSpeaker = async (input: SpeakerCreate): Promise<Speaker> => {
+  const data = speakerCreateSchema.parse(input);
   const docRef = db.collection(SPEAKERS_COLLECTION).doc(data.id);
   const existing = await docRef.get();
 
@@ -71,8 +74,8 @@ export const getSpeakerById = async (speakerId: string): Promise<Speaker> => {
   return speaker;
 };
 
-export const updateSpeaker = async (input: SpeakerInput): Promise<Speaker> => {
-  const data = speakerInputSchema.parse(input);
+export const updateSpeaker = async (input: SpeakerUpdate): Promise<Speaker> => {
+  const data = speakerUpdateSchema.parse(input);
   const current = await getSpeakerById(data.id);
   const speaker = speakerFieldsSchema.parse({
     ...data,
@@ -87,7 +90,7 @@ export const updateSpeaker = async (input: SpeakerInput): Promise<Speaker> => {
 export const deleteSpeaker = async (speakerId: string): Promise<string> => {
   await getSpeakerById(speakerId);
   const linkedTalk = await db
-    .collection(`talks${IS_DEV_MODE ? "_test" : ""}`)
+    .collection(TALKS_COLLECTION)
     .where("speakerIds", "array-contains", speakerId)
     .get();
 

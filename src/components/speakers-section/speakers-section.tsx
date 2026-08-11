@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import { Speaker } from "@/models/speaker";
+import { Speaker } from "@/contracts/speaker";
 import React, { ReactNode, useEffect, useState } from "react";
 import {
   Col,
