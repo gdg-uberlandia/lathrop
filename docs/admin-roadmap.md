@@ -55,15 +55,18 @@ O papel é administrado no documento de perfil. O site não cria perfis nem alte
 
 ### 2. Regras do Firestore
 
-- [ ] Remover a regra global de escrita para usuários autenticados.
-- [ ] Bloquear escrita direta nos catálogos administrativos.
-- [ ] Permitir somente operações necessárias aos participantes.
-- [ ] Restringir documentos por `eventId` quando aplicável.
-- [ ] Proteger sorteios, recompensas e operações.
+- [x] Remover a regra global de escrita para usuários autenticados.
+- [x] Bloquear escrita direta nos catálogos administrativos.
+- [x] Manter somente a leitura pública do sinal mínimo do telão.
+- [x] Proteger sorteios, recompensas e operações.
 - [ ] Testar as regras com usuário anônimo, participante e administrador.
 
 Critério de aceite: os catálogos só podem ser alterados pelo servidor usando o
 Firebase Admin SDK.
+
+As regras foram alinhadas à matriz de acesso documentada pela Pokedex. A
+publicação no Firebase é uma etapa operacional separada e não acontece
+automaticamente durante o build ou deploy de hosting.
 
 ### 3. Contratos locais
 
