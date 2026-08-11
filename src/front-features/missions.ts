@@ -1,4 +1,4 @@
-import { Mission } from "@/models/mission";
+import { Mission, MissionInput } from "@/models/mission";
 import axios from "axios";
 import { getAuth } from "firebase/auth";
 import { server } from "helpers/config";
@@ -23,7 +23,9 @@ export const getMissionsAPI = async (): Promise<Mission[]> => {
   }
 };
 
-export const createMissionAPI = async (mission: Mission): Promise<Mission> => {
+export const createMissionAPI = async (
+  mission: MissionInput,
+): Promise<Mission> => {
   const token = await getToken();
   try {
     const res = await axios.post(`${server}/api/v1/missions`, mission, {
@@ -57,7 +59,9 @@ export const readMissionAPI = async ({
   }
 };
 
-export const updateMissionAPI = async (mission: Mission): Promise<Mission> => {
+export const updateMissionAPI = async (
+  mission: MissionInput,
+): Promise<Mission> => {
   const token = await getToken();
   try {
     const res = await axios.put(

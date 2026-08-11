@@ -1,12 +1,12 @@
 import { deleteTalk, getTalkById, updateTalk } from "@/back-features/talks";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { requireAuth } from "@/utils/api/require-auth";
+import { requireAdmin } from "@/utils/api/require-admin";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (!(await requireAuth(req, res))) return;
+  if (!(await requireAdmin(req, res))) return;
   const talkId = typeof req.query.talkId === "string" ? req.query.talkId : null;
   if (!talkId) return res.status(400).json({ error: "talkId não informado" });
   try {

@@ -1,7 +1,7 @@
 import Loading from "@/components/admin/loading-overlay";
 import { MissionsForm } from "@/components/admin/missions/missions-form";
 import { useMissions } from "@/hooks/useMissions";
-import { Mission } from "@/models/mission";
+import { Mission, MissionInput } from "@/models/mission";
 import AdminLayout from "layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
@@ -24,11 +24,12 @@ export default function EditMissionPage() {
     fetchData();
   }, [missionId, fetchMission]);
 
-  const handleUpdateMission = async (missionData: Mission) => {
+  const handleUpdateMission = async (missionData: MissionInput) => {
     const result = await updateMission(missionData);
     if (result) {
-      router.push("/admin/missions");
+      await router.push("/admin/missions");
     }
+    return result;
   };
 
   return (

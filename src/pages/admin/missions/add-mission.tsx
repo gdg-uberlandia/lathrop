@@ -4,9 +4,19 @@ import { useMissions } from "@/hooks/useMissions";
 import AdminLayout from "layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function AddEditMissionsPage() {
   const { addMission, loading } = useMissions();
+  const router = useRouter();
+
+  const handleCreateMission = async (
+    mission: Parameters<typeof addMission>[0],
+  ) => {
+    const result = await addMission(mission);
+    if (result) await router.push("/admin/missions");
+    return result;
+  };
 
   return (
     <AdminLayout>
@@ -26,7 +36,7 @@ export default function AddEditMissionsPage() {
 
         <div className="mt-12 flex flex-col lg:flex-row lg:justify-center lg:items-start gap-8">
           <div className="w-full max-w-[900px] mx-auto">
-            <MissionsForm onSubmit={addMission} loading={loading} />
+            <MissionsForm onSubmit={handleCreateMission} loading={loading} />
           </div>
         </div>
       </div>

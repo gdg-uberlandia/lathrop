@@ -20,6 +20,7 @@
       "@/assets/*": ["./assets/*"],
       "@/back-features/*": ["./back-features/*"],
       "@/components/*": ["./components/*"],
+      "@/contracts/*": ["./contracts/*"],
       "@/front-features/*": ["./front-features/*"],
       "@/helpers/*": ["./helpers/*"],
       "@/hooks/*": ["./hooks/*"],

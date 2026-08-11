@@ -21,7 +21,7 @@ import { useState } from "react";
 
 export default function Missions() {
   const router = useRouter();
-  const { missions, removeMissao, error, loading } = useMissions();
+  const { missions, removeMission, error, loading } = useMissions();
 
   const [mission, setMission] = useState<Mission | null>();
   const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false);
@@ -34,7 +34,7 @@ export default function Missions() {
 
   const handleDelete = () => {
     if (!mission) return;
-    removeMissao(mission.id);
+    removeMission(mission.id);
     setMission(null);
     setDialogDeleteOpen(false);
   };
@@ -77,10 +77,10 @@ export default function Missions() {
               {missions.map((mission) => (
                 <TableRow key={mission.id}>
                   <TableCell className="p-3 text-white/80">
-                    {mission.image ? (
+                    {mission.imageUrl ? (
                       <Image
-                        src={mission.image}
-                        alt={mission.name}
+                        src={mission.imageUrl}
+                        alt={mission.title}
                         width={48}
                         height={48}
                         style={{
@@ -97,17 +97,13 @@ export default function Missions() {
                     )}
                   </TableCell>
                   <TableCell className="p-3 text-white/80 font-medium">
-                    {mission.name}
+                    {mission.title}
                   </TableCell>
                   <TableCell className="p-3 text-white/80 ">
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: mission.description,
-                      }}
-                    />
+                    <span>{mission.description}</span>
                   </TableCell>
                   <TableCell className="p-3 text-white/80 text-center">
-                    {mission.qrMission && (
+                    {mission.validationType === "qr" && (
                       <QrCode className="inline-block text-devBlue-dark" />
                     )}
                   </TableCell>

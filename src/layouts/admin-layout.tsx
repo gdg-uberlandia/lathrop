@@ -11,21 +11,23 @@ import { AppSidebar } from "@/components/admin/app-sidebar";
 import { Button } from "@/assets/components/ui/button";
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { user, logout, loading } = useAuth();
+  const { user, isAdmin, logout, loading } = useAuth();
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
-    if (!loading && !user) {
-      const destination = loggingOut
-        ? "/login"
-        : `/login?next=${encodeURIComponent(router.asPath)}`;
+    if (!loading && (!user || !isAdmin)) {
+      const destination = !user
+        ? loggingOut
+          ? "/login"
+          : `/login?next=${encodeURIComponent(router.asPath)}`
+        : `/unauthorized?next=${encodeURIComponent(router.asPath)}`;
       router.replace(destination);
     }
-  }, [user, loading, loggingOut, router]);
+  }, [user, isAdmin, loading, loggingOut, router]);
 
   if (loading) return <div>Carregando...</div>;
-  if (!loading && !user) {
+  if (!loading && (!user || !isAdmin)) {
     return null;
   }
 

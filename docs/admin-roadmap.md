@@ -1,0 +1,288 @@
+# Roadmap da área administrativa
+
+Este documento orienta a reconstrução incremental da área administrativa do
+DevFest. O objetivo é oferecer um painel seguro, rápido e consistente, capaz de
+gravar documentos compatíveis com os contratos consumidos pela Pokedex.
+
+## Princípios
+
+- A Pokedex é a referência funcional para entidades compartilhadas.
+- O site mantém cópias locais e independentes dos contratos.
+- Alterações na Pokedex exigem autorização prévia do responsável pelo projeto.
+- `sponsors` e `companies` são domínios separados.
+- O banco será iniciado do zero; não haverá compatibilidade com dados legados.
+- Toda mutação administrativa passa pelas APIs do site.
+- UX e UI devem permanecer consistentes em todas as entidades.
+- Páginas legadas podem ser descartadas quando a reconstrução for mais segura.
+
+## Estado atual
+
+- [x] Login por e-mail e senha com sessão persistente.
+- [x] Validação do token Firebase nas APIs administrativas.
+- [x] Contratos locais para missões, tags, companies, sorteios e recompensas.
+- [x] Contratos compatíveis de palestrantes e palestras.
+- [x] CRUD de missões migrado para o contrato da Pokedex.
+- [x] Autorização por papel administrativo.
+- [ ] Regras restritivas do Firestore.
+- [ ] Fundação compartilhada de API, cache e componentes CRUD.
+
+## Fase 1 — Segurança e fundação
+
+### 1. Autorização administrativa
+
+Separar autenticação de autorização e exigir o papel no perfil do usuário:
+
+```ts
+{
+  accessRoles: ["participant", "admin"];
+}
+```
+
+Entregas:
+
+- [x] Criar `requireAdmin()` para validar token e `profiles/{uid}.accessRoles`.
+- [x] Substituir `requireAuth()` nas APIs administrativas.
+- [x] Retornar `401` para sessão inválida e `403` para usuário sem papel.
+- [x] Criar experiência de acesso não autorizado.
+- [x] Atualizar a autorização quando `accessRoles` for alterado.
+- [ ] Registrar operador e horário nas mutações administrativas.
+
+Critério de aceite: um usuário cujo perfil não contenha `admin` em `accessRoles`
+não acessa páginas nem APIs administrativas.
+
+O papel é administrado no documento de perfil. O site não cria perfis nem altera
+`accessRoles` como efeito colateral do login.
+
+### 2. Regras do Firestore
+
+- [ ] Remover a regra global de escrita para usuários autenticados.
+- [ ] Bloquear escrita direta nos catálogos administrativos.
+- [ ] Permitir somente operações necessárias aos participantes.
+- [ ] Restringir documentos por `eventId` quando aplicável.
+- [ ] Proteger sorteios, recompensas e operações.
+- [ ] Testar as regras com usuário anônimo, participante e administrador.
+
+Critério de aceite: os catálogos só podem ser alterados pelo servidor usando o
+Firebase Admin SDK.
+
+### 3. Contratos locais
+
+- [ ] Mover os contratos de palestrantes e palestras para `src/contracts`.
+- [ ] Criar schemas separados de documento, criação e atualização.
+- [ ] Adicionar fixtures válidas para cada entidade.
+- [ ] Adicionar testes de compatibilidade e regras relacionais.
+- [ ] Centralizar a resolução do nome das coleções por ambiente.
+- [ ] Documentar o processo de sincronização com a Pokedex.
+
+Critério de aceite: nenhum endpoint grava um documento sem validar seu contrato.
+
+### 4. Cliente administrativo de API
+
+- [ ] Centralizar obtenção e renovação do token.
+- [ ] Centralizar headers e serialização.
+- [ ] Tratar `401`, `403` e erros de validação.
+- [ ] Cancelar requisições obsoletas.
+- [ ] Remover clientes Axios duplicados por feature.
+
+Estrutura sugerida:
+
+```text
+src/lib/admin-api/
+  client.ts
+  errors.ts
+  missions.ts
+  speakers.ts
+  talks.ts
+```
+
+### 5. Cache e sincronização de estado
+
+Adotar TanStack Query ou SWR. TanStack Query é a preferência inicial.
+
+- [ ] Compartilhar cache entre páginas.
+- [ ] Deduplicar requisições.
+- [ ] Invalidar queries depois de mutations.
+- [ ] Definir retry e stale time.
+- [ ] Evitar loaders globais para operações locais.
+- [ ] Definir estratégia de invalidação do cache da Pokedex.
+
+Critério de aceite: navegar entre listagem e formulário não recarrega dados que
+ainda estão válidos.
+
+## Fase 2 — Estrutura de UX/UI
+
+### 6. Layout administrativo
+
+- [ ] Usar uma única estratégia de layout em todas as páginas.
+- [ ] Destacar a rota ativa na sidebar.
+- [ ] Adicionar breadcrumbs.
+- [ ] Melhorar responsividade da sidebar e das tabelas.
+- [ ] Padronizar sessão carregando, acesso negado e erro.
+- [ ] Remover imports, comentários e itens de menu obsoletos.
+
+### 7. Componentes CRUD compartilhados
+
+- [ ] `AdminPageHeader`.
+- [ ] `AdminDataTable`.
+- [ ] `AdminFormPage`.
+- [ ] `AdminFormSection`.
+- [ ] `AdminEmptyState`.
+- [ ] `AdminErrorState`.
+- [ ] `AdminLoadingState`.
+- [ ] `AdminDeleteDialog`.
+- [ ] `AdminStatusBadge`.
+- [ ] `AdminImageField`.
+- [ ] `AdminSlugField`.
+
+Critério de aceite: todas as entidades seguem a mesma hierarquia visual e os
+mesmos estados de interação.
+
+### 8. Feedback e formulários
+
+- [ ] Toasts de sucesso e erro.
+- [ ] Mensagens da API junto aos campos quando aplicável.
+- [ ] Bloqueio contra submissão duplicada.
+- [ ] Preservação dos dados quando a gravação falhar.
+- [ ] Aviso de alterações não salvas.
+- [ ] Foco automático no primeiro erro.
+- [ ] Labels acessíveis em todos os botões.
+- [ ] Padronização integral dos textos em português.
+
+## Fase 3 — Entidades
+
+### 9. Missões
+
+- [x] Adotar o contrato compatível com a Pokedex.
+- [x] Suportar QR, reviewer e progresso automático.
+- [x] Suportar ordem, XP, status e pré-requisitos.
+- [ ] Trocar IDs digitados por seletores de missões e companies.
+- [ ] Impedir dependências circulares.
+- [ ] Exibir e permitir baixar o QR público.
+- [ ] Adicionar filtros e ativação rápida.
+- [ ] Adicionar testes do CRUD completo.
+
+### 10. Tags
+
+- [ ] Criar CRUD de tags.
+- [ ] Gerar UUID público.
+- [ ] Suportar imagem, XP, ordem e status.
+- [ ] Exibir e permitir baixar o QR público.
+- [ ] Adicionar busca, filtros e testes.
+
+### 11. Palestrantes
+
+- [ ] Migrar a tela para a estrutura CRUD comum.
+- [ ] Padronizar slug, foto, biografia e redes sociais.
+- [ ] Adicionar busca e filtro por visibilidade.
+- [ ] Impedir exclusão enquanto houver palestras relacionadas.
+- [ ] Adicionar testes.
+
+### 12. Palestras
+
+- [ ] Migrar a tela para a estrutura CRUD comum.
+- [ ] Melhorar seleção e busca de palestrantes.
+- [ ] Filtrar por formato, avaliação e status.
+- [ ] Manter relacionamentos por `speakerIds`.
+- [ ] Adicionar testes.
+
+### 13. Patrocinadores
+
+Sponsors permanecem separados de companies.
+
+- [ ] Substituir arrays por um documento por patrocinador.
+- [ ] Adicionar `eventId`, status, ordem e timestamps.
+- [ ] Agrupar por nível somente na apresentação.
+- [ ] Adicionar busca, filtros e paginação.
+- [ ] Corrigir métricas e estado após mutations.
+- [ ] Adicionar testes.
+
+### 14. Prêmios de sorteio
+
+- [ ] Criar CRUD para o catálogo `raffles`.
+- [ ] Cadastrar nome, descrição, imagem, ordem e status.
+- [ ] Inicializar campos operacionais de forma segura.
+- [ ] Impedir edição manual de vencedor e dados do sorteio.
+- [ ] Manter a execução do sorteio sob responsabilidade da Pokedex.
+- [ ] Adicionar testes.
+
+### 15. Recompensas
+
+Recompensas trocadas por tickets são diferentes de prêmios de sorteio.
+
+- [ ] Confirmar se o gerenciamento fará parte deste admin.
+- [ ] Criar CRUD separado, se aprovado.
+- [ ] Suportar custo, estoque, limite, status e ordem.
+
+### 16. Companies
+
+Companies permanecem separadas de patrocinadores.
+
+- [ ] Confirmar se o gerenciamento fará parte deste admin.
+- [ ] Criar CRUD compatível com a Pokedex, se aprovado.
+- [ ] Integrar a seleção de companies aos pré-requisitos de missões.
+
+### 17. Programação
+
+A implementação atual pode ser descartada.
+
+- [ ] Definir o contrato com os responsáveis pelos sistemas consumidores.
+- [ ] Referenciar palestras por `talkId`.
+- [ ] Modelar salas separadamente.
+- [ ] Modelar intervalos, abertura e encerramento com união discriminada.
+- [ ] Usar data e timestamps, não apenas strings de horário.
+- [ ] Detectar conflitos de sala e palestra.
+- [ ] Remover delays artificiais e tipos `any`.
+- [ ] Criar visualização prévia da agenda.
+- [ ] Adicionar testes.
+
+## Fase 4 — Desempenho e operação
+
+### 18. APIs e Firestore
+
+- [ ] Usar consultas diretas por ID.
+- [ ] Remover varreduras completas de coleções.
+- [ ] Adicionar paginação e filtros.
+- [ ] Documentar índices necessários.
+- [ ] Usar transações em alterações relacionais.
+- [ ] Retornar status HTTP corretos.
+- [ ] Nunca converter falha em resposta `200` com `null`.
+- [ ] Evitar arrays crescentes em documentos.
+
+### 19. Dashboard
+
+- [ ] Consumir dados do cache compartilhado.
+- [ ] Corrigir contagem de patrocinadores.
+- [ ] Exibir cadastros incompletos e conflitos.
+- [ ] Exibir palestras sem programação.
+- [ ] Exibir contagens de entidades ativas.
+- [ ] Remover carregamentos e recursos decorativos desnecessários.
+
+### 20. Testes e observabilidade
+
+- [ ] Testar contratos e fixtures.
+- [ ] Testar criação, atualização e exclusão.
+- [ ] Testar `requireAdmin()`.
+- [ ] Testar acesso sem token e sem papel.
+- [ ] Testar relacionamentos e timestamps.
+- [ ] Testar nomes de coleção por ambiente.
+- [ ] Adicionar logs estruturados de mutações administrativas.
+- [ ] Registrar operador, entidade, ID e horário.
+
+## Ordem de execução
+
+1. Autorização administrativa.
+2. Regras do Firestore.
+3. Contratos e testes.
+4. Cliente de API e cache.
+5. Layout e componentes CRUD.
+6. Missões.
+7. Tags.
+8. Palestrantes e palestras.
+9. Patrocinadores.
+10. Prêmios de sorteio.
+11. Programação.
+12. Dashboard, desempenho e observabilidade.
+
+Cada item deve ser implementado, validado e revisado antes do próximo. Mudanças
+de contrato que afetem a Pokedex devem ser discutidas antes de qualquer alteração
+no outro repositório.

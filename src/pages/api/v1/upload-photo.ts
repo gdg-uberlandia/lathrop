@@ -6,7 +6,7 @@ import { admin } from "@/utils/db";
 import { getStorage } from "firebase-admin/storage";
 import formidable from "formidable";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { requireAuth } from "@/utils/api/require-auth";
+import { requireAdmin } from "@/utils/api/require-admin";
 
 export const config = {
   api: {
@@ -42,7 +42,7 @@ export default async function handler(
     return res.status(405).json({ error: "Método não permitido" });
   }
 
-  if (!(await requireAuth(req, res))) return;
+  if (!(await requireAdmin(req, res))) return;
 
   try {
     const form = formidable({ maxFileSize: 5 * 1024 * 1024 });

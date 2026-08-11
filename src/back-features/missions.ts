@@ -1,113 +1,99 @@
-const MISSIONS_COLLECTION = `missions${process.env.DEV_MODE ? "_test" : ""}`;
-import { Mission } from "@/models/mission";
-import { db } from "@/utils/db/index";
+import { Timestamp } from "firebase-admin/firestore";
 
-/**
- * Busca todos as missoes
- */
-export const getAllMissions = async (): Promise<Mission[]> => {
-  try {
-    const snapshot = await db.collection(MISSIONS_COLLECTION).get();
-    const missions: Mission[] = [];
-    snapshot.forEach((doc: FirebaseFirestore.QueryDocumentSnapshot) => {
-      const data = doc.data();
-      if (data) {
-        const mission = { ...data, id: doc.id } as Mission;
-        missions.push(mission);
-      } else {
-        console.warn(`[getAllMissions] Documento sem id: ${doc.id}`);
-      }
-    });
-    return missions;
-  } catch (error) {
-    console.error("[getAllMissions] Erro ao buscar missions:", error);
-    throw error;
-  }
-};
+import { CURRENT_EVENT_ID } from "@/helpers/event";
+import {
+  Mission,
+  MissionInput,
+  missionFieldsSchema,
+  missionInputSchema,
+} from "@/models/mission";
+import { db } from "@/utils/db";
+import { getFirestoreCollectionName } from "@/utils/db/collection-name";
 
-/**
- * Cria um novo mission
- */
-export const createMission = async (mission: Mission): Promise<Mission> => {
-  try {
-    if (!mission || !mission.id) {
-      throw new Error("Mission inválido: id obrigatório");
-    }
-    const docRef = db.collection(MISSIONS_COLLECTION).doc(mission.id);
-    const doc = await docRef.get();
-    if (doc.exists) {
-      throw new Error(`Mission com id ${mission.id} já existe.`);
-    }
-    await docRef.set(mission);
-    return mission;
-  } catch (error) {
-    console.error("[createMission] Erro ao criar mission:", error);
-    throw error;
-  }
-};
+const MISSIONS_COLLECTION = getFirestoreCollectionName("missions");
 
-/**
- * Busca uma missao pelo id
- */
-export const geMissionById = async (missionId: string): Promise<Mission> => {
-  try {
-    if (!missionId) {
-      throw new Error("Id do mission obrigatório");
-    }
-    const docRef = db.collection(MISSIONS_COLLECTION).doc(missionId);
-    const doc = await docRef.get();
-    if (!doc.exists) {
-      throw new Error(`MIssao com id ${missionId} não encontrado.`);
-    }
-    const data = doc.data();
-    if (!data || !doc.id) {
-      throw new Error(`Dados inválidos para missao ${missionId}`);
-    }
-    return { ...data, id: doc.id } as Mission;
-  } catch (error) {
-    console.error("[geMissionById] Erro ao buscar mission:", error);
-    throw error;
-  }
-};
+function parseMission(id: string, value: FirebaseFirestore.DocumentData) {
+  return missionFieldsSchema.parse({
+    ...value,
+    id,
+    createdAt:
+      value.createdAt instanceof Timestamp
+        ? value.createdAt.toDate()
+        : value.createdAt,
+    updatedAt:
+      value.updatedAt instanceof Timestamp
+        ? value.updatedAt.toDate()
+        : value.updatedAt,
+  });
+}
 
-/**
- * Atualiza um mission
- */
-export const updateMission = async (mission: Mission): Promise<Mission> => {
-  try {
-    if (!mission || !mission.id) {
-      throw new Error("mission inválido: id obrigatório");
-    }
-    const docRef = db.collection(MISSIONS_COLLECTION).doc(mission.id);
-    const doc = await docRef.get();
-    if (!doc.exists) {
-      throw new Error(`mission com id ${mission.id} não encontrado.`);
-    }
-    await docRef.set(mission, { merge: true });
-    return mission;
-  } catch (error) {
-    console.error("[updatemission] Erro ao atualizar mission:", error);
-    throw error;
-  }
-};
+export async function getAllMissions(): Promise<Mission[]> {
+  const snapshot = await db
+    .collection(MISSIONS_COLLECTION)
+    .where("eventId", "==", CURRENT_EVENT_ID)
+    .get();
 
-/**
- * Remove um mission
- */
-export const deletemission = async (missionId: string): Promise<string> => {
-  try {
-    if (!missionId) {
-      throw new Error("Id do mission obrigatório");
-    }
-    const docRef = db.collection(MISSIONS_COLLECTION).doc(missionId);
-    const doc = await docRef.get();
-    if (!doc.exists) {
-      throw new Error(`mission com id ${missionId} não encontrado.`);
-    }
-    await docRef.delete();
-    return missionId;
-  } catch (error) {
-    console.error("[deletemission] Erro ao remover mission:", error);
-    throw error;
+  return snapshot.docs
+    .map((document) => parseMission(document.id, document.data()))
+    .sort(
+      (first, second) =>
+        first.order - second.order ||
+        first.title.localeCompare(second.title, "pt-BR"),
+    );
+}
+
+export async function createMission(input: MissionInput): Promise<Mission> {
+  const data = missionInputSchema.parse(input);
+  const reference = db.collection(MISSIONS_COLLECTION).doc(data.id);
+
+  if ((await reference.get()).exists) {
+    throw new Error(`Missão com id ${data.id} já existe.`);
   }
-};
+
+  const now = new Date();
+  const mission = missionFieldsSchema.parse({
+    ...data,
+    eventId: CURRENT_EVENT_ID,
+    createdAt: now,
+    updatedAt: now,
+  });
+  await reference.create(mission);
+  return mission;
+}
+
+export async function getMissionById(missionId: string): Promise<Mission> {
+  const document = await db
+    .collection(MISSIONS_COLLECTION)
+    .doc(missionId)
+    .get();
+
+  if (!document.exists) {
+    throw new Error(`Missão com id ${missionId} não encontrada.`);
+  }
+
+  const mission = parseMission(document.id, document.data()!);
+  if (mission.eventId !== CURRENT_EVENT_ID) {
+    throw new Error(`Missão com id ${missionId} não encontrada.`);
+  }
+  return mission;
+}
+
+export async function updateMission(input: MissionInput): Promise<Mission> {
+  const data = missionInputSchema.parse(input);
+  const current = await getMissionById(data.id);
+  const mission = missionFieldsSchema.parse({
+    ...data,
+    eventId: CURRENT_EVENT_ID,
+    createdAt: current.createdAt,
+    updatedAt: new Date(),
+  });
+
+  await db.collection(MISSIONS_COLLECTION).doc(data.id).set(mission);
+  return mission;
+}
+
+export async function deleteMission(missionId: string): Promise<string> {
+  await getMissionById(missionId);
+  await db.collection(MISSIONS_COLLECTION).doc(missionId).delete();
+  return missionId;
+}

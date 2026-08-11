@@ -1,4 +1,4 @@
-import { Mission } from "@/models/mission";
+import { Mission, MissionInput } from "@/models/mission";
 import { useCallback, useEffect, useState } from "react";
 import {
   createMissionAPI,
@@ -40,7 +40,7 @@ export function useMissions() {
     }
   }, []);
 
-  const addMission = async (mission: Mission) => {
+  const addMission = async (mission: MissionInput) => {
     try {
       setLoading(true);
       const newMission = await createMissionAPI(mission);
@@ -55,7 +55,7 @@ export function useMissions() {
     }
   };
 
-  const removeMissao = async (missionId: string) => {
+  const removeMission = async (missionId: string) => {
     try {
       setLoading(true);
       await deleteMissionAPI(missionId);
@@ -68,7 +68,7 @@ export function useMissions() {
     }
   };
 
-  const updateMission = async (mission: Mission) => {
+  const updateMission = async (mission: MissionInput) => {
     try {
       setLoading(true);
       const updatedMission = await updateMissionAPI(mission);
@@ -96,7 +96,7 @@ export function useMissions() {
     fetchMissions,
     fetchMission,
     addMission,
-    removeMissao,
+    removeMission,
     updateMission,
   };
 }

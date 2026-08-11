@@ -18,7 +18,7 @@ export default function LoginPage({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { login, user, loading: authLoading } = useAuth();
+  const { login, user, isAdmin, loading: authLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -28,9 +28,13 @@ export default function LoginPage({
         router.query.next.startsWith("/admin")
           ? router.query.next
           : "/admin";
-      router.replace(destination);
+      router.replace(
+        isAdmin
+          ? destination
+          : `/unauthorized?next=${encodeURIComponent(destination)}`,
+      );
     }
-  }, [authLoading, user, router]);
+  }, [authLoading, user, isAdmin, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,7 +82,7 @@ export default function LoginPage({
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password" className="text-white text-sm">
-                    Password
+                    Senha
                   </Label>
                 </div>
                 <Input

@@ -4,13 +4,13 @@ import {
   updateSchedule,
   deleteSchedule,
 } from "back-features/schedule";
-import { requireAuth } from "@/utils/api/require-auth";
+import { requireAdmin } from "@/utils/api/require-admin";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (!(await requireAuth(req, res))) return;
+  if (!(await requireAdmin(req, res))) return;
 
   if (req.method === "GET") {
     const { scheduleId } = req.query;

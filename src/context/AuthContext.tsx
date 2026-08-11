@@ -17,15 +17,29 @@ import { auth } from "@/utils/firebaseClient";
 
 interface AuthContextType {
   user: User | null;
+  isAdmin: boolean;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  refreshAdminRole: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+async function fetchAdminRole(currentUser: User, forceTokenRefresh = false) {
+  const token = await currentUser.getIdToken(forceTokenRefresh);
+  const response = await fetch("/api/auth/session", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) return false;
+  const session = (await response.json()) as { isAdmin?: boolean };
+  return session.isAdmin === true;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,13 +47,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     setPersistence(auth, browserLocalPersistence)
       .then(() => {
-        unsubscribe = onIdTokenChanged(auth, (currentUser) => {
-          setUser(currentUser);
-          setLoading(false);
+        unsubscribe = onIdTokenChanged(auth, async (currentUser) => {
+          if (!currentUser) {
+            setUser(null);
+            setIsAdmin(false);
+            setLoading(false);
+            return;
+          }
+
+          try {
+            setUser(currentUser);
+            setIsAdmin(await fetchAdminRole(currentUser));
+          } catch {
+            setUser(null);
+            setIsAdmin(false);
+          } finally {
+            setLoading(false);
+          }
         });
       })
       .catch(() => {
         setUser(null);
+        setIsAdmin(false);
         setLoading(false);
       });
 
@@ -50,8 +79,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email.trim(), password);
-    } finally {
+    } catch (error) {
       setLoading(false);
+      throw error;
     }
   };
 
@@ -59,8 +89,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await signOut(auth);
   };
 
+  const refreshAdminRole = async () => {
+    if (!auth.currentUser) return;
+    setLoading(true);
+    try {
+      const currentUser = auth.currentUser;
+      const isCurrentUserAdmin = await fetchAdminRole(currentUser, true);
+      setUser(currentUser);
+      setIsAdmin(isCurrentUserAdmin);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, isAdmin, loading, login, logout, refreshAdminRole }}
+    >
       {children}
     </AuthContext.Provider>
   );
