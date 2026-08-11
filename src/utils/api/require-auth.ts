@@ -1,4 +1,4 @@
-import type { DecodedIdToken } from "firebase-admin/auth";
+import type admin from "firebase-admin";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { auth } from "@/utils/db";
@@ -6,7 +6,7 @@ import { auth } from "@/utils/db";
 export async function requireAuth(
   req: NextApiRequest,
   res: NextApiResponse,
-): Promise<DecodedIdToken | null> {
+): Promise<admin.auth.DecodedIdToken | null> {
   const authorization = req.headers.authorization;
 
   if (!authorization?.startsWith("Bearer ")) {

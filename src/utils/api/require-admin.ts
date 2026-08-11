@@ -1,4 +1,4 @@
-import type { DecodedIdToken } from "firebase-admin/auth";
+import type admin from "firebase-admin";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { hasAdminRole } from "@/back-features/admin-authorization";
@@ -7,7 +7,7 @@ import { requireAuth } from "@/utils/api/require-auth";
 export async function requireAdmin(
   req: NextApiRequest,
   res: NextApiResponse,
-): Promise<DecodedIdToken | null> {
+): Promise<admin.auth.DecodedIdToken | null> {
   const user = await requireAuth(req, res);
   if (!user) return null;
 
