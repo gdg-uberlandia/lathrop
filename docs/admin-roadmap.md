@@ -72,8 +72,8 @@ automaticamente durante o build ou deploy de hosting.
 
 - [x] Mover os contratos de palestrantes e palestras para `src/contracts`.
 - [x] Criar schemas separados de documento, criação e atualização.
-- [ ] Adicionar fixtures válidas para cada entidade.
-- [ ] Adicionar testes de compatibilidade e regras relacionais.
+- [x] Adicionar fixtures válidas para cada entidade.
+- [x] Adicionar testes de compatibilidade e regras relacionais.
 - [x] Centralizar a resolução do nome das coleções por ambiente.
 - [ ] Documentar o processo de sincronização com a Pokedex.
 
