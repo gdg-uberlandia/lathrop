@@ -1,4 +1,4 @@
-import { TicketBatch } from "models/ticket-batch";
+import { TicketBatch } from "@/models/ticket-batch";
 import React from "react";
 
 import styles from "../../styles/Tickets.module.css";

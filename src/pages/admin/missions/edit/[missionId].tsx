@@ -2,7 +2,7 @@ import Loading from "@/components/admin/loading-overlay";
 import { MissionsForm } from "@/components/admin/missions/missions-form";
 import { useMissions } from "@/hooks/useMissions";
 import { Mission, MissionInput } from "@/models/mission";
-import AdminLayout from "layouts/admin-layout";
+import AdminLayout from "@/layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";

@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { createSchedule, getSchedule } from "back-features/schedule";
-import { Schedule } from "models/schedule";
+import { createSchedule, getSchedule } from "@/back-features/schedule";
+import { Schedule } from "@/models/schedule";
 import { requireAdmin } from "@/utils/api/require-admin";
 
 export default async function handler(

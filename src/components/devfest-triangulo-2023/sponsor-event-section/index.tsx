@@ -1,7 +1,7 @@
 /*eslint-disable*/
 import React, { useState } from "react";
 import { Col, Container, Row } from "reactstrap";
-import configValues from "helpers/config";
+import configValues from "@/helpers/config";
 import ArrowIcon from "../../../../public/icons/arrow.png";
 import Image from "next/image";
 import styles from "./styles.module.css";

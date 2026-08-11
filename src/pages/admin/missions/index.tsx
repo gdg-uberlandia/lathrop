@@ -12,7 +12,7 @@ import DeleteDialog from "@/components/admin/delete-dialog";
 import Loading from "@/components/admin/loading-overlay";
 import { useMissions } from "@/hooks/useMissions";
 import { Mission } from "@/models/mission";
-import AdminLayout from "layouts/admin-layout";
+import AdminLayout from "@/layouts/admin-layout";
 import { Target, Pencil, Trash2, Plus, QrCode } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

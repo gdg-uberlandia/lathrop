@@ -12,7 +12,7 @@ import DeleteDialog from "@/components/admin/delete-dialog";
 import Loading from "@/components/admin/loading-overlay";
 import { useSponsors } from "@/hooks/useSponsors";
 import { SponsorCategoryDisplayName } from "@/models/sponsor";
-import AdminLayout from "layouts/admin-layout";
+import AdminLayout from "@/layouts/admin-layout";
 import { DollarSign, HandCoins, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";

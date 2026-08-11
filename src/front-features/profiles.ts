@@ -1,7 +1,7 @@
 import { Profile } from "@/models/profile";
 import axios from "axios";
 import { getAuth } from "firebase/auth";
-import { server } from "helpers/config";
+import { server } from "@/helpers/config";
 
 const getToken = async (): Promise<string | undefined> => {
   const auth = getAuth();

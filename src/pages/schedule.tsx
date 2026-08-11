@@ -1,9 +1,9 @@
 import styles from "../styles/Schedule.module.css";
 
-import { Speaker } from "models/speaker";
+import { Speaker } from "@/models/speaker";
 
 import { Header } from "@/components/devfest-triangulo-2025/Header";
-import BaseLayout from "layouts/base-layout";
+import BaseLayout from "@/layouts/base-layout";
 import Image from "next/image";
 import {
   Schedule,
@@ -11,8 +11,8 @@ import {
   SpeechesPath,
   SpeechTopicName,
 } from "@/models/schedule";
-import { getAllSpeakers } from "back-features/speakers";
-import { getSchedule } from "back-features/schedule";
+import { getAllSpeakers } from "@/back-features/speakers";
+import { getSchedule } from "@/back-features/schedule";
 import { TruncatedText } from "@/components/TruncatedText";
 import CheeseIcon from "@/public/icons/cheese.svg";
 import { useState } from "react";

@@ -15,7 +15,7 @@ import {
   SpeechesPath,
   SpeechTopicName,
 } from "@/models/schedule";
-import AdminLayout from "layouts/admin-layout";
+import AdminLayout from "@/layouts/admin-layout";
 import {
   Calendar,
   CalendarPlus,

@@ -3,7 +3,7 @@ import { TalksForm } from "@/components/admin/talks/talks-form";
 import { useSpeakers } from "@/hooks/useSpeakers";
 import { useTalks } from "@/hooks/useTalks";
 import { Talk } from "@/models/talk";
-import AdminLayout from "layouts/admin-layout";
+import AdminLayout from "@/layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";

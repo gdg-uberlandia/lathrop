@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { createMission, getAllMissions } from "back-features/missions";
+import { createMission, getAllMissions } from "@/back-features/missions";
 import { requireAdmin } from "@/utils/api/require-admin";
 
 export default async function handler(

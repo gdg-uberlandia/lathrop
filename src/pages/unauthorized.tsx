@@ -1,5 +1,5 @@
 import { Button } from "@/assets/components/ui/button";
-import { useAuth } from "context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { ShieldX } from "lucide-react";
 import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";

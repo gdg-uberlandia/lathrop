@@ -2,7 +2,7 @@ import {
   deleteSpeaker,
   getSpeakerById,
   updateSpeaker,
-} from "back-features/speakers";
+} from "@/back-features/speakers";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { requireAdmin } from "@/utils/api/require-admin";
 

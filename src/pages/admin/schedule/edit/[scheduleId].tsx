@@ -2,7 +2,7 @@ import Loading from "@/components/admin/loading-overlay";
 import { ScheduleForm } from "@/components/admin/schedule/schedule-form";
 import { ScheduleFormValues } from "@/components/admin/schedule/schedule-schema";
 import { useSchedule } from "@/hooks/useSchedule";
-import AdminLayout from "layouts/admin-layout";
+import AdminLayout from "@/layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";

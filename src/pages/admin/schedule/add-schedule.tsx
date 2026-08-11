@@ -1,4 +1,4 @@
-import AdminLayout from "layouts/admin-layout";
+import AdminLayout from "@/layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 

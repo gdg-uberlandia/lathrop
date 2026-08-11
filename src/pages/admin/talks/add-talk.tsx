@@ -2,7 +2,7 @@ import Loading from "@/components/admin/loading-overlay";
 import { TalksForm } from "@/components/admin/talks/talks-form";
 import { useSpeakers } from "@/hooks/useSpeakers";
 import { useTalks } from "@/hooks/useTalks";
-import AdminLayout from "layouts/admin-layout";
+import AdminLayout from "@/layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";

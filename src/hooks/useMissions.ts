@@ -6,7 +6,7 @@ import {
   getMissionsAPI,
   readMissionAPI,
   updateMissionAPI,
-} from "front-features/missions";
+} from "@/front-features/missions";
 
 export function useMissions() {
   const [error, setError] = useState<string | null>(null);

@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { createSponsor, getAllSponsorLevels } from "back-features/sponsors";
+import { createSponsor, getAllSponsorLevels } from "@/back-features/sponsors";
 import { requireAdmin } from "@/utils/api/require-admin";
 
 export default async function handler(

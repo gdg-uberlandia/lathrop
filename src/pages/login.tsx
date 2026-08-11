@@ -5,7 +5,7 @@ import { Label } from "@/assets/components/ui/label";
 import Image from "next/image";
 import DroidPhone from "@/assets/images/droid-phone.png";
 import { useEffect, useState } from "react";
-import { useAuth } from "context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 
 export default function LoginPage({

@@ -3,7 +3,7 @@ import Image from "next/image";
 import MiniCheese from "@/public/devfest-2025/mini-cheese.svg";
 import SellIcon from "@/public/icons/sell.svg";
 import TicketBackground from "@/assets/images/ticket.svg";
-import configValues from "helpers/config";
+import configValues from "@/helpers/config";
 import clsx from "clsx";
 import { PrimaryCta } from "../ui/PrimaryCta";
 

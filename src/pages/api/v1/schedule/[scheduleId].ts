@@ -3,7 +3,7 @@ import {
   readSchedule,
   updateSchedule,
   deleteSchedule,
-} from "back-features/schedule";
+} from "@/back-features/schedule";
 import { requireAdmin } from "@/utils/api/require-admin";
 
 export default async function handler(

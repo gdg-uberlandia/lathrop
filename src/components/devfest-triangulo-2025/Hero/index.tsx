@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import configValues from "helpers/config";
+import configValues from "@/helpers/config";
 import Image from "next/image";
 
 import AndroidCheese from "@/public/devfest-2025/android-cheese.png";

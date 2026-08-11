@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getAuth } from "firebase/auth";
-import { server } from "helpers/config";
-import { Talk, TalkInput } from "models/talk";
+import { server } from "@/helpers/config";
+import { Talk, TalkInput } from "@/models/talk";
 
 const TALKS_API_PATH = "talks";
 const getToken = async () => getAuth().currentUser?.getIdToken();

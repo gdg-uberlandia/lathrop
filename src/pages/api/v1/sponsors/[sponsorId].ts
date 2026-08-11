@@ -2,7 +2,7 @@ import {
   deleteSponsor,
   getSponsorById,
   updateSponsor,
-} from "back-features/sponsors";
+} from "@/back-features/sponsors";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { requireAdmin } from "@/utils/api/require-admin";
 

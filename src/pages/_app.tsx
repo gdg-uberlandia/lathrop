@@ -10,7 +10,7 @@ import GoogleAnalytics from "../components/google-analytics";
 import { AppLayoutProps } from "../../types";
 
 const AuthProvider = dynamic(() =>
-  import("context/AuthContext").then((module) => module.AuthProvider),
+  import("@/context/AuthContext").then((module) => module.AuthProvider),
 );
 
 const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = (
@@ -33,7 +33,9 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = (
   );
 
   const requiresAuth =
-    router.pathname === "/login" || router.pathname.startsWith("/admin");
+    router.pathname === "/login" ||
+    router.pathname === "/unauthorized" ||
+    router.pathname.startsWith("/admin");
 
   return requiresAuth ? <AuthProvider>{page}</AuthProvider> : page;
 };

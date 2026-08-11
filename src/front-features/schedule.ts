@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getAuth } from "firebase/auth";
-import { server } from "helpers/config";
-import { Schedule } from "models/schedule";
+import { server } from "@/helpers/config";
+import { Schedule } from "@/models/schedule";
 
 const SCHEDULE_COLLECTION = `schedule${process.env.DEV_MODE ? "_test" : ""}`;
 

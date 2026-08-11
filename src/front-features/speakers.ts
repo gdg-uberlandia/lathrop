@@ -1,8 +1,8 @@
 const SPEAKERS_API_PATH = "speakers";
 import axios from "axios";
 import { getAuth } from "firebase/auth";
-import { server } from "helpers/config";
-import { Speaker, SpeakerInput } from "models/speaker";
+import { server } from "@/helpers/config";
+import { Speaker, SpeakerInput } from "@/models/speaker";
 
 const getToken = async (): Promise<string | undefined> => {
   const auth = getAuth();

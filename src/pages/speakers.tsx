@@ -3,14 +3,14 @@ import React from "react";
 import styles from "../styles/Speakers.module.css";
 import SpeakerCard from "@/components/devfest-triangulo-2025/Speakers/SpeakerCard";
 
-import { PublicSpeaker, toPublicSpeaker } from "models/speaker";
-import { PublicTalk, toPublicTalk } from "models/talk";
+import { PublicSpeaker, toPublicSpeaker } from "@/models/speaker";
+import { PublicTalk, toPublicTalk } from "@/models/talk";
 
-import configValues from "helpers/config";
+import configValues from "@/helpers/config";
 import { Header } from "@/components/devfest-triangulo-2025/Header";
-import BaseLayout from "layouts/base-layout";
-import { getAllSpeakers } from "back-features/speakers";
-import { getAllTalks } from "back-features/talks";
+import BaseLayout from "@/layouts/base-layout";
+import { getAllSpeakers } from "@/back-features/speakers";
+import { getAllTalks } from "@/back-features/talks";
 
 interface SpeakersPageProps {
   speakers: Array<PublicSpeaker>;

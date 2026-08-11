@@ -11,7 +11,7 @@ import DeleteDialog from "@/components/admin/delete-dialog";
 import Loading from "@/components/admin/loading-overlay";
 import { useSpeakers } from "@/hooks/useSpeakers";
 import { Speaker } from "@/models/speaker";
-import AdminLayout from "layouts/admin-layout";
+import AdminLayout from "@/layouts/admin-layout";
 import { Megaphone, Pencil, Trash2, UserRoundPlus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

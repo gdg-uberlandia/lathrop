@@ -2,7 +2,7 @@ import Loading from "@/components/admin/loading-overlay";
 import { SponsorsForm } from "@/components/admin/sponsors/sponsors-form";
 import { useSponsors } from "@/hooks/useSponsors";
 import { Sponsor } from "@/models/sponsor";
-import AdminLayout from "layouts/admin-layout";
+import AdminLayout from "@/layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";

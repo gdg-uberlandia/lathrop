@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { createSpeaker, getAllSpeakers } from "back-features/speakers";
+import { createSpeaker, getAllSpeakers } from "@/back-features/speakers";
 import { requireAdmin } from "@/utils/api/require-admin";
 
 export default async function handler(

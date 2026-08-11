@@ -1,10 +1,10 @@
-import { LegacySpeaker as Speaker, SpeakerTech } from "models/speaker";
+import { LegacySpeaker as Speaker, SpeakerTech } from "@/models/speaker";
 import Image from "next/image";
 import React from "react";
 import { Badge, Row } from "reactstrap";
 
 import styles from "./Schedule.module.css";
-import { Speeches, SpeechesPath } from "models/schedule";
+import { Speeches, SpeechesPath } from "@/models/schedule";
 import clsx from "clsx";
 
 type ScheduleCardProps = {
