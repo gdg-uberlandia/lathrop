@@ -25,7 +25,10 @@ export async function getProfileAccessRoles(user: admin.auth.DecodedIdToken) {
     return parseAccessRoles(profileByUid.data());
   }
 
-  if (!user.email || user.email_verified !== true) return [];
+  const isPasswordSignIn = user.firebase?.sign_in_provider === "password";
+  if (!user.email || (!isPasswordSignIn && user.email_verified !== true)) {
+    return [];
+  }
 
   const email = user.email.trim();
   const normalizedEmail = email.toLowerCase();
