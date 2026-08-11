@@ -1,109 +1,78 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 import { Speaker, SpeakerInput } from "@/contracts/speaker";
-import { useCallback, useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 import {
   createSpeakerAPI,
   deleteSpeakerAPI,
   getSpeakersAPI,
   readSpeakerAPI,
   updateSpeakerAPI,
-} from "../front-features/speakers";
+} from "@/front-features/speakers";
+import { getAdminApiErrorMessage } from "@/lib/admin-api/errors";
+import { adminQueryKeys, resolveAdminAction } from "@/lib/admin-query";
 
 export function useSpeakers() {
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [speakers, setSpeakers] = useState<Speaker[]>([]);
-
-  const fetchSpeakers = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await getSpeakersAPI();
-      setSpeakers(data);
-    } catch (err) {
-      console.error(err);
-      setError("Erro ao buscar speakers");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const fetchSpeaker = useCallback(async (speakerId: string) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const speaker = await readSpeakerAPI(speakerId);
-      return speaker;
-    } catch (err) {
-      console.error(err);
-      setError("Erro ao buscar speaker específico");
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const addSpeaker = async (speaker: SpeakerInput) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const newSpeaker = await createSpeakerAPI(speaker);
-      setSpeakers((prev) => [...prev, newSpeaker]);
-      return newSpeaker as Speaker;
-    } catch (err) {
-      console.error(err);
-      setError("Erro ao criar speaker");
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const removeSpeaker = async (speakerId: string) => {
-    try {
-      setLoading(true);
-      setError(null);
-      await deleteSpeakerAPI(speakerId);
-      setSpeakers((prev) => prev.filter((s) => s.id !== speakerId));
-    } catch (error) {
-      console.error(error);
-      setError("Erro ao deletar speaker");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const updateSpeaker = async (speaker: SpeakerInput) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const updatedSpeaker = await updateSpeakerAPI(speaker);
-      setSpeakers((current) =>
-        current.map((item) =>
-          item.id === updatedSpeaker.id ? updatedSpeaker : item,
+  const { isAdmin } = useAuth();
+  const queryClient = useQueryClient();
+  const speakersQuery = useQuery({
+    enabled: isAdmin,
+    queryKey: adminQueryKeys.speakers,
+    queryFn: ({ signal }) => getSpeakersAPI(signal),
+  });
+  const createMutation = useMutation({
+    mutationFn: createSpeakerAPI,
+    onSuccess: (speaker) =>
+      queryClient.setQueryData<Speaker[]>(adminQueryKeys.speakers, (current) =>
+        [...(current ?? []), speaker].sort((a, b) =>
+          a.name.localeCompare(b.name, "pt-BR"),
         ),
-      );
-      return updatedSpeaker;
-    } catch (err) {
-      console.error(err);
-      setError("Erro ao atualizar speaker");
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  };
+      ),
+  });
+  const updateMutation = useMutation({
+    mutationFn: updateSpeakerAPI,
+    onSuccess: (speaker) =>
+      queryClient.setQueryData<Speaker[]>(adminQueryKeys.speakers, (current) =>
+        current?.map((item) => (item.id === speaker.id ? speaker : item)),
+      ),
+  });
+  const deleteMutation = useMutation({
+    mutationFn: deleteSpeakerAPI,
+    onSuccess: (speakerId) =>
+      queryClient.setQueryData<Speaker[]>(adminQueryKeys.speakers, (current) =>
+        current?.filter((item) => item.id !== speakerId),
+      ),
+  });
 
-  useEffect(() => {
-    if (!speakers.length) fetchSpeakers();
-  }, [fetchSpeakers, speakers.length]);
+  const error =
+    speakersQuery.error ||
+    createMutation.error ||
+    updateMutation.error ||
+    deleteMutation.error;
 
   return {
-    speakers,
-    loading,
-    error,
-    fetchSpeakers,
-    fetchSpeaker,
-    addSpeaker,
-    removeSpeaker,
-    updateSpeaker,
+    speakers: speakersQuery.data ?? [],
+    loading:
+      speakersQuery.isFetching ||
+      createMutation.isPending ||
+      updateMutation.isPending ||
+      deleteMutation.isPending,
+    error: error
+      ? getAdminApiErrorMessage(error, "Erro ao processar palestrantes")
+      : null,
+    fetchSpeakers: speakersQuery.refetch,
+    fetchSpeaker: (speakerId: string) =>
+      resolveAdminAction(() =>
+        queryClient.fetchQuery({
+          queryKey: [...adminQueryKeys.speakers, speakerId],
+          queryFn: ({ signal }) => readSpeakerAPI(speakerId, signal),
+        }),
+      ),
+    addSpeaker: (speaker: SpeakerInput) =>
+      resolveAdminAction(() => createMutation.mutateAsync(speaker)),
+    removeSpeaker: (speakerId: string) =>
+      resolveAdminAction(() => deleteMutation.mutateAsync(speakerId)),
+    updateSpeaker: (speaker: SpeakerInput) =>
+      resolveAdminAction(() => updateMutation.mutateAsync(speaker)),
   };
 }

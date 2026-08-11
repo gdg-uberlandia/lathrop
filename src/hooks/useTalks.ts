@@ -1,4 +1,7 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 import { Talk, TalkInput } from "@/contracts/talk";
+import { useAuth } from "@/context/AuthContext";
 import {
   createTalkAPI,
   deleteTalkAPI,
@@ -6,97 +9,70 @@ import {
   readTalkAPI,
   updateTalkAPI,
 } from "@/front-features/talks";
-import { useCallback, useEffect, useState } from "react";
+import { getAdminApiErrorMessage } from "@/lib/admin-api/errors";
+import { adminQueryKeys, resolveAdminAction } from "@/lib/admin-query";
 
 export function useTalks() {
-  const [talks, setTalks] = useState<Talk[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { isAdmin } = useAuth();
+  const queryClient = useQueryClient();
+  const talksQuery = useQuery({
+    enabled: isAdmin,
+    queryKey: adminQueryKeys.talks,
+    queryFn: ({ signal }) => getTalksAPI(signal),
+  });
+  const createMutation = useMutation({
+    mutationFn: createTalkAPI,
+    onSuccess: (talk) =>
+      queryClient.setQueryData<Talk[]>(adminQueryKeys.talks, (current) =>
+        [...(current ?? []), talk].sort((a, b) =>
+          a.title.localeCompare(b.title, "pt-BR"),
+        ),
+      ),
+  });
+  const updateMutation = useMutation({
+    mutationFn: updateTalkAPI,
+    onSuccess: (talk) =>
+      queryClient.setQueryData<Talk[]>(adminQueryKeys.talks, (current) =>
+        current?.map((item) => (item.id === talk.id ? talk : item)),
+      ),
+  });
+  const deleteMutation = useMutation({
+    mutationFn: deleteTalkAPI,
+    onSuccess: (talkId) =>
+      queryClient.setQueryData<Talk[]>(adminQueryKeys.talks, (current) =>
+        current?.filter((item) => item.id !== talkId),
+      ),
+  });
 
-  const fetchTalks = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      setTalks(await getTalksAPI());
-      setError(null);
-    } catch {
-      setError("Erro ao buscar palestras");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const error =
+    talksQuery.error ||
+    createMutation.error ||
+    updateMutation.error ||
+    deleteMutation.error;
 
-  const fetchTalk = useCallback(async (id: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      return await readTalkAPI(id);
-    } catch (requestError) {
-      console.error(requestError);
-      setError("Erro ao buscar palestra");
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const addTalk = async (input: TalkInput) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const talk = await createTalkAPI(input);
-      setTalks((current) => [...current, talk]);
-      return talk;
-    } catch (requestError) {
-      console.error(requestError);
-      setError("Erro ao cadastrar palestra");
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  };
-  const updateTalk = async (input: TalkInput) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const talk = await updateTalkAPI(input);
-      setTalks((current) =>
-        current.map((item) => (item.id === talk.id ? talk : item)),
-      );
-      return talk;
-    } catch (requestError) {
-      console.error(requestError);
-      setError("Erro ao atualizar palestra");
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  };
-  const removeTalk = async (id: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      await deleteTalkAPI(id);
-      setTalks((current) => current.filter((talk) => talk.id !== id));
-    } catch (requestError) {
-      console.error(requestError);
-      setError("Erro ao excluir palestra");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    void fetchTalks();
-  }, [fetchTalks]);
   return {
-    talks,
-    loading,
-    error,
-    fetchTalks,
-    fetchTalk,
-    addTalk,
-    updateTalk,
-    removeTalk,
+    talks: talksQuery.data ?? [],
+    loading:
+      talksQuery.isFetching ||
+      createMutation.isPending ||
+      updateMutation.isPending ||
+      deleteMutation.isPending,
+    error: error
+      ? getAdminApiErrorMessage(error, "Erro ao processar palestras")
+      : null,
+    fetchTalks: talksQuery.refetch,
+    fetchTalk: (talkId: string) =>
+      resolveAdminAction(() =>
+        queryClient.fetchQuery({
+          queryKey: [...adminQueryKeys.talks, talkId],
+          queryFn: ({ signal }) => readTalkAPI(talkId, signal),
+        }),
+      ),
+    addTalk: (talk: TalkInput) =>
+      resolveAdminAction(() => createMutation.mutateAsync(talk)),
+    updateTalk: (talk: TalkInput) =>
+      resolveAdminAction(() => updateMutation.mutateAsync(talk)),
+    removeTalk: (talkId: string) =>
+      resolveAdminAction(() => deleteMutation.mutateAsync(talkId)),
   };
 }

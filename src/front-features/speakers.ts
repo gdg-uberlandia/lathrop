@@ -1,103 +1,30 @@
-const SPEAKERS_API_PATH = "speakers";
-import axios from "axios";
-import { getAuth } from "firebase/auth";
-import { server } from "@/helpers/config";
 import { Speaker, SpeakerInput } from "@/contracts/speaker";
+import { adminApiRequest } from "@/lib/admin-api/client";
 
-const getToken = async (): Promise<string | undefined> => {
-  const auth = getAuth();
-  return auth.currentUser?.getIdToken();
-};
+const SPEAKERS_API_PATH = "/api/v1/speakers";
 
-export const getSpeakersAPI = async (): Promise<Speaker[]> => {
-  const token = await getToken();
-  try {
-    const res = await axios.get(`${server}/api/v1/${SPEAKERS_API_PATH}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return res.data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const getSpeakersAPI = (signal?: AbortSignal) =>
+  adminApiRequest<Speaker[]>(SPEAKERS_API_PATH, { signal });
 
-export const createSpeakerAPI = async (
-  speaker: SpeakerInput,
-): Promise<Speaker> => {
-  const token = await getToken();
-  try {
-    const res = await axios.post(
-      `${server}/api/v1/${SPEAKERS_API_PATH}`,
-      speaker,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-    return res.data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const createSpeakerAPI = (speaker: SpeakerInput) =>
+  adminApiRequest<Speaker>(SPEAKERS_API_PATH, {
+    method: "POST",
+    body: speaker,
+  });
 
-export const readSpeakerAPI = async (speakerId: string): Promise<Speaker> => {
-  const token = await getToken();
-  try {
-    const res = await axios.get(
-      `${server}/api/v1/${SPEAKERS_API_PATH}/${speakerId}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-    return res.data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const readSpeakerAPI = (speakerId: string, signal?: AbortSignal) =>
+  adminApiRequest<Speaker>(`${SPEAKERS_API_PATH}/${speakerId}`, { signal });
 
-export const updateSpeakerAPI = async (
-  speaker: SpeakerInput,
-): Promise<Speaker> => {
-  const token = await getToken();
-  try {
-    const res = await axios.put(
-      `${server}/api/v1/${SPEAKERS_API_PATH}/${speaker.id}`,
-      speaker,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-    return res.data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const updateSpeakerAPI = (speaker: SpeakerInput) =>
+  adminApiRequest<Speaker>(`${SPEAKERS_API_PATH}/${speaker.id}`, {
+    method: "PUT",
+    body: speaker,
+  });
 
-export const deleteSpeakerAPI = async (speakerId: string): Promise<string> => {
-  const token = await getToken();
-  try {
-    const res = await axios.delete(
-      `${server}/api/v1/${SPEAKERS_API_PATH}/${speakerId}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-    return res.data;
-  } catch (error) {
-    throw error;
-  }
+export const deleteSpeakerAPI = async (speakerId: string) => {
+  const result = await adminApiRequest<{ id: string }>(
+    `${SPEAKERS_API_PATH}/${speakerId}`,
+    { method: "DELETE" },
+  );
+  return result.id;
 };

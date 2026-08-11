@@ -12,6 +12,9 @@ import { AppLayoutProps } from "../../types";
 const AuthProvider = dynamic(() =>
   import("@/context/AuthContext").then((module) => module.AuthProvider),
 );
+const AdminQueryProvider = dynamic(() =>
+  import("@/lib/admin-query").then((module) => module.AdminQueryProvider),
+);
 
 const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = (
   props: AppLayoutProps,
@@ -37,7 +40,13 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = (
     router.pathname === "/unauthorized" ||
     router.pathname.startsWith("/admin");
 
-  return requiresAuth ? <AuthProvider>{page}</AuthProvider> : page;
+  return requiresAuth ? (
+    <AuthProvider>
+      <AdminQueryProvider>{page}</AdminQueryProvider>
+    </AuthProvider>
+  ) : (
+    page
+  );
 };
 
 export default MyApp;

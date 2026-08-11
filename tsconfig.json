@@ -28,6 +28,7 @@
       "@/utils/*": ["./src/utils/*"],
       "@/context/*": ["./src/context/*"],
       "@/layouts/*": ["./src/layouts/*"],
+      "@/lib/*": ["./src/lib/*"],
       "@/styles/*": ["./src/styles/*"]
     },
     "plugins": [

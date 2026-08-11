@@ -1,96 +1,35 @@
+import { adminApiRequest } from "@/lib/admin-api/client";
 import { Mission, MissionInput } from "@/models/mission";
-import axios from "axios";
-import { getAuth } from "firebase/auth";
-import { server } from "@/helpers/config";
 
-const getToken = async (): Promise<string | undefined> => {
-  const auth = getAuth();
-  return auth.currentUser?.getIdToken();
-};
+const MISSIONS_API_PATH = "/api/v1/missions";
 
-export const getMissionsAPI = async (): Promise<Mission[]> => {
-  const token = await getToken();
-  try {
-    const res = await axios.get(`${server}/api/v1/missions`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return res.data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const getMissionsAPI = (signal?: AbortSignal) =>
+  adminApiRequest<Mission[]>(MISSIONS_API_PATH, { signal });
 
-export const createMissionAPI = async (
-  mission: MissionInput,
-): Promise<Mission> => {
-  const token = await getToken();
-  try {
-    const res = await axios.post(`${server}/api/v1/missions`, mission, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return res.data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const createMissionAPI = (mission: MissionInput) =>
+  adminApiRequest<Mission>(MISSIONS_API_PATH, {
+    method: "POST",
+    body: mission,
+  });
 
-export const readMissionAPI = async ({
+export const readMissionAPI = ({
   missionId,
+  signal,
 }: {
   missionId: string;
-}): Promise<Mission> => {
-  const token = await getToken();
-  try {
-    const res = await axios.get(`${server}/api/v1/missions/${missionId}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return res.data;
-  } catch (error) {
-    throw error;
-  }
-};
+  signal?: AbortSignal;
+}) => adminApiRequest<Mission>(`${MISSIONS_API_PATH}/${missionId}`, { signal });
 
-export const updateMissionAPI = async (
-  mission: MissionInput,
-): Promise<Mission> => {
-  const token = await getToken();
-  try {
-    const res = await axios.put(
-      `${server}/api/v1/missions/${mission.id}`,
-      mission,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-    return res.data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const updateMissionAPI = (mission: MissionInput) =>
+  adminApiRequest<Mission>(`${MISSIONS_API_PATH}/${mission.id}`, {
+    method: "PUT",
+    body: mission,
+  });
 
-export const deleteMissionAPI = async (missionId: string): Promise<string> => {
-  const token = await getToken();
-  try {
-    const res = await axios.delete(`${server}/api/v1/missions/${missionId}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return res.data;
-  } catch (error) {
-    throw error;
-  }
+export const deleteMissionAPI = async (missionId: string) => {
+  const result = await adminApiRequest<{ id: string }>(
+    `${MISSIONS_API_PATH}/${missionId}`,
+    { method: "DELETE" },
+  );
+  return result.id;
 };

@@ -1,108 +1,41 @@
-const SPONSORS_COLLECTION = `sponsors${process.env.DEV_MODE ? "_test" : ""}`;
+import { adminApiRequest } from "@/lib/admin-api/client";
 import { Sponsor, SponsorLevel } from "@/models/sponsor";
-import axios from "axios";
-import { getAuth } from "firebase/auth";
-import { server } from "@/helpers/config";
 
-const getToken = async (): Promise<string | undefined> => {
-  const auth = getAuth();
-  return auth.currentUser?.getIdToken();
-};
+const SPONSORS_API_PATH = "/api/v1/sponsors";
 
-export const getSponsorsAPI = async (): Promise<SponsorLevel[]> => {
-  const token = await getToken();
-  try {
-    const res = await axios.get(`${server}/api/v1/${SPONSORS_COLLECTION}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return res.data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const getSponsorsAPI = (signal?: AbortSignal) =>
+  adminApiRequest<SponsorLevel[]>(SPONSORS_API_PATH, { signal });
 
-export const createSponsorAPI = async (
-  sponsor: Sponsor,
-): Promise<SponsorLevel> => {
-  const token = await getToken();
-  try {
-    const res = await axios.post(
-      `${server}/api/v1/${SPONSORS_COLLECTION}`,
-      sponsor,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-    return res.data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const createSponsorAPI = (sponsor: Sponsor) =>
+  adminApiRequest<Sponsor>(SPONSORS_API_PATH, {
+    method: "POST",
+    body: sponsor,
+  });
 
-export const readSponsorAPI = async ({
+export const readSponsorAPI = ({
   sponsorId,
   sponsorLevel,
+  signal,
 }: {
   sponsorId: string;
   sponsorLevel: string;
-}): Promise<Sponsor> => {
-  const token = await getToken();
-  try {
-    const res = await axios.get(
-      `${server}/api/v1/${SPONSORS_COLLECTION}/${sponsorId}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        params: { sponsorLevel },
-      },
-    );
-    return res.data;
-  } catch (error) {
-    throw error;
-  }
-};
+  signal?: AbortSignal;
+}) =>
+  adminApiRequest<Sponsor>(`${SPONSORS_API_PATH}/${sponsorId}`, {
+    query: { sponsorLevel },
+    signal,
+  });
 
-export const updateSponsorAPI = async (sponsor: Sponsor): Promise<Sponsor> => {
-  const token = await getToken();
-  try {
-    const res = await axios.put(
-      `${server}/api/v1/${SPONSORS_COLLECTION}/${sponsor.id}`,
-      sponsor,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-    return res.data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const updateSponsorAPI = (sponsor: Sponsor) =>
+  adminApiRequest<Sponsor>(`${SPONSORS_API_PATH}/${sponsor.id}`, {
+    method: "PUT",
+    body: sponsor,
+  });
 
-export const deleteSponsorAPI = async (sponsorId: string): Promise<string> => {
-  const token = await getToken();
-  try {
-    const res = await axios.delete(
-      `${server}/api/v1/${SPONSORS_COLLECTION}/${sponsorId}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-    return res.data;
-  } catch (error) {
-    throw error;
-  }
+export const deleteSponsorAPI = async (sponsorId: string) => {
+  const result = await adminApiRequest<{ id: string }>(
+    `${SPONSORS_API_PATH}/${sponsorId}`,
+    { method: "DELETE" },
+  );
+  return result.id;
 };

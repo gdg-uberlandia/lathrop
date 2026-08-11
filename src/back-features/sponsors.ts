@@ -1,4 +1,3 @@
-const SPONSORS_COLLECTION = `sponsors${process.env.DEV_MODE ? "_test" : ""}`;
 import {
   Sponsor,
   SponsorCategory,
@@ -6,7 +5,10 @@ import {
   SponsorLevel,
 } from "@/models/sponsor";
 import { db } from "@/utils/db";
+import { getFirestoreCollectionName } from "@/utils/db/collection-name";
 import { v4 as uuidv4 } from "uuid";
+
+const SPONSORS_COLLECTION = getFirestoreCollectionName("sponsors");
 
 /**
  * Busca todos os SponsorLevels
