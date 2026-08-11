@@ -13,7 +13,7 @@ export default async function handler(
   const user = await requireAuth(req, res);
   if (!user) return;
 
-  const accessRoles = await getProfileAccessRoles(user.uid);
+  const accessRoles = await getProfileAccessRoles(user);
   return res.status(200).json({
     user: { uid: user.uid, email: user.email ?? null },
     accessRoles,

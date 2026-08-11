@@ -11,7 +11,7 @@ export async function requireAdmin(
   const user = await requireAuth(req, res);
   if (!user) return null;
 
-  if (!(await hasAdminRole(user.uid))) {
+  if (!(await hasAdminRole(user))) {
     res.status(403).json({ error: "Acesso restrito a administradores" });
     return null;
   }
