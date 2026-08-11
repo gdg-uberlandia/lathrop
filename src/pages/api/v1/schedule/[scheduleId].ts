@@ -4,15 +4,13 @@ import {
   updateSchedule,
   deleteSchedule,
 } from "back-features/schedule";
+import { requireAuth } from "@/utils/api/require-auth";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith("Bearer ")) {
-    return res.status(401).json({ error: "Token não informado" });
-  }
+  if (!(await requireAuth(req, res))) return;
 
   if (req.method === "GET") {
     const { scheduleId } = req.query;

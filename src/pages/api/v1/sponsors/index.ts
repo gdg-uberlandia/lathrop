@@ -1,14 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { createSponsor, getAllSponsorLevels } from "back-features/sponsors";
+import { requireAuth } from "@/utils/api/require-auth";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith("Bearer ")) {
-    return res.status(401).json({ error: "Token não informado" });
-  }
+  if (!(await requireAuth(req, res))) return;
 
   try {
     if (req.method === "GET") {

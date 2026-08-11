@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import { auth } from "@/utils/firebaseClient";
 
 export function useImageUpload() {
   const [loadingImage, setLoadingImage] = useState(false);
@@ -14,7 +15,12 @@ export function useImageUpload() {
       formData.append("file", file);
       formData.append("folder", folder); // Adiciona o folder
 
-      const response = await axios.post("/api/v1/upload-photo/", formData);
+      const token = await auth.currentUser?.getIdToken();
+      if (!token) throw new Error("Sessão não encontrada");
+
+      const response = await axios.post("/api/v1/upload-photo/", formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       if (response.status < 200 || response.status >= 300) {
         throw new Error("Falha ao enviar foto");

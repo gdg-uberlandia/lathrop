@@ -18,14 +18,19 @@ export default function LoginPage({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { login, user } = useAuth();
+  const { login, user, loading: authLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (user) {
-      router.push("/admin/");
+    if (!authLoading && user && router.isReady) {
+      const destination =
+        typeof router.query.next === "string" &&
+        router.query.next.startsWith("/admin")
+          ? router.query.next
+          : "/admin";
+      router.replace(destination);
     }
-  }, [user, router]);
+  }, [authLoading, user, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,6 +69,7 @@ export default function LoginPage({
                   type="email"
                   placeholder="m@example.com"
                   required
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className=" bg-devGray-dark"
@@ -79,6 +85,7 @@ export default function LoginPage({
                   id="password"
                   type="password"
                   required
+                  autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -86,9 +93,9 @@ export default function LoginPage({
               <Button
                 type="submit"
                 className="w-full rounded-xl bg-devBlue-dark border-1 text-white border-devBlue-dark hover:border-1 hover:bg-devBlue-dark hover:!border-white text-sm"
-                disabled={loading}
+                disabled={loading || authLoading || Boolean(user)}
               >
-                {loading ? "Entrando..." : "Login"}
+                {loading || authLoading || user ? "Entrando..." : "Login"}
               </Button>
               {error && (
                 <div className="text-red-500 text-sm mt-1">{error}</div>

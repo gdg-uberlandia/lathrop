@@ -1,13 +1,12 @@
 import { createTalk, getAllTalks } from "@/back-features/talks";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { requireAuth } from "@/utils/api/require-auth";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (!req.headers.authorization?.startsWith("Bearer ")) {
-    return res.status(401).json({ error: "Token não informado" });
-  }
+  if (!(await requireAuth(req, res))) return;
   try {
     if (req.method === "GET") return res.status(200).json(await getAllTalks());
     if (req.method === "POST")

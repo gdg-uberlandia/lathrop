@@ -1,6 +1,5 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useAuth } from "../context/AuthContext";
 import {
@@ -14,12 +13,16 @@ import { Button } from "@/assets/components/ui/button";
 function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, logout, loading } = useAuth();
   const router = useRouter();
+  const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push("/login");
+      const destination = loggingOut
+        ? "/login"
+        : `/login?next=${encodeURIComponent(router.asPath)}`;
+      router.replace(destination);
     }
-  }, [user, loading, router]);
+  }, [user, loading, loggingOut, router]);
 
   if (loading) return <div>Carregando...</div>;
   if (!loading && !user) {
@@ -27,8 +30,8 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
   }
 
   const handleLogout = async () => {
+    setLoggingOut(true);
     await logout();
-    router.push("/login");
   };
 
   return (
