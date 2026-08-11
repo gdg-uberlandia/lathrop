@@ -12,7 +12,6 @@ import Loading from "@/components/admin/loading-overlay";
 import { useSpeakers } from "@/hooks/useSpeakers";
 import { useTalks } from "@/hooks/useTalks";
 import { Talk } from "@/contracts/talk";
-import AdminLayout from "@/layouts/admin-layout";
 import { Pencil, Plus, Presentation, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -33,7 +32,7 @@ export default function TalksPage() {
     [speakers],
   );
   return (
-    <AdminLayout>
+    <>
       {loading && <Loading />}
       <div className="p-4">
         <div className="flex items-center gap-2">
@@ -49,7 +48,7 @@ export default function TalksPage() {
             <Plus />
           </Link>
         </div>
-        <div className="mt-12">
+        <div className="mt-12 overflow-x-auto rounded-xl">
           <Table>
             <TableHeader className="bg-devGray-dark">
               <TableRow>
@@ -110,6 +109,6 @@ export default function TalksPage() {
           setSelected(null);
         }}
       />
-    </AdminLayout>
+    </>
   );
 }

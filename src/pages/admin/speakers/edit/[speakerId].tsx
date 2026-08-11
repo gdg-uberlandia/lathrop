@@ -2,7 +2,6 @@ import Loading from "@/components/admin/loading-overlay";
 import { SpeakersForm } from "@/components/admin/speakers/speakers-form";
 import { useSpeakers } from "@/hooks/useSpeakers";
 import { Speaker } from "@/contracts/speaker";
-import AdminLayout from "@/layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -25,7 +24,7 @@ export default function EditSpeakerPage() {
   }, [speakerId, fetchSpeaker]);
 
   return (
-    <AdminLayout>
+    <>
       {loading && <Loading />}
       <div className="p-4">
         <div className="flex w-full items-center gap-2 justify-between">
@@ -67,6 +66,6 @@ export default function EditSpeakerPage() {
           </div>
         </div>
       </div>
-    </AdminLayout>
+    </>
   );
 }

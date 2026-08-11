@@ -9,57 +9,17 @@ import {
   SidebarMenuItem,
 } from "@/assets/components/ui/sidebar";
 import { LogoGDG } from "@/assets/images/LogoGDG";
-import {
-  Home,
-  Megaphone,
-  Presentation,
-  Calendar,
-  Map,
-  DollarSign,
-  Trophy,
-} from "lucide-react";
-
 import Link from "next/link";
+import { useRouter } from "next/router";
 
-const items = [
-  {
-    title: "Home",
-    url: "/admin/",
-    icon: Home,
-  },
-  {
-    title: "Palestrantes",
-    url: "/admin/speakers/",
-    icon: Megaphone,
-  },
-  {
-    title: "Palestras",
-    url: "/admin/talks/",
-    icon: Presentation,
-  },
-  {
-    title: "Patrocinadores",
-    url: "/admin/sponsors/",
-    icon: DollarSign,
-  },
-  {
-    title: "Programação",
-    url: "/admin/schedule",
-    icon: Calendar,
-  },
-  {
-    title: "Missoes",
-    url: "/admin/missions",
-    icon: Trophy,
-  },
-  // {
-  //   title: "Trilhas",
-  //   url: "/admin/paths",
-  //   icon: Map,
-  // },
-];
+import {
+  adminNavigationItems,
+  isAdminNavigationItemActive,
+} from "./admin-navigation";
 
 export function AppSidebar() {
+  const router = useRouter();
+
   return (
     <Sidebar>
       <SidebarHeader className="flex items-center h-16">
@@ -67,15 +27,26 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          {/* <SidebarGroupLabel>Application</SidebarGroupLabel> */}
           <SidebarGroupContent className="px-1">
             <SidebarMenu className="gap-1">
-              {items.map((item) => (
+              {adminNavigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isAdminNavigationItemActive(
+                      router.pathname,
+                      item,
+                    )}
+                    className="data-[active=true]:bg-devBlue-dark data-[active=true]:text-white"
+                  >
                     <Link
                       href={item.url}
                       className="text-white h-14 rounded-xl px-3"
+                      aria-current={
+                        isAdminNavigationItemActive(router.pathname, item)
+                          ? "page"
+                          : undefined
+                      }
                     >
                       <item.icon className="!size-5 mr-1" />
                       <span>{item.title}</span>

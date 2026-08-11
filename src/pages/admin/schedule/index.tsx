@@ -15,7 +15,6 @@ import {
   SpeechesPath,
   SpeechTopicName,
 } from "@/models/schedule";
-import AdminLayout from "@/layouts/admin-layout";
 import {
   Calendar,
   CalendarPlus,
@@ -84,7 +83,7 @@ export default function Schedules() {
   };
 
   return (
-    <AdminLayout>
+    <>
       {loading && <Loading />}
       <div className="p-4">
         <div className="flex w-full items-center gap-2 justify-between">
@@ -102,7 +101,7 @@ export default function Schedules() {
           </Link>
         </div>
 
-        <div className="mt-12">
+        <div className="mt-12 overflow-x-auto rounded-xl">
           <Table className="rounded-xl overflow-hidden border-collapse">
             <TableCaption />
             <TableHeader className="bg-devGray-dark text-white">
@@ -189,6 +188,9 @@ export default function Schedules() {
                                       >
                                         <Image
                                           src={speaker.photoUrl!}
+                                          unoptimized={shouldBypassImageOptimization(
+                                            speaker.photoUrl,
+                                          )}
                                           alt={`Foto ${speaker.name}`}
                                           height={32}
                                           width={32}
@@ -245,7 +247,7 @@ export default function Schedules() {
         onClose={() => setDialogDeleteOpen(false)}
         onConfirm={handleDelete}
       />
-    </AdminLayout>
+    </>
   );
 }
 
@@ -261,6 +263,7 @@ import {
 } from "@/assets/components/ui/alert-dialog";
 import { Button } from "@/assets/components/ui/button";
 import Image from "next/image";
+import { shouldBypassImageOptimization } from "@/helpers/image";
 
 function DeleteDialog({
   open,

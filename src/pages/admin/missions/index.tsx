@@ -12,7 +12,6 @@ import DeleteDialog from "@/components/admin/delete-dialog";
 import Loading from "@/components/admin/loading-overlay";
 import { useMissions } from "@/hooks/useMissions";
 import { Mission } from "@/models/mission";
-import AdminLayout from "@/layouts/admin-layout";
 import { Target, Pencil, Trash2, Plus, QrCode } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -40,7 +39,7 @@ export default function Missions() {
   };
 
   return (
-    <AdminLayout>
+    <>
       {loading && <Loading />}
       <div className="p-4">
         <div className="flex w-full items-center gap-2 justify-between">
@@ -58,7 +57,7 @@ export default function Missions() {
           </Link>
         </div>
 
-        <div className="mt-12">
+        <div className="mt-12 overflow-x-auto rounded-xl">
           <Table className="rounded-xl overflow-hidden border-collapse">
             <TableCaption />
             <TableHeader className="bg-devGray-dark text-white">
@@ -143,6 +142,6 @@ export default function Missions() {
         onClose={() => setDialogDeleteOpen(false)}
         onConfirm={handleDelete}
       />
-    </AdminLayout>
+    </>
   );
 }

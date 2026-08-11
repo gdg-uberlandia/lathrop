@@ -14,6 +14,7 @@ const nextConfig = {
       "lh3.googleusercontent.com",
       "i.ytimg.com",
       "storage.googleapis.com",
+      "api.dicebear.com",
     ],
   },
   /*exportPathMap: async function (

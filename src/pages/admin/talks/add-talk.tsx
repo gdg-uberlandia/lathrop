@@ -2,7 +2,6 @@ import Loading from "@/components/admin/loading-overlay";
 import { TalksForm } from "@/components/admin/talks/talks-form";
 import { useSpeakers } from "@/hooks/useSpeakers";
 import { useTalks } from "@/hooks/useTalks";
-import AdminLayout from "@/layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -12,7 +11,7 @@ export default function AddTalkPage() {
   const { error: speakersError, speakers } = useSpeakers();
   const { addTalk, error, loading } = useTalks();
   return (
-    <AdminLayout>
+    <>
       {loading && <Loading />}
       <div className="p-4">
         <div className="flex items-center gap-2">
@@ -45,6 +44,6 @@ export default function AddTalkPage() {
           />
         </div>
       </div>
-    </AdminLayout>
+    </>
   );
 }

@@ -1,5 +1,4 @@
 import { useSpeakers } from "@/hooks/useSpeakers";
-import AdminLayout from "@/layouts/admin-layout";
 import { IconLoader2 } from "@tabler/icons-react";
 import { useSponsors } from "@/hooks/useSponsors";
 import DroidShirt from "@/assets/images/droid-shirt.png";
@@ -77,7 +76,5 @@ function AdminIndex() {
     </div>
   );
 }
-
-AdminIndex.layout = AdminLayout;
 
 export default AdminIndex;

@@ -1,7 +1,6 @@
 import Loading from "@/components/admin/loading-overlay";
 import { MissionsForm } from "@/components/admin/missions/missions-form";
 import { useMissions } from "@/hooks/useMissions";
-import AdminLayout from "@/layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -19,7 +18,7 @@ export default function AddEditMissionsPage() {
   };
 
   return (
-    <AdminLayout>
+    <>
       {loading && <Loading />}
       <div className="p-4">
         <div className="flex w-full items-center gap-2 justify-between">
@@ -40,6 +39,6 @@ export default function AddEditMissionsPage() {
           </div>
         </div>
       </div>
-    </AdminLayout>
+    </>
   );
 }

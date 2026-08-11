@@ -1,4 +1,3 @@
-import AdminLayout from "@/layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -10,7 +9,7 @@ export default function AddEditSchedulePage() {
   const { createSchedule, error, loading } = useSchedule();
 
   return (
-    <AdminLayout>
+    <>
       {loading && <Loading />}
       <div className="p-4">
         <div className="flex w-full items-center gap-2 justify-between">
@@ -35,6 +34,6 @@ export default function AddEditSchedulePage() {
           </div>
         </div>
       </div>
-    </AdminLayout>
+    </>
   );
 }

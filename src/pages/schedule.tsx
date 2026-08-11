@@ -1,6 +1,7 @@
 import styles from "../styles/Schedule.module.css";
 
 import { Speaker } from "@/contracts/speaker";
+import { shouldBypassImageOptimization } from "@/helpers/image";
 
 import { Header } from "@/components/devfest-triangulo-2025/Header";
 import BaseLayout from "@/layouts/base-layout";
@@ -197,6 +198,7 @@ const SpeakerCard = ({
       <div className="text-white/90 flex items-center gap-2 mb-3 justify-between w-full">
         <Image
           src={speaker.photoUrl!}
+          unoptimized={shouldBypassImageOptimization(speaker.photoUrl)}
           alt={`Foto ${speaker.name}`}
           height={32}
           width={32}

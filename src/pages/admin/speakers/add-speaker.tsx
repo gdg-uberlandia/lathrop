@@ -1,7 +1,6 @@
 import Loading from "@/components/admin/loading-overlay";
 import { SpeakersForm } from "@/components/admin/speakers/speakers-form";
 import { useSpeakers } from "@/hooks/useSpeakers";
-import AdminLayout from "@/layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -9,7 +8,7 @@ export default function AddEditSpeakersPage() {
   const { addSpeaker, loading } = useSpeakers();
 
   return (
-    <AdminLayout>
+    <>
       {loading && <Loading />}
       <div className="p-4">
         <div className="flex w-full items-center gap-2 justify-between">
@@ -30,6 +29,6 @@ export default function AddEditSpeakersPage() {
           </div>
         </div>
       </div>
-    </AdminLayout>
+    </>
   );
 }

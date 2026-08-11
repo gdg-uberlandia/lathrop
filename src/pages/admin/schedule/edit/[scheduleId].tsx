@@ -2,7 +2,6 @@ import Loading from "@/components/admin/loading-overlay";
 import { ScheduleForm } from "@/components/admin/schedule/schedule-form";
 import { ScheduleFormValues } from "@/components/admin/schedule/schedule-schema";
 import { useSchedule } from "@/hooks/useSchedule";
-import AdminLayout from "@/layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -27,7 +26,7 @@ export default function EditSchedulePage() {
   }, [scheduleId, readSchedule]);
 
   return (
-    <AdminLayout>
+    <>
       {loading && <Loading />}
       <div className="p-4">
         <div className="flex w-full items-center gap-2 justify-between">
@@ -61,6 +60,6 @@ export default function EditSchedulePage() {
           </div>
         </div>
       </div>
-    </AdminLayout>
+    </>
   );
 }

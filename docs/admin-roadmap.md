@@ -75,17 +75,17 @@ automaticamente durante o build ou deploy de hosting.
 - [x] Adicionar fixtures válidas para cada entidade.
 - [x] Adicionar testes de compatibilidade e regras relacionais.
 - [x] Centralizar a resolução do nome das coleções por ambiente.
-- [ ] Documentar o processo de sincronização com a Pokedex.
+- [x] Documentar o processo de sincronização com a Pokedex.
 
 Critério de aceite: nenhum endpoint grava um documento sem validar seu contrato.
 
 ### 4. Cliente administrativo de API
 
-- [ ] Centralizar obtenção e renovação do token.
-- [ ] Centralizar headers e serialização.
-- [ ] Tratar `401`, `403` e erros de validação.
-- [ ] Cancelar requisições obsoletas.
-- [ ] Remover clientes Axios duplicados por feature.
+- [x] Centralizar obtenção e renovação do token.
+- [x] Centralizar headers e serialização.
+- [x] Tratar `401`, `403` e erros de validação.
+- [x] Cancelar requisições obsoletas.
+- [x] Remover clientes Axios duplicados por feature.
 
 Estrutura sugerida:
 
@@ -102,12 +102,12 @@ src/lib/admin-api/
 
 Adotar TanStack Query ou SWR. TanStack Query é a preferência inicial.
 
-- [ ] Compartilhar cache entre páginas.
-- [ ] Deduplicar requisições.
-- [ ] Invalidar queries depois de mutations.
-- [ ] Definir retry e stale time.
+- [x] Compartilhar cache entre páginas.
+- [x] Deduplicar requisições.
+- [x] Invalidar queries depois de mutations.
+- [x] Definir retry e stale time.
 - [ ] Evitar loaders globais para operações locais.
-- [ ] Definir estratégia de invalidação do cache da Pokedex.
+- [x] Definir estratégia de invalidação do cache da Pokedex.
 
 Critério de aceite: navegar entre listagem e formulário não recarrega dados que
 ainda estão válidos.
@@ -116,12 +116,12 @@ ainda estão válidos.
 
 ### 6. Layout administrativo
 
-- [ ] Usar uma única estratégia de layout em todas as páginas.
-- [ ] Destacar a rota ativa na sidebar.
-- [ ] Adicionar breadcrumbs.
-- [ ] Melhorar responsividade da sidebar e das tabelas.
+- [x] Usar uma única estratégia de layout em todas as páginas.
+- [x] Destacar a rota ativa na sidebar.
+- [x] Adicionar breadcrumbs.
+- [x] Melhorar responsividade da sidebar e das tabelas.
 - [ ] Padronizar sessão carregando, acesso negado e erro.
-- [ ] Remover imports, comentários e itens de menu obsoletos.
+- [x] Remover imports, comentários e itens de menu obsoletos.
 
 ### 7. Componentes CRUD compartilhados
 
@@ -234,7 +234,8 @@ A implementação atual pode ser descartada.
 - [ ] Modelar intervalos, abertura e encerramento com união discriminada.
 - [ ] Usar data e timestamps, não apenas strings de horário.
 - [ ] Detectar conflitos de sala e palestra.
-- [ ] Remover delays artificiais e tipos `any`.
+- [ ] Remover tipos `any` remanescentes.
+- [x] Remover delays artificiais.
 - [ ] Criar visualização prévia da agenda.
 - [ ] Adicionar testes.
 

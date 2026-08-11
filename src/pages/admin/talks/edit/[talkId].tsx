@@ -3,7 +3,6 @@ import { TalksForm } from "@/components/admin/talks/talks-form";
 import { useSpeakers } from "@/hooks/useSpeakers";
 import { useTalks } from "@/hooks/useTalks";
 import { Talk } from "@/contracts/talk";
-import AdminLayout from "@/layouts/admin-layout";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -19,7 +18,7 @@ export default function EditTalkPage() {
       void fetchTalk(router.query.talkId).then(setTalk);
   }, [fetchTalk, router.query.talkId]);
   return (
-    <AdminLayout>
+    <>
       {loading && <Loading />}
       <div className="p-4">
         <div className="flex items-center gap-2">
@@ -50,6 +49,6 @@ export default function EditTalkPage() {
           )}
         </div>
       </div>
-    </AdminLayout>
+    </>
   );
 }

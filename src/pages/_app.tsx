@@ -15,6 +15,7 @@ const AuthProvider = dynamic(() =>
 const AdminQueryProvider = dynamic(() =>
   import("@/lib/admin-query").then((module) => module.AdminQueryProvider),
 );
+const AdminLayout = dynamic(() => import("@/layouts/admin-layout"));
 
 const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = (
   props: AppLayoutProps,
@@ -22,9 +23,10 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = (
   const { Component, pageProps } = props;
   const router = useRouter();
 
-  const Layout =
-    Component.layout ||
-    (({ children }: { children: ReactNode }) => <>{children}</>);
+  const Layout = router.pathname.startsWith("/admin")
+    ? AdminLayout
+    : Component.layout ||
+      (({ children }: { children: ReactNode }) => <>{children}</>);
 
   const page = (
     <>

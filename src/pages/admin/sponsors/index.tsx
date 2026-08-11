@@ -12,7 +12,6 @@ import DeleteDialog from "@/components/admin/delete-dialog";
 import Loading from "@/components/admin/loading-overlay";
 import { useSponsors } from "@/hooks/useSponsors";
 import { SponsorCategoryDisplayName } from "@/models/sponsor";
-import AdminLayout from "@/layouts/admin-layout";
 import { DollarSign, HandCoins, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -80,7 +79,7 @@ export default function Sponsors() {
   };
 
   return (
-    <AdminLayout>
+    <>
       {loading && <Loading />}
       <div className="p-4">
         <div className="flex w-full items-center gap-2 justify-between">
@@ -98,7 +97,7 @@ export default function Sponsors() {
           </Link>
         </div>
 
-        <div className="mt-12">
+        <div className="mt-12 overflow-x-auto rounded-xl">
           <Table className="rounded-xl overflow-hidden border-collapse">
             <TableCaption />
             <TableHeader className="bg-devGray-dark text-white">
@@ -162,6 +161,6 @@ export default function Sponsors() {
         onClose={() => setDialogDeleteOpen(false)}
         onConfirm={handleDelete}
       />
-    </AdminLayout>
+    </>
   );
 }

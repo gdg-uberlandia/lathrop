@@ -9,6 +9,10 @@ import {
 } from "@/assets/components/ui/sidebar";
 import { AppSidebar } from "@/components/admin/app-sidebar";
 import { Button } from "@/assets/components/ui/button";
+import { getAdminBreadcrumbs } from "@/components/admin/admin-navigation";
+import { IconLoader2 } from "@tabler/icons-react";
+import Link from "next/link";
+import { ChevronRight, LogOut } from "lucide-react";
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, isAdmin, logout, loading } = useAuth();
@@ -26,7 +30,16 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
     }
   }, [user, isAdmin, loading, loggingOut, router]);
 
-  if (loading) return <div>Carregando...</div>;
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="flex items-center gap-3 text-sm text-white/70">
+          <IconLoader2 className="size-5 animate-spin text-devBlue-dark" />
+          Verificando sua sessão...
+        </div>
+      </div>
+    );
+  }
   if (!loading && (!user || !isAdmin)) {
     return null;
   }
@@ -35,21 +48,56 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
     setLoggingOut(true);
     await logout();
   };
+  const breadcrumbs = getAdminBreadcrumbs(router.pathname);
 
   return (
-    <div className="w-full mx-auto">
+    <div className="mx-auto w-full">
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
-          <header className="sticky bg-background top-0 flex h-16 shrink-0 items-center gap-2 border-b px-4 z-30">
+          <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-3 sm:px-4">
             <SidebarTrigger className="-ml-1" />
-            <div className="flex items-center justify-end gap-6 w-full">
-              <span className="text-xs">{user ? user.email : ""}</span>
+            <nav
+              aria-label="Navegação estrutural"
+              className="hidden min-w-0 flex-1 items-center gap-1 text-sm sm:flex"
+            >
+              {breadcrumbs.map((breadcrumb, index) => (
+                <div
+                  key={`${breadcrumb.title}-${index}`}
+                  className="flex min-w-0 items-center gap-1"
+                >
+                  {index > 0 && (
+                    <ChevronRight className="size-4 shrink-0 text-white/30" />
+                  )}
+                  {breadcrumb.url ? (
+                    <Link
+                      href={breadcrumb.url}
+                      className="truncate text-white/60 hover:text-white"
+                    >
+                      {breadcrumb.title}
+                    </Link>
+                  ) : (
+                    <span className="truncate text-white">
+                      {breadcrumb.title}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </nav>
+            <div className="ml-auto flex min-w-0 items-center gap-2 sm:gap-4">
+              <span className="hidden max-w-52 truncate text-xs text-white/60 md:block">
+                {user?.email}
+              </span>
               <Button
                 onClick={handleLogout}
-                className="rounded-xl bg-devBlue-dark border-1 text-white border-devBlue-dark hover:border-1 hover:bg-devBlue-dark hover:!border-white text-sm"
+                disabled={loggingOut}
+                aria-label="Sair da área administrativa"
+                className="gap-2 rounded-xl border border-devBlue-dark bg-devBlue-dark text-sm text-white hover:border-white hover:bg-devBlue-dark"
               >
-                Logout
+                <LogOut className="size-4" />
+                <span className="hidden sm:inline">
+                  {loggingOut ? "Saindo..." : "Sair"}
+                </span>
               </Button>
             </div>
           </header>

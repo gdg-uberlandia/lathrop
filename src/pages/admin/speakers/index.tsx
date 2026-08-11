@@ -11,7 +11,7 @@ import DeleteDialog from "@/components/admin/delete-dialog";
 import Loading from "@/components/admin/loading-overlay";
 import { useSpeakers } from "@/hooks/useSpeakers";
 import { Speaker } from "@/contracts/speaker";
-import AdminLayout from "@/layouts/admin-layout";
+import { shouldBypassImageOptimization } from "@/helpers/image";
 import { Megaphone, Pencil, Trash2, UserRoundPlus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -24,7 +24,7 @@ export default function Speakers() {
   const [speaker, setSpeaker] = useState<Speaker | null>(null);
 
   return (
-    <AdminLayout>
+    <>
       {loading && <Loading />}
       <div className="p-4">
         <div className="flex items-center gap-2">
@@ -40,7 +40,7 @@ export default function Speakers() {
             <UserRoundPlus />
           </Link>
         </div>
-        <div className="mt-12">
+        <div className="mt-12 overflow-x-auto rounded-xl">
           <Table>
             <TableHeader className="bg-devGray-dark">
               <TableRow>
@@ -58,6 +58,7 @@ export default function Speakers() {
                   <TableCell>
                     <Image
                       src={item.photoUrl ?? "/default-speaker.png"}
+                      unoptimized={shouldBypassImageOptimization(item.photoUrl)}
                       width={40}
                       height={40}
                       alt={`Foto de ${item.name}`}
@@ -106,6 +107,6 @@ export default function Speakers() {
           setSpeaker(null);
         }}
       />
-    </AdminLayout>
+    </>
   );
 }
