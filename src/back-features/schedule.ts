@@ -25,7 +25,7 @@ const parse = (id: string, value: FirebaseFirestore.DocumentData) =>
     updatedAt: toDate(value.updatedAt),
   });
 async function validateTalk(input: ScheduleInput) {
-  if (input.activity.type !== "talk") return;
+  if (input.activity.type === "break") return;
   const talk = await db
     .collection(TALKS_COLLECTION)
     .doc(input.activity.talkId)
@@ -44,12 +44,14 @@ async function validateConflict(input: ScheduleInput) {
     .map((document) => parse(document.id, document.data()))
     .some(
       (item) =>
-        item.track === input.track &&
+        (item.track === null ||
+          input.track === null ||
+          item.track === input.track) &&
         interval.startAt < item.endAt &&
         item.startAt < interval.endAt,
     );
   if (conflict)
-    throw new Error("Já existe uma atividade nesta sala e intervalo.");
+    throw new Error("Já existe uma atividade conflitante neste intervalo.");
 }
 function resolveInterval(input: ScheduleInput) {
   const eventDate = String(configValues.eventDate).slice(0, 10);
@@ -63,7 +65,7 @@ function toStoredFields(input: ScheduleInput) {
     id: input.id,
     ...resolveInterval(input),
     track: input.track,
-    order: getScheduleTrackOrder(input.track),
+    order: input.track ? getScheduleTrackOrder(input.track) : null,
     activity: input.activity,
     active: input.active,
   };
@@ -76,7 +78,9 @@ export async function getSchedule(): Promise<ScheduleEntry[]> {
   return snapshot.docs
     .map((doc) => parse(doc.id, doc.data()))
     .sort(
-      (a, b) => a.startAt.getTime() - b.startAt.getTime() || a.order - b.order,
+      (a, b) =>
+        a.startAt.getTime() - b.startAt.getTime() ||
+        (a.order ?? -1) - (b.order ?? -1),
     );
 }
 export async function readSchedule(id: string): Promise<ScheduleEntry> {

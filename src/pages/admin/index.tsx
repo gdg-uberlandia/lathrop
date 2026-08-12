@@ -344,10 +344,10 @@ export default function AdminIndex() {
                   {schedule.slice(0, 7).map((slot) => {
                     const activity = slot.activity;
                     const activityName =
-                      activity.type === "talk"
-                        ? talks.find((talk) => talk.id === activity.talkId)
-                            ?.title || "Palestra removida"
-                        : activity.title;
+                      activity.type === "break"
+                        ? activity.title
+                        : talks.find((talk) => talk.id === activity.talkId)
+                            ?.title || "Palestra removida";
                     return (
                       <tr key={slot.id} className="hover:bg-slate-50">
                         <td className="whitespace-nowrap px-4 py-3 font-medium text-slate-700">
@@ -360,7 +360,7 @@ export default function AdminIndex() {
                           {activityName}
                         </td>
                         <td className="px-4 py-3 text-slate-500">
-                          {slot.track}
+                          {slot.track || "Geral"}
                         </td>
                         <td className="px-4 py-3">
                           <span className="inline-flex items-center gap-1.5 text-emerald-700">

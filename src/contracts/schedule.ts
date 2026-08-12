@@ -19,13 +19,13 @@ export const SCHEDULE_TRACKS = [
 export const scheduleActivitySchema = z.discriminatedUnion("type", [
   z
     .object({
-      type: z.literal("talk"),
+      type: z.enum(["talk", "opening", "closing"]),
       talkId: z.string().trim().min(1).max(128),
     })
     .strict(),
   z
     .object({
-      type: z.enum(["opening", "break", "closing"]),
+      type: z.literal("break"),
       title: z.string().trim().min(2).max(120),
     })
     .strict(),
@@ -40,7 +40,7 @@ export const scheduleInputSchema = z
     id: z.string().trim().min(1).max(128),
     startTime: timeSchema,
     endTime: timeSchema,
-    track: scheduleTrackSchema,
+    track: scheduleTrackSchema.nullable(),
     activity: scheduleActivitySchema,
     active: z.boolean(),
   })
@@ -48,6 +48,22 @@ export const scheduleInputSchema = z
   .refine((value) => value.endTime > value.startTime, {
     path: ["endTime"],
     message: "O término deve ser posterior ao início.",
+  })
+  .superRefine((value, context) => {
+    if (value.activity.type === "talk" && !value.track) {
+      context.addIssue({
+        code: "custom",
+        path: ["track"],
+        message: "Selecione a trilha da palestra.",
+      });
+    }
+    if (value.activity.type !== "talk" && value.track) {
+      context.addIssue({
+        code: "custom",
+        path: ["track"],
+        message: "Atividades gerais não possuem trilha.",
+      });
+    }
   });
 
 export const scheduleFieldsSchema = z
@@ -56,12 +72,13 @@ export const scheduleFieldsSchema = z
     eventId: z.string().trim().min(1).max(128),
     startAt: z.coerce.date(),
     endAt: z.coerce.date(),
-    track: scheduleTrackSchema,
+    track: scheduleTrackSchema.nullable(),
     order: z
       .number()
       .int()
       .min(0)
-      .max(SCHEDULE_TRACKS.length - 1),
+      .max(SCHEDULE_TRACKS.length - 1)
+      .nullable(),
     activity: scheduleActivitySchema,
     active: z.boolean(),
     createdAt: z.coerce.date(),

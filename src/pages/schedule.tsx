@@ -11,6 +11,13 @@ type SerializedSchedule = Omit<
   ScheduleEntry,
   "startAt" | "endAt" | "createdAt" | "updatedAt"
 > & { startAt: string; endAt: string; createdAt: string; updatedAt: string };
+const formatTime = (value: string) =>
+  new Intl.DateTimeFormat("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "America/Sao_Paulo",
+  }).format(new Date(value));
+
 export default function SchedulePage({
   schedule,
   talks,
@@ -25,75 +32,94 @@ export default function SchedulePage({
   const trackNames = new Map(
     SCHEDULE_TRACKS.map((track) => [track.value, track.label]),
   );
+  const slots = Array.from(
+    schedule
+      .filter((item) => item.active)
+      .reduce((groups, item) => {
+        const key = `${item.startAt}-${item.endAt}`;
+        groups.set(key, [...(groups.get(key) ?? []), item]);
+        return groups;
+      }, new Map<string, SerializedSchedule[]>()),
+  ).map(([, items]) => items.sort((a, b) => (a.order ?? -1) - (b.order ?? -1)));
+
+  const content = (item: SerializedSchedule) => {
+    const talk =
+      item.activity.type === "break" ? null : talkMap.get(item.activity.talkId);
+    const prefix =
+      item.activity.type === "opening"
+        ? "Abertura"
+        : item.activity.type === "closing"
+          ? "Encerramento"
+          : null;
+    const title =
+      item.activity.type === "break"
+        ? item.activity.title
+        : (talk?.title ?? "Palestra removida");
+    const names =
+      talk?.speakerIds.map((id) => speakerMap.get(id)?.name).filter(Boolean) ??
+      [];
+    return (
+      <>
+        <div className="flex flex-wrap items-center gap-2">
+          {prefix && (
+            <span className="rounded-full bg-blue-500/15 px-2.5 py-1 text-xs font-semibold text-blue-300">
+              {prefix}
+            </span>
+          )}
+          <h2 className="text-lg font-semibold">{title}</h2>
+        </div>
+        {talk?.description && (
+          <p className="mt-2 text-sm text-white/60">{talk.description}</p>
+        )}
+        {names.length > 0 && (
+          <p className="mt-3 text-sm text-white/80">{names.join(" · ")}</p>
+        )}
+      </>
+    );
+  };
+
   return (
     <BaseLayout>
       <Header isRoot={false} />
-      <main className="mx-auto min-h-screen max-w-6xl px-5 py-16 text-white">
+      <main className="mx-auto min-h-screen max-w-7xl px-5 py-16 text-white">
         <header className="mb-12 max-w-2xl">
           <h1 className="text-4xl font-bold">Programação do evento</h1>
           <p className="mt-3 text-white/60">
             Confira os horários, trilhas e conteúdos do DevFest Triângulo.
           </p>
         </header>
-        <div className="space-y-4">
-          {schedule
-            .filter((item) => item.active)
-            .map((item) => {
-              const talk =
-                item.activity.type === "talk"
-                  ? talkMap.get(item.activity.talkId)
-                  : null;
-              const title =
-                talk?.title ??
-                (item.activity.type === "talk"
-                  ? "Palestra"
-                  : item.activity.title);
-              const talkSpeakers =
-                talk?.speakerIds
-                  .map((id) => speakerMap.get(id))
-                  .filter(Boolean) ?? [];
-              return (
-                <article
-                  key={item.id}
-                  className="grid gap-4 rounded-2xl border border-white/10 bg-white/5 p-5 md:grid-cols-[150px_1fr_180px]"
-                >
-                  <div>
-                    <div className="text-lg font-semibold">
-                      {new Intl.DateTimeFormat("pt-BR", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      }).format(new Date(item.startAt))}
-                      –
-                      {new Intl.DateTimeFormat("pt-BR", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      }).format(new Date(item.endAt))}
-                    </div>
+        <div className="space-y-8">
+          {slots.map((items) => {
+            const first = items[0];
+            const general = items.find((item) => item.track === null);
+            return (
+              <section key={`${first.startAt}-${first.endAt}`}>
+                <header className="mb-3 text-lg font-semibold text-white/80">
+                  {formatTime(first.startAt)}–{formatTime(first.endAt)}
+                </header>
+                {general ? (
+                  <article className="rounded-2xl border border-white/10 bg-white/5 p-6">
+                    {content(general)}
+                  </article>
+                ) : (
+                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                    {items.map((item) => (
+                      <article
+                        key={item.id}
+                        className="rounded-2xl border border-white/10 bg-white/5 p-5"
+                      >
+                        <span className="mb-4 inline-flex rounded-full border border-white/10 px-3 py-1 text-xs text-white/70">
+                          {item.track ? trackNames.get(item.track) : "Geral"}
+                        </span>
+                        {content(item)}
+                      </article>
+                    ))}
                   </div>
-                  <div>
-                    <h2 className="text-lg font-semibold">{title}</h2>
-                    {talk?.description && (
-                      <p className="mt-2 text-sm text-white/60">
-                        {talk.description}
-                      </p>
-                    )}
-                    {talkSpeakers.length > 0 && (
-                      <p className="mt-3 text-sm text-white/80">
-                        {talkSpeakers
-                          .map((speaker) => speaker?.name)
-                          .join(" · ")}
-                      </p>
-                    )}
-                  </div>
-                  <div className="md:text-right">
-                    <span className="inline-flex rounded-full border border-white/10 px-3 py-1 text-sm text-white/70">
-                      {trackNames.get(item.track)}
-                    </span>
-                  </div>
-                </article>
-              );
-            })}
-          {schedule.length === 0 && (
+                )}
+              </section>
+            );
+          })}
+          {slots.length === 0 && (
             <p className="rounded-2xl border border-white/10 p-8 text-center text-white/60">
               A programação será publicada em breve.
             </p>
@@ -103,6 +129,7 @@ export default function SchedulePage({
     </BaseLayout>
   );
 }
+
 export async function getServerSideProps() {
   try {
     const [schedule, talks, speakers] = await Promise.all([

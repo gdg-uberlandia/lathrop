@@ -233,6 +233,8 @@ A implementação atual pode ser descartada.
 - [x] Referenciar palestras por `talkId`.
 - [x] Modelar as trilhas fixas e sua ordem automática.
 - [x] Modelar intervalos, abertura e encerramento com união discriminada.
+- [x] Tratar abertura, intervalo e encerramento como slots gerais sem trilha.
+- [x] Associar abertura e encerramento ao catálogo de palestras.
 - [x] Usar data e timestamps, não apenas strings de horário.
 - [x] Detectar conflitos de horário.
 - [x] Remover tipos `any` da programação administrativa.

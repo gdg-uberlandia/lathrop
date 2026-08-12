@@ -60,8 +60,8 @@ export function ScheduleForm({
           id: uuidv4(),
           startTime: "08:00",
           endTime: "09:00",
-          track: "MINAS",
-          activity: { type: "opening", title: "Abertura" },
+          track: null,
+          activity: { type: "opening", talkId: talks[0]?.id ?? "" },
           active: true,
         },
   });
@@ -70,19 +70,20 @@ export function ScheduleForm({
   const changeType = (value: "talk" | "opening" | "break" | "closing") =>
     form.setValue(
       "activity",
-      value === "talk"
-        ? { type: "talk", talkId: talks[0]?.id ?? "" }
-        : {
-            type: value,
-            title:
-              value === "opening"
-                ? "Abertura"
-                : value === "break"
-                  ? "Intervalo"
-                  : "Encerramento",
-          },
+      value === "break"
+        ? { type: "break", title: "Coffee-break" }
+        : { type: value, talkId: talks[0]?.id ?? "" },
       { shouldDirty: true, shouldValidate: true },
     );
+  const handleTypeChange = (
+    value: "talk" | "opening" | "break" | "closing",
+  ) => {
+    changeType(value);
+    form.setValue("track", value === "talk" ? "MINAS" : null, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  };
   return (
     <Form {...form}>
       <form
@@ -93,12 +94,12 @@ export function ScheduleForm({
           <h2 className="font-semibold text-slate-900">Item da programação</h2>
           <p className="mt-1 text-sm text-slate-500">
             Cada registro representa uma atividade em uma trilha e intervalo
-            definidos. A ordem é determinada automaticamente pela trilha.
+            definidos. Atividades gerais ocupam todas as trilhas.
           </p>
         </div>
         <FormItem className="md:col-span-3">
           <FormLabel>Tipo</FormLabel>
-          <Select value={type} onValueChange={changeType}>
+          <Select value={type} onValueChange={handleTypeChange}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -110,13 +111,19 @@ export function ScheduleForm({
             </SelectContent>
           </Select>
         </FormItem>
-        {type === "talk" ? (
+        {type !== "break" ? (
           <FormField
             name="activity.talkId"
             control={form.control}
             render={({ field }) => (
               <FormItem className="md:col-span-5">
-                <FormLabel>Palestra</FormLabel>
+                <FormLabel>
+                  {type === "talk"
+                    ? "Palestra"
+                    : type === "opening"
+                      ? "Palestra de abertura"
+                      : "Palestra de encerramento"}
+                </FormLabel>
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecione" />
@@ -170,30 +177,35 @@ export function ScheduleForm({
             )}
           />
         ))}
-        <FormField
-          name="track"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem className="md:col-span-2">
-              <FormLabel>Trilha</FormLabel>
-              <Select value={field.value} onValueChange={field.onChange}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {SCHEDULE_TRACKS.map((track) => (
-                    <SelectItem key={track.value} value={track.value}>
-                      {track.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {type === "talk" && (
+          <FormField
+            name="track"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className="md:col-span-2">
+                <FormLabel>Trilha</FormLabel>
+                <Select
+                  value={field.value ?? undefined}
+                  onValueChange={field.onChange}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {SCHEDULE_TRACKS.map((track) => (
+                      <SelectItem key={track.value} value={track.value}>
+                        {track.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <FormField
           name="active"
           control={form.control}

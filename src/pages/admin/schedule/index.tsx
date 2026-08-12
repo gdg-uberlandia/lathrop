@@ -47,15 +47,15 @@ export default function Schedules() {
   );
   const name = useCallback(
     (item: ScheduleEntry) =>
-      item.activity.type === "talk"
-        ? (talkNames.get(item.activity.talkId) ?? "Palestra removida")
-        : item.activity.title,
+      item.activity.type === "break"
+        ? item.activity.title
+        : (talkNames.get(item.activity.talkId) ?? "Palestra removida"),
     [talkNames],
   );
   const filtered = useMemo(
     () =>
       schedule.filter((item) =>
-        `${name(item)} ${trackNames.get(item.track) ?? ""}`
+        `${name(item)} ${item.track ? trackNames.get(item.track) : "geral"}`
           .toLowerCase()
           .includes(list.search.toLowerCase()),
       ),
@@ -69,7 +69,9 @@ export default function Schedules() {
           schedule
             .slice(index + 1)
             .flatMap((other) =>
-              item.track === other.track &&
+              (item.track === null ||
+                other.track === null ||
+                item.track === other.track) &&
               item.startAt < other.endAt &&
               other.startAt < item.endAt
                 ? [item.id, other.id]
@@ -149,7 +151,9 @@ export default function Schedules() {
                         </span>
                       )}
                     </TableCell>
-                    <TableCell>{trackNames.get(item.track)}</TableCell>
+                    <TableCell>
+                      {item.track ? trackNames.get(item.track) : "Geral"}
+                    </TableCell>
                     <TableCell>
                       <AdminStatusBadge
                         active={item.active}

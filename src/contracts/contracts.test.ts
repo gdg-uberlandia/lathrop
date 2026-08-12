@@ -105,6 +105,39 @@ describe("entradas administrativas", () => {
     assert.equal(getScheduleTrackOrder("MINAS"), 0);
     assert.equal(getScheduleTrackOrder("COMUNIDADE"), 4);
   });
+
+  it("separa palestras por trilha de atividades gerais", () => {
+    const base = {
+      id: "agenda-geral",
+      startTime: "08:00",
+      endTime: "09:00",
+      active: true,
+    };
+    assert.equal(
+      scheduleInputSchema.safeParse({
+        ...base,
+        track: null,
+        activity: { type: "opening", talkId: talkFixture.id },
+      }).success,
+      true,
+    );
+    assert.equal(
+      scheduleInputSchema.safeParse({
+        ...base,
+        track: null,
+        activity: { type: "talk", talkId: talkFixture.id },
+      }).success,
+      false,
+    );
+    assert.equal(
+      scheduleInputSchema.safeParse({
+        ...base,
+        track: "MINAS",
+        activity: { type: "break", title: "Coffee-break" },
+      }).success,
+      false,
+    );
+  });
 });
 
 describe("regras relacionais de missões", () => {
