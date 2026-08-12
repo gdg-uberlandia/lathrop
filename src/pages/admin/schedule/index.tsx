@@ -21,8 +21,7 @@ import {
   SCHEDULE_TRACKS,
 } from "@/contracts/schedule";
 import { useSchedule } from "@/hooks/useSchedule";
-import { useTalks } from "@/hooks/useTalks";
-import { useSpeakers } from "@/hooks/useSpeakers";
+import { useScheduleWorkspace } from "@/hooks/useScheduleWorkspace";
 import { useSchedulePublication } from "@/hooks/useSchedulePublication";
 import {
   exportScheduleCsv,
@@ -86,11 +85,22 @@ export default function Schedules() {
     updateScheduleVisibility,
     visibilityUpdatingId,
     loading,
-    error,
+    error: scheduleError,
     fetchSchedule,
-  } = useSchedule();
-  const { talks } = useTalks();
-  const { speakers } = useSpeakers();
+  } = useSchedule(false);
+  const {
+    workspace,
+    loading: workspaceLoading,
+    error: workspaceError,
+    refresh: refreshWorkspace,
+  } = useScheduleWorkspace();
+  const error = scheduleError || workspaceError;
+  const talks = useMemo(() => workspace?.talks ?? [], [workspace]);
+  const speakers = useMemo(() => workspace?.speakers ?? [], [workspace]);
+  const workspaceEntries = useMemo(
+    () => new Map(workspace?.entries.map((item) => [item.id, item]) ?? []),
+    [workspace],
+  );
   const {
     publication,
     loading: publicationLoading,
@@ -125,17 +135,19 @@ export default function Schedules() {
   );
   const name = useCallback(
     (item: ScheduleEntry) =>
-      item.activity.type === "break"
+      workspaceEntries.get(item.id)?.title ??
+      (item.activity.type === "break"
         ? item.activity.title
-        : (talkNames.get(item.activity.talkId) ?? "Palestra removida"),
-    [talkNames],
+        : (talkNames.get(item.activity.talkId) ?? "Carregando palestra...")),
+    [talkNames, workspaceEntries],
   );
   const speakersFor = useCallback(
     (item: ScheduleEntry) =>
-      item.activity.type === "break"
+      workspaceEntries.get(item.id)?.speakerNames ??
+      (item.activity.type === "break"
         ? []
-        : (talkSpeakers.get(item.activity.talkId) ?? []),
-    [talkSpeakers],
+        : (talkSpeakers.get(item.activity.talkId) ?? [])),
+    [talkSpeakers, workspaceEntries],
   );
   const conflicts = useMemo(() => {
     const talkById = new Map(talks.map((talk) => [talk.id, talk]));
@@ -480,10 +492,12 @@ export default function Schedules() {
         {error && (
           <AdminErrorState
             message={error}
-            onRetry={() => void fetchSchedule()}
+            onRetry={() =>
+              void Promise.all([fetchSchedule(), refreshWorkspace()])
+            }
           />
         )}
-        {loading && !schedule.length ? (
+        {(loading || workspaceLoading) && !schedule.length ? (
           <AdminLoadingState />
         ) : !slots.length ? (
           <AdminEmptyState

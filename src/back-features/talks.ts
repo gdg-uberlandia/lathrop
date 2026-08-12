@@ -62,6 +62,19 @@ export const getTalkById = async (talkId: string): Promise<Talk> => {
   return talk;
 };
 
+export const getTalksByIds = async (talkIds: string[]): Promise<Talk[]> => {
+  const ids = [...new Set(talkIds)];
+  if (!ids.length) return [];
+  const documents = await db.getAll(
+    ...ids.map((id) => db.collection(TALKS_COLLECTION).doc(id)),
+  );
+  return documents.flatMap((document) => {
+    if (!document.exists) return [];
+    const talk = parseTalk(document.id, document.data()!);
+    return talk.eventId === CURRENT_EVENT_ID ? [talk] : [];
+  });
+};
+
 export const createTalk = async (input: TalkCreate): Promise<Talk> => {
   const data = talkCreateSchema.parse(input);
   await validateSpeakers(data.speakerIds);

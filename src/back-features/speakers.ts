@@ -74,6 +74,21 @@ export const getSpeakerById = async (speakerId: string): Promise<Speaker> => {
   return speaker;
 };
 
+export const getSpeakersByIds = async (
+  speakerIds: string[],
+): Promise<Speaker[]> => {
+  const ids = [...new Set(speakerIds)];
+  if (!ids.length) return [];
+  const documents = await db.getAll(
+    ...ids.map((id) => db.collection(SPEAKERS_COLLECTION).doc(id)),
+  );
+  return documents.flatMap((document) => {
+    if (!document.exists) return [];
+    const speaker = parseSpeaker(document.id, document.data()!);
+    return speaker.eventId === CURRENT_EVENT_ID ? [speaker] : [];
+  });
+};
+
 export const updateSpeaker = async (input: SpeakerUpdate): Promise<Speaker> => {
   const data = speakerUpdateSchema.parse(input);
   const current = await getSpeakerById(data.id);

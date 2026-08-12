@@ -17,11 +17,11 @@ import {
   ScheduleBlockInput,
   scheduleFieldsSchema,
 } from "@/contracts/schedule";
-export function useSchedule() {
+export function useSchedule(load = true) {
   const { isAdmin } = useAuth();
   const client = useQueryClient();
   const query = useQuery({
-    enabled: isAdmin,
+    enabled: isAdmin && load,
     queryKey: adminQueryKeys.schedule,
     queryFn: async ({ signal }) =>
       (await getScheduleAPI(signal)).map((item) =>
@@ -35,13 +35,18 @@ export function useSchedule() {
         scheduleFieldsSchema.parse(item),
       ].sort((a, b) => a.startAt.getTime() - b.startAt.getTime()),
     );
+  const refreshWorkspace = () =>
+    client.invalidateQueries({ queryKey: adminQueryKeys.scheduleWorkspace });
   const create = useMutation({
     mutationFn: createScheduleAPI,
-    onSuccess: updateCache,
+    onSuccess: (item) => {
+      updateCache(item);
+      void refreshWorkspace();
+    },
   });
   const createBlock = useMutation({
     mutationFn: createScheduleBlockAPI,
-    onSuccess: (created) =>
+    onSuccess: (created) => {
       client.setQueryData<ScheduleEntry[]>(adminQueryKeys.schedule, (items) =>
         [
           ...(items ?? []),
@@ -51,11 +56,16 @@ export function useSchedule() {
             a.startAt.getTime() - b.startAt.getTime() ||
             (a.order ?? -1) - (b.order ?? -1),
         ),
-      ),
+      );
+      void refreshWorkspace();
+    },
   });
   const update = useMutation({
     mutationFn: updateScheduleAPI,
-    onSuccess: updateCache,
+    onSuccess: (item) => {
+      updateCache(item);
+      void refreshWorkspace();
+    },
   });
   const updateVisibility = useMutation({
     mutationFn: ({ id, active }: { id: string; active: boolean }) =>
@@ -64,10 +74,12 @@ export function useSchedule() {
   });
   const remove = useMutation({
     mutationFn: deleteScheduleAPI,
-    onSuccess: (id) =>
+    onSuccess: (id) => {
       client.setQueryData<ScheduleEntry[]>(adminQueryKeys.schedule, (items) =>
         items?.filter((item) => item.id !== id),
-      ),
+      );
+      void refreshWorkspace();
+    },
   });
   const error =
     query.error ||

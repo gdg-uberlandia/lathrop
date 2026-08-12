@@ -82,13 +82,48 @@ async function getExistingSchedule(excludeId?: string) {
     .filter((document) => document.id !== excludeId)
     .map((document) => parse(document.id, document.data()));
 }
+async function getPotentialConflicts(input: ScheduleInput, talk: Talk | null) {
+  const interval = resolveInterval(input);
+  const eventDate = String(configValues.eventDate).slice(0, 10);
+  const eventDayStart = new Date(`${eventDate}T00:00:00-03:00`);
+  const overlappingRequest = db
+    .collection(COLLECTION)
+    .where("startAt", ">=", eventDayStart)
+    .where("startAt", "<", interval.endAt)
+    .get();
+  const duplicatedRequest = talk
+    ? db.collection(COLLECTION).where("activity.talkId", "==", talk.id).get()
+    : null;
+  const [overlappingSnapshot, duplicatedSnapshot] = await Promise.all([
+    overlappingRequest,
+    duplicatedRequest,
+  ]);
+  const documents = new Map(
+    [...overlappingSnapshot.docs, ...(duplicatedSnapshot?.docs ?? [])].map(
+      (document) => [document.id, document],
+    ),
+  );
+  return [...documents.values()].flatMap((document) => {
+    if (document.id === input.id) return [];
+    const item = parse(document.id, document.data());
+    if (item.eventId !== CURRENT_EVENT_ID) return [];
+    const duplicated =
+      talk &&
+      item.activity.type !== "break" &&
+      item.activity.talkId === talk.id;
+    const overlaps =
+      interval.startAt < item.endAt && item.startAt < interval.endAt;
+    return duplicated || overlaps ? [item] : [];
+  });
+}
 async function validateConflict(
   input: ScheduleInput,
   talk: Talk | null,
   context?: ConflictContext,
 ) {
   const interval = resolveInterval(input);
-  const existing = context?.existing ?? (await getExistingSchedule(input.id));
+  const existing =
+    context?.existing ?? (await getPotentialConflicts(input, talk));
   const duplicatedTalk = talk
     ? existing.find(
         (item) =>

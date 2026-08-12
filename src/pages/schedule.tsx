@@ -1,7 +1,7 @@
 import { getSchedule } from "@/back-features/schedule";
 import { getSchedulePublication } from "@/back-features/schedule-publication";
-import { getAllSpeakers } from "@/back-features/speakers";
-import { getAllTalks } from "@/back-features/talks";
+import { getSpeakersByIds } from "@/back-features/speakers";
+import { getTalksByIds } from "@/back-features/talks";
 import { Header } from "@/components/devfest-triangulo-2025/Header";
 import { ScheduleEntry, SCHEDULE_TRACKS } from "@/contracts/schedule";
 import { PublicSpeaker, toPublicSpeaker } from "@/contracts/speaker";
@@ -141,20 +141,14 @@ export async function getServerSideProps() {
         props: { schedule: [], talks: [], speakers: [], published: false },
       };
     }
-    const [schedule, talks, speakers] = await Promise.all([
-      getSchedule(),
-      getAllTalks(),
-      getAllSpeakers(),
-    ]);
+    const schedule = await getSchedule();
     const visibleSchedule = schedule.filter((item) => item.active);
     const scheduledTalkIds = new Set(
       visibleSchedule.flatMap((item) =>
         item.activity.type === "break" ? [] : [item.activity.talkId],
       ),
     );
-    const scheduledTalks = talks.filter((talk) =>
-      scheduledTalkIds.has(talk.id),
-    );
+    const scheduledTalks = await getTalksByIds([...scheduledTalkIds]);
     const scheduledSpeakerIds = new Set(
       scheduledTalks.flatMap((talk) => talk.speakerIds),
     );
@@ -168,9 +162,9 @@ export async function getServerSideProps() {
           updatedAt: item.updatedAt.toISOString(),
         })),
         talks: scheduledTalks.map(toPublicTalk),
-        speakers: speakers
-          .filter((speaker) => scheduledSpeakerIds.has(speaker.id))
-          .map(toPublicSpeaker),
+        speakers: (await getSpeakersByIds([...scheduledSpeakerIds])).map(
+          toPublicSpeaker,
+        ),
         published: publication.published,
       },
     };
