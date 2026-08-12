@@ -39,6 +39,37 @@ const timeSchema = z
     "Use intervalos de 15 minutos.",
   );
 
+const talkIdSchema = z.string().trim().min(1).max(128);
+
+export const scheduleBlockInputSchema = z
+  .object({
+    startTime: timeSchema,
+    endTime: timeSchema,
+    talks: z
+      .object({
+        MINAS: talkIdSchema,
+        CURADO: talkIdSchema,
+        CANASTRA: talkIdSchema,
+        TRANCA: talkIdSchema,
+        COMUNIDADE: talkIdSchema,
+      })
+      .strict(),
+    active: z.boolean(),
+  })
+  .strict()
+  .refine((value) => value.endTime > value.startTime, {
+    path: ["endTime"],
+    message: "O término deve ser posterior ao início.",
+  })
+  .refine(
+    (value) =>
+      new Set(Object.values(value.talks)).size === SCHEDULE_TRACKS.length,
+    {
+      path: ["talks"],
+      message: "Selecione uma palestra diferente para cada trilha.",
+    },
+  );
+
 export const scheduleInputSchema = z
   .object({
     id: z.string().trim().min(1).max(128),
@@ -97,6 +128,7 @@ export const scheduleFieldsSchema = z
 export type ScheduleEntry = z.infer<typeof scheduleFieldsSchema>;
 export type ScheduleInput = z.infer<typeof scheduleInputSchema>;
 export type ScheduleTrack = z.infer<typeof scheduleTrackSchema>;
+export type ScheduleBlockInput = z.infer<typeof scheduleBlockInputSchema>;
 
 export function getScheduleTrackOrder(track: ScheduleTrack) {
   return SCHEDULE_TRACKS.find((item) => item.value === track)!.order;

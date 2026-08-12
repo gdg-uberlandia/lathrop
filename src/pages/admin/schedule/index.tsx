@@ -6,7 +6,6 @@ import {
   AdminListToolbar,
   AdminLoadingState,
   AdminPageHeader,
-  AdminStatusBadge,
 } from "@/components/admin/admin-page";
 import DeleteDialog from "@/components/admin/delete-dialog";
 import {
@@ -19,7 +18,8 @@ import { useTalks } from "@/hooks/useTalks";
 import { useSpeakers } from "@/hooks/useSpeakers";
 import {
   CalendarDays,
-  ExternalLink,
+  Eye,
+  EyeOff,
   Pencil,
   Plus,
   Trash2,
@@ -169,11 +169,22 @@ export default function Schedules() {
           {typeLabel[item.activity.type]}
         </span>
         <div className="flex items-center gap-1">
-          <AdminStatusBadge
-            active={item.active}
-            activeLabel="Visível"
-            inactiveLabel="Oculta"
-          />
+          <span
+            className={cn(
+              "inline-flex size-7 items-center justify-center rounded-md",
+              item.active
+                ? "bg-emerald-50 text-emerald-600"
+                : "bg-slate-100 text-slate-400",
+            )}
+            title={item.active ? "Visível" : "Oculta"}
+            aria-label={item.active ? "Atividade visível" : "Atividade oculta"}
+          >
+            {item.active ? (
+              <Eye className="size-4" />
+            ) : (
+              <EyeOff className="size-4" />
+            )}
+          </span>
           <Button
             size="icon"
             variant="ghost"
@@ -183,19 +194,6 @@ export default function Schedules() {
           >
             <Pencil className="size-3.5" />
           </Button>
-          {item.activity.type !== "break" && (
-            <Button
-              asChild
-              size="icon"
-              variant="ghost"
-              className="size-7 text-blue-600"
-              aria-label={`Abrir palestra ${name(item)}`}
-            >
-              <Link href={`/admin/talks/edit/${item.activity.talkId}`}>
-                <ExternalLink className="size-3.5" />
-              </Link>
-            </Button>
-          )}
           <Button
             size="icon"
             variant="ghost"
@@ -238,6 +236,17 @@ export default function Schedules() {
             label: "Adicionar atividade",
           }}
         />
+        <div className="mb-4 flex justify-end">
+          <Button
+            asChild
+            variant="outline"
+            className="!border-blue-200 !bg-white !text-blue-700 hover:!border-blue-300 hover:!bg-blue-50 hover:!text-blue-800"
+          >
+            <Link href="/admin/schedule/add-block">
+              <Plus className="mr-2 size-4" /> Cadastrar bloco completo
+            </Link>
+          </Button>
+        </div>
         <AdminListToolbar search={search} onSearchChange={setSearch} />
         {error && (
           <AdminErrorState

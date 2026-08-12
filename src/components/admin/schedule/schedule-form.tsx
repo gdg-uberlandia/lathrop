@@ -29,6 +29,7 @@ import { Resolver, useForm } from "react-hook-form";
 import { useState } from "react";
 import { useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { ScheduleTimeSelect } from "./schedule-time-select";
 
 const timeValue = (value: Date) =>
   new Intl.DateTimeFormat("pt-BR", {
@@ -190,9 +191,7 @@ export function ScheduleForm({
                   {name === "startTime" ? "Início" : "Término"}
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    type="time"
-                    step={900}
+                  <ScheduleTimeSelect
                     value={field.value}
                     onChange={field.onChange}
                   />

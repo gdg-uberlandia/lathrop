@@ -2,9 +2,12 @@ import { Timestamp } from "firebase-admin/firestore";
 import {
   ScheduleEntry,
   ScheduleInput,
+  ScheduleBlockInput,
+  SCHEDULE_TRACKS,
   getScheduleTrackOrder,
   scheduleFieldsSchema,
   scheduleInputSchema,
+  scheduleBlockInputSchema,
 } from "@/contracts/schedule";
 import { CURRENT_EVENT_ID } from "@/helpers/event";
 import configValues from "@/helpers/config";
@@ -158,4 +161,48 @@ export async function deleteSchedule(id: string) {
   await readSchedule(id);
   await db.collection(COLLECTION).doc(id).delete();
   return id;
+}
+
+export async function createScheduleBlock(
+  input: ScheduleBlockInput,
+): Promise<ScheduleEntry[]> {
+  const data = scheduleBlockInputSchema.parse(input);
+  const entries: ScheduleInput[] = SCHEDULE_TRACKS.map((track) => ({
+    id: db.collection(COLLECTION).doc().id,
+    startTime: data.startTime,
+    endTime: data.endTime,
+    track: track.value,
+    activity: { type: "talk", talkId: data.talks[track.value] },
+    active: data.active,
+  }));
+  const talks = await Promise.all(entries.map(validateTalk));
+  const speakerIds = new Set<string>();
+  for (const talk of talks) {
+    if (!talk) continue;
+    for (const speakerId of talk.speakerIds) {
+      if (speakerIds.has(speakerId))
+        throw new Error(
+          "Um palestrante foi selecionado em mais de uma trilha neste bloco.",
+        );
+      speakerIds.add(speakerId);
+    }
+  }
+  await Promise.all(
+    entries.map((entry, index) => validateConflict(entry, talks[index])),
+  );
+  const now = new Date();
+  const documents = entries.map((entry) =>
+    scheduleFieldsSchema.parse({
+      ...toStoredFields(entry),
+      eventId: CURRENT_EVENT_ID,
+      createdAt: now,
+      updatedAt: now,
+    }),
+  );
+  const batch = db.batch();
+  documents.forEach((document) =>
+    batch.create(db.collection(COLLECTION).doc(document.id), document),
+  );
+  await batch.commit();
+  return documents;
 }

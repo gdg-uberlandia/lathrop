@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import {
   createScheduleAPI,
+  createScheduleBlockAPI,
   deleteScheduleAPI,
   getScheduleAPI,
   readScheduleAPI,
@@ -12,6 +13,7 @@ import { adminQueryKeys, resolveAdminAction } from "@/lib/admin-query";
 import {
   ScheduleEntry,
   ScheduleInput,
+  ScheduleBlockInput,
   scheduleFieldsSchema,
 } from "@/contracts/schedule";
 export function useSchedule() {
@@ -36,6 +38,20 @@ export function useSchedule() {
     mutationFn: createScheduleAPI,
     onSuccess: updateCache,
   });
+  const createBlock = useMutation({
+    mutationFn: createScheduleBlockAPI,
+    onSuccess: (created) =>
+      client.setQueryData<ScheduleEntry[]>(adminQueryKeys.schedule, (items) =>
+        [
+          ...(items ?? []),
+          ...created.map((item) => scheduleFieldsSchema.parse(item)),
+        ].sort(
+          (a, b) =>
+            a.startAt.getTime() - b.startAt.getTime() ||
+            (a.order ?? -1) - (b.order ?? -1),
+        ),
+      ),
+  });
   const update = useMutation({
     mutationFn: updateScheduleAPI,
     onSuccess: updateCache,
@@ -47,12 +63,18 @@ export function useSchedule() {
         items?.filter((item) => item.id !== id),
       ),
   });
-  const error = query.error || create.error || update.error || remove.error;
+  const error =
+    query.error ||
+    create.error ||
+    createBlock.error ||
+    update.error ||
+    remove.error;
   return {
     schedule: query.data ?? [],
     loading:
       query.isFetching ||
       create.isPending ||
+      createBlock.isPending ||
       update.isPending ||
       remove.isPending,
     error: error
@@ -69,6 +91,8 @@ export function useSchedule() {
       ),
     createSchedule: (value: ScheduleInput) =>
       resolveAdminAction(() => create.mutateAsync(value)),
+    createScheduleBlock: (value: ScheduleBlockInput) =>
+      resolveAdminAction(() => createBlock.mutateAsync(value)),
     updateSchedule: (value: ScheduleInput) =>
       resolveAdminAction(() => update.mutateAsync(value)),
     deleteSchedule: (id: string) =>
