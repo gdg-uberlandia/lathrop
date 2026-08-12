@@ -201,10 +201,11 @@ export function TagForm({
             </FormItem>
           )}
         />
-        <div className="sticky bottom-3 z-10 flex gap-3 rounded-xl border bg-white/95 p-3 shadow-xl md:col-span-8 md:justify-end">
+        <div className="sticky bottom-3 z-10 flex gap-3 p-3 md:col-span-8 md:justify-end">
           <Button
             type="button"
             variant="outline"
+            className="!border-slate-300 !bg-white !text-slate-700 hover:!bg-slate-50 hover:!text-slate-900"
             onClick={() => history.back()}
           >
             Cancelar

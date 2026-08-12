@@ -27,9 +27,11 @@ import { Resolver, useForm, useWatch } from "react-hook-form";
 import { ScheduleTimeSelect } from "./schedule-time-select";
 
 export function ScheduleBlockForm({
+  initialValues,
   loading,
   onSubmit,
 }: {
+  initialValues?: Partial<Pick<ScheduleBlockInput, "startTime" | "endTime">>;
   loading?: boolean;
   onSubmit: (value: ScheduleBlockInput) => unknown;
 }) {
@@ -40,8 +42,8 @@ export function ScheduleBlockForm({
       scheduleBlockInputSchema,
     ) as Resolver<ScheduleBlockInput>,
     defaultValues: {
-      startTime: "09:00",
-      endTime: "10:00",
+      startTime: initialValues?.startTime ?? "09:00",
+      endTime: initialValues?.endTime ?? "10:00",
       talks: {
         MINAS: "",
         CURADO: "",
@@ -157,10 +159,11 @@ export function ScheduleBlockForm({
           )}
         />
 
-        <div className="sticky bottom-3 z-10 flex gap-3 rounded-xl border !border-slate-200 bg-white/95 p-3 shadow-xl md:col-span-2 md:justify-end">
+        <div className="sticky bottom-3 z-10 flex gap-3 p-3 md:col-span-2 md:justify-end">
           <Button
             type="button"
             variant="outline"
+            className="!border-slate-300 !bg-white !text-slate-700 hover:!bg-slate-50 hover:!text-slate-900"
             onClick={() => history.back()}
           >
             Cancelar

@@ -246,7 +246,7 @@ export function SpeakersForm({
             </FormItem>
           )}
         />
-        <div className="sticky bottom-3 z-10 rounded-xl border border-white/10 bg-background/95 p-3 shadow-xl backdrop-blur md:col-span-8">
+        <div className="sticky bottom-3 z-10 p-3 md:col-span-8">
           {validationError && (
             <p role="alert" className="mb-3 text-devRed">
               {validationError}
@@ -261,7 +261,7 @@ export function SpeakersForm({
             <Button
               type="button"
               variant="outline"
-              className="h-11 !border-slate-300 sm:w-auto"
+              className="h-11 !border-slate-300 !bg-white !text-slate-700 hover:!bg-slate-50 hover:!text-slate-900 sm:w-auto"
               onClick={() => window.history.back()}
             >
               Cancelar

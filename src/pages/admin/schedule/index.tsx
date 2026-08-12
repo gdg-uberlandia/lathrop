@@ -18,6 +18,7 @@ import { useTalks } from "@/hooks/useTalks";
 import { useSpeakers } from "@/hooks/useSpeakers";
 import {
   CalendarDays,
+  Copy,
   Eye,
   EyeOff,
   Pencil,
@@ -36,6 +37,15 @@ const formatTime = (value: Date) =>
     hour12: false,
     timeZone: "America/Sao_Paulo",
   }).format(value);
+const nextSlot = (start: Date, end: Date) => {
+  const duration = end.getTime() - start.getTime();
+  const nextStart = end;
+  const nextEnd = new Date(end.getTime() + duration);
+  if (nextEnd.getDate() !== end.getDate()) {
+    return { start: formatTime(start), end: formatTime(end) };
+  }
+  return { start: formatTime(nextStart), end: formatTime(nextEnd) };
+};
 const typeLabel = {
   talk: "Palestra",
   opening: "Abertura",
@@ -154,6 +164,13 @@ export default function Schedules() {
     pathname: "/admin/schedule/add-schedule",
     query: { start, end, type: "talk", ...(track ? { track } : {}) },
   });
+  const duplicateHref = (item: ScheduleEntry) => {
+    const { start, end } = nextSlot(item.startAt, item.endAt);
+    return {
+      pathname: "/admin/schedule/add-block",
+      query: { start, end },
+    };
+  };
 
   const card = (item: ScheduleEntry) => (
     <article
@@ -164,7 +181,7 @@ export default function Schedules() {
           : "!border-slate-200 hover:!border-slate-300",
       )}
     >
-      <div className="flex items-start justify-between gap-2">
+      <div className="flex items-center justify-between gap-2">
         <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
           {typeLabel[item.activity.type]}
         </span>
@@ -172,9 +189,7 @@ export default function Schedules() {
           <span
             className={cn(
               "inline-flex size-7 items-center justify-center rounded-md",
-              item.active
-                ? "bg-emerald-50 text-emerald-600"
-                : "bg-slate-100 text-slate-400",
+              item.active ? "text-emerald-600" : "text-slate-400",
             )}
             title={item.active ? "Visível" : "Oculta"}
             aria-label={item.active ? "Atividade visível" : "Atividade oculta"}
@@ -305,6 +320,18 @@ export default function Schedules() {
                       <div className="bg-slate-50/60 px-4 py-4">
                         <p className="font-semibold text-slate-900">{start}</p>
                         <p className="text-xs text-slate-500">até {end}</p>
+                        {!general && (
+                          <Button
+                            asChild
+                            variant="ghost"
+                            size="sm"
+                            className="mt-2 h-7 px-2 text-xs text-slate-500 hover:bg-white hover:text-blue-700"
+                          >
+                            <Link href={duplicateHref(first)}>
+                              <Copy className="size-3.5" /> Duplicar
+                            </Link>
+                          </Button>
+                        )}
                       </div>
                       {general ? (
                         <div className="col-span-5 border-l !border-slate-200 p-3">
@@ -350,7 +377,21 @@ export default function Schedules() {
                 return (
                   <section key={`${start}-${end}`} className="p-4">
                     <h2 className="mb-3 font-semibold text-slate-900">
-                      {start}–{end}
+                      <span>
+                        {start}–{end}
+                      </span>
+                      {items.every((item) => item.track !== null) && (
+                        <Button
+                          asChild
+                          variant="ghost"
+                          size="sm"
+                          className="ml-2 h-7 px-2 text-xs text-slate-500"
+                        >
+                          <Link href={duplicateHref(first)}>
+                            <Copy className="size-3.5" /> Duplicar
+                          </Link>
+                        </Button>
+                      )}
                     </h2>
                     <div className="space-y-3">
                       {items.map((item) => (
