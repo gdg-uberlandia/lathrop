@@ -15,6 +15,7 @@ const nextConfig = {
       "i.ytimg.com",
       "storage.googleapis.com",
       "api.dicebear.com",
+      "pokedex.devfesttriangulo.com.br",
     ],
   },
   /*exportPathMap: async function (
