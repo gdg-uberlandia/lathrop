@@ -1,5 +1,21 @@
 import { z } from "zod";
 
+export const scheduleTrackSchema = z.enum([
+  "MINAS",
+  "CURADO",
+  "CANASTRA",
+  "TRANCA",
+  "COMUNIDADE",
+]);
+
+export const SCHEDULE_TRACKS = [
+  { value: "MINAS", label: "Minas", order: 0 },
+  { value: "CURADO", label: "Curado", order: 1 },
+  { value: "CANASTRA", label: "Canastra", order: 2 },
+  { value: "TRANCA", label: "Trança", order: 3 },
+  { value: "COMUNIDADE", label: "Comunidade", order: 4 },
+] as const;
+
 export const scheduleActivitySchema = z.discriminatedUnion("type", [
   z
     .object({
@@ -15,16 +31,41 @@ export const scheduleActivitySchema = z.discriminatedUnion("type", [
     .strict(),
 ]);
 
-const scheduleWritableSchema = z
+const timeSchema = z
+  .string()
+  .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Informe um horário válido.");
+
+export const scheduleInputSchema = z
   .object({
     id: z.string().trim().min(1).max(128),
-    date: z.iso.date(),
-    startAt: z.coerce.date(),
-    endAt: z.coerce.date(),
-    room: z.string().trim().min(1).max(80).nullable(),
+    startTime: timeSchema,
+    endTime: timeSchema,
+    track: scheduleTrackSchema,
     activity: scheduleActivitySchema,
     active: z.boolean(),
-    order: z.number().int().nonnegative(),
+  })
+  .strict()
+  .refine((value) => value.endTime > value.startTime, {
+    path: ["endTime"],
+    message: "O término deve ser posterior ao início.",
+  });
+
+export const scheduleFieldsSchema = z
+  .object({
+    id: z.string().trim().min(1).max(128),
+    eventId: z.string().trim().min(1).max(128),
+    startAt: z.coerce.date(),
+    endAt: z.coerce.date(),
+    track: scheduleTrackSchema,
+    order: z
+      .number()
+      .int()
+      .min(0)
+      .max(SCHEDULE_TRACKS.length - 1),
+    activity: scheduleActivitySchema,
+    active: z.boolean(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
   })
   .strict()
   .refine((value) => value.endAt > value.startAt, {
@@ -32,15 +73,10 @@ const scheduleWritableSchema = z
     message: "O término deve ser posterior ao início.",
   });
 
-export const scheduleInputSchema = scheduleWritableSchema;
-export const scheduleFieldsSchema = scheduleWritableSchema.and(
-  z
-    .object({
-      eventId: z.string().trim().min(1).max(128),
-      createdAt: z.date(),
-      updatedAt: z.date(),
-    })
-    .strict(),
-);
 export type ScheduleEntry = z.infer<typeof scheduleFieldsSchema>;
 export type ScheduleInput = z.infer<typeof scheduleInputSchema>;
+export type ScheduleTrack = z.infer<typeof scheduleTrackSchema>;
+
+export function getScheduleTrackOrder(track: ScheduleTrack) {
+  return SCHEDULE_TRACKS.find((item) => item.value === track)!.order;
+}

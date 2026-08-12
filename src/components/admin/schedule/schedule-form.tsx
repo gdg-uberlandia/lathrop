@@ -19,6 +19,7 @@ import {
 import {
   ScheduleEntry,
   ScheduleInput,
+  SCHEDULE_TRACKS,
   scheduleInputSchema,
 } from "@/contracts/schedule";
 import { useTalks } from "@/hooks/useTalks";
@@ -27,10 +28,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Resolver, useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
-const localDateTime = (value: Date) => {
-  const offset = value.getTimezoneOffset() * 60_000;
-  return new Date(value.getTime() - offset).toISOString().slice(0, 16);
-};
+const timeValue = (value: Date) =>
+  new Intl.DateTimeFormat("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "America/Sao_Paulo",
+  }).format(value);
 export function ScheduleForm({
   schedule,
   loading,
@@ -41,29 +45,24 @@ export function ScheduleForm({
   onSubmit: (value: ScheduleInput) => unknown;
 }) {
   const { talks } = useTalks();
-  const initial = schedule?.startAt ?? new Date();
   const form = useForm<ScheduleInput>({
     resolver: zodResolver(scheduleInputSchema) as Resolver<ScheduleInput>,
     defaultValues: schedule
       ? {
           id: schedule.id,
-          date: schedule.date,
-          startAt: schedule.startAt,
-          endAt: schedule.endAt,
-          room: schedule.room,
+          startTime: timeValue(schedule.startAt),
+          endTime: timeValue(schedule.endAt),
+          track: schedule.track,
           activity: schedule.activity,
           active: schedule.active,
-          order: schedule.order,
         }
       : {
           id: uuidv4(),
-          date: localDateTime(initial).slice(0, 10),
-          startAt: initial,
-          endAt: new Date(initial.getTime() + 60 * 60_000),
-          room: null,
+          startTime: "08:00",
+          endTime: "09:00",
+          track: "MINAS",
           activity: { type: "opening", title: "Abertura" },
           active: true,
-          order: 0,
         },
   });
   useUnsavedChanges(form.formState.isDirty && !form.formState.isSubmitting);
@@ -93,8 +92,8 @@ export function ScheduleForm({
         <div className="md:col-span-8">
           <h2 className="font-semibold text-slate-900">Item da programação</h2>
           <p className="mt-1 text-sm text-slate-500">
-            Cada registro representa uma atividade em uma sala e intervalo
-            definidos.
+            Cada registro representa uma atividade em uma trilha e intervalo
+            definidos. A ordem é determinada automaticamente pela trilha.
           </p>
         </div>
         <FormItem className="md:col-span-3">
@@ -149,20 +148,7 @@ export function ScheduleForm({
             )}
           />
         )}
-        <FormField
-          name="date"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem className="md:col-span-2">
-              <FormLabel>Data</FormLabel>
-              <FormControl>
-                <Input type="date" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {(["startAt", "endAt"] as const).map((name) => (
+        {(["startTime", "endTime"] as const).map((name) => (
           <FormField
             key={name}
             name={name}
@@ -170,13 +156,13 @@ export function ScheduleForm({
             render={({ field }) => (
               <FormItem className="md:col-span-2">
                 <FormLabel>
-                  {name === "startAt" ? "Início" : "Término"}
+                  {name === "startTime" ? "Início" : "Término"}
                 </FormLabel>
                 <FormControl>
                   <Input
-                    type="datetime-local"
-                    value={localDateTime(field.value)}
-                    onChange={(e) => field.onChange(new Date(e.target.value))}
+                    type="time"
+                    value={field.value}
+                    onChange={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />
@@ -185,36 +171,25 @@ export function ScheduleForm({
           />
         ))}
         <FormField
-          name="room"
+          name="track"
           control={form.control}
           render={({ field }) => (
             <FormItem className="md:col-span-2">
-              <FormLabel>Sala</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  value={field.value ?? ""}
-                  onChange={(e) => field.onChange(e.target.value || null)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="order"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem className="md:col-span-2">
-              <FormLabel>Ordem</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  min={0}
-                  {...field}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                />
-              </FormControl>
+              <FormLabel>Trilha</FormLabel>
+              <Select value={field.value} onValueChange={field.onChange}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {SCHEDULE_TRACKS.map((track) => (
+                    <SelectItem key={track.value} value={track.value}>
+                      {track.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

@@ -16,7 +16,11 @@ import { raffleFieldsSchema, raffleInputSchema } from "./raffle";
 import { rewardFieldsSchema } from "./reward";
 import { speakerFieldsSchema } from "./speaker";
 import { tagFieldsSchema, tagInputSchema } from "./tag";
-import { scheduleInputSchema } from "./schedule";
+import {
+  SCHEDULE_TRACKS,
+  getScheduleTrackOrder,
+  scheduleInputSchema,
+} from "./schedule";
 import { talkFieldsSchema } from "./talk";
 
 describe("contratos compartilhados", () => {
@@ -69,33 +73,37 @@ describe("entradas administrativas", () => {
   });
 
   it("valida horários e atividades da programação", () => {
-    const startAt = new Date("2026-10-31T12:00:00.000Z");
     assert.equal(
       scheduleInputSchema.safeParse({
         id: "agenda-1",
-        date: "2026-10-31",
-        startAt,
-        endAt: new Date("2026-10-31T13:00:00.000Z"),
-        room: "Minas",
+        startTime: "09:00",
+        endTime: "10:00",
+        track: "MINAS",
         activity: { type: "talk", talkId: talkFixture.id },
         active: true,
-        order: 0,
       }).success,
       true,
     );
     assert.equal(
       scheduleInputSchema.safeParse({
         id: "agenda-1",
-        date: "2026-10-31",
-        startAt,
-        endAt: startAt,
-        room: null,
+        startTime: "09:00",
+        endTime: "09:00",
+        track: "CURADO",
         activity: { type: "break", title: "Intervalo" },
         active: true,
-        order: 0,
       }).success,
       false,
     );
+  });
+
+  it("mantém a ordem fixa das trilhas", () => {
+    assert.deepEqual(
+      SCHEDULE_TRACKS.map((track) => track.value),
+      ["MINAS", "CURADO", "CANASTRA", "TRANCA", "COMUNIDADE"],
+    );
+    assert.equal(getScheduleTrackOrder("MINAS"), 0);
+    assert.equal(getScheduleTrackOrder("COMUNIDADE"), 4);
   });
 });
 

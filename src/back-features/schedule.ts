@@ -2,10 +2,12 @@ import { Timestamp } from "firebase-admin/firestore";
 import {
   ScheduleEntry,
   ScheduleInput,
+  getScheduleTrackOrder,
   scheduleFieldsSchema,
   scheduleInputSchema,
 } from "@/contracts/schedule";
 import { CURRENT_EVENT_ID } from "@/helpers/event";
+import configValues from "@/helpers/config";
 import { db } from "@/utils/db";
 import { getFirestoreCollectionName } from "@/utils/db/collection-name";
 
@@ -32,22 +34,39 @@ async function validateTalk(input: ScheduleInput) {
     throw new Error("Selecione uma palestra válida deste evento.");
 }
 async function validateConflict(input: ScheduleInput) {
+  const interval = resolveInterval(input);
   const snapshot = await db
     .collection(COLLECTION)
     .where("eventId", "==", CURRENT_EVENT_ID)
-    .where("date", "==", input.date)
     .get();
   const conflict = snapshot.docs
     .filter((document) => document.id !== input.id)
     .map((document) => parse(document.id, document.data()))
     .some(
       (item) =>
-        item.room === input.room &&
-        input.startAt < item.endAt &&
-        item.startAt < input.endAt,
+        item.track === input.track &&
+        interval.startAt < item.endAt &&
+        item.startAt < interval.endAt,
     );
   if (conflict)
     throw new Error("Já existe uma atividade nesta sala e intervalo.");
+}
+function resolveInterval(input: ScheduleInput) {
+  const eventDate = String(configValues.eventDate).slice(0, 10);
+  return {
+    startAt: new Date(`${eventDate}T${input.startTime}:00-03:00`),
+    endAt: new Date(`${eventDate}T${input.endTime}:00-03:00`),
+  };
+}
+function toStoredFields(input: ScheduleInput) {
+  return {
+    id: input.id,
+    ...resolveInterval(input),
+    track: input.track,
+    order: getScheduleTrackOrder(input.track),
+    activity: input.activity,
+    active: input.active,
+  };
 }
 export async function getSchedule(): Promise<ScheduleEntry[]> {
   const snapshot = await db
@@ -79,7 +98,7 @@ export async function createSchedule(
     throw new Error("Já existe um item com este ID.");
   const now = new Date();
   const item = scheduleFieldsSchema.parse({
-    ...data,
+    ...toStoredFields(data),
     eventId: CURRENT_EVENT_ID,
     createdAt: now,
     updatedAt: now,
@@ -95,7 +114,7 @@ export async function updateSchedule(
   await validateConflict(data);
   const current = await readSchedule(data.id);
   const item = scheduleFieldsSchema.parse({
-    ...data,
+    ...toStoredFields(data),
     eventId: CURRENT_EVENT_ID,
     createdAt: current.createdAt,
     updatedAt: new Date(),

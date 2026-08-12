@@ -18,7 +18,7 @@ import {
   AdminTableContainer,
 } from "@/components/admin/admin-page";
 import DeleteDialog from "@/components/admin/delete-dialog";
-import { ScheduleEntry } from "@/contracts/schedule";
+import { ScheduleEntry, SCHEDULE_TRACKS } from "@/contracts/schedule";
 import { useAdminListState } from "@/hooks/useAdminListState";
 import { useSchedule } from "@/hooks/useSchedule";
 import { useTalks } from "@/hooks/useTalks";
@@ -31,6 +31,9 @@ const typeLabel = {
   break: "Intervalo",
   closing: "Encerramento",
 };
+const trackNames = new Map(
+  SCHEDULE_TRACKS.map((track) => [track.value, track.label]),
+);
 export default function Schedules() {
   const router = useRouter();
   const { schedule, deleteSchedule, loading, error, fetchSchedule } =
@@ -52,7 +55,7 @@ export default function Schedules() {
   const filtered = useMemo(
     () =>
       schedule.filter((item) =>
-        `${name(item)} ${item.room ?? ""}`
+        `${name(item)} ${trackNames.get(item.track) ?? ""}`
           .toLowerCase()
           .includes(list.search.toLowerCase()),
       ),
@@ -66,8 +69,7 @@ export default function Schedules() {
           schedule
             .slice(index + 1)
             .flatMap((other) =>
-              item.date === other.date &&
-              item.room === other.room &&
+              item.track === other.track &&
               item.startAt < other.endAt &&
               other.startAt < item.endAt
                 ? [item.id, other.id]
@@ -82,7 +84,7 @@ export default function Schedules() {
       <main className="p-4 sm:p-6">
         <AdminPageHeader
           title="Programação"
-          description="Organize palestras e atividades por data, horário e sala."
+          description="Organize palestras e atividades por horário e trilha."
           count={schedule.length}
           icon={CalendarDays}
           action={{
@@ -112,9 +114,9 @@ export default function Schedules() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Data e horário</TableHead>
+                  <TableHead>Horário</TableHead>
                   <TableHead>Atividade</TableHead>
-                  <TableHead>Sala</TableHead>
+                  <TableHead>Trilha</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Ações</TableHead>
                 </TableRow>
@@ -125,7 +127,6 @@ export default function Schedules() {
                     <TableCell>
                       <div className="font-medium">
                         {new Intl.DateTimeFormat("pt-BR", {
-                          dateStyle: "short",
                           timeStyle: "short",
                         }).format(item.startAt)}
                       </div>
@@ -143,11 +144,12 @@ export default function Schedules() {
                       </div>
                       {conflicts.has(item.id) && (
                         <span className="mt-1 inline-flex items-center gap-1 text-xs text-amber-700">
-                          <TriangleAlert className="size-3" /> Conflito na sala
+                          <TriangleAlert className="size-3" /> Conflito na
+                          trilha
                         </span>
                       )}
                     </TableCell>
-                    <TableCell>{item.room ?? "Geral"}</TableCell>
+                    <TableCell>{trackNames.get(item.track)}</TableCell>
                     <TableCell>
                       <AdminStatusBadge
                         active={item.active}

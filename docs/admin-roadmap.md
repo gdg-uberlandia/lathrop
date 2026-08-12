@@ -231,7 +231,7 @@ A implementação atual pode ser descartada.
 
 - [x] Definir um contrato local sem dependência de legado.
 - [x] Referenciar palestras por `talkId`.
-- [x] Modelar sala em cada atividade.
+- [x] Modelar as trilhas fixas e sua ordem automática.
 - [x] Modelar intervalos, abertura e encerramento com união discriminada.
 - [x] Usar data e timestamps, não apenas strings de horário.
 - [x] Detectar conflitos de horário.

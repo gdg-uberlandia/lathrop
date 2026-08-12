@@ -142,7 +142,7 @@ export default function AdminIndex() {
     {
       count: unscheduledTalks.length,
       label: "Palestras sem programação",
-      description: "Ainda não possuem data e sala",
+      description: "Ainda não possuem horário e trilha",
       href: "/admin/schedule",
       color: "bg-violet-50 text-violet-700",
       icon: CalendarDays,
@@ -360,7 +360,7 @@ export default function AdminIndex() {
                           {activityName}
                         </td>
                         <td className="px-4 py-3 text-slate-500">
-                          {slot.room || "Geral"}
+                          {slot.track}
                         </td>
                         <td className="px-4 py-3">
                           <span className="inline-flex items-center gap-1.5 text-emerald-700">

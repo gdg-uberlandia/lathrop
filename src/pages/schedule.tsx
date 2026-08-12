@@ -2,7 +2,7 @@ import { getSchedule } from "@/back-features/schedule";
 import { getAllSpeakers } from "@/back-features/speakers";
 import { getAllTalks } from "@/back-features/talks";
 import { Header } from "@/components/devfest-triangulo-2025/Header";
-import { ScheduleEntry } from "@/contracts/schedule";
+import { ScheduleEntry, SCHEDULE_TRACKS } from "@/contracts/schedule";
 import { PublicSpeaker, toPublicSpeaker } from "@/contracts/speaker";
 import { PublicTalk, toPublicTalk } from "@/contracts/talk";
 import BaseLayout from "@/layouts/base-layout";
@@ -22,6 +22,9 @@ export default function SchedulePage({
 }) {
   const talkMap = new Map(talks.map((talk) => [talk.id, talk]));
   const speakerMap = new Map(speakers.map((speaker) => [speaker.id, speaker]));
+  const trackNames = new Map(
+    SCHEDULE_TRACKS.map((track) => [track.value, track.label]),
+  );
   return (
     <BaseLayout>
       <Header isRoot={false} />
@@ -29,7 +32,7 @@ export default function SchedulePage({
         <header className="mb-12 max-w-2xl">
           <h1 className="text-4xl font-bold">Programação do evento</h1>
           <p className="mt-3 text-white/60">
-            Confira os horários, salas e conteúdos do DevFest Triângulo.
+            Confira os horários, trilhas e conteúdos do DevFest Triângulo.
           </p>
         </header>
         <div className="space-y-4">
@@ -66,11 +69,6 @@ export default function SchedulePage({
                         minute: "2-digit",
                       }).format(new Date(item.endAt))}
                     </div>
-                    <div className="mt-1 text-xs text-white/50">
-                      {new Intl.DateTimeFormat("pt-BR", {
-                        dateStyle: "long",
-                      }).format(new Date(item.startAt))}
-                    </div>
                   </div>
                   <div>
                     <h2 className="text-lg font-semibold">{title}</h2>
@@ -89,7 +87,7 @@ export default function SchedulePage({
                   </div>
                   <div className="md:text-right">
                     <span className="inline-flex rounded-full border border-white/10 px-3 py-1 text-sm text-white/70">
-                      {item.room ?? "Trilhas integradas"}
+                      {trackNames.get(item.track)}
                     </span>
                   </div>
                 </article>
