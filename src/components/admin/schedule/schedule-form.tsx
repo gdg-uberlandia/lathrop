@@ -38,17 +38,21 @@ const timeValue = (value: Date) =>
   }).format(value);
 export function ScheduleForm({
   schedule,
+  initialValues,
   loading,
   onSubmit,
 }: {
   schedule?: ScheduleEntry;
+  initialValues?: Partial<
+    Pick<ScheduleInput, "startTime" | "endTime" | "track">
+  > & { type?: "talk" | "opening" | "break" | "closing" };
   loading?: boolean;
   onSubmit: (value: ScheduleInput) => unknown;
 }) {
   const { talks } = useTalks();
   const [selectedType, setSelectedType] = useState<
     "talk" | "opening" | "break" | "closing"
-  >(schedule?.activity.type ?? "opening");
+  >(schedule?.activity.type ?? initialValues?.type ?? "opening");
   const form = useForm<ScheduleInput>({
     resolver: zodResolver(scheduleInputSchema) as Resolver<ScheduleInput>,
     defaultValues: schedule
@@ -62,10 +66,19 @@ export function ScheduleForm({
         }
       : {
           id: uuidv4(),
-          startTime: "08:00",
-          endTime: "09:00",
-          track: null,
-          activity: { type: "opening", talkId: talks[0]?.id ?? "" },
+          startTime: initialValues?.startTime ?? "08:00",
+          endTime: initialValues?.endTime ?? "09:00",
+          track:
+            initialValues?.type === "talk"
+              ? (initialValues.track ?? "MINAS")
+              : null,
+          activity:
+            initialValues?.type === "break"
+              ? { type: "break", title: "Coffee-break" }
+              : {
+                  type: initialValues?.type ?? "opening",
+                  talkId: talks[0]?.id ?? "",
+                },
           active: true,
         },
   });
