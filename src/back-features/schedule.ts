@@ -15,8 +15,28 @@ import { db } from "@/utils/db";
 import { getFirestoreCollectionName } from "@/utils/db/collection-name";
 import { Talk } from "@/contracts/talk";
 import { getTalkById } from "@/back-features/talks";
+import { getSpeakerById } from "@/back-features/speakers";
 
 const COLLECTION = getFirestoreCollectionName("schedule");
+const formatTime = (value: Date) =>
+  new Intl.DateTimeFormat("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "America/Sao_Paulo",
+  }).format(value);
+const trackLabel = (track: ScheduleEntry["track"]) =>
+  track
+    ? `trilha ${SCHEDULE_TRACKS.find((item) => item.value === track)?.label ?? track}`
+    : "atividade geral";
+const intervalLabel = (item: ScheduleEntry) =>
+  `${formatTime(item.startAt)}–${formatTime(item.endAt)}`;
+async function activityTitle(item: ScheduleEntry) {
+  if (item.activity.type === "break") return item.activity.title;
+  return getTalkById(item.activity.talkId)
+    .then((scheduledTalk) => scheduledTalk.title)
+    .catch(() => "atividade já programada");
+}
 const toDate = (value: unknown) =>
   value instanceof Timestamp ? value.toDate() : value;
 const parse = (id: string, value: FirebaseFirestore.DocumentData) =>
@@ -46,41 +66,59 @@ async function validateConflict(input: ScheduleInput, talk: Talk | null) {
   const existing = snapshot.docs
     .filter((document) => document.id !== input.id)
     .map((document) => parse(document.id, document.data()));
-  if (
-    talk &&
-    existing.some(
-      (item) =>
-        item.activity.type !== "break" && item.activity.talkId === talk.id,
-    )
-  ) {
-    throw new Error("Esta palestra já foi adicionada à programação.");
+  const duplicatedTalk = talk
+    ? existing.find(
+        (item) =>
+          item.activity.type !== "break" && item.activity.talkId === talk.id,
+      )
+    : null;
+  if (duplicatedTalk) {
+    throw new Error(
+      `A palestra “${talk!.title}” já está programada em ${intervalLabel(duplicatedTalk)}, como ${trackLabel(duplicatedTalk.track)}.`,
+    );
   }
   const overlapping = existing.filter(
     (item) => interval.startAt < item.endAt && item.startAt < interval.endAt,
   );
-  const trackConflict = overlapping.some(
+  const trackConflict = overlapping.find(
     (item) =>
       item.track === null || input.track === null || item.track === input.track,
   );
-  if (trackConflict)
-    throw new Error("Já existe uma atividade conflitante neste intervalo.");
+  if (trackConflict) {
+    const conflictingTitle = await activityTitle(trackConflict);
+    throw new Error(
+      `Este horário conflita com “${conflictingTitle}”, programada em ${intervalLabel(trackConflict)} como ${trackLabel(trackConflict.track)}.`,
+    );
+  }
   if (!talk) return;
-  const overlappingTalkIds = overlapping.flatMap((item) =>
-    item.activity.type === "break" ? [] : [item.activity.talkId],
-  );
   const overlappingTalks = await Promise.all(
-    [...new Set(overlappingTalkIds)].map((talkId) => getTalkById(talkId)),
+    overlapping.flatMap((item) =>
+      item.activity.type === "break"
+        ? []
+        : [
+            getTalkById(item.activity.talkId).then((scheduledTalk) => ({
+              item,
+              talk: scheduledTalk,
+            })),
+          ],
+    ),
   );
   const candidateSpeakers = new Set(talk.speakerIds);
-  if (
-    overlappingTalks.some((scheduledTalk) =>
-      scheduledTalk.speakerIds.some((speakerId) =>
+  const speakerConflict = overlappingTalks
+    .map(({ item, talk: scheduledTalk }) => ({
+      item,
+      talk: scheduledTalk,
+      speakerId: scheduledTalk.speakerIds.find((speakerId) =>
         candidateSpeakers.has(speakerId),
       ),
-    )
-  ) {
+    }))
+    .find((conflict) => conflict.speakerId);
+  if (speakerConflict) {
+    const speaker = await getSpeakerById(speakerConflict.speakerId!).catch(
+      () => null,
+    );
     throw new Error(
-      "Um palestrante desta palestra já está alocado neste horário.",
+      `${speaker ? `O palestrante “${speaker.name}”` : "Um palestrante selecionado"} já participa de “${speakerConflict.talk.title}” em ${intervalLabel(speakerConflict.item)}, como ${trackLabel(speakerConflict.item.track)}.`,
     );
   }
 }
@@ -176,15 +214,18 @@ export async function createScheduleBlock(
     active: data.active,
   }));
   const talks = await Promise.all(entries.map(validateTalk));
-  const speakerIds = new Set<string>();
-  for (const talk of talks) {
+  const speakerTracks = new Map<string, string>();
+  for (const [index, talk] of talks.entries()) {
     if (!talk) continue;
     for (const speakerId of talk.speakerIds) {
-      if (speakerIds.has(speakerId))
+      const previousTrack = speakerTracks.get(speakerId);
+      if (previousTrack) {
+        const speaker = await getSpeakerById(speakerId).catch(() => null);
         throw new Error(
-          "Um palestrante foi selecionado em mais de uma trilha neste bloco.",
+          `${speaker ? `O palestrante “${speaker.name}”` : "Um palestrante"} foi selecionado nas trilhas ${previousTrack} e ${SCHEDULE_TRACKS[index].label} neste bloco. Escolha palestras com participantes diferentes.`,
         );
-      speakerIds.add(speakerId);
+      }
+      speakerTracks.set(speakerId, SCHEDULE_TRACKS[index].label);
     }
   }
   await Promise.all(
