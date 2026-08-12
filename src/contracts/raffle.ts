@@ -1,11 +1,12 @@
 import { z } from "zod";
+import { urlSchema } from "./url";
 
 export const raffleFieldsSchema = z.object({
   id: z.string().trim().min(1).max(128),
   eventId: z.string().trim().min(1).max(128),
   prizeName: z.string().trim().min(1).max(120),
   description: z.string().trim().max(240).nullable(),
-  imageUrl: z.url().nullable(),
+  imageUrl: urlSchema().nullable(),
   order: z.number().int().nonnegative(),
   active: z.boolean(),
   status: z.enum(["pending", "awaiting_confirmation", "drawn"]),

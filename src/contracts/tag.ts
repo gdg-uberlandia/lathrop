@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { urlSchema } from "./url";
 
 export const tagFieldsSchema = z
   .object({
@@ -7,7 +8,7 @@ export const tagFieldsSchema = z
     qrId: z.string().uuid(),
     name: z.string().trim().min(2).max(120),
     description: z.string().trim().max(500),
-    imageUrl: z.url(),
+    imageUrl: urlSchema(),
     active: z.boolean(),
     order: z.number().int().nonnegative(),
     xpAwarded: z.number().int().positive().nullable(),

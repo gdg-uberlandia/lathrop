@@ -1,6 +1,7 @@
 import { z } from "zod";
+import { optionalFormUrlSchema } from "@/contracts/url";
 
-const optionalUrl = z.union([z.literal(""), z.url("URL inválida")]);
+const optionalUrl = optionalFormUrlSchema();
 
 export const speakerFormSchema = z.object({
   id: z.string().trim().min(1, "Identificador obrigatório").max(128),

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { urlSchema } from "./url";
 
 export const missionValidationTypeSchema = z.enum([
   "qr",
@@ -43,7 +44,7 @@ const missionBaseSchema = z
     qrId: z.string().uuid().nullable(),
     title: z.string().trim().min(2).max(120),
     description: z.string().trim().min(1).max(1_000),
-    imageUrl: z.url().nullable(),
+    imageUrl: urlSchema().nullable(),
     validationType: missionValidationTypeSchema,
     progressRequirement: missionProgressRequirementSchema
       .nullable()

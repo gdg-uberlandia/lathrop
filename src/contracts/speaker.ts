@@ -1,12 +1,13 @@
 import { z } from "zod";
+import { urlSchema } from "./url";
 
 const optionalTextSchema = (maximum: number) =>
   z.string().trim().min(1).max(maximum).nullable();
 
 export const speakerSocialMediaSchema = z
   .object({
-    instagram: z.url().nullable(),
-    linkedIn: z.url().nullable(),
+    instagram: urlSchema().nullable(),
+    linkedIn: urlSchema().nullable(),
   })
   .strict();
 
@@ -18,7 +19,7 @@ export const speakerFieldsSchema = z
     company: optionalTextSchema(120),
     title: optionalTextSchema(120),
     miniBio: optionalTextSchema(3_000),
-    photoUrl: z.url().nullable(),
+    photoUrl: urlSchema().nullable(),
     socialMedia: speakerSocialMediaSchema,
     isVisible: z.boolean(),
     createdAt: z.date(),

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { urlSchema } from "./url";
 
 export const companyFieldsSchema = z
   .object({
@@ -7,8 +8,8 @@ export const companyFieldsSchema = z
     qrId: z.string().uuid(),
     name: z.string().trim().min(2).max(120),
     description: z.string().trim().max(1_000).nullable(),
-    logoUrl: z.url(),
-    stampImageUrl: z.url().nullable(),
+    logoUrl: urlSchema(),
+    stampImageUrl: urlSchema().nullable(),
     active: z.boolean(),
     xpAwarded: z.number().int().positive().nullable(),
     createdAt: z.date(),
