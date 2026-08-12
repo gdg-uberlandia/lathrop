@@ -50,7 +50,7 @@ export function useCompanies() {
       update.isPending ||
       remove.isPending,
     error: error
-      ? getAdminApiErrorMessage(error, "Erro ao processar companies")
+      ? getAdminApiErrorMessage(error, "Erro ao processar empresas")
       : null,
     fetchCompanies: query.refetch,
     fetchCompany: (id: string) =>

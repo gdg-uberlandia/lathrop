@@ -13,22 +13,26 @@ export default function EditCompanyPage() {
   const router = useRouter();
   const { fetchCompany, updateCompany, loading } = useCompanies();
   const [company, setCompany] = useState<Company | null>(null);
+  const [resolved, setResolved] = useState(false);
   useEffect(() => {
-    if (typeof router.query.companyId === "string")
-      void fetchCompany(router.query.companyId).then(setCompany);
+    if (typeof router.query.companyId !== "string") return;
+    setResolved(false);
+    void fetchCompany(router.query.companyId)
+      .then(setCompany)
+      .finally(() => setResolved(true));
   }, [fetchCompany, router.query.companyId]);
   return (
     <AdminFormPage
-      title="Editar company"
+      title="Editar empresa"
       description="Atualize os dados da empresa participante."
       backHref="/admin/companies"
-      backLabel="Voltar para companies"
+      backLabel="Voltar para empresas"
     >
-      {!company && loading ? (
+      {!resolved ? (
         <AdminLoadingState />
       ) : !company ? (
         <AdminEmptyState
-          title="Company não encontrada"
+          title="Empresa não encontrada"
           description="O registro pode ter sido removido."
         />
       ) : (

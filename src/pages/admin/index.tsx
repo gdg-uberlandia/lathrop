@@ -120,7 +120,7 @@ export default function AdminIndex() {
       missions.length - inactiveMissions.length,
       "/admin/missions",
     ],
-    ["Companies", companies.length, "/admin/companies"],
+    ["Empresas", companies.length, "/admin/companies"],
     ["Tags ativas", tags.filter((tag) => tag.active).length, "/admin/tags"],
     ["Prêmios", raffles.length, "/admin/raffles"],
     ["Atividades", schedule.length, "/admin/schedule"],

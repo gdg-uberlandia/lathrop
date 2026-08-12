@@ -23,7 +23,7 @@ export const adminNavigationItems: AdminNavigationItem[] = [
   { title: "Palestrantes", url: "/admin/speakers", icon: Megaphone },
   { title: "Palestras", url: "/admin/talks", icon: Presentation },
   { title: "Patrocinadores", url: "/admin/sponsors", icon: DollarSign },
-  { title: "Companies", url: "/admin/companies", icon: Building2 },
+  { title: "Empresas", url: "/admin/companies", icon: Building2 },
   { title: "Programação", url: "/admin/schedule", icon: Calendar },
   { title: "Missões", url: "/admin/missions", icon: Trophy },
   { title: "Tags", url: "/admin/tags", icon: Tags },

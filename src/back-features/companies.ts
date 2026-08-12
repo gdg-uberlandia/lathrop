@@ -44,10 +44,10 @@ export async function getCompanyById(companyId: string): Promise<Company> {
     .doc(companyId)
     .get();
   if (!document.exists)
-    throw new Error(`Company com id ${companyId} não encontrada.`);
+    throw new Error(`Empresa com id ${companyId} não encontrada.`);
   const company = parseCompany(document.id, document.data()!);
   if (company.eventId !== CURRENT_EVENT_ID)
-    throw new Error(`Company com id ${companyId} não encontrada.`);
+    throw new Error(`Empresa com id ${companyId} não encontrada.`);
   return company;
 }
 
@@ -55,7 +55,7 @@ export async function createCompany(input: CompanyInput): Promise<Company> {
   const data = companyInputSchema.parse(input);
   const reference = db.collection(COMPANIES_COLLECTION).doc(data.id);
   if ((await reference.get()).exists)
-    throw new Error(`Company com id ${data.id} já existe.`);
+    throw new Error(`Empresa com id ${data.id} já existe.`);
   const now = new Date();
   const company = companyFieldsSchema.parse({
     ...data,
@@ -92,7 +92,7 @@ export async function deleteCompany(companyId: string): Promise<string> {
   );
   if (used)
     throw new Error(
-      "Esta company é pré-requisito de uma missão e não pode ser excluída.",
+      "Esta empresa é pré-requisito de uma missão e não pode ser excluída.",
     );
   await db.collection(COMPANIES_COLLECTION).doc(companyId).delete();
   return companyId;

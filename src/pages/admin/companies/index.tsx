@@ -71,13 +71,13 @@ export default function CompaniesPage() {
     <>
       <main className="p-4 sm:p-6">
         <AdminPageHeader
-          title="Companies"
+          title="Empresas"
           description="Gerencie empresas participantes das missões, separadamente dos patrocinadores."
           count={companies.length}
           icon={Building2}
           action={{
             href: "/admin/companies/add-company",
-            label: "Cadastrar company",
+            label: "Cadastrar empresa",
           }}
         />
         <AdminListToolbar search={search} onSearchChange={setSearch}>
@@ -101,17 +101,17 @@ export default function CompaniesPage() {
           <AdminLoadingState />
         ) : filtered.length === 0 ? (
           <AdminEmptyState
-            title={search ? "Nenhum resultado" : "Nenhuma company cadastrada"}
+            title={search ? "Nenhum resultado" : "Nenhuma empresa cadastrada"}
             description={
               search
                 ? "Tente outro termo."
-                : "Cadastre a primeira company do evento."
+                : "Cadastre a primeira empresa do evento."
             }
             action={
               !search
                 ? {
                     href: "/admin/companies/add-company",
-                    label: "Cadastrar company",
+                    label: "Cadastrar empresa",
                   }
                 : undefined
             }
@@ -194,6 +194,7 @@ export default function CompaniesPage() {
                         <Button
                           variant="secondary"
                           size="icon"
+                          aria-label={`Editar ${item.name}`}
                           onClick={() =>
                             router.push(`/admin/companies/edit/${item.id}`)
                           }
@@ -203,6 +204,7 @@ export default function CompaniesPage() {
                         <Button
                           variant="secondary"
                           size="icon"
+                          aria-label={`Excluir ${item.name}`}
                           onClick={() => setSelected(item)}
                         >
                           <Trash2 />
@@ -219,8 +221,8 @@ export default function CompaniesPage() {
       </main>
       <DeleteDialog
         open={Boolean(selected)}
-        title={`Excluir ${selected?.name ?? "company"}?`}
-        description="A exclusão será bloqueada se esta company estiver vinculada a uma missão."
+        title={`Excluir ${selected?.name ?? "empresa"}?`}
+        description="A exclusão será bloqueada se esta empresa estiver vinculada a uma missão."
         onClose={() => setSelected(null)}
         onConfirm={async () => {
           if (selected) await removeCompany(selected.id);

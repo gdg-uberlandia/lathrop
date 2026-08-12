@@ -8,10 +8,10 @@ export default function AddCompanyPage() {
   const { addCompany, loading } = useCompanies();
   return (
     <AdminFormPage
-      title="Cadastrar company"
+      title="Cadastrar empresa"
       description="Adicione uma empresa participante das missões."
       backHref="/admin/companies"
-      backLabel="Voltar para companies"
+      backLabel="Voltar para empresas"
     >
       <CompanyForm
         loading={loading}
