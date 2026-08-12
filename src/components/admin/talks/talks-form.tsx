@@ -48,6 +48,7 @@ export function TalksForm({
   onSubmit,
 }: TalksFormProps) {
   const [validationError, setValidationError] = useState("");
+  const [speakerSearch, setSpeakerSearch] = useState("");
   const form = useForm<TalkFormType>({
     resolver: zodResolver(talkFormSchema),
     defaultValues: defaults(),
@@ -148,6 +149,13 @@ export function TalksForm({
           render={({ field, fieldState }) => (
             <FormItem className="md:col-span-4">
               <FormLabel>Palestrante(s)</FormLabel>
+              <Input
+                type="search"
+                value={speakerSearch}
+                onChange={(event) => setSpeakerSearch(event.target.value)}
+                placeholder="Buscar palestrante..."
+                className="mb-2"
+              />
               <FormControl>
                 <select
                   multiple
@@ -162,15 +170,23 @@ export function TalksForm({
                   }
                   className="min-h-28 w-full rounded-md border bg-transparent p-2"
                 >
-                  {speakers.map((speaker) => (
-                    <option
-                      key={speaker.id}
-                      value={speaker.id}
-                      className="text-black"
-                    >
-                      {speaker.name}
-                    </option>
-                  ))}
+                  {speakers
+                    .filter((speaker) =>
+                      `${speaker.name} ${speaker.company ?? ""}`
+                        .toLocaleLowerCase("pt-BR")
+                        .includes(
+                          speakerSearch.toLocaleLowerCase("pt-BR").trim(),
+                        ),
+                    )
+                    .map((speaker) => (
+                      <option
+                        key={speaker.id}
+                        value={speaker.id}
+                        className="text-black"
+                      >
+                        {speaker.name}
+                      </option>
+                    ))}
                 </select>
               </FormControl>
               <small>
