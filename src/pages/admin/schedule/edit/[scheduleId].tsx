@@ -4,7 +4,7 @@ import {
   AdminLoadingState,
 } from "@/components/admin/admin-page";
 import { ScheduleForm } from "@/components/admin/schedule/schedule-form";
-import { ScheduleFormValues } from "@/components/admin/schedule/schedule-schema";
+import { ScheduleEntry } from "@/contracts/schedule";
 import { useSchedule } from "@/hooks/useSchedule";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 export default function EditSchedulePage() {
   const router = useRouter();
   const { loading, readSchedule, updateSchedule } = useSchedule();
-  const [schedule, setSchedule] = useState<ScheduleFormValues | null>(null);
+  const [schedule, setSchedule] = useState<ScheduleEntry | null>(null);
   useEffect(() => {
     if (typeof router.query.scheduleId === "string")
       void readSchedule(router.query.scheduleId).then(setSchedule);
@@ -34,7 +34,6 @@ export default function EditSchedulePage() {
       ) : (
         <ScheduleForm
           schedule={schedule}
-          editing
           loading={loading}
           onSubmit={async (data) => {
             const result = await updateSchedule(data);

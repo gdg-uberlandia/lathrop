@@ -14,167 +14,152 @@ import {
   AdminLoadingState,
   AdminPageHeader,
   AdminPagination,
+  AdminStatusBadge,
   AdminTableContainer,
-  AdminSortButton,
 } from "@/components/admin/admin-page";
 import DeleteDialog from "@/components/admin/delete-dialog";
-import { useSchedule } from "@/hooks/useSchedule";
+import { ScheduleEntry } from "@/contracts/schedule";
 import { useAdminListState } from "@/hooks/useAdminListState";
-import { Schedule, SpeechTopicName } from "@/models/schedule";
+import { useSchedule } from "@/hooks/useSchedule";
+import { useTalks } from "@/hooks/useTalks";
 import { CalendarDays, Pencil, Trash2, TriangleAlert } from "lucide-react";
 import { useRouter } from "next/router";
-import { useMemo, useState } from "react";
-
+import { useCallback, useMemo, useState } from "react";
+const typeLabel = {
+  talk: "Palestra",
+  opening: "Abertura",
+  break: "Intervalo",
+  closing: "Encerramento",
+};
 export default function Schedules() {
   const router = useRouter();
   const { schedule, deleteSchedule, loading, error, fetchSchedule } =
     useSchedule();
-  const [selected, setSelected] = useState<Schedule | null>(null);
-  const {
-    search,
-    setSearch,
-    setPage,
-    paginate,
-    sort,
-    direction,
-    toggleSort,
-    sortItems,
-  } = useAdminListState();
-  const filteredSchedule = useMemo(() => {
-    const term = search.trim().toLocaleLowerCase("pt-BR");
-    if (!term) return schedule;
-    return schedule.filter((item) =>
-      [item.start, item.end, ...item.speeches.map((speech) => speech.title)]
-        .filter(Boolean)
-        .some((value) =>
-          String(value).toLocaleLowerCase("pt-BR").includes(term),
-        ),
-    );
-  }, [schedule, search]);
-  const pagination = paginate(
-    sortItems(filteredSchedule, {
-      name: (item) => item.start,
-      end: (item) => item.end,
-    }),
+  const { talks } = useTalks();
+  const [selected, setSelected] = useState<ScheduleEntry | null>(null);
+  const list = useAdminListState();
+  const talkNames = useMemo(
+    () => new Map(talks.map((talk) => [talk.id, talk.title])),
+    [talks],
   );
-  const conflictingIds = useMemo(() => {
-    const minutes = (value: string) => {
-      const [hours, minute] = value.split(":").map(Number);
-      return hours * 60 + minute;
-    };
-    return new Set(
-      schedule.flatMap((item, index) =>
-        schedule
-          .slice(index + 1)
-          .flatMap((other) =>
-            minutes(item.start) < minutes(other.end) &&
-            minutes(other.start) < minutes(item.end)
-              ? [item.id, other.id]
-              : [],
-          ),
+  const name = useCallback(
+    (item: ScheduleEntry) =>
+      item.activity.type === "talk"
+        ? (talkNames.get(item.activity.talkId) ?? "Palestra removida")
+        : item.activity.title,
+    [talkNames],
+  );
+  const filtered = useMemo(
+    () =>
+      schedule.filter((item) =>
+        `${name(item)} ${item.room ?? ""}`
+          .toLowerCase()
+          .includes(list.search.toLowerCase()),
       ),
-    );
-  }, [schedule]);
-
+    [schedule, list.search, name],
+  );
+  const pagination = list.paginate(filtered);
+  const conflicts = useMemo(
+    () =>
+      new Set(
+        schedule.flatMap((item, index) =>
+          schedule
+            .slice(index + 1)
+            .flatMap((other) =>
+              item.date === other.date &&
+              item.room === other.room &&
+              item.startAt < other.endAt &&
+              other.startAt < item.endAt
+                ? [item.id, other.id]
+                : [],
+            ),
+        ),
+      ),
+    [schedule],
+  );
   return (
     <>
       <main className="p-4 sm:p-6">
         <AdminPageHeader
           title="Programação"
-          description="Organize horários, trilhas e atividades do evento."
+          description="Organize palestras e atividades por data, horário e sala."
           count={schedule.length}
           icon={CalendarDays}
           action={{
             href: "/admin/schedule/add-schedule",
-            label: "Adicionar horário",
+            label: "Adicionar atividade",
           }}
         />
-        <AdminListToolbar search={search} onSearchChange={setSearch} />
+        <AdminListToolbar
+          search={list.search}
+          onSearchChange={list.setSearch}
+        />
         {error && (
           <AdminErrorState
             message={error}
             onRetry={() => void fetchSchedule()}
           />
         )}
-        {loading && schedule.length === 0 ? (
+        {loading && !schedule.length ? (
           <AdminLoadingState />
-        ) : filteredSchedule.length === 0 ? (
+        ) : !filtered.length ? (
           <AdminEmptyState
-            title={search ? "Nenhum resultado" : "Programação vazia"}
-            description={
-              search
-                ? "Tente buscar por outro horário ou título."
-                : "Adicione o primeiro horário da programação."
-            }
-            action={
-              search
-                ? undefined
-                : {
-                    href: "/admin/schedule/add-schedule",
-                    label: "Adicionar horário",
-                  }
-            }
+            title="Programação vazia"
+            description="Adicione a primeira atividade do evento."
           />
         ) : (
           <AdminTableContainer>
             <Table>
-              <TableHeader className="bg-devGray-dark">
+              <TableHeader>
                 <TableRow>
-                  <TableHead>
-                    <AdminSortButton
-                      label="Horário"
-                      active={sort === "name"}
-                      direction={direction}
-                      onClick={() => toggleSort("name")}
-                    />
-                  </TableHead>
-                  <TableHead className="text-white">Atividades</TableHead>
-                  <TableHead className="text-white">Validação</TableHead>
-                  <TableHead className="text-right text-white">Ações</TableHead>
+                  <TableHead>Data e horário</TableHead>
+                  <TableHead>Atividade</TableHead>
+                  <TableHead>Sala</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {pagination.items.map((item) => (
                   <TableRow key={item.id}>
-                    <TableCell className="whitespace-nowrap font-medium text-white/80">
-                      {item.start}–{item.end}
-                    </TableCell>
                     <TableCell>
-                      {conflictingIds.has(item.id) ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-md bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-200">
-                          <TriangleAlert className="size-3.5" /> Conflito de
-                          horário
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1.5 text-xs text-emerald-700">
-                          <span className="size-1.5 rounded-full bg-emerald-500" />
-                          Sem conflitos
-                        </span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex max-w-3xl flex-wrap gap-2">
-                        {item.speeches.map((speech) => (
-                          <span
-                            key={speech.id}
-                            className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-sm text-white/70"
-                          >
-                            {speech.title ||
-                              (speech.topic
-                                ? SpeechTopicName[
-                                    speech.topic as keyof typeof SpeechTopicName
-                                  ]
-                                : "Atividade sem título")}
-                          </span>
-                        ))}
+                      <div className="font-medium">
+                        {new Intl.DateTimeFormat("pt-BR", {
+                          dateStyle: "short",
+                          timeStyle: "short",
+                        }).format(item.startAt)}
+                      </div>
+                      <div className="text-xs text-slate-500">
+                        até{" "}
+                        {new Intl.DateTimeFormat("pt-BR", {
+                          timeStyle: "short",
+                        }).format(item.endAt)}
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex justify-end gap-2">
+                      <div>{name(item)}</div>
+                      <div className="text-xs text-slate-500">
+                        {typeLabel[item.activity.type]}
+                      </div>
+                      {conflicts.has(item.id) && (
+                        <span className="mt-1 inline-flex items-center gap-1 text-xs text-amber-700">
+                          <TriangleAlert className="size-3" /> Conflito na sala
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell>{item.room ?? "Geral"}</TableCell>
+                    <TableCell>
+                      <AdminStatusBadge
+                        active={item.active}
+                        activeLabel="Visível"
+                        inactiveLabel="Oculta"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
                         <Button
-                          variant="secondary"
                           size="icon"
-                          aria-label={`Editar horário ${item.start}`}
+                          variant="secondary"
                           onClick={() =>
                             router.push(`/admin/schedule/edit/${item.id}`)
                           }
@@ -182,9 +167,8 @@ export default function Schedules() {
                           <Pencil />
                         </Button>
                         <Button
-                          variant="secondary"
                           size="icon"
-                          aria-label={`Excluir horário ${item.start}`}
+                          variant="secondary"
                           onClick={() => setSelected(item)}
                         >
                           <Trash2 />
@@ -195,14 +179,14 @@ export default function Schedules() {
                 ))}
               </TableBody>
             </Table>
-            <AdminPagination {...pagination} onPageChange={setPage} />
+            <AdminPagination {...pagination} onPageChange={list.setPage} />
           </AdminTableContainer>
         )}
       </main>
       <DeleteDialog
-        open={Boolean(selected)}
-        title={`Excluir horário ${selected?.start ?? ""}?`}
-        description="O horário e todas as atividades associadas serão removidos permanentemente."
+        open={!!selected}
+        title="Excluir atividade?"
+        description="A atividade será removida permanentemente da programação."
         onClose={() => setSelected(null)}
         onConfirm={async () => {
           if (selected) await deleteSchedule(selected.id);

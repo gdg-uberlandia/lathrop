@@ -1,30 +1,14 @@
+import { ScheduleEntry, ScheduleInput } from "@/contracts/schedule";
 import { adminApiRequest } from "@/lib/admin-api/client";
-import { Schedule } from "@/models/schedule";
-
-const SCHEDULE_API_PATH = "/api/v1/schedule";
-
+const PATH = "/api/v1/schedule";
 export const getScheduleAPI = (signal?: AbortSignal) =>
-  adminApiRequest<Schedule[]>(SCHEDULE_API_PATH, { signal });
-
-export const createScheduleAPI = (schedule: Schedule) =>
-  adminApiRequest<Schedule>(SCHEDULE_API_PATH, {
-    method: "POST",
-    body: schedule,
-  });
-
-export const readScheduleAPI = (scheduleId: string, signal?: AbortSignal) =>
-  adminApiRequest<Schedule>(`${SCHEDULE_API_PATH}/${scheduleId}`, { signal });
-
-export const updateScheduleAPI = (schedule: Schedule) =>
-  adminApiRequest<Schedule>(`${SCHEDULE_API_PATH}/${schedule.id}`, {
-    method: "PUT",
-    body: schedule,
-  });
-
-export const deleteScheduleAPI = async (scheduleId: string) => {
-  const result = await adminApiRequest<{ id: string }>(
-    `${SCHEDULE_API_PATH}/${scheduleId}`,
-    { method: "DELETE" },
-  );
-  return result.id;
-};
+  adminApiRequest<ScheduleEntry[]>(PATH, { signal });
+export const createScheduleAPI = (body: ScheduleInput) =>
+  adminApiRequest<ScheduleEntry>(PATH, { method: "POST", body });
+export const readScheduleAPI = (id: string, signal?: AbortSignal) =>
+  adminApiRequest<ScheduleEntry>(`${PATH}/${id}`, { signal });
+export const updateScheduleAPI = (body: ScheduleInput) =>
+  adminApiRequest<ScheduleEntry>(`${PATH}/${body.id}`, { method: "PUT", body });
+export const deleteScheduleAPI = async (id: string) =>
+  (await adminApiRequest<{ id: string }>(`${PATH}/${id}`, { method: "DELETE" }))
+    .id;

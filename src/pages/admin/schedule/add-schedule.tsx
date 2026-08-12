@@ -11,11 +11,7 @@ export default function AddSchedulePage() {
       backHref="/admin/schedule"
       backLabel="Voltar para programação"
     >
-      <ScheduleForm
-        onSubmit={createSchedule}
-        loading={loading}
-        editing={false}
-      />
+      <ScheduleForm onSubmit={createSchedule} loading={loading} />
     </AdminFormPage>
   );
 }

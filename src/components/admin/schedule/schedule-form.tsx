@@ -1,13 +1,5 @@
 import { Button } from "@/assets/components/ui/button";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useFieldArray } from "react-hook-form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/assets/components/ui/select";
+import { Checkbox } from "@/assets/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -16,317 +8,246 @@ import {
   FormLabel,
   FormMessage,
 } from "@/assets/components/ui/form";
-import { useSpeakers } from "@/hooks/useSpeakers";
-import { useEffect } from "react";
-import { z } from "zod";
+import { Input } from "@/assets/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/assets/components/ui/select";
+import {
+  ScheduleEntry,
+  ScheduleInput,
+  scheduleInputSchema,
+} from "@/contracts/schedule";
+import { useTalks } from "@/hooks/useTalks";
+import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Resolver, useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
-import { Schedule, ScheduleFormProps } from "./schedule-types";
-import { scheduleSchema, ScheduleFormValues } from "./schedule-schema";
-import SortableSpeech from "./sortable-speech";
-import {
-  DndContext,
-  closestCenter,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
-
+const localDateTime = (value: Date) => {
+  const offset = value.getTimezoneOffset() * 60_000;
+  return new Date(value.getTime() - offset).toISOString().slice(0, 16);
+};
 export function ScheduleForm({
-  onSubmit,
-  loading,
   schedule,
-  editing = false,
-}: ScheduleFormProps) {
-  const { speakers } = useSpeakers();
-  const form = useForm<z.infer<typeof scheduleSchema>>({
-    resolver: zodResolver(scheduleSchema) as any,
+  loading,
+  onSubmit,
+}: {
+  schedule?: ScheduleEntry;
+  loading?: boolean;
+  onSubmit: (value: ScheduleInput) => unknown;
+}) {
+  const { talks } = useTalks();
+  const initial = schedule?.startAt ?? new Date();
+  const form = useForm<ScheduleInput>({
+    resolver: zodResolver(scheduleInputSchema) as Resolver<ScheduleInput>,
     defaultValues: schedule
-      ? { ...schedule }
+      ? {
+          id: schedule.id,
+          date: schedule.date,
+          startAt: schedule.startAt,
+          endAt: schedule.endAt,
+          room: schedule.room,
+          activity: schedule.activity,
+          active: schedule.active,
+          order: schedule.order,
+        }
       : {
-          start: "08:00",
-          end: "08:00",
-          speeches: [{ id: uuidv4(), topic: "registration", order: 0 }],
+          id: uuidv4(),
+          date: localDateTime(initial).slice(0, 10),
+          startAt: initial,
+          endAt: new Date(initial.getTime() + 60 * 60_000),
+          room: null,
+          activity: { type: "opening", title: "Abertura" },
+          active: true,
+          order: 0,
         },
   });
   useUnsavedChanges(form.formState.isDirty && !form.formState.isSubmitting);
-  const { fields, append, remove, move } = useFieldArray({
-    control: form.control,
-    name: "speeches",
-  });
-
-  // dnd-kit sensors
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    }),
-  );
-
-  // Atualiza ordem dos speeches após reordenação
-  const handleDragEnd = (event: any) => {
-    const { active, over } = event;
-    if (active.id !== over?.id) {
-      const oldIndex = fields.findIndex((item) => item.id === active.id);
-      const newIndex = fields.findIndex((item) => item.id === over.id);
-      move(oldIndex, newIndex);
-      // Atualiza o campo order
-      const updated = form
-        .getValues("speeches")
-        .map((speech: any, idx: number) => ({ ...speech, order: idx }));
-      form.setValue("speeches", updated);
-    }
-  };
-  useEffect(() => {
-    if (schedule) {
-      form.reset(schedule);
-    }
-  }, [schedule, form]);
-
-  const handleAddSpeech = () => {
-    if (fields.length < 5) {
-      append({ id: uuidv4(), topic: "registration", order: fields.length });
-    }
-  };
-
-  const handleRemoveSpeech = (idx: number) => {
-    if (fields.length > 1) remove(idx);
-  };
-
-  const handleFormSubmit = async (data: z.infer<typeof scheduleSchema>) => {
-    const scheduleId = editing && data.id ? data.id : uuidv4();
-    const newSchedule: Schedule = {
-      id: scheduleId,
-      start: data.start,
-      end: data.end,
-      speeches: data.speeches.map((speech, idx) => {
-        if (speech.topic === "panel") {
-          const validSlugs = Array.isArray(speech.speakerSlugs)
-            ? speech.speakerSlugs.filter((s) => !!s)
-            : [];
-          return {
-            ...speech,
-            id: speech.id || uuidv4(),
-            speakerSlugs: validSlugs,
-            title: speech.title,
-            order: typeof speech.order === "number" ? speech.order : idx,
-          };
-        }
-        return {
-          ...speech,
-          id: speech.id || uuidv4(),
-          order: typeof speech.order === "number" ? speech.order : idx,
-        };
-      }),
-    };
-    await onSubmit(newSchedule);
-    if (!editing) form.reset();
-  };
-
+  const type = form.watch("activity.type");
+  const changeType = (value: "talk" | "opening" | "break" | "closing") =>
+    form.setValue(
+      "activity",
+      value === "talk"
+        ? { type: "talk", talkId: talks[0]?.id ?? "" }
+        : {
+            type: value,
+            title:
+              value === "opening"
+                ? "Abertura"
+                : value === "break"
+                  ? "Intervalo"
+                  : "Encerramento",
+          },
+      { shouldDirty: true, shouldValidate: true },
+    );
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(handleFormSubmit)}
-        className="grid grid-cols-1 gap-6 rounded-2xl border border-white/10 bg-devGray-dark/20 p-4 md:grid-cols-12 md:p-6"
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="grid grid-cols-1 gap-6 rounded-2xl border border-white/10 bg-devGray-dark/20 p-4 md:grid-cols-8 md:p-6"
       >
-        <div className="md:col-span-12">
-          <h2 className="font-semibold text-slate-900">Horário</h2>
+        <div className="md:col-span-8">
+          <h2 className="font-semibold text-slate-900">Item da programação</h2>
           <p className="mt-1 text-sm text-slate-500">
-            Defina o início e o fim deste bloco da programação.
+            Cada registro representa uma atividade em uma sala e intervalo
+            definidos.
           </p>
         </div>
-        {/* Horário inicial */}
+        <FormItem className="md:col-span-3">
+          <FormLabel>Tipo</FormLabel>
+          <Select value={type} onValueChange={changeType}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="talk">Palestra</SelectItem>
+              <SelectItem value="opening">Abertura</SelectItem>
+              <SelectItem value="break">Intervalo</SelectItem>
+              <SelectItem value="closing">Encerramento</SelectItem>
+            </SelectContent>
+          </Select>
+        </FormItem>
+        {type === "talk" ? (
+          <FormField
+            name="activity.talkId"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className="md:col-span-5">
+                <FormLabel>Palestra</FormLabel>
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {talks.map((talk) => (
+                      <SelectItem key={talk.id} value={talk.id}>
+                        {talk.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        ) : (
+          <FormField
+            name="activity.title"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className="md:col-span-5">
+                <FormLabel>Título</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <FormField
+          name="date"
           control={form.control}
-          name="start"
           render={({ field }) => (
-            <FormItem className="md:col-span-6">
-              <FormLabel>Início</FormLabel>
+            <FormItem className="md:col-span-2">
+              <FormLabel>Data</FormLabel>
               <FormControl>
-                <div className="flex flex-col gap-2 sm:flex-row">
-                  <Select
-                    value={field.value.split(":")[0]}
-                    onValueChange={(h) =>
-                      field.onChange(`${h}:${field.value.split(":")[1]}`)
-                    }
-                  >
-                    <SelectTrigger className="w-full sm:w-40">
-                      <SelectValue placeholder="Hora" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {[...Array(12)].map((_, i) => {
-                        const hour = (8 + i).toString().padStart(2, "0");
-                        return (
-                          <SelectItem value={hour} key={hour}>
-                            {hour}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                  <span className="self-center">:</span>
-                  <Select
-                    value={field.value.split(":")[1]}
-                    onValueChange={(m) =>
-                      field.onChange(`${field.value.split(":")[0]}:${m}`)
-                    }
-                  >
-                    <SelectTrigger className="w-full sm:w-40">
-                      <SelectValue placeholder="Minuto" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {[0, 10, 20, 30, 40, 50].map((m) => {
-                        const min = m.toString().padStart(2, "0");
-                        return (
-                          <SelectItem value={min} key={min}>
-                            {min}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <Input type="date" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        {/* Horário final */}
+        {(["startAt", "endAt"] as const).map((name) => (
+          <FormField
+            key={name}
+            name={name}
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className="md:col-span-2">
+                <FormLabel>
+                  {name === "startAt" ? "Início" : "Término"}
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="datetime-local"
+                    value={localDateTime(field.value)}
+                    onChange={(e) => field.onChange(new Date(e.target.value))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        ))}
         <FormField
+          name="room"
           control={form.control}
-          name="end"
           render={({ field }) => (
-            <FormItem className="md:col-span-6">
-              <FormLabel>Fim</FormLabel>
+            <FormItem className="md:col-span-2">
+              <FormLabel>Sala</FormLabel>
               <FormControl>
-                <div className="flex flex-col gap-2 sm:flex-row">
-                  <Select
-                    value={field.value.split(":")[0]}
-                    onValueChange={(h) =>
-                      field.onChange(`${h}:${field.value.split(":")[1]}`)
-                    }
-                  >
-                    <SelectTrigger className="w-full sm:w-40">
-                      <SelectValue placeholder="Hora" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {[...Array(12)].map((_, i) => {
-                        const hour = (8 + i).toString().padStart(2, "0");
-                        return (
-                          <SelectItem value={hour} key={hour}>
-                            {hour}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                  <span className="self-center">:</span>
-                  <Select
-                    value={field.value.split(":")[1]}
-                    onValueChange={(m) =>
-                      field.onChange(`${field.value.split(":")[0]}:${m}`)
-                    }
-                  >
-                    <SelectTrigger className="w-full sm:w-40">
-                      <SelectValue placeholder="Minuto" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {[0, 10, 20, 30, 40, 50].map((m) => {
-                        const min = m.toString().padStart(2, "0");
-                        return (
-                          <SelectItem value={min} key={min}>
-                            {min}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <Input
+                  {...field}
+                  value={field.value ?? ""}
+                  onChange={(e) => field.onChange(e.target.value || null)}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
-        <div className="border-t !border-slate-200 pt-5 md:col-span-12">
-          <h2 className="font-semibold text-slate-900">Atividades</h2>
-          <p className="mt-1 text-sm text-slate-500">
-            Adicione e reordene o conteúdo exibido neste horário.
-          </p>
-        </div>
-        {/* Lista de Speechs dinâmicos */}
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          modifiers={[restrictToVerticalAxis]}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={fields.map((f) => f.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            {fields.map((speech, idx) => (
-              <SortableSpeech
-                key={speech.id}
-                id={speech.id}
-                idx={idx}
-                handleRemoveSpeech={handleRemoveSpeech}
-                fieldsLength={fields.length}
-                form={form}
-                speakers={speakers}
-                className="col-span-6"
-              />
-            ))}
-          </SortableContext>
-        </DndContext>
-
-        <div className="mb-4 flex justify-end md:col-span-12">
-          {fields.length < 5 && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleAddSpeech}
-              className=" border-1 rounded-xl border-white hover:border-white h-11"
-            >
-              Adicionar item
-            </Button>
+        <FormField
+          name="order"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem className="md:col-span-2">
+              <FormLabel>Ordem</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  min={0}
+                  {...field}
+                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
-        </div>
-
-        <div className="sticky bottom-3 z-10 mt-4 flex flex-col gap-3 rounded-xl border border-white/10 bg-background/95 p-3 shadow-xl backdrop-blur sm:flex-row md:col-span-12">
-          {!editing && (
-            <Button
-              type="button"
-              variant="outline"
-              disabled={loading}
-              className="w-full border-1 rounded-xl border-white hover:border-white h-11"
-              onClick={() => form.reset()}
-            >
-              Limpar
-            </Button>
+        />
+        <FormField
+          name="active"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem className="flex items-center gap-3 md:col-span-8">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={(value) => field.onChange(value === true)}
+                />
+              </FormControl>
+              <FormLabel>Exibir na programação</FormLabel>
+            </FormItem>
           )}
+        />
+        <div className="sticky bottom-3 z-10 flex gap-3 rounded-xl border bg-white/95 p-3 shadow-xl md:col-span-8 md:justify-end">
           <Button
             type="button"
             variant="outline"
-            disabled={loading}
-            className="h-11 w-full !border-slate-300"
-            onClick={() => window.history.back()}
+            onClick={() => history.back()}
           >
             Cancelar
           </Button>
           <Button
             type="submit"
             disabled={loading || form.formState.isSubmitting}
-            className="admin-primary-action h-11 w-full rounded-lg !bg-blue-600"
+            className="admin-primary-action !bg-blue-600"
           >
-            {loading ? "Salvando..." : editing ? "Atualizar" : "Cadastrar"}
+            {schedule ? "Salvar alterações" : "Adicionar à programação"}
           </Button>
         </div>
       </form>

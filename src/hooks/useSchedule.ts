@@ -1,6 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-import { scheduleSchema } from "@/components/admin/schedule/schedule-schema";
 import { useAuth } from "@/context/AuthContext";
 import {
   createScheduleAPI,
@@ -11,62 +9,69 @@ import {
 } from "@/front-features/schedule";
 import { getAdminApiErrorMessage } from "@/lib/admin-api/errors";
 import { adminQueryKeys, resolveAdminAction } from "@/lib/admin-query";
-import { Schedule } from "@/models/schedule";
-
+import {
+  ScheduleEntry,
+  ScheduleInput,
+  scheduleFieldsSchema,
+} from "@/contracts/schedule";
 export function useSchedule() {
   const { isAdmin } = useAuth();
-  const queryClient = useQueryClient();
-  const scheduleQuery = useQuery({
+  const client = useQueryClient();
+  const query = useQuery({
     enabled: isAdmin,
     queryKey: adminQueryKeys.schedule,
     queryFn: async ({ signal }) =>
-      (await getScheduleAPI(signal)).sort((a, b) => a.end.localeCompare(b.end)),
+      (await getScheduleAPI(signal)).map((item) =>
+        scheduleFieldsSchema.parse(item),
+      ),
   });
-  const refreshAfterMutation = () =>
-    queryClient.invalidateQueries({ queryKey: adminQueryKeys.schedule });
-  const createMutation = useMutation({
+  const updateCache = (item: ScheduleEntry) =>
+    client.setQueryData<ScheduleEntry[]>(adminQueryKeys.schedule, (items) =>
+      [
+        ...(items ?? []).filter((entry) => entry.id !== item.id),
+        scheduleFieldsSchema.parse(item),
+      ].sort((a, b) => a.startAt.getTime() - b.startAt.getTime()),
+    );
+  const create = useMutation({
     mutationFn: createScheduleAPI,
-    onSuccess: refreshAfterMutation,
+    onSuccess: updateCache,
   });
-  const updateMutation = useMutation({
+  const update = useMutation({
     mutationFn: updateScheduleAPI,
-    onSuccess: refreshAfterMutation,
+    onSuccess: updateCache,
   });
-  const deleteMutation = useMutation({
+  const remove = useMutation({
     mutationFn: deleteScheduleAPI,
-    onSuccess: refreshAfterMutation,
+    onSuccess: (id) =>
+      client.setQueryData<ScheduleEntry[]>(adminQueryKeys.schedule, (items) =>
+        items?.filter((item) => item.id !== id),
+      ),
   });
-
-  const error =
-    scheduleQuery.error ||
-    createMutation.error ||
-    updateMutation.error ||
-    deleteMutation.error;
-
+  const error = query.error || create.error || update.error || remove.error;
   return {
-    schedule: scheduleQuery.data ?? [],
+    schedule: query.data ?? [],
     loading:
-      scheduleQuery.isFetching ||
-      createMutation.isPending ||
-      updateMutation.isPending ||
-      deleteMutation.isPending,
+      query.isFetching ||
+      create.isPending ||
+      update.isPending ||
+      remove.isPending,
     error: error
       ? getAdminApiErrorMessage(error, "Erro ao processar programação")
       : null,
-    fetchSchedule: scheduleQuery.refetch,
-    readSchedule: (scheduleId: string) =>
+    fetchSchedule: query.refetch,
+    readSchedule: (id: string) =>
       resolveAdminAction(() =>
-        queryClient.fetchQuery({
-          queryKey: [...adminQueryKeys.schedule, scheduleId],
+        client.fetchQuery({
+          queryKey: [...adminQueryKeys.schedule, id],
           queryFn: async ({ signal }) =>
-            scheduleSchema.parse(await readScheduleAPI(scheduleId, signal)),
+            scheduleFieldsSchema.parse(await readScheduleAPI(id, signal)),
         }),
       ),
-    createSchedule: (schedule: Schedule) =>
-      resolveAdminAction(() => createMutation.mutateAsync(schedule)),
-    updateSchedule: (schedule: Schedule) =>
-      resolveAdminAction(() => updateMutation.mutateAsync(schedule)),
-    deleteSchedule: (scheduleId: string) =>
-      resolveAdminAction(() => deleteMutation.mutateAsync(scheduleId)),
+    createSchedule: (value: ScheduleInput) =>
+      resolveAdminAction(() => create.mutateAsync(value)),
+    updateSchedule: (value: ScheduleInput) =>
+      resolveAdminAction(() => update.mutateAsync(value)),
+    deleteSchedule: (id: string) =>
+      resolveAdminAction(() => remove.mutateAsync(id)),
   };
 }
