@@ -9,13 +9,19 @@ import {
   TableRow,
 } from "@/assets/components/ui/table";
 import DeleteDialog from "@/components/admin/delete-dialog";
-import Loading from "@/components/admin/loading-overlay";
+import {
+  AdminEmptyState,
+  AdminErrorState,
+  AdminListToolbar,
+  AdminLoadingState,
+  AdminPageHeader,
+  AdminTableContainer,
+} from "@/components/admin/admin-page";
 import { useSponsors } from "@/hooks/useSponsors";
 import { SponsorCategoryDisplayName } from "@/models/sponsor";
-import { DollarSign, HandCoins, Pencil, Trash2 } from "lucide-react";
-import Link from "next/link";
+import { DollarSign, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 type TableRowType = {
   levelName: string;
@@ -27,7 +33,10 @@ type TableRowType = {
 
 export default function Sponsors() {
   const router = useRouter();
-  const { sponsors, loading, removeSponsor } = useSponsors();
+  const { sponsors, loading, removeSponsor, error, fetchSponsors } =
+    useSponsors();
+  const [search, setSearch] = useState("");
+  const [level, setLevel] = useState("all");
 
   const [sponsor, setSponsor] = useState<TableRowType | null>();
   const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false);
@@ -37,12 +46,23 @@ export default function Sponsors() {
       (item) =>
         ({
           level: item.level,
+          levelName: item.level,
           name: item.name,
           url: item.url,
           id: item.id,
         }) as TableRowType,
     ),
   );
+  const filteredRows = useMemo(() => {
+    const term = search.trim().toLocaleLowerCase("pt-BR");
+    return tableRows.filter((item) => {
+      const matchesLevel = level === "all" || item.level === level;
+      const matchesSearch =
+        !term ||
+        `${item.name} ${item.level}`.toLocaleLowerCase("pt-BR").includes(term);
+      return matchesLevel && matchesSearch;
+    });
+  }, [level, search, tableRows]);
 
   const handleOpenDialogDelete = (value: TableRowType) => {
     if (!value) return;
@@ -80,80 +100,122 @@ export default function Sponsors() {
 
   return (
     <>
-      {loading && <Loading />}
-      <div className="p-4">
-        <div className="flex w-full items-center gap-2 justify-between">
-          <div className="size-12 rounded-full bg-devGray-light/40 flex items-center justify-center">
-            <DollarSign />
-          </div>
-          <div className="grow">
-            <h1 className="text-xl text-white/80">Patrocinadores</h1>
-          </div>
-          <Link
-            href="/admin/sponsors/add-sponsor"
-            className="text-white bg-devBlue-dark border-1 border-devBlue-dark hover:border-1 hover:border-white/60 size-12 flex items-center justify-center rounded-full"
+      <div className="p-4 sm:p-6">
+        <AdminPageHeader
+          title="Patrocinadores"
+          description="Gerencie marcas apoiadoras e seus níveis."
+          count={tableRows.length}
+          icon={DollarSign}
+          action={{
+            href: "/admin/sponsors/add-sponsor",
+            label: "Cadastrar patrocinador",
+          }}
+        />
+        <AdminListToolbar search={search} onSearchChange={setSearch}>
+          <select
+            aria-label="Filtrar por nível"
+            value={level}
+            onChange={(event) => setLevel(event.target.value)}
+            className="h-10 rounded-lg border border-white/10 bg-background px-3 text-sm"
           >
-            <HandCoins />
-          </Link>
-        </div>
-
-        <div className="mt-12 overflow-x-auto rounded-xl">
-          <Table className="rounded-xl overflow-hidden border-collapse">
-            <TableCaption />
-            <TableHeader className="bg-devGray-dark text-white">
-              <TableRow>
-                <TableHead className="p-3 text-white w-24 text-center">
-                  Level
-                </TableHead>
-                <TableHead className="p-3 text-white ">Nome</TableHead>
-                <TableHead className="p-3 text-white text-center w-14"></TableHead>
-                <TableHead className="p-3 text-white text-center w-14"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {tableRows.map((sponsor) => (
-                <TableRow key={sponsor.id}>
-                  <TableCell className="p-3 text-white/80 font-medium text-center">
-                    <span
-                      className={`py-1 px-2 text-xs rounded-2xl ${getLevelColor(sponsor.level)}`}
-                    >
-                      {getSponsorLevel(sponsor.level)}
-                    </span>
-                  </TableCell>
-                  <TableCell className="p-3 text-white/80 font-bold">
-                    {sponsor.name}
-                  </TableCell>
-                  <TableCell className="px-3 text-white/80 text-right">
-                    <Button
-                      disabled={loading}
-                      variant="secondary"
-                      size="icon"
-                      className="size-8 text-devGreen-dark hover:text-devGreen bg-transparent p-0"
-                      onClick={() =>
-                        router.push(
-                          `/admin/sponsors/edit/${sponsor.levelName}?id=${sponsor.id}`,
-                        )
-                      }
-                    >
-                      <Pencil />
-                    </Button>
-                  </TableCell>
-                  <TableCell className="px-3 text-white/80 text-right">
-                    <Button
-                      variant="secondary"
-                      size="icon"
-                      disabled={loading}
-                      className="size-8 text-devRed-dark hover:text-devRed bg-transparent p-0"
-                      onClick={() => handleOpenDialogDelete(sponsor)}
-                    >
-                      <Trash2 />
-                    </Button>
-                  </TableCell>
+            <option value="all">Todos os níveis</option>
+            {Object.entries(SponsorCategoryDisplayName).map(
+              ([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ),
+            )}
+          </select>
+        </AdminListToolbar>
+        {error && (
+          <AdminErrorState
+            message={error}
+            onRetry={() => void fetchSponsors()}
+          />
+        )}
+        {loading && tableRows.length === 0 ? (
+          <AdminLoadingState />
+        ) : filteredRows.length === 0 ? (
+          <AdminEmptyState
+            title={
+              search ? "Nenhum resultado" : "Nenhum patrocinador cadastrado"
+            }
+            description={
+              search
+                ? "Tente outro nome ou nível."
+                : "Cadastre a primeira marca apoiadora do evento."
+            }
+            action={
+              !search
+                ? {
+                    href: "/admin/sponsors/add-sponsor",
+                    label: "Cadastrar patrocinador",
+                  }
+                : undefined
+            }
+          />
+        ) : (
+          <AdminTableContainer>
+            <Table className="rounded-xl overflow-hidden border-collapse">
+              <TableCaption />
+              <TableHeader className="bg-devGray-dark text-white">
+                <TableRow>
+                  <TableHead className="p-3 text-white w-24 text-center">
+                    Nível
+                  </TableHead>
+                  <TableHead className="p-3 text-white ">Nome</TableHead>
+                  <TableHead className="p-3 text-white text-center w-14"></TableHead>
+                  <TableHead className="p-3 text-white text-center w-14"></TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {filteredRows.map((sponsor) => (
+                  <TableRow key={sponsor.id}>
+                    <TableCell className="p-3 text-white/80 font-medium text-center">
+                      <span
+                        className={`py-1 px-2 text-xs rounded-2xl ${getLevelColor(sponsor.level)}`}
+                      >
+                        {getSponsorLevel(sponsor.level)}
+                      </span>
+                    </TableCell>
+                    <TableCell className="p-3 text-white/80 font-bold">
+                      {sponsor.name}
+                    </TableCell>
+                    <TableCell className="px-3 text-white/80 text-right">
+                      <Button
+                        disabled={loading}
+                        variant="secondary"
+                        size="icon"
+                        className="size-8 text-devGreen-dark hover:text-devGreen bg-transparent p-0"
+                        onClick={() =>
+                          router.push(
+                            `/admin/sponsors/edit/${sponsor.levelName}?id=${sponsor.id}`,
+                          )
+                        }
+                        aria-label={`Editar ${sponsor.name}`}
+                      >
+                        <Pencil />
+                      </Button>
+                    </TableCell>
+                    <TableCell className="px-3 text-white/80 text-right">
+                      <Button
+                        variant="secondary"
+                        size="icon"
+                        disabled={loading}
+                        className="size-8 text-devRed-dark hover:text-devRed bg-transparent p-0"
+                        onClick={() => handleOpenDialogDelete(sponsor)}
+                        aria-label={`Excluir ${sponsor.name}`}
+                      >
+                        <Trash2 />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </AdminTableContainer>
+        )}
       </div>
 
       <DeleteDialog
