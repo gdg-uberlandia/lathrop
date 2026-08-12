@@ -1,4 +1,5 @@
 import { getSchedule } from "@/back-features/schedule";
+import { getSchedulePublication } from "@/back-features/schedule-publication";
 import { getAllSpeakers } from "@/back-features/speakers";
 import { getAllTalks } from "@/back-features/talks";
 import { Header } from "@/components/devfest-triangulo-2025/Header";
@@ -22,10 +23,12 @@ export default function SchedulePage({
   schedule,
   talks,
   speakers,
+  published,
 }: {
   schedule: SerializedSchedule[];
   talks: PublicTalk[];
   speakers: PublicSpeaker[];
+  published: boolean;
 }) {
   const talkMap = new Map(talks.map((talk) => [talk.id, talk]));
   const speakerMap = new Map(speakers.map((speaker) => [speaker.id, speaker]));
@@ -119,7 +122,7 @@ export default function SchedulePage({
               </section>
             );
           })}
-          {slots.length === 0 && (
+          {(!published || slots.length === 0) && (
             <p className="rounded-2xl border border-white/10 p-8 text-center text-white/60">
               A programação será publicada em breve.
             </p>
@@ -132,14 +135,15 @@ export default function SchedulePage({
 
 export async function getServerSideProps() {
   try {
-    const [schedule, talks, speakers] = await Promise.all([
+    const [schedule, talks, speakers, publication] = await Promise.all([
       getSchedule(),
       getAllTalks(),
       getAllSpeakers(),
+      getSchedulePublication(),
     ]);
     return {
       props: {
-        schedule: schedule.map((item) => ({
+        schedule: (publication.published ? schedule : []).map((item) => ({
           ...item,
           startAt: item.startAt.toISOString(),
           endAt: item.endAt.toISOString(),
@@ -148,10 +152,13 @@ export async function getServerSideProps() {
         })),
         talks: talks.map(toPublicTalk),
         speakers: speakers.map(toPublicSpeaker),
+        published: publication.published,
       },
     };
   } catch (error) {
     console.error(error);
-    return { props: { schedule: [], talks: [], speakers: [] } };
+    return {
+      props: { schedule: [], talks: [], speakers: [], published: false },
+    };
   }
 }

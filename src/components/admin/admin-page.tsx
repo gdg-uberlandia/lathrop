@@ -28,11 +28,17 @@ export function AdminPageHeader({
   count?: number;
   icon: ComponentType<{ className?: string }>;
   action?:
-    | { href: string; label: string; variant?: "primary" | "secondary" }
+    | {
+        href: string;
+        label: string;
+        variant?: "primary" | "secondary";
+        icon?: ComponentType<{ className?: string }>;
+      }
     | Array<{
         href: string;
         label: string;
         variant?: "primary" | "secondary";
+        icon?: ComponentType<{ className?: string }>;
       }>;
 }) {
   const actions = action ? (Array.isArray(action) ? action : [action]) : [];
@@ -72,7 +78,11 @@ export function AdminPageHeader({
               }
             >
               <Link href={item.href}>
-                <Plus className="size-4" />
+                {item.icon ? (
+                  <item.icon className="size-4" />
+                ) : (
+                  <Plus className="size-4" />
+                )}
                 {item.label}
               </Link>
             </Button>

@@ -23,12 +23,22 @@ import {
 import { useSchedule } from "@/hooks/useSchedule";
 import { useTalks } from "@/hooks/useTalks";
 import { useSpeakers } from "@/hooks/useSpeakers";
+import { useSchedulePublication } from "@/hooks/useSchedulePublication";
+import {
+  exportScheduleCsv,
+  exportSchedulePdf,
+  exportSchedulePng,
+} from "@/lib/schedule-export";
 import {
   CalendarDays,
   Copy,
   Eye,
   EyeOff,
   FilterX,
+  FileDown,
+  FileImage,
+  FileSpreadsheet,
+  Globe2,
   Pencil,
   Plus,
   Trash2,
@@ -81,6 +91,11 @@ export default function Schedules() {
   } = useSchedule();
   const { talks } = useTalks();
   const { speakers } = useSpeakers();
+  const {
+    publication,
+    loading: publicationLoading,
+    setPublished,
+  } = useSchedulePublication();
   const [selected, setSelected] = useState<ScheduleEntry | null>(null);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
@@ -202,6 +217,22 @@ export default function Schedules() {
   ]);
   const hasFilters =
     typeFilter !== "all" || trackFilter !== "all" || statusFilter !== "all";
+  const exportRows = useMemo(
+    () =>
+      schedule
+        .filter((item) => item.active)
+        .map((item) => ({
+          time: `${formatTime(item.startAt)}–${formatTime(item.endAt)}`,
+          track: item.track
+            ? (SCHEDULE_TRACKS.find((track) => track.value === item.track)
+                ?.label ?? item.track)
+            : "Geral",
+          type: typeLabel[item.activity.type],
+          title: name(item),
+          speakers: speakersFor(item).join(", "),
+        })),
+    [name, schedule, speakersFor],
+  );
   const addHref = (start: string, end: string, track?: ScheduleTrack) => ({
     pathname: "/admin/schedule/add-schedule",
     query: { start, end, type: "talk", ...(track ? { track } : {}) },
@@ -305,8 +336,90 @@ export default function Schedules() {
               label: "Cadastrar bloco completo",
               variant: "secondary",
             },
+            {
+              href: "/admin/schedule/preview",
+              label: "Prévia pública",
+              variant: "secondary",
+              icon: Eye,
+            },
           ]}
         />
+        <section className="mt-4 flex flex-col gap-3 rounded-xl border !border-slate-200 bg-white p-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <span
+              className={cn(
+                "flex size-9 items-center justify-center rounded-lg",
+                publication?.published
+                  ? "bg-emerald-50 text-emerald-600"
+                  : "bg-slate-100 text-slate-500",
+              )}
+            >
+              <Globe2 className="size-4" />
+            </span>
+            <div>
+              <p className="text-sm font-semibold text-slate-900">
+                {publication?.published
+                  ? "Programação publicada"
+                  : "Programação em rascunho"}
+              </p>
+              <p className="text-xs text-slate-500">
+                {publication?.publishedAt
+                  ? `Última publicação: ${new Date(publication.publishedAt).toLocaleString("pt-BR")}`
+                  : "Ainda não disponível publicamente."}
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap justify-end gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => exportScheduleCsv(exportRows)}
+              disabled={!exportRows.length}
+              className="!border-slate-300 !bg-white !text-slate-700"
+            >
+              <FileSpreadsheet className="size-4" /> CSV
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => exportSchedulePng(exportRows)}
+              disabled={!exportRows.length}
+              className="!border-slate-300 !bg-white !text-slate-700"
+            >
+              <FileImage className="size-4" /> Imagem
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => void exportSchedulePdf(exportRows)}
+              disabled={!exportRows.length}
+              className="!border-slate-300 !bg-white !text-slate-700"
+            >
+              <FileDown className="size-4" /> PDF
+            </Button>
+            <Button
+              size="sm"
+              disabled={publicationLoading || !exportRows.length}
+              className={
+                publication?.published
+                  ? "!bg-slate-700"
+                  : "admin-primary-action !bg-blue-600"
+              }
+              onClick={() => {
+                const next = !publication?.published;
+                if (
+                  !next &&
+                  !window.confirm("Retirar a programação do site público?")
+                )
+                  return;
+                void setPublished(next);
+              }}
+            >
+              <Globe2 className="size-4" />{" "}
+              {publication?.published ? "Despublicar" : "Publicar"}
+            </Button>
+          </div>
+        </section>
         <AdminListToolbar search={search} onSearchChange={setSearch}>
           <Select value={typeFilter} onValueChange={setTypeFilter}>
             <SelectTrigger className="h-10 w-full !border-slate-200 bg-white sm:w-40">
