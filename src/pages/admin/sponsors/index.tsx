@@ -15,9 +15,12 @@ import {
   AdminListToolbar,
   AdminLoadingState,
   AdminPageHeader,
+  AdminPagination,
   AdminTableContainer,
+  AdminSortButton,
 } from "@/components/admin/admin-page";
 import { useSponsors } from "@/hooks/useSponsors";
+import { useAdminListState } from "@/hooks/useAdminListState";
 import { SponsorCategoryDisplayName } from "@/models/sponsor";
 import { DollarSign, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/router";
@@ -35,7 +38,16 @@ export default function Sponsors() {
   const router = useRouter();
   const { sponsors, loading, removeSponsor, error, fetchSponsors } =
     useSponsors();
-  const [search, setSearch] = useState("");
+  const {
+    search,
+    setSearch,
+    setPage,
+    paginate,
+    sort,
+    direction,
+    toggleSort,
+    sortItems,
+  } = useAdminListState();
   const [level, setLevel] = useState("all");
 
   const [sponsor, setSponsor] = useState<TableRowType | null>();
@@ -63,6 +75,12 @@ export default function Sponsors() {
       return matchesLevel && matchesSearch;
     });
   }, [level, search, tableRows]);
+  const pagination = paginate(
+    sortItems(filteredRows, {
+      name: (item) => item.name,
+      level: (item) => item.level,
+    }),
+  );
 
   const handleOpenDialogDelete = (value: TableRowType) => {
     if (!value) return;
@@ -80,15 +98,15 @@ export default function Sponsors() {
   const getLevelColor = (levelName: string) => {
     return (
       {
-        superior: "border-1 border-devBlue-dark text-white",
-        diamond: "border-1 border-blue-300 text-white",
-        gold: "border-1 border-yellow-500 text-white",
-        silver: "border-1 border-gray-300 text-white",
-        bronze: "border-1 border-orange-400 text-white",
-        iron: "border-1 border-gray-500 text-white",
-        ruby: "border-1 border-red-500 text-white",
-        support: "border-1 border-teal-500 text-white",
-      }[levelName] || "border-1 border-devGreen-light text-white"
+        superior: "bg-blue-50 text-blue-700 ring-blue-200",
+        diamond: "bg-cyan-50 text-cyan-700 ring-cyan-200",
+        gold: "bg-amber-50 text-amber-700 ring-amber-200",
+        silver: "bg-slate-100 text-slate-600 ring-slate-200",
+        bronze: "bg-orange-50 text-orange-700 ring-orange-200",
+        iron: "bg-zinc-100 text-zinc-700 ring-zinc-200",
+        ruby: "bg-red-50 text-red-700 ring-red-200",
+        support: "bg-teal-50 text-teal-700 ring-teal-200",
+      }[levelName] || "bg-emerald-50 text-emerald-700 ring-emerald-200"
     );
   };
 
@@ -164,17 +182,24 @@ export default function Sponsors() {
                   <TableHead className="p-3 text-white w-24 text-center">
                     Nível
                   </TableHead>
-                  <TableHead className="p-3 text-white ">Nome</TableHead>
+                  <TableHead className="p-3">
+                    <AdminSortButton
+                      label="Nome"
+                      active={sort === "name"}
+                      direction={direction}
+                      onClick={() => toggleSort("name")}
+                    />
+                  </TableHead>
                   <TableHead className="p-3 text-white text-center w-14"></TableHead>
                   <TableHead className="p-3 text-white text-center w-14"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredRows.map((sponsor) => (
+                {pagination.items.map((sponsor) => (
                   <TableRow key={sponsor.id}>
                     <TableCell className="p-3 text-white/80 font-medium text-center">
                       <span
-                        className={`py-1 px-2 text-xs rounded-2xl ${getLevelColor(sponsor.level)}`}
+                        className={`inline-flex rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${getLevelColor(sponsor.level)}`}
                       >
                         {getSponsorLevel(sponsor.level)}
                       </span>
@@ -214,6 +239,7 @@ export default function Sponsors() {
                 ))}
               </TableBody>
             </Table>
+            <AdminPagination {...pagination} onPageChange={setPage} />
           </AdminTableContainer>
         )}
       </div>

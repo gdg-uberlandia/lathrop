@@ -15,9 +15,13 @@ import {
   AdminListToolbar,
   AdminLoadingState,
   AdminPageHeader,
+  AdminPagination,
   AdminTableContainer,
+  AdminSortButton,
+  AdminStatusBadge,
 } from "@/components/admin/admin-page";
 import { useMissions } from "@/hooks/useMissions";
+import { useAdminListState } from "@/hooks/useAdminListState";
 import { Mission } from "@/models/mission";
 import { Target, Pencil, Trash2, QrCode } from "lucide-react";
 import Image from "next/image";
@@ -26,9 +30,24 @@ import { useMemo, useState } from "react";
 
 export default function Missions() {
   const router = useRouter();
-  const { missions, removeMission, error, loading, fetchMissions } =
-    useMissions();
-  const [search, setSearch] = useState("");
+  const {
+    missions,
+    removeMission,
+    updateMission,
+    error,
+    loading,
+    fetchMissions,
+  } = useMissions();
+  const {
+    search,
+    setSearch,
+    setPage,
+    paginate,
+    sort,
+    direction,
+    toggleSort,
+    sortItems,
+  } = useAdminListState();
   const [status, setStatus] = useState("all");
   const filteredMissions = useMemo(() => {
     const term = search.trim().toLocaleLowerCase("pt-BR");
@@ -42,6 +61,13 @@ export default function Missions() {
       return matchesStatus && matchesSearch;
     });
   }, [missions, search, status]);
+  const pagination = paginate(
+    sortItems(filteredMissions, {
+      name: (item) => item.title,
+      order: (item) => item.order,
+      status: (item) => Number(item.active),
+    }),
+  );
 
   const [mission, setMission] = useState<Mission | null>();
   const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false);
@@ -116,17 +142,25 @@ export default function Missions() {
               <TableHeader className="bg-devGray-dark text-white">
                 <TableRow>
                   <TableHead className="p-3 text-white ">Imagem</TableHead>
-                  <TableHead className="p-3 text-white ">Nome</TableHead>
+                  <TableHead className="p-3">
+                    <AdminSortButton
+                      label="Nome"
+                      active={sort === "name"}
+                      direction={direction}
+                      onClick={() => toggleSort("name")}
+                    />
+                  </TableHead>
                   <TableHead className="p-3 text-white ">Descrição</TableHead>
                   <TableHead className="p-3 text-white text-center">
                     QR Code
                   </TableHead>
+                  <TableHead className="p-3 text-white">Status</TableHead>
                   <TableHead className="p-3 text-white text-center"></TableHead>
                   <TableHead className="p-3 text-white text-center"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredMissions.map((mission) => (
+                {pagination.items.map((mission) => (
                   <TableRow key={mission.id}>
                     <TableCell className="p-3 text-white/80">
                       {mission.imageUrl ? (
@@ -159,6 +193,34 @@ export default function Missions() {
                         <QrCode className="inline-block text-devBlue-dark" />
                       )}
                     </TableCell>
+                    <TableCell>
+                      <button
+                        type="button"
+                        disabled={loading}
+                        title="Alterar status"
+                        onClick={() =>
+                          void updateMission({
+                            id: mission.id,
+                            qrId: mission.qrId,
+                            title: mission.title,
+                            description: mission.description,
+                            imageUrl: mission.imageUrl,
+                            validationType: mission.validationType,
+                            progressRequirement: mission.progressRequirement,
+                            prerequisites: mission.prerequisites,
+                            active: !mission.active,
+                            order: mission.order,
+                            xpAwarded: mission.xpAwarded,
+                          })
+                        }
+                      >
+                        <AdminStatusBadge
+                          active={mission.active}
+                          activeLabel="Ativa"
+                          inactiveLabel="Inativa"
+                        />
+                      </button>
+                    </TableCell>
                     <TableCell className="px-3 text-white/80 text-right">
                       <Button
                         disabled={loading}
@@ -189,6 +251,7 @@ export default function Missions() {
                 ))}
               </TableBody>
             </Table>
+            <AdminPagination {...pagination} onPageChange={setPage} />
           </AdminTableContainer>
         )}
       </div>

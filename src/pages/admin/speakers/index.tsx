@@ -14,10 +14,13 @@ import {
   AdminListToolbar,
   AdminLoadingState,
   AdminPageHeader,
+  AdminPagination,
   AdminStatusBadge,
+  AdminSortButton,
   AdminTableContainer,
 } from "@/components/admin/admin-page";
 import { useSpeakers } from "@/hooks/useSpeakers";
+import { useAdminListState } from "@/hooks/useAdminListState";
 import { Speaker } from "@/contracts/speaker";
 import { shouldBypassImageOptimization } from "@/helpers/image";
 import { Megaphone, Pencil, Trash2 } from "lucide-react";
@@ -27,10 +30,25 @@ import { useMemo, useState } from "react";
 
 export default function Speakers() {
   const router = useRouter();
-  const { speakers, removeSpeaker, loading, error, fetchSpeakers } =
-    useSpeakers();
+  const {
+    speakers,
+    removeSpeaker,
+    updateSpeaker,
+    loading,
+    error,
+    fetchSpeakers,
+  } = useSpeakers();
   const [speaker, setSpeaker] = useState<Speaker | null>(null);
-  const [search, setSearch] = useState("");
+  const {
+    search,
+    setSearch,
+    setPage,
+    paginate,
+    sort,
+    direction,
+    toggleSort,
+    sortItems,
+  } = useAdminListState();
   const [visibility, setVisibility] = useState("all");
   const filteredSpeakers = useMemo(() => {
     const term = search.trim().toLocaleLowerCase("pt-BR");
@@ -45,6 +63,13 @@ export default function Speakers() {
       return matchesStatus && matchesSearch;
     });
   }, [search, speakers, visibility]);
+  const pagination = paginate(
+    sortItems(filteredSpeakers, {
+      name: (item) => item.name,
+      company: (item) => item.company ?? "",
+      status: (item) => Number(item.isVisible),
+    }),
+  );
 
   return (
     <>
@@ -104,15 +129,36 @@ export default function Speakers() {
               <TableHeader className="bg-devGray-dark">
                 <TableRow>
                   <TableHead />
-                  <TableHead className="text-white">Nome</TableHead>
-                  <TableHead className="text-white">Cargo / empresa</TableHead>
-                  <TableHead className="text-white">Visível</TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Nome"
+                      active={sort === "name"}
+                      direction={direction}
+                      onClick={() => toggleSort("name")}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Cargo / empresa"
+                      active={sort === "company"}
+                      direction={direction}
+                      onClick={() => toggleSort("company")}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Visível"
+                      active={sort === "status"}
+                      direction={direction}
+                      onClick={() => toggleSort("status")}
+                    />
+                  </TableHead>
                   <TableHead />
                   <TableHead />
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredSpeakers.map((item) => (
+                {pagination.items.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell>
                       <Image
@@ -132,11 +178,29 @@ export default function Speakers() {
                         "—"}
                     </TableCell>
                     <TableCell className="text-white/80">
-                      <AdminStatusBadge
-                        active={item.isVisible}
-                        activeLabel="Visível"
-                        inactiveLabel="Oculto"
-                      />
+                      <button
+                        type="button"
+                        disabled={loading}
+                        title="Alterar visibilidade"
+                        onClick={() =>
+                          void updateSpeaker({
+                            id: item.id,
+                            name: item.name,
+                            company: item.company,
+                            title: item.title,
+                            miniBio: item.miniBio,
+                            photoUrl: item.photoUrl,
+                            socialMedia: item.socialMedia,
+                            isVisible: !item.isVisible,
+                          })
+                        }
+                      >
+                        <AdminStatusBadge
+                          active={item.isVisible}
+                          activeLabel="Visível"
+                          inactiveLabel="Oculto"
+                        />
+                      </button>
                     </TableCell>
                     <TableCell>
                       <Button
@@ -164,6 +228,7 @@ export default function Speakers() {
                 ))}
               </TableBody>
             </Table>
+            <AdminPagination {...pagination} onPageChange={setPage} />
           </AdminTableContainer>
         )}
       </div>

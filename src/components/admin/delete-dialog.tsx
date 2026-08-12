@@ -29,26 +29,28 @@ export default function DeleteDialog({
 }) {
   return (
     <AlertDialog open={open}>
-      <AlertDialogContent className="border-1 border-white/40 p-5 !rounded-xl">
+      <AlertDialogContent className="!rounded-xl !border-slate-200 bg-white p-6 text-slate-900 shadow-2xl">
         <AlertDialogHeader>
           <AlertDialogTitle>
-            <div className="size-12 rounded-full bg-devRed-dark text-devRed-light flex items-center justify-center mx-auto mb-4">
+            <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-red-50 text-red-600">
               <TriangleAlert />
             </div>
             {title}
           </AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
+          <AlertDialogDescription className="text-slate-500">
+            {description}
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="flex grow gap-3">
           <AlertDialogCancel
             onClick={onClose}
-            className="m-0 w-full rounded-xl text-white"
+            className="m-0 w-full rounded-lg !border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
           >
             {cancelText}
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
-            className="m-0 w-full rounded-xl text-white bg-devRed-dark hover:bg-devRed"
+            className="m-0 w-full rounded-lg bg-red-600 text-white hover:bg-red-700"
           >
             {confirmText}
           </AlertDialogAction>

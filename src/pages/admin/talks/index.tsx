@@ -14,11 +14,14 @@ import {
   AdminListToolbar,
   AdminLoadingState,
   AdminPageHeader,
+  AdminPagination,
   AdminStatusBadge,
+  AdminSortButton,
   AdminTableContainer,
 } from "@/components/admin/admin-page";
 import { useSpeakers } from "@/hooks/useSpeakers";
 import { useTalks } from "@/hooks/useTalks";
+import { useAdminListState } from "@/hooks/useAdminListState";
 import { Talk } from "@/contracts/talk";
 import { Pencil, Presentation, Trash2 } from "lucide-react";
 import { useRouter } from "next/router";
@@ -31,10 +34,20 @@ const formatLabels = {
 } as const;
 export default function TalksPage() {
   const router = useRouter();
-  const { talks, removeTalk, loading, error, fetchTalks } = useTalks();
+  const { talks, removeTalk, updateTalk, loading, error, fetchTalks } =
+    useTalks();
   const { speakers } = useSpeakers();
   const [selected, setSelected] = useState<Talk | null>(null);
-  const [search, setSearch] = useState("");
+  const {
+    search,
+    setSearch,
+    setPage,
+    paginate,
+    sort,
+    direction,
+    toggleSort,
+    sortItems,
+  } = useAdminListState();
   const [status, setStatus] = useState("all");
   const names = useMemo(
     () => new Map(speakers.map((speaker) => [speaker.id, speaker.name])),
@@ -53,6 +66,13 @@ export default function TalksPage() {
       return matchesStatus && matchesSearch;
     });
   }, [search, status, talks]);
+  const pagination = paginate(
+    sortItems(filteredTalks, {
+      name: (item) => item.title,
+      format: (item) => item.format,
+      status: (item) => Number(item.isActive),
+    }),
+  );
   return (
     <>
       <div className="p-4 sm:p-6">
@@ -102,16 +122,37 @@ export default function TalksPage() {
             <Table>
               <TableHeader className="bg-devGray-dark">
                 <TableRow>
-                  <TableHead className="text-white">Título</TableHead>
-                  <TableHead className="text-white">Formato</TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Título"
+                      active={sort === "name"}
+                      direction={direction}
+                      onClick={() => toggleSort("name")}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Formato"
+                      active={sort === "format"}
+                      direction={direction}
+                      onClick={() => toggleSort("format")}
+                    />
+                  </TableHead>
                   <TableHead className="text-white">Palestrantes</TableHead>
-                  <TableHead className="text-white">Status</TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Status"
+                      active={sort === "status"}
+                      direction={direction}
+                      onClick={() => toggleSort("status")}
+                    />
+                  </TableHead>
                   <TableHead />
                   <TableHead />
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredTalks.map((talk) => (
+                {pagination.items.map((talk) => (
                   <TableRow key={talk.id}>
                     <TableCell className="text-white/80">
                       {talk.title}
@@ -125,11 +166,29 @@ export default function TalksPage() {
                         .join(", ")}
                     </TableCell>
                     <TableCell className="text-white/80">
-                      <AdminStatusBadge
-                        active={talk.isActive}
-                        activeLabel="Ativa"
-                        inactiveLabel="Inativa"
-                      />
+                      <button
+                        type="button"
+                        disabled={loading}
+                        title="Alterar status"
+                        onClick={() =>
+                          void updateTalk({
+                            id: talk.id,
+                            title: talk.title,
+                            description: talk.description,
+                            category: talk.category,
+                            format: talk.format,
+                            speakerIds: talk.speakerIds,
+                            evaluationStatus: talk.evaluationStatus,
+                            isActive: !talk.isActive,
+                          })
+                        }
+                      >
+                        <AdminStatusBadge
+                          active={talk.isActive}
+                          activeLabel="Ativa"
+                          inactiveLabel="Inativa"
+                        />
+                      </button>
                     </TableCell>
                     <TableCell>
                       <Button
@@ -157,6 +216,7 @@ export default function TalksPage() {
                 ))}
               </TableBody>
             </Table>
+            <AdminPagination {...pagination} onPageChange={setPage} />
           </AdminTableContainer>
         )}
       </div>

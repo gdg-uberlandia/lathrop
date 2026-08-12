@@ -13,12 +13,15 @@ import {
   AdminListToolbar,
   AdminLoadingState,
   AdminPageHeader,
+  AdminPagination,
   AdminTableContainer,
+  AdminSortButton,
 } from "@/components/admin/admin-page";
 import DeleteDialog from "@/components/admin/delete-dialog";
 import { useSchedule } from "@/hooks/useSchedule";
+import { useAdminListState } from "@/hooks/useAdminListState";
 import { Schedule, SpeechTopicName } from "@/models/schedule";
-import { CalendarDays, Pencil, Trash2 } from "lucide-react";
+import { CalendarDays, Pencil, Trash2, TriangleAlert } from "lucide-react";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 
@@ -27,7 +30,16 @@ export default function Schedules() {
   const { schedule, deleteSchedule, loading, error, fetchSchedule } =
     useSchedule();
   const [selected, setSelected] = useState<Schedule | null>(null);
-  const [search, setSearch] = useState("");
+  const {
+    search,
+    setSearch,
+    setPage,
+    paginate,
+    sort,
+    direction,
+    toggleSort,
+    sortItems,
+  } = useAdminListState();
   const filteredSchedule = useMemo(() => {
     const term = search.trim().toLocaleLowerCase("pt-BR");
     if (!term) return schedule;
@@ -39,6 +51,30 @@ export default function Schedules() {
         ),
     );
   }, [schedule, search]);
+  const pagination = paginate(
+    sortItems(filteredSchedule, {
+      name: (item) => item.start,
+      end: (item) => item.end,
+    }),
+  );
+  const conflictingIds = useMemo(() => {
+    const minutes = (value: string) => {
+      const [hours, minute] = value.split(":").map(Number);
+      return hours * 60 + minute;
+    };
+    return new Set(
+      schedule.flatMap((item, index) =>
+        schedule
+          .slice(index + 1)
+          .flatMap((other) =>
+            minutes(item.start) < minutes(other.end) &&
+            minutes(other.start) < minutes(item.end)
+              ? [item.id, other.id]
+              : [],
+          ),
+      ),
+    );
+  }, [schedule]);
 
   return (
     <>
@@ -84,16 +120,37 @@ export default function Schedules() {
             <Table>
               <TableHeader className="bg-devGray-dark">
                 <TableRow>
-                  <TableHead className="text-white">Horário</TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Horário"
+                      active={sort === "name"}
+                      direction={direction}
+                      onClick={() => toggleSort("name")}
+                    />
+                  </TableHead>
                   <TableHead className="text-white">Atividades</TableHead>
+                  <TableHead className="text-white">Validação</TableHead>
                   <TableHead className="text-right text-white">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredSchedule.map((item) => (
+                {pagination.items.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell className="whitespace-nowrap font-medium text-white/80">
                       {item.start}–{item.end}
+                    </TableCell>
+                    <TableCell>
+                      {conflictingIds.has(item.id) ? (
+                        <span className="inline-flex items-center gap-1.5 rounded-md bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-200">
+                          <TriangleAlert className="size-3.5" /> Conflito de
+                          horário
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 text-xs text-emerald-700">
+                          <span className="size-1.5 rounded-full bg-emerald-500" />
+                          Sem conflitos
+                        </span>
+                      )}
                     </TableCell>
                     <TableCell>
                       <div className="flex max-w-3xl flex-wrap gap-2">
@@ -138,6 +195,7 @@ export default function Schedules() {
                 ))}
               </TableBody>
             </Table>
+            <AdminPagination {...pagination} onPageChange={setPage} />
           </AdminTableContainer>
         )}
       </main>
