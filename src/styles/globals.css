@@ -94,9 +94,6 @@ select:-webkit-autofill:focus {
   --gradient-4: linear-gradient(270deg, #d93a53 0%, #f2c438 100%);
 }
 
-.border {
-  border: 1px solid transparent;
-}
 @font-face {
   font-family: "Google Sans";
   font-style: normal;
@@ -166,14 +163,6 @@ select:-webkit-autofill:focus {
 
 .bg-pink {
   background-color: var(--soft-pink);
-}
-
-.modal-content,
-.modal-footer,
-.modal-header {
-  border: 0;
-  background-color: transparent;
-  border-radius: 0;
 }
 
 body {
@@ -318,42 +307,6 @@ svg {
   user-select: none;
 }
 
-.container,
-.container-fluid,
-.container-lg,
-.container-md,
-.container-sm,
-.container-xl,
-.container-xxl {
-  width: 100%;
-  padding-right: var(--bs-gutter-x, 0.75rem);
-  padding-left: var(--bs-gutter-x, 0.75rem);
-  margin-right: auto;
-  margin-left: auto;
-}
-@media (min-width: 576px) {
-  .container,
-  .container-sm {
-    max-width: 540px;
-  }
-}
-@media (min-width: 768px) {
-  .container,
-  .container-md,
-  .container-sm {
-    max-width: 720px;
-  }
-}
-@media (min-width: 1200px) {
-  .container,
-  .container-lg,
-  .container-md,
-  .container-sm,
-  .container-xl {
-    max-width: 1140px;
-  }
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -426,11 +379,352 @@ svg {
   }
 }
 
+/* Administrative application theme. Kept scoped so the public event site and
+   Bootstrap's legacy utilities cannot leak into the back office. */
+.admin-shell {
+  --admin-bg: #f7f8fa;
+  --admin-surface: #ffffff;
+  --admin-surface-subtle: #f8fafc;
+  --admin-border: #e2e8f0;
+  --admin-border-strong: #cbd5e1;
+  --admin-text: #0f172a;
+  --admin-muted: #64748b;
+  --admin-primary: #1769e0;
+  --admin-sidebar: #071a3a;
+  color: var(--admin-text);
+  background: var(--admin-bg);
+}
+
+.admin-shell .admin-content {
+  color: var(--admin-text);
+  background: var(--admin-bg);
+}
+
+.admin-shell .admin-topbar {
+  color: var(--admin-text);
+  background: rgb(255 255 255 / 96%);
+  border-color: var(--admin-border) !important;
+}
+
+.admin-shell .admin-sidebar {
+  color: #dbe7fb;
+  background: var(--admin-sidebar);
+  border-color: rgb(255 255 255 / 10%) !important;
+}
+
+.admin-shell .admin-sidebar [data-sidebar="sidebar"] {
+  color: #dbe7fb;
+  background: var(--admin-sidebar);
+}
+
+.admin-shell .admin-surface {
+  color: var(--admin-text);
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border) !important;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 4%);
+}
+
+.admin-shell .admin-field,
+.admin-shell input,
+.admin-shell textarea,
+.admin-shell select,
+.admin-shell button[role="combobox"] {
+  height: 2.75rem;
+  border-radius: 0.5rem;
+  color: var(--admin-text);
+  background-color: var(--admin-surface);
+  border-color: var(--admin-border-strong) !important;
+}
+
+.admin-shell input:not([type="hidden"]) {
+  min-height: 2.75rem;
+  border-radius: 0.5rem;
+}
+
+.admin-shell input::placeholder,
+.admin-shell textarea::placeholder {
+  color: #94a3b8;
+}
+
+.admin-shell input:-webkit-autofill,
+.admin-shell input:-webkit-autofill:hover,
+.admin-shell input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--admin-text);
+  -webkit-box-shadow: 0 0 0 1000px var(--admin-surface) inset;
+  box-shadow: 0 0 0 1000px var(--admin-surface) inset;
+  border-color: var(--admin-border-strong) !important;
+}
+
+.admin-shell .admin-content :is(.text-white, .text-white\/80) {
+  color: var(--admin-text) !important;
+}
+
+.admin-shell
+  .admin-content
+  :is(
+    .text-white\/30,
+    .text-white\/40,
+    .text-white\/55,
+    .text-white\/60,
+    .text-white\/70
+  ) {
+  color: var(--admin-muted) !important;
+}
+
+.admin-shell .admin-content :is(button, a).text-white,
+.admin-shell .admin-content :is(button, a) .text-white,
+.admin-shell .admin-primary-action {
+  color: #fff !important;
+}
+
+.admin-shell .admin-content .bg-devGray-dark,
+.admin-shell .admin-content .bg-devGray-dark\/20,
+.admin-shell .admin-content .bg-devGray-dark\/40 {
+  background-color: var(--admin-surface-subtle);
+}
+
+.admin-shell .admin-content .border,
+.admin-shell .admin-content .border-1 {
+  border-width: 1px !important;
+  border-style: solid !important;
+}
+
+.admin-shell .admin-content table {
+  color: var(--admin-text);
+}
+
+.admin-shell .admin-content thead {
+  color: #475569;
+  background: var(--admin-surface-subtle);
+}
+
+.admin-shell .admin-content tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* Entity tables intentionally override legacy dark-theme and Bootstrap styles. */
+.admin-shell .admin-entity-table table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #334155;
+  font-size: 0.875rem;
+}
+
+.admin-shell .admin-entity-table thead,
+.admin-shell .admin-entity-table thead[class] {
+  background: #f1f5f9 !important;
+  color: #334155 !important;
+}
+
+.admin-shell .admin-entity-table thead tr {
+  height: 44px;
+  background: #f1f5f9 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.admin-shell .admin-entity-table tbody tr {
+  min-height: 64px;
+  border-bottom: 1px solid #eef2f7 !important;
+  background: #fff;
+}
+
+.admin-shell .admin-entity-table tbody tr:last-child {
+  border-bottom: 0 !important;
+}
+
+.admin-shell .admin-entity-table tbody tr:hover {
+  background: #f8fafc !important;
+}
+
+.admin-shell .admin-entity-table :is(th, td) {
+  height: auto;
+  padding: 0.75rem 1rem !important;
+  border: 0 !important;
+  vertical-align: middle;
+  color: #475569 !important;
+}
+
+.admin-shell .admin-entity-table th {
+  white-space: nowrap;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  background: #f1f5f9 !important;
+  color: #334155 !important;
+}
+
+.admin-shell .admin-entity-table th:has(> button):hover {
+  background-color: #dbeafe !important;
+  color: #1e3a8a !important;
+}
+
+.admin-shell .admin-entity-table th:not(:has(> button)):hover {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+}
+
+.admin-shell .admin-entity-table td.font-medium,
+.admin-shell .admin-entity-table td.font-bold,
+.admin-shell .admin-entity-table tbody td:nth-child(2) {
+  color: #1e293b !important;
+}
+
+.admin-shell .admin-entity-table tbody td > img {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 0.5rem !important;
+  object-fit: cover;
+}
+
+.admin-shell .admin-entity-table button[aria-label^="Editar"] {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid #bfdbfe !important;
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  box-shadow: none !important;
+}
+
+.admin-shell .admin-entity-table button[aria-label^="Editar"]:hover {
+  border-color: #93c5fd !important;
+  background: #dbeafe !important;
+  color: #1d4ed8 !important;
+}
+
+.admin-shell .admin-entity-table button[aria-label^="Excluir"] {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid #fecaca !important;
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+  box-shadow: none !important;
+}
+
+.admin-shell .admin-entity-table button[aria-label^="Excluir"]:hover {
+  border-color: #fca5a5 !important;
+  background: #fee2e2 !important;
+  color: #b91c1c !important;
+}
+
+.admin-shell .admin-entity-table button[aria-label^="Editar"]:disabled,
+.admin-shell .admin-entity-table button[aria-label^="Excluir"]:disabled {
+  border-color: #e2e8f0 !important;
+  background: #f8fafc !important;
+  color: #94a3b8 !important;
+  opacity: 0.65;
+}
+
+.admin-shell .admin-entity-table button[aria-label^="Editar"] svg,
+.admin-shell .admin-entity-table button[aria-label^="Excluir"] svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.admin-shell .admin-entity-table tbody td:has(> button[aria-label^="Editar"]),
+.admin-shell .admin-entity-table tbody td:has(> button[aria-label^="Excluir"]) {
+  width: 3.5rem;
+  text-align: center !important;
+}
+
+.admin-shell .admin-entity-table :is(th, td):last-child {
+  width: 7rem;
+  text-align: right !important;
+}
+
+.admin-shell .admin-entity-table td:last-child > .flex {
+  justify-content: flex-end;
+}
+
+.admin-shell .admin-content label {
+  color: #334155;
+  font-weight: 500;
+}
+
+.admin-shell .admin-content [role="dialog"] {
+  color: var(--admin-text);
+  background: var(--admin-surface);
+}
+
+/* Explicit admin button palette prevents legacy theme and Bootstrap variables
+   from turning semantic button variants into dark buttons with blue text. */
+.admin-shell .admin-content [data-button-variant="default"] {
+  border-color: #2563eb;
+  background-color: #2563eb;
+  color: #fff;
+  box-shadow: none;
+}
+
+.admin-shell .admin-content [data-button-size="default"] {
+  height: 2.75rem;
+  border-radius: 0.5rem;
+}
+
+.admin-shell .admin-content [data-button-size="icon"] {
+  height: 2.75rem;
+  width: 2.75rem;
+  border-radius: 0.5rem;
+}
+.admin-shell .admin-content [data-button-variant="default"]:hover {
+  background-color: #1d4ed8;
+}
+.admin-shell .admin-content [data-button-variant="outline"] {
+  border-color: #cbd5e1;
+  background-color: #fff;
+  color: #334155;
+  box-shadow: none;
+}
+.admin-shell .admin-content [data-button-variant="outline"]:hover {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+.admin-shell .admin-content [data-button-variant="secondary"] {
+  border: 1px solid #e2e8f0;
+  background-color: #f1f5f9;
+  color: #334155;
+  box-shadow: none;
+}
+.admin-shell .admin-content [data-button-variant="secondary"]:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
+}
+.admin-shell .admin-content [data-button-variant="ghost"] {
+  background-color: transparent;
+  color: #475569;
+  box-shadow: none;
+}
+.admin-shell .admin-content [data-button-variant="ghost"]:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+.admin-shell .admin-content [data-button-variant="destructive"] {
+  background-color: #dc2626;
+  color: #fff;
+  box-shadow: none;
+}
+.admin-shell .admin-content [data-button-variant="destructive"]:hover {
+  background-color: #b91c1c;
+}
+.admin-shell .admin-content [data-button-variant="link"] {
+  background: transparent;
+  color: #2563eb;
+  box-shadow: none;
+}
+
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+@keyframes admin-route-progress {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(400%);
   }
 }

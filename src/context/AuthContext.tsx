@@ -6,69 +6,106 @@ import {
   useEffect,
 } from "react";
 import {
-  getAuth,
+  browserLocalPersistence,
+  onIdTokenChanged,
+  setPersistence,
   signInWithEmailAndPassword,
   signOut,
   type User,
 } from "firebase/auth";
-import firebaseApp from "@/utils/firebaseClient";
-import axios from "axios";
+import { auth } from "@/utils/firebaseClient";
 
 interface AuthContextType {
   user: User | null;
+  isAdmin: boolean;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  refreshAdminRole: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+async function fetchAdminRole(currentUser: User, forceTokenRefresh = false) {
+  const token = await currentUser.getIdToken(forceTokenRefresh);
+  const response = await fetch("/api/auth/session", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) return false;
+  const session = (await response.json()) as { isAdmin?: boolean };
+  return session.isAdmin === true;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const restoreUser = async () => {
-      setLoading(true);
-      const token = sessionStorage.getItem("devfest-2025-session");
-      if (token) {
-        try {
-          const res = await axios.post("/api/auth/verify", { token });
-          setUser(res.data.user);
-        } catch (err) {
-          setUser(null);
-        }
-      }
-      setLoading(false);
-    };
-    restoreUser();
+    let unsubscribe = () => {};
+
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => {
+        unsubscribe = onIdTokenChanged(auth, async (currentUser) => {
+          if (!currentUser) {
+            setUser(null);
+            setIsAdmin(false);
+            setLoading(false);
+            return;
+          }
+
+          try {
+            setUser(currentUser);
+            setIsAdmin(await fetchAdminRole(currentUser));
+          } catch {
+            setUser(null);
+            setIsAdmin(false);
+          } finally {
+            setLoading(false);
+          }
+        });
+      })
+      .catch(() => {
+        setUser(null);
+        setIsAdmin(false);
+        setLoading(false);
+      });
+
+    return () => unsubscribe();
   }, []);
 
   const login = async (email: string, password: string) => {
     setLoading(true);
-    const auth = getAuth(firebaseApp);
-    const cred = await signInWithEmailAndPassword(auth, email, password);
-    const token = await cred.user.getIdToken();
-    sessionStorage.setItem("devfest-2025-session", token);
-
     try {
-      const res = await axios.post("/api/auth/verify", { token });
-      setUser(res.data.user);
-    } catch (err) {
-      setUser(null);
+      await signInWithEmailAndPassword(auth, email.trim(), password);
+    } catch (error) {
+      setLoading(false);
+      throw error;
     }
-    setLoading(false);
   };
 
   const logout = async () => {
-    const auth = getAuth(firebaseApp);
     await signOut(auth);
-    setUser(null);
-    sessionStorage.removeItem("devfest-2025-session");
+  };
+
+  const refreshAdminRole = async () => {
+    if (!auth.currentUser) return;
+    setLoading(true);
+    try {
+      const currentUser = auth.currentUser;
+      const isCurrentUserAdmin = await fetchAdminRole(currentUser, true);
+      setUser(currentUser);
+      setIsAdmin(isCurrentUserAdmin);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, isAdmin, loading, login, logout, refreshAdminRole }}
+    >
       {children}
     </AuthContext.Provider>
   );

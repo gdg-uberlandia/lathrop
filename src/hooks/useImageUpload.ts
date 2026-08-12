@@ -1,5 +1,5 @@
-import axios from "axios";
 import { useState } from "react";
+import { adminApiRequest } from "@/lib/admin-api/client";
 
 export function useImageUpload() {
   const [loadingImage, setLoadingImage] = useState(false);
@@ -14,15 +14,15 @@ export function useImageUpload() {
       formData.append("file", file);
       formData.append("folder", folder); // Adiciona o folder
 
-      const response = await axios.post("/api/v1/upload-photo/", formData);
+      const data = await adminApiRequest<{ url: string }>(
+        "/api/v1/upload-photo",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
 
-      if (response.status < 200 || response.status >= 300) {
-        throw new Error("Falha ao enviar foto");
-      }
-
-      const data = response.data;
-
-      return data.url as string;
+      return data.url;
     } catch (error) {
       console.error("Erro ao enviar foto:", error);
       setError("Erro ao enviar foto");

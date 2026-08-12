@@ -1,6 +1,6 @@
 import clsx from "clsx";
-import configValues from "helpers/config";
-import { calcDateDistance, changeTimeZone } from "helpers/date";
+import configValues from "@/helpers/config";
+import { calcDateDistance, changeTimeZone } from "@/helpers/date";
 import { useEffect, useRef, useState } from "react";
 
 import { CountdownItem } from "./CountdownItem";

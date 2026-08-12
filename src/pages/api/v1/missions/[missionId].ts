@@ -1,18 +1,16 @@
 import {
-  deletemission,
-  geMissionById,
+  deleteMission,
+  getMissionById,
   updateMission,
-} from "back-features/missions";
+} from "@/back-features/missions";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { requireAdmin } from "@/utils/api/require-admin";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith("Bearer ")) {
-    return res.status(401).json({ error: "Token não informado" });
-  }
+  if (!(await requireAdmin(req, res))) return;
 
   const { missionId } = req.query;
   if (typeof missionId !== "string" || !missionId) {
@@ -21,7 +19,7 @@ export default async function handler(
 
   if (req.method === "GET") {
     try {
-      const mission = await geMissionById(missionId);
+      const mission = await getMissionById(missionId);
       return res.status(200).json(mission);
     } catch (error: any) {
       return res
@@ -31,9 +29,8 @@ export default async function handler(
   }
 
   if (req.method === "PUT") {
-    const mission = req.body;
     try {
-      const updated = await updateMission(mission);
+      const updated = await updateMission({ ...req.body, id: missionId });
       return res.status(200).json(updated);
     } catch (error: any) {
       return res
@@ -44,7 +41,7 @@ export default async function handler(
 
   if (req.method === "DELETE") {
     try {
-      const removedId = await deletemission(missionId);
+      const removedId = await deleteMission(missionId);
       return res.status(200).json({ id: removedId });
     } catch (error: any) {
       return res

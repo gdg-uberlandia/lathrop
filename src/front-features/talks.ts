@@ -1,46 +1,30 @@
-import axios from "axios";
-import { getAuth } from "firebase/auth";
-import { server } from "helpers/config";
-import { Talk, TalkInput } from "models/talk";
+import { Talk, TalkInput } from "@/contracts/talk";
+import { adminApiRequest } from "@/lib/admin-api/client";
 
 const TALKS_API_PATH = "talks";
-const getToken = async () => getAuth().currentUser?.getIdToken();
-const headers = async () => ({
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${await getToken()}`,
-});
 
-export const getTalksAPI = async (): Promise<Talk[]> =>
-  (
-    await axios.get(`${server}/api/v1/${TALKS_API_PATH}`, {
-      headers: await headers(),
-    })
-  ).data;
+export const getTalksAPI = async (signal?: AbortSignal): Promise<Talk[]> =>
+  adminApiRequest(`/api/v1/${TALKS_API_PATH}`, { signal });
 
 export const createTalkAPI = async (talk: TalkInput): Promise<Talk> =>
-  (
-    await axios.post(`${server}/api/v1/${TALKS_API_PATH}`, talk, {
-      headers: await headers(),
-    })
-  ).data;
+  adminApiRequest(`/api/v1/${TALKS_API_PATH}`, { method: "POST", body: talk });
 
-export const readTalkAPI = async (talkId: string): Promise<Talk> =>
-  (
-    await axios.get(`${server}/api/v1/${TALKS_API_PATH}/${talkId}`, {
-      headers: await headers(),
-    })
-  ).data;
+export const readTalkAPI = async (
+  talkId: string,
+  signal?: AbortSignal,
+): Promise<Talk> =>
+  adminApiRequest(`/api/v1/${TALKS_API_PATH}/${talkId}`, { signal });
 
 export const updateTalkAPI = async (talk: TalkInput): Promise<Talk> =>
-  (
-    await axios.put(`${server}/api/v1/${TALKS_API_PATH}/${talk.id}`, talk, {
-      headers: await headers(),
-    })
-  ).data;
+  adminApiRequest(`/api/v1/${TALKS_API_PATH}/${talk.id}`, {
+    method: "PUT",
+    body: talk,
+  });
 
 export const deleteTalkAPI = async (talkId: string): Promise<string> => {
-  await axios.delete(`${server}/api/v1/${TALKS_API_PATH}/${talkId}`, {
-    headers: await headers(),
-  });
-  return talkId;
+  const result = await adminApiRequest<{ id: string }>(
+    `/api/v1/${TALKS_API_PATH}/${talkId}`,
+    { method: "DELETE" },
+  );
+  return result.id;
 };

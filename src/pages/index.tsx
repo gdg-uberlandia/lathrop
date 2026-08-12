@@ -1,14 +1,14 @@
-import { getAllSpeakers } from "back-features/speakers";
-import { getAllTalks } from "back-features/talks";
+import { getAllSpeakers } from "@/back-features/speakers";
+import { getAllTalks } from "@/back-features/talks";
 import type { GetServerSidePropsContext } from "next";
 import dynamic from "next/dynamic";
 
-import { CountdownTimer } from "components/devfest-triangulo-2025/CountdownTimer";
-import { Header } from "components/devfest-triangulo-2025/Header";
-import { Presentation } from "components/devfest-triangulo-2025/Presentation";
-import { PublicSpeakerSummary } from "models/speaker";
-import { PublicTalkSummary } from "models/talk";
-import styles from "styles/Home.module.css";
+import { CountdownTimer } from "@/components/devfest-triangulo-2025/CountdownTimer";
+import { Header } from "@/components/devfest-triangulo-2025/Header";
+import { Presentation } from "@/components/devfest-triangulo-2025/Presentation";
+import { PublicSpeakerSummary } from "@/contracts/speaker";
+import { PublicTalkSummary } from "@/contracts/talk";
+import styles from "@/styles/Home.module.css";
 
 import { HeroVideo } from "@/components/devfest-triangulo-2025/HeroVideo";
 import { InfiniteBanner } from "@/components/devfest-triangulo-2025/InfiniteBanner";

@@ -1,40 +1,53 @@
-import AdminLayout from "layouts/admin-layout";
-import { ChevronLeft } from "lucide-react";
-import Link from "next/link";
-
+import {
+  AdminFormPage,
+  AdminLoadingState,
+} from "@/components/admin/admin-page";
 import { ScheduleForm } from "@/components/admin/schedule/schedule-form";
-import Loading from "@/components/admin/loading-overlay";
 import { useSchedule } from "@/hooks/useSchedule";
+import { ScheduleTrack, scheduleTrackSchema } from "@/contracts/schedule";
+import { useRouter } from "next/router";
 
-export default function AddEditSchedulePage() {
-  const { createSchedule, error, loading } = useSchedule();
-
+export default function AddSchedulePage() {
+  const { createSchedule, loading } = useSchedule();
+  const router = useRouter();
+  const type = ["talk", "opening", "break", "closing"].includes(
+    String(router.query.type),
+  )
+    ? (router.query.type as "talk" | "opening" | "break" | "closing")
+    : undefined;
+  const parsedTrack = scheduleTrackSchema.safeParse(router.query.track);
   return (
-    <AdminLayout>
-      {loading && <Loading />}
-      <div className="p-4">
-        <div className="flex w-full items-center gap-2 justify-between">
-          <Link
-            href="/admin/schedule"
-            className="text-white size-12 bg-devGray-light/40 flex items-center justify-center bg-devBlue-dark border-1 border-white/5 hover:border-1 hover:border-devBlue-dark hover:!text-devBlue-dark rounded-full"
-          >
-            <ChevronLeft />
-          </Link>
-          <div className="grow">
-            <h1 className="text-xl text-white/80">Cadastro de Cronogroma</h1>
-          </div>
-        </div>
-
-        <div className="mt-12 flex flex-col lg:flex-row lg:justify-center lg:items-start gap-8">
-          <div className="w-full max-w-[900px] mx-auto">
-            <ScheduleForm
-              onSubmit={createSchedule}
-              loading={loading}
-              editing={false}
-            />
-          </div>
-        </div>
-      </div>
-    </AdminLayout>
+    <AdminFormPage
+      title="Adicionar horário"
+      description="Organize o intervalo e as atividades exibidas na programação."
+      backHref="/admin/schedule"
+      backLabel="Voltar para programação"
+    >
+      {!router.isReady ? (
+        <AdminLoadingState label="Preparando o formulário..." />
+      ) : (
+        <ScheduleForm
+          onSubmit={async (value) => {
+            const created = await createSchedule(value);
+            if (created) await router.push("/admin/schedule");
+          }}
+          loading={loading}
+          initialValues={{
+            type,
+            startTime:
+              typeof router.query.start === "string"
+                ? router.query.start
+                : undefined,
+            endTime:
+              typeof router.query.end === "string"
+                ? router.query.end
+                : undefined,
+            track: parsedTrack.success
+              ? (parsedTrack.data as ScheduleTrack)
+              : undefined,
+          }}
+        />
+      )}
+    </AdminFormPage>
   );
 }

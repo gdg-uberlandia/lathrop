@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import { Speaker } from "models/speaker";
+import { Speaker } from "@/contracts/speaker";
 import React, { ReactNode, useEffect, useState } from "react";
 import {
   Col,
@@ -11,7 +11,7 @@ import {
 
 import styles from "./styles/Speakers.module.css";
 import SpeakerCard from "./speaker-card";
-import configValues from "helpers/config";
+import configValues from "@/helpers/config";
 
 interface SpeakersSectionProps {
   speakers: Array<Speaker>;

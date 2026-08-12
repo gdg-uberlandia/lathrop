@@ -1,117 +1,126 @@
-import { Schedule } from "@/models/schedule";
-import { useCallback, useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/context/AuthContext";
 import {
   createScheduleAPI,
+  createScheduleBlockAPI,
   deleteScheduleAPI,
   getScheduleAPI,
   readScheduleAPI,
   updateScheduleAPI,
-} from "../front-features/schedule";
-
-export function useSchedule() {
-  const [error, setError] = useState<string | null>();
-  const [loading, setLoading] = useState(false);
-  const [schedule, setSchedule] = useState<Schedule[]>([]);
-
-  const fetchSchedule = useCallback(async () => {
-    try {
-      setLoading(true);
-
-      // TODO: Remover este timeout (foi colocado apenas para testes)
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      let data = await getScheduleAPI();
-      data = data.sort((a, b) => a.end.localeCompare(b.end));
-      setSchedule(data);
-    } catch (error) {
-      console.error(error);
-      setError("Erro ao buscar programação");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const createSchedule = async (schedule: Schedule) => {
-    try {
-      setLoading(true);
-
-      // TODO: Remover este timeout (foi colocado apenas para testes)
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      const newSchedule = await createScheduleAPI(schedule);
-      setSchedule((prev) => [...prev, newSchedule]);
-      return newSchedule as Schedule;
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const readSchedule = useCallback(async (scheduleId: string) => {
-    try {
-      setLoading(true);
-
-      // TODO: Remover este timeout (foi colocado apenas para testes)
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      const schedule = await readScheduleAPI(scheduleId);
-      return schedule;
-    } catch (error) {
-      console.error(error);
-      setError("Erro ao buscar speaker específico");
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const updateSchedule = async (schedule: any) => {
-    try {
-      setLoading(true);
-
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      const updatedSchedule = await updateScheduleAPI(schedule);
-      setSchedule((prev) =>
-        prev.map((s) => (s.id === updatedSchedule.id ? updatedSchedule : s)),
+  updateScheduleVisibilityAPI,
+} from "@/front-features/schedule";
+import { getAdminApiErrorMessage } from "@/lib/admin-api/errors";
+import { adminQueryKeys, resolveAdminAction } from "@/lib/admin-query";
+import {
+  ScheduleEntry,
+  ScheduleInput,
+  ScheduleBlockInput,
+  scheduleFieldsSchema,
+} from "@/contracts/schedule";
+export function useSchedule(load = true) {
+  const { isAdmin } = useAuth();
+  const client = useQueryClient();
+  const query = useQuery({
+    enabled: isAdmin && load,
+    queryKey: adminQueryKeys.schedule,
+    queryFn: async ({ signal }) =>
+      (await getScheduleAPI(signal)).map((item) =>
+        scheduleFieldsSchema.parse(item),
+      ),
+  });
+  const updateCache = (item: ScheduleEntry) =>
+    client.setQueryData<ScheduleEntry[]>(adminQueryKeys.schedule, (items) =>
+      [
+        ...(items ?? []).filter((entry) => entry.id !== item.id),
+        scheduleFieldsSchema.parse(item),
+      ].sort((a, b) => a.startAt.getTime() - b.startAt.getTime()),
+    );
+  const refreshWorkspace = () =>
+    client.invalidateQueries({ queryKey: adminQueryKeys.scheduleWorkspace });
+  const create = useMutation({
+    mutationFn: createScheduleAPI,
+    onSuccess: (item) => {
+      updateCache(item);
+      void refreshWorkspace();
+    },
+  });
+  const createBlock = useMutation({
+    mutationFn: createScheduleBlockAPI,
+    onSuccess: (created) => {
+      client.setQueryData<ScheduleEntry[]>(adminQueryKeys.schedule, (items) =>
+        [
+          ...(items ?? []),
+          ...created.map((item) => scheduleFieldsSchema.parse(item)),
+        ].sort(
+          (a, b) =>
+            a.startAt.getTime() - b.startAt.getTime() ||
+            (a.order ?? -1) - (b.order ?? -1),
+        ),
       );
-    } catch (error) {
-      console.error(error);
-      setError("Erro ao atualizar cronograma");
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const deleteSchedule = async (scheduleId: string) => {
-    try {
-      setLoading(true);
-      // TODO: Remover este timeout (foi colocado apenas para testes)
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      await deleteScheduleAPI(scheduleId);
-      setSchedule((prev) => prev.filter((item) => item.id !== scheduleId));
-    } catch (error) {
-      console.error(error);
-      setError("Erro ao deletar schedule");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (!schedule.length) fetchSchedule();
-  }, [fetchSchedule, schedule?.length]);
-
+      void refreshWorkspace();
+    },
+  });
+  const update = useMutation({
+    mutationFn: updateScheduleAPI,
+    onSuccess: (item) => {
+      updateCache(item);
+      void refreshWorkspace();
+    },
+  });
+  const updateVisibility = useMutation({
+    mutationFn: ({ id, active }: { id: string; active: boolean }) =>
+      updateScheduleVisibilityAPI(id, active),
+    onSuccess: updateCache,
+  });
+  const remove = useMutation({
+    mutationFn: deleteScheduleAPI,
+    onSuccess: (id) => {
+      client.setQueryData<ScheduleEntry[]>(adminQueryKeys.schedule, (items) =>
+        items?.filter((item) => item.id !== id),
+      );
+      void refreshWorkspace();
+    },
+  });
+  const error =
+    query.error ||
+    create.error ||
+    createBlock.error ||
+    update.error ||
+    updateVisibility.error ||
+    remove.error;
   return {
-    createSchedule,
-    readSchedule,
-    updateSchedule,
-    deleteSchedule,
-    fetchSchedule,
-    schedule,
-    error,
-    loading,
+    schedule: query.data ?? [],
+    loading:
+      query.isFetching ||
+      create.isPending ||
+      createBlock.isPending ||
+      update.isPending ||
+      updateVisibility.isPending ||
+      remove.isPending,
+    visibilityUpdatingId: updateVisibility.isPending
+      ? updateVisibility.variables?.id
+      : null,
+    error: error
+      ? getAdminApiErrorMessage(error, "Erro ao processar programação")
+      : null,
+    fetchSchedule: query.refetch,
+    readSchedule: (id: string) =>
+      resolveAdminAction(() =>
+        client.fetchQuery({
+          queryKey: [...adminQueryKeys.schedule, id],
+          queryFn: async ({ signal }) =>
+            scheduleFieldsSchema.parse(await readScheduleAPI(id, signal)),
+        }),
+      ),
+    createSchedule: (value: ScheduleInput) =>
+      resolveAdminAction(() => create.mutateAsync(value)),
+    createScheduleBlock: (value: ScheduleBlockInput) =>
+      resolveAdminAction(() => createBlock.mutateAsync(value)),
+    updateSchedule: (value: ScheduleInput) =>
+      resolveAdminAction(() => update.mutateAsync(value)),
+    updateScheduleVisibility: (id: string, active: boolean) =>
+      resolveAdminAction(() => updateVisibility.mutateAsync({ id, active })),
+    deleteSchedule: (id: string) =>
+      resolveAdminAction(() => remove.mutateAsync(id)),
   };
 }

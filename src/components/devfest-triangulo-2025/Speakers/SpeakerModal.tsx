@@ -1,5 +1,6 @@
-import { PublicSpeaker } from "models/speaker";
-import { PublicTalk } from "models/talk";
+import { PublicSpeaker } from "@/contracts/speaker";
+import { PublicTalk } from "@/contracts/talk";
+import { shouldBypassImageOptimization } from "@/helpers/image";
 import Image from "next/image";
 import React, { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
@@ -98,6 +99,7 @@ const SpeakerModal: React.FC<ModalProps> = ({
             <Image
               className={styles.CardImage}
               src={speaker.photoUrl || AvatarNotFound}
+              unoptimized={shouldBypassImageOptimization(speaker.photoUrl)}
               alt={`Foto ${speaker.name}`}
               height={200}
               width={200}

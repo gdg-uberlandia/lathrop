@@ -1,9 +1,9 @@
 import React from "react";
 import BaseLayout from "../layouts/base-layout";
 import { Col, Row, Container } from "reactstrap";
-import { getSponsorsAPI } from "front-features/sponsors";
-import { SponsorLevel } from "models/sponsor";
-import configValues from "helpers/config";
+import { getAllSponsorLevels } from "@/back-features/sponsors";
+import { SponsorLevel } from "@/models/sponsor";
+import configValues from "@/helpers/config";
 
 interface SponsorsPageProps {
   sponsors: { [key: string]: SponsorLevel };
@@ -54,7 +54,7 @@ export async function getServerSideProps() {
   try {
     return {
       props: {
-        sponsors: await getSponsorsAPI(),
+        sponsors: await getAllSponsorLevels(),
       },
     };
   } catch (error) {

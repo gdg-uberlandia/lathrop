@@ -5,7 +5,7 @@ import { Label } from "@/assets/components/ui/label";
 import Image from "next/image";
 import DroidPhone from "@/assets/images/droid-phone.png";
 import { useEffect, useState } from "react";
-import { useAuth } from "context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 
 export default function LoginPage({
@@ -18,14 +18,23 @@ export default function LoginPage({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { login, user } = useAuth();
+  const { login, user, isAdmin, loading: authLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (user) {
-      router.push("/admin/");
+    if (!authLoading && user && router.isReady) {
+      const destination =
+        typeof router.query.next === "string" &&
+        router.query.next.startsWith("/admin")
+          ? router.query.next
+          : "/admin";
+      router.replace(
+        isAdmin
+          ? destination
+          : `/unauthorized?next=${encodeURIComponent(destination)}`,
+      );
     }
-  }, [user, router]);
+  }, [authLoading, user, isAdmin, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,6 +73,7 @@ export default function LoginPage({
                   type="email"
                   placeholder="m@example.com"
                   required
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className=" bg-devGray-dark"
@@ -72,13 +82,14 @@ export default function LoginPage({
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password" className="text-white text-sm">
-                    Password
+                    Senha
                   </Label>
                 </div>
                 <Input
                   id="password"
                   type="password"
                   required
+                  autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -86,9 +97,9 @@ export default function LoginPage({
               <Button
                 type="submit"
                 className="w-full rounded-xl bg-devBlue-dark border-1 text-white border-devBlue-dark hover:border-1 hover:bg-devBlue-dark hover:!border-white text-sm"
-                disabled={loading}
+                disabled={loading || authLoading || Boolean(user)}
               >
-                {loading ? "Entrando..." : "Login"}
+                {loading || authLoading || user ? "Entrando..." : "Login"}
               </Button>
               {error && (
                 <div className="text-red-500 text-sm mt-1">{error}</div>

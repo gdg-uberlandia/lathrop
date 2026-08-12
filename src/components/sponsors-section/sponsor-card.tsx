@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import { Sponsor } from "models/sponsor";
+import { Sponsor } from "@/models/sponsor";
 import React from "react";
 import styles from "./Sponsors.module.css";
 import Image from "next/image";

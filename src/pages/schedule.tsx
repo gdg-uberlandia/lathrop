@@ -1,254 +1,177 @@
-import styles from "../styles/Schedule.module.css";
-
-import { Speaker } from "models/speaker";
-
+import { getSchedule } from "@/back-features/schedule";
+import { getSchedulePublication } from "@/back-features/schedule-publication";
+import { getSpeakersByIds } from "@/back-features/speakers";
+import { getTalksByIds } from "@/back-features/talks";
 import { Header } from "@/components/devfest-triangulo-2025/Header";
-import BaseLayout from "layouts/base-layout";
-import Image from "next/image";
-import {
-  Schedule,
-  Speeches,
-  SpeechesPath,
-  SpeechTopicName,
-} from "@/models/schedule";
-import { getAllSpeakers } from "back-features/speakers";
-import { getSchedule } from "back-features/schedule";
-import { TruncatedText } from "@/components/TruncatedText";
-import CheeseIcon from "@/public/icons/cheese.svg";
-import { useState } from "react";
-import SpeakerModal from "@/components/devfest-triangulo-2025/Speakers/SpeakerModal";
+import { ScheduleEntry, SCHEDULE_TRACKS } from "@/contracts/schedule";
+import { PublicSpeaker, toPublicSpeaker } from "@/contracts/speaker";
+import { PublicTalk, toPublicTalk } from "@/contracts/talk";
+import BaseLayout from "@/layouts/base-layout";
 
-interface SpeakersPageProps {
-  schedule: Schedule[];
-  speakers: Array<Speaker>;
-}
+type SerializedSchedule = Omit<
+  ScheduleEntry,
+  "startAt" | "endAt" | "createdAt" | "updatedAt"
+> & { startAt: string; endAt: string; createdAt: string; updatedAt: string };
+const formatTime = (value: string) =>
+  new Intl.DateTimeFormat("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "America/Sao_Paulo",
+  }).format(new Date(value));
 
-const SchedulePage = ({ schedule, speakers }: SpeakersPageProps) => {
-  const [speaker, setSpeaker] = useState<Speaker | null>();
+export default function SchedulePage({
+  schedule,
+  talks,
+  speakers,
+  published,
+}: {
+  schedule: SerializedSchedule[];
+  talks: PublicTalk[];
+  speakers: PublicSpeaker[];
+  published: boolean;
+}) {
+  const talkMap = new Map(talks.map((talk) => [talk.id, talk]));
+  const speakerMap = new Map(speakers.map((speaker) => [speaker.id, speaker]));
+  const trackNames = new Map(
+    SCHEDULE_TRACKS.map((track) => [track.value, track.label]),
+  );
+  const slots = Array.from(
+    schedule
+      .filter((item) => item.active)
+      .reduce((groups, item) => {
+        const key = `${item.startAt}-${item.endAt}`;
+        groups.set(key, [...(groups.get(key) ?? []), item]);
+        return groups;
+      }, new Map<string, SerializedSchedule[]>()),
+  ).map(([, items]) => items.sort((a, b) => (a.order ?? -1) - (b.order ?? -1)));
 
-  const speakersMap = new Map(speakers.map((speaker) => [speaker.id, speaker]));
-
-  const findSpeakers = (speeches: Speeches) => {
-    const speakers = speeches.speakerSlugs
-      ? speeches.speakerSlugs.map((slug) => speakersMap.get(slug)!)
-      : [];
-    return speakers;
+  const content = (item: SerializedSchedule) => {
+    const talk =
+      item.activity.type === "break" ? null : talkMap.get(item.activity.talkId);
+    const prefix =
+      item.activity.type === "opening"
+        ? "Abertura"
+        : item.activity.type === "closing"
+          ? "Encerramento"
+          : null;
+    const title =
+      item.activity.type === "break"
+        ? item.activity.title
+        : (talk?.title ?? "Palestra removida");
+    const names =
+      talk?.speakerIds.map((id) => speakerMap.get(id)?.name).filter(Boolean) ??
+      [];
+    return (
+      <>
+        <div className="flex flex-wrap items-center gap-2">
+          {prefix && (
+            <span className="rounded-full bg-blue-500/15 px-2.5 py-1 text-xs font-semibold text-blue-300">
+              {prefix}
+            </span>
+          )}
+          <h2 className="text-lg font-semibold">{title}</h2>
+        </div>
+        {talk?.description && (
+          <p className="mt-2 text-sm text-white/60">{talk.description}</p>
+        )}
+        {names.length > 0 && (
+          <p className="mt-3 text-sm text-white/80">{names.join(" · ")}</p>
+        )}
+      </>
+    );
   };
-
-  const getPathName = (path: SpeechesPath) => {
-    switch (path) {
-      case SpeechesPath.MINAS:
-        return "Minas";
-      case SpeechesPath.CURADO:
-        return "Curado";
-      case SpeechesPath.CANASTRA:
-        return "Canastra";
-      case SpeechesPath.TRANCA:
-        return "Trança";
-      case SpeechesPath.COMMUNITY:
-        return "Arena Comunidade";
-      default:
-        return "Trilhas Integradas";
-    }
-  };
-
-  function generateKey(speech: Speeches, speakerId: string) {
-    return `speech-${speech.path}-speaker-${speakerId}-${
-      speech.speakerSlugs
-        ? speech.speakerSlugs.map((slug) => slug).join("-")
-        : speech.topic
-    }`;
-  }
 
   return (
     <BaseLayout>
       <Header isRoot={false} />
-
-      <div className={styles.ScheduleWrapper}>
-        <section className="py-16">
-          <h1 className={styles.Title}>
-            Veja a <span>agenda</span> completa
-          </h1>
-
-          <p>
-            Confira os horários, mergulhe nas 4 trilhas de conteúdo, conheça
-            quem vai subir ao palco e descubra os temas que vão transformar sua
-            visão sobre tecnologia.
+      <main className="mx-auto min-h-screen max-w-7xl px-5 py-16 text-white">
+        <header className="mb-12 max-w-2xl">
+          <h1 className="text-4xl font-bold">Programação do evento</h1>
+          <p className="mt-3 text-white/60">
+            Confira os horários, trilhas e conteúdos do DevFest Triângulo.
           </p>
-        </section>
-
-        <div className="mt-12 flex justify-start flex-col text-left  text-lg  text-white/80 font-medium">
-          {schedule.map((scheduleItem) => (
-            <div key={scheduleItem.id} className="mb-16">
-              <div className="p-3">
-                {scheduleItem.start} - {scheduleItem.end}
-              </div>
-
-              <div className="text-white/80 font-medium flex flex-wrap gap-4">
-                {scheduleItem.speeches.map((speech, index) => {
-                  if (speech.topic && !speech.speakerSlugs) {
-                    return (
-                      <div
-                        key={index}
-                        className="p-6 text-lg text-white/80 my-3 rounded-2xl border-1 border-devGray relative w-full"
+        </header>
+        <div className="space-y-8">
+          {slots.map((items) => {
+            const first = items[0];
+            const general = items.find((item) => item.track === null);
+            return (
+              <section key={`${first.startAt}-${first.endAt}`}>
+                <header className="mb-3 text-lg font-semibold text-white/80">
+                  {formatTime(first.startAt)}–{formatTime(first.endAt)}
+                </header>
+                {general ? (
+                  <article className="rounded-2xl border border-white/10 bg-white/5 p-6">
+                    {content(general)}
+                  </article>
+                ) : (
+                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                    {items.map((item) => (
+                      <article
+                        key={item.id}
+                        className="rounded-2xl border border-white/10 bg-white/5 p-5"
                       >
-                        {
-                          SpeechTopicName[
-                            speech.topic as keyof typeof SpeechTopicName
-                          ]
-                        }
-                      </div>
-                    );
-                  }
-
-                  const speechSpeakers = findSpeakers(speech);
-                  const speakerInfo = speechSpeakers.find((speaker) => speaker);
-
-                  const getPathStyle = (path: string) => {
-                    let pathStyle = "";
-                    switch (path) {
-                      case "MINAS":
-                        pathStyle = "border-devYellow-dark";
-                        break;
-                      case "CURADO":
-                        pathStyle = "border-devRed-dark";
-                        break;
-                      case "CANASTRA":
-                        pathStyle = "border-devPink-dark";
-                        break;
-                      case "TRANCA":
-                        pathStyle = "border-devBlue-dark";
-                        break;
-                      case "COMMUNITY":
-                        pathStyle = "border-devGreen-dark";
-                        break;
-                    }
-                    return pathStyle;
-                  };
-
-                  return (
-                    <div
-                      key={index}
-                      className={`my-3 p-6 rounded-2xl border-1 border-devGray flex flex-col ${["keynote_start", "keynote_end"].includes(speech.topic) ? "" : "w-80"}`}
-                    >
-                      {(speech.path || speakerInfo) && (
-                        <div
-                          className={`rounded-full border-1 text-sm py-2 px-3 flex gap-2 w-fit ${speech.path ? getPathStyle(speech.path) : styles.Tag}`}
-                        >
-                          <Image
-                            src={CheeseIcon}
-                            alt={`Símbolo queijo`}
-                            height={16}
-                            width={14}
-                            loading="lazy"
-                          />
-                          {speech.path
-                            ? getPathName(SpeechesPath[speech.path])
-                            : "Trilhas Integradas"}
-                        </div>
-                      )}
-                      <div
-                        className={`flex flex-col col-span-11 text-lg font-bold mt-10 mb-3 leading-tight  ${["keynote_start", "keynote_end"].includes(speech.topic) ? "" : "min-h-[13.5rem]"}`}
-                      >
-                        <span className="font-semibold mb-3">
-                          {speech.title ?? speech.topic}
+                        <span className="mb-4 inline-flex rounded-full border border-white/10 px-3 py-1 text-xs text-white/70">
+                          {item.track ? trackNames.get(item.track) : "Geral"}
                         </span>
-                        <div className="font-normal mb-3 text-devGray-light">
-                          {["keynote_start", "keynote_end"].includes(
-                            speech.topic,
-                          ) ? (
-                            speech.topic
-                          ) : (
-                            <TruncatedText text={speech.topic} maxChars={124} />
-                          )}
-                        </div>
-                      </div>{" "}
-                      <footer className="bottom-0">
-                        {speechSpeakers.length &&
-                          speechSpeakers.map((speaker) => (
-                            <div key={generateKey(speech, speaker.id)}>
-                              <SpeakerCard speaker={speaker} frameId={index} />
-                            </div>
-                          ))}
-                      </footer>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
+                        {content(item)}
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </section>
+            );
+          })}
+          {(!published || slots.length === 0) && (
+            <p className="rounded-2xl border border-white/10 p-8 text-center text-white/60">
+              A programação será publicada em breve.
+            </p>
+          )}
         </div>
-      </div>
+      </main>
     </BaseLayout>
   );
-};
-
-const SpeakerCard = ({
-  speaker,
-  frameId,
-}: {
-  speaker: Speaker;
-  frameId: number;
-}) => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const modalToggle = () => setModalOpen(!modalOpen);
-  return (
-    <>
-      <div className="text-white/90 flex items-center gap-2 mb-3 justify-between w-full">
-        <Image
-          src={speaker.photoUrl!}
-          alt={`Foto ${speaker.name}`}
-          height={32}
-          width={32}
-          loading="lazy"
-          className={`rounded-full`}
-        />
-        <div className="flex flex-col flex-grow">
-          <span className="text-sm font-bold">{speaker?.name}</span>
-          <span className="text-xs font-normal text-devWhite-ice">
-            {speaker?.company && `${speaker?.company} - `}
-            {speaker?.title}
-          </span>
-        </div>
-        <div onClick={modalToggle} className="cursor-pointer">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M6.4 18L5 16.6L14.6 7H6V5H18V17H16V8.4L6.4 18Z"
-              fill="#4285F4"
-            />
-          </svg>
-        </div>
-      </div>
-      <SpeakerModal
-        index={frameId}
-        speaker={speaker!}
-        talks={[]}
-        modalOpen={modalOpen}
-        modalToggle={modalToggle}
-      />
-      <div>{}</div>
-    </>
-  );
-};
+}
 
 export async function getServerSideProps() {
   try {
+    const publication = await getSchedulePublication();
+    if (!publication.published) {
+      return {
+        props: { schedule: [], talks: [], speakers: [], published: false },
+      };
+    }
+    const schedule = await getSchedule();
+    const visibleSchedule = schedule.filter((item) => item.active);
+    const scheduledTalkIds = new Set(
+      visibleSchedule.flatMap((item) =>
+        item.activity.type === "break" ? [] : [item.activity.talkId],
+      ),
+    );
+    const scheduledTalks = await getTalksByIds([...scheduledTalkIds]);
+    const scheduledSpeakerIds = new Set(
+      scheduledTalks.flatMap((talk) => talk.speakerIds),
+    );
     return {
       props: {
-        speakers: await getAllSpeakers(),
-        schedule: await getSchedule(),
+        schedule: visibleSchedule.map((item) => ({
+          ...item,
+          startAt: item.startAt.toISOString(),
+          endAt: item.endAt.toISOString(),
+          createdAt: item.createdAt.toISOString(),
+          updatedAt: item.updatedAt.toISOString(),
+        })),
+        talks: scheduledTalks.map(toPublicTalk),
+        speakers: (await getSpeakersByIds([...scheduledSpeakerIds])).map(
+          toPublicSpeaker,
+        ),
+        published: publication.published,
       },
     };
   } catch (error) {
     console.error(error);
-    return { props: { speakers: [] } };
+    return {
+      props: { schedule: [], talks: [], speakers: [], published: false },
+    };
   }
 }
-
-export default SchedulePage;

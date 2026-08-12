@@ -1,0 +1,18 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // O telão da Pokedex observa somente este sinal público e sem dados
+    // pessoais. Todas as gravações continuam exclusivas do servidor.
+    match /raffleLiveSignals/{eventId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Site e Pokedex usam Firebase Admin SDK depois de validar sessão,
+    // autorização e contrato. O Client SDK não acessa os demais documentos.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

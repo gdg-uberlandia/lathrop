@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const { PHASE_DEVELOPMENT_SERVER } = require("next/constants");
+
+const createNextConfig = (phase) => ({
+  // Keep development chunks isolated from `next build` output. Sharing `.next`
+  // corrupts the running dev server when both commands run at the same time.
+  distDir: phase === PHASE_DEVELOPMENT_SERVER ? ".next-dev" : ".next",
   output: "standalone",
   reactStrictMode: true,
   swcMinify: true,
@@ -14,6 +19,8 @@ const nextConfig = {
       "lh3.googleusercontent.com",
       "i.ytimg.com",
       "storage.googleapis.com",
+      "api.dicebear.com",
+      "pokedex.devfesttriangulo.com.br",
     ],
   },
   /*exportPathMap: async function (
@@ -28,6 +35,6 @@ const nextConfig = {
       '/campaigns': { page: '/campaigns' },
     }
   },*/
-};
+});
 
-module.exports = nextConfig;
+module.exports = createNextConfig;

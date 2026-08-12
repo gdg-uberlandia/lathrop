@@ -1,5 +1,5 @@
 import { Button } from "@/assets/components/ui/button";
-import { Checkbox } from "@/assets/components/ui/checkbox";
+import { AdminVisibilityControl } from "@/components/admin/admin-visibility-control";
 import {
   Form,
   FormControl,
@@ -11,7 +11,9 @@ import { Input } from "@/assets/components/ui/input";
 import { Textarea } from "@/assets/components/ui/textarea";
 import Loading from "@/components/admin/loading-overlay";
 import { useImageUpload } from "@/hooks/useImageUpload";
-import { Speaker, SpeakerInput } from "@/models/speaker";
+import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
+import { Speaker, SpeakerInput } from "@/contracts/speaker";
+import { shouldBypassImageOptimization } from "@/helpers/image";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -49,6 +51,7 @@ export function SpeakersForm({
     resolver: zodResolver(speakerFormSchema),
     defaultValues: emptyValues(),
   });
+  useUnsavedChanges(form.formState.isDirty && !form.formState.isSubmitting);
 
   useEffect(() => {
     if (!speaker) return;
@@ -108,8 +111,16 @@ export function SpeakersForm({
             "Revise os campos destacados antes de salvar o palestrante.",
           );
         })}
-        className="grid grid-cols-1 gap-6 p-4 md:grid-cols-8"
+        className="grid grid-cols-1 gap-6 rounded-2xl border border-white/10 bg-devGray-dark/20 p-4 md:grid-cols-8 md:p-6"
       >
+        <div className="md:col-span-8">
+          <h2 className="font-semibold text-slate-900">
+            Informações principais
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Identificação e apresentação pública do palestrante.
+          </p>
+        </div>
         <FormField
           name="name"
           control={form.control}
@@ -135,6 +146,7 @@ export function SpeakersForm({
                   {field.value && (
                     <Image
                       src={field.value}
+                      unoptimized={shouldBypassImageOptimization(field.value)}
                       alt="Preview"
                       width={40}
                       height={40}
@@ -182,10 +194,19 @@ export function SpeakersForm({
               <FormControl>
                 <Textarea {...field} rows={5} />
               </FormControl>
+              <p className="text-right text-xs text-slate-400">
+                {field.value.length}/3000
+              </p>
               {fieldState.error && <span>{fieldState.error.message}</span>}
             </FormItem>
           )}
         />
+        <div className="border-t !border-slate-200 pt-5 md:col-span-8">
+          <h2 className="font-semibold text-slate-900">Contato e publicação</h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Redes sociais e visibilidade no site.
+          </p>
+        </div>
         <FormField
           name="socialMedia.instagram"
           control={form.control}
@@ -216,18 +237,21 @@ export function SpeakersForm({
           name="isVisible"
           control={form.control}
           render={({ field }) => (
-            <FormItem className="flex items-center gap-2 md:col-span-8">
+            <FormItem className="md:col-span-8">
               <FormControl>
-                <Checkbox
+                <AdminVisibilityControl
                   checked={field.value}
-                  onCheckedChange={(value) => field.onChange(value === true)}
+                  onCheckedChange={field.onChange}
+                  label="Visibilidade do palestrante"
+                  description="Palestrantes visíveis podem aparecer no site e na programação pública."
+                  activeLabel="Visível"
+                  inactiveLabel="Oculto"
                 />
               </FormControl>
-              <FormLabel>Exibir palestrante no site</FormLabel>
             </FormItem>
           )}
         />
-        <div className="md:col-span-8">
+        <div className="sticky bottom-3 z-10 p-3 md:col-span-8">
           {validationError && (
             <p role="alert" className="mb-3 text-devRed">
               {validationError}
@@ -238,13 +262,23 @@ export function SpeakersForm({
               {form.formState.errors.id.message}
             </p>
           )}
-          <Button
-            type="submit"
-            disabled={loading}
-            className="h-11 w-full rounded-xl !bg-devBlue-dark text-white"
-          >
-            {editing ? "Salvar alterações" : "Cadastrar palestrante"}
-          </Button>
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              className="h-11 !border-slate-300 !bg-white !text-slate-700 hover:!bg-slate-50 hover:!text-slate-900 sm:w-auto"
+              onClick={() => window.history.back()}
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              disabled={loading || form.formState.isSubmitting}
+              className="admin-primary-action h-11 rounded-lg !bg-blue-600 sm:min-w-48"
+            >
+              {editing ? "Salvar alterações" : "Cadastrar palestrante"}
+            </Button>
+          </div>
         </div>
       </form>
     </Form>

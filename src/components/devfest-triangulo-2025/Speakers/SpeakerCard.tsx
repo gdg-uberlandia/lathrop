@@ -1,6 +1,7 @@
 import clsx from "clsx";
-import { PublicSpeaker, PublicSpeakerSummary } from "models/speaker";
-import { PublicTalk, PublicTalkSummary } from "models/talk";
+import { PublicSpeaker, PublicSpeakerSummary } from "@/contracts/speaker";
+import { PublicTalk, PublicTalkSummary } from "@/contracts/talk";
+import { shouldBypassImageOptimization } from "@/helpers/image";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useState } from "react";
@@ -96,6 +97,7 @@ const SpeakerCard = ({
           <Image
             className={styles.CardImage}
             src={speaker.photoUrl || AvatarNotFound}
+            unoptimized={shouldBypassImageOptimization(speaker.photoUrl)}
             alt={`Foto ${speaker.name}`}
             height={200}
             width={200}

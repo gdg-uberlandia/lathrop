@@ -1,14 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { createSpeaker, getAllSpeakers } from "back-features/speakers";
+import { createSpeaker, getAllSpeakers } from "@/back-features/speakers";
+import { requireAdmin } from "@/utils/api/require-admin";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith("Bearer ")) {
-    return res.status(401).json({ error: "Token não informado" });
-  }
+  if (!(await requireAdmin(req, res))) return;
 
   try {
     if (req.method === "GET") {
@@ -19,7 +17,7 @@ export default async function handler(
     if (req.method === "POST") {
       const data = req.body;
       const speaker = await createSpeaker(data);
-      return res.status(200).json(speaker);
+      return res.status(201).json(speaker);
     }
 
     return res.status(405).json({ error: "Método não permitido" });

@@ -1,31 +1,59 @@
 import { Button } from "@/assets/components/ui/button";
+import { AdminQrCodeCard } from "@/components/admin/admin-qr-code-card";
+import { AdminVisibilityControl } from "@/components/admin/admin-visibility-control";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/assets/components/ui/form";
 import { Input } from "@/assets/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/assets/components/ui/select";
 import { Textarea } from "@/assets/components/ui/textarea";
-import { Checkbox } from "@/assets/components/ui/checkbox";
 import Loading from "@/components/admin/loading-overlay";
 import { useImageUpload } from "@/hooks/useImageUpload";
-import { Mission } from "@/models/mission";
-import { Profile } from "@/models/profile";
+import { useMissions } from "@/hooks/useMissions";
+import { useCompanies } from "@/hooks/useCompanies";
+import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
+import { Mission, MissionInput } from "@/models/mission";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { X } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { Resolver, useFieldArray, useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
+
 import { MissionFormType, missionSchema } from "./missions-schema";
 
-export interface MissionFormProps {
+interface MissionFormProps {
   editing?: boolean;
   loading?: boolean;
-  onSubmit: (data: Mission) => void;
+  onSubmit: (data: MissionInput) => Promise<Mission | null> | Mission | null;
   mission?: Mission;
+}
+
+function defaults(mission?: Mission): MissionFormType {
+  return {
+    id: mission?.id ?? "",
+    title: mission?.title ?? "",
+    description: mission?.description ?? "",
+    imageUrl: mission?.imageUrl ?? null,
+    validationType: mission?.validationType ?? "reviewer",
+    qrId: mission?.qrId ?? null,
+    progressRequirement: mission?.progressRequirement ?? null,
+    prerequisites: mission?.prerequisites ?? [],
+    active: mission?.active ?? true,
+    order: mission?.order ?? 0,
+    xpAwarded: mission?.xpAwarded ?? null,
+  };
 }
 
 export function MissionsForm({
@@ -35,138 +63,62 @@ export function MissionsForm({
   mission,
 }: MissionFormProps) {
   const { uploadImage, loadingImage } = useImageUpload();
-  const [reviewerDropdownOpen, setReviewerDropdownOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<Profile[]>([]);
-  const [searching, setSearching] = useState(false);
-  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(
-    null,
-  );
-
+  const { missions } = useMissions();
+  const { companies } = useCompanies();
   const form = useForm<MissionFormType>({
-    resolver: zodResolver(missionSchema),
-    defaultValues: {
-      id: editing && mission?.id ? mission.id : uuidv4(),
-      name: mission?.name ?? "",
-      description: mission?.description ?? "",
-      details: mission?.details ?? "",
-      qrMission: mission?.qrMission ?? false,
-      reviewers: mission?.reviewers ?? [],
-      image: mission?.image ?? "",
-    },
+    resolver: zodResolver(missionSchema) as Resolver<MissionFormType>,
+    defaultValues: defaults(mission),
   });
+  useUnsavedChanges(form.formState.isDirty && !form.formState.isSubmitting);
+  const prerequisites = useFieldArray({
+    control: form.control,
+    name: "prerequisites",
+  });
+  const validationType = form.watch("validationType");
+  const progressType = form.watch("progressRequirement.type");
+  const currentId = form.watch("id");
 
   useEffect(() => {
-    if (editing && mission) {
-      Object.entries(mission).forEach(([key, value]) => {
-        if (key !== "id") form.setValue(key as keyof MissionFormType, value);
-      });
-    } else {
-      form.reset({
-        id: uuidv4(),
-        name: "",
-        description: "",
-        details: "",
-        qrMission: false,
-        reviewers: [],
-        image: "",
-      });
+    form.reset(defaults(mission));
+  }, [form, mission]);
+
+  useEffect(() => {
+    if (validationType === "qr") {
+      if (!form.getValues("qrId")) form.setValue("qrId", uuidv4());
+      form.setValue("progressRequirement", null);
+      return;
     }
-  }, [editing, mission, form]);
 
-  // Cleanup do timer quando o componente for desmontado
-  useEffect(() => {
-    return () => {
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
+    form.setValue("qrId", null);
+    if (validationType === "automatic") {
+      form.setValue("prerequisites", []);
+      if (!form.getValues("progressRequirement")) {
+        form.setValue("progressRequirement", {
+          type: "connections",
+          target: 1,
+        });
       }
-    };
-  }, [debounceTimer]);
-
-  const submitHandler = (data: MissionFormType) => {
-    onSubmit(data as Mission);
-    if (!editing) {
-      form.reset({
-        id: uuidv4(),
-        name: "",
-        description: "",
-        details: "",
-        qrMission: false,
-        reviewers: [],
-        image: "",
-      });
+      return;
     }
+
+    form.setValue("progressRequirement", null);
+  }, [form, validationType]);
+
+  const submitHandler = async (data: MissionFormType) => {
+    const result = await onSubmit(data);
+    if (!editing && result) form.reset(defaults());
   };
 
   const handleImageFileChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const file = e.target.files?.[0];
+    const file = event.target.files?.[0];
     if (!file) return;
-    try {
-      const url = await uploadImage(file, "missions");
-      form.setValue("image", url, { shouldValidate: true });
-    } catch (err) {
-      console.error("Erro ao enviar imagem", err);
-    }
-  };
-
-  const handleSearchProfiles = async (query: string) => {
-    if (query.length < 2) {
-      setSearchResults([]);
-      return;
-    }
-
-    setSearching(true);
-    try {
-      const token = await (await import("firebase/auth"))
-        .getAuth()
-        .currentUser?.getIdToken();
-
-      const response = await fetch(
-        `/api/v1/profiles?search=${encodeURIComponent(query)}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      const data = await response.json();
-
-      // Garantir que data é um array
-      if (Array.isArray(data)) {
-        setSearchResults(data);
-      } else {
-        console.error("Resposta da API não é um array:", data);
-        setSearchResults([]);
-      }
-    } catch (error) {
-      console.error("Erro ao buscar profiles:", error);
-      setSearchResults([]);
-    } finally {
-      setSearching(false);
-    }
-  };
-
-  const handleSearchWithDebounce = (query: string) => {
-    // Limpar timer anterior
-    if (debounceTimer) {
-      clearTimeout(debounceTimer);
-    }
-
-    // Se query for muito curta, limpar resultados imediatamente
-    if (query.length < 2) {
-      setSearchResults([]);
-      setReviewerDropdownOpen(false);
-      return;
-    }
-
-    // Criar novo timer de 350ms
-    const timer = setTimeout(() => {
-      handleSearchProfiles(query);
-    }, 350);
-
-    setDebounceTimer(timer);
+    const url = await uploadImage(file, "missions");
+    form.setValue("imageUrl", url, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
   };
 
   return (
@@ -175,18 +127,47 @@ export function MissionsForm({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(submitHandler)}
-          className="grid grid-cols-1 md:grid-cols-8 gap-6 p-4"
+          className="grid grid-cols-1 gap-6 rounded-2xl border border-white/10 bg-devGray-dark/20 p-4 md:grid-cols-8 md:p-6"
         >
+          <div className="md:col-span-8">
+            <h2 className="font-semibold text-slate-900">
+              Informações principais
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Identificação e conteúdo apresentado ao participante.
+            </p>
+          </div>
           <FormField
-            name="name"
+            name="id"
             control={form.control}
-            render={({ field, fieldState }) => (
-              <FormItem className="col-span-8">
-                <FormLabel>Nome</FormLabel>
+            render={({ field }) => (
+              <FormItem className="md:col-span-4">
+                <FormLabel>Identificador</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    disabled={editing}
+                    placeholder="ex.: encontre-o-qr-secreto"
+                  />
+                </FormControl>
+                <p className="text-xs text-muted-foreground">
+                  Use um identificador estável, sem espaços.
+                </p>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            name="title"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className="md:col-span-4">
+                <FormLabel>Título</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
-                {fieldState.error && <span>{fieldState.error.message}</span>}
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -194,200 +175,373 @@ export function MissionsForm({
           <FormField
             name="description"
             control={form.control}
-            render={({ field, fieldState }) => (
-              <FormItem className="col-span-8">
+            render={({ field }) => (
+              <FormItem className="md:col-span-8">
                 <FormLabel>Descrição</FormLabel>
-                <FormControl>
-                  <Textarea {...field} rows={3} />
-                </FormControl>
-                {fieldState.error && <span>{fieldState.error.message}</span>}
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            name="details"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <FormItem className="col-span-8">
-                <FormLabel>Detalhes</FormLabel>
                 <FormControl>
                   <Textarea {...field} rows={4} />
                 </FormControl>
-                {fieldState.error && <span>{fieldState.error.message}</span>}
+                <p className="text-right text-xs text-slate-400">
+                  {field.value.length}/1000
+                </p>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div className="border-t !border-slate-200 pt-5 md:col-span-8">
+            <h2 className="font-semibold text-slate-900">
+              Validação e recompensa
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Regras necessárias para concluir a missão.
+            </p>
+          </div>
+          <FormField
+            name="validationType"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className="md:col-span-4">
+                <FormLabel>Tipo de validação</FormLabel>
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="reviewer">
+                      Aprovação por revisor
+                    </SelectItem>
+                    <SelectItem value="qr">Leitura de QR Code</SelectItem>
+                    <SelectItem value="automatic">
+                      Progresso automático
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
               </FormItem>
             )}
           />
 
           <FormField
-            name="image"
+            name="order"
             control={form.control}
-            render={({ field, fieldState }) => (
-              <FormItem className="col-span-8">
-                <FormLabel>Imagem da Missão</FormLabel>
+            render={({ field }) => (
+              <FormItem className="md:col-span-2">
+                <FormLabel>Ordem</FormLabel>
                 <FormControl>
-                  <div className="flex items-center gap-2">
+                  <Input
+                    type="number"
+                    min={0}
+                    {...field}
+                    onChange={(event) =>
+                      field.onChange(event.target.valueAsNumber)
+                    }
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            name="xpAwarded"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className="md:col-span-2">
+                <FormLabel>XP concedido</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={1}
+                    value={field.value ?? ""}
+                    onChange={(event) =>
+                      field.onChange(
+                        event.target.value === ""
+                          ? null
+                          : event.target.valueAsNumber,
+                      )
+                    }
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {validationType === "qr" && (
+            <FormField
+              name="qrId"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className="md:col-span-8">
+                  <FormLabel>Identificador público do QR Code</FormLabel>
+                  <div className="flex gap-2">
+                    <FormControl>
+                      <Input {...field} value={field.value ?? ""} readOnly />
+                    </FormControl>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() => field.onChange(uuidv4())}
+                    >
+                      Gerar outro
+                    </Button>
+                  </div>
+                  <FormMessage />
+                  <div className="mt-4">
+                    <AdminQrCodeCard
+                      value={field.value}
+                      downloadName={`missao-${currentId || "qr"}`}
+                      entityLabel="esta missão"
+                    />
+                  </div>
+                </FormItem>
+              )}
+            />
+          )}
+
+          {validationType === "automatic" && (
+            <div className="grid grid-cols-1 gap-4 rounded-xl border p-4 md:col-span-8 md:grid-cols-2">
+              <FormField
+                name="progressRequirement.type"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Progresso acompanhado</FormLabel>
+                    <Select
+                      value={field.value}
+                      onValueChange={(value: "connections" | "companies") => {
+                        field.onChange(value);
+                        form.setValue("progressRequirement.target", 1);
+                      }}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="connections">Conexões</SelectItem>
+                        <SelectItem value="companies">
+                          Empresas visitadas
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="progressRequirement.target"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Meta</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        value={field.value ?? ""}
+                        placeholder={
+                          progressType === "companies"
+                            ? "Número ou all"
+                            : "Quantidade"
+                        }
+                        onChange={(event) => {
+                          const value = event.target.value.trim();
+                          field.onChange(
+                            value === "all" ? "all" : Number(value),
+                          );
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
+
+          {validationType !== "automatic" && (
+            <div className="space-y-3 rounded-xl border p-4 md:col-span-8">
+              <div className="flex items-center justify-between">
+                <div>
+                  <FormLabel>Pré-requisitos</FormLabel>
+                  <p className="text-xs text-muted-foreground">
+                    Missões ou empresas que precisam ser concluídas antes.
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={() =>
+                    prerequisites.append({ type: "mission", activityId: "" })
+                  }
+                >
+                  <Plus className="mr-2 size-4" />
+                  Adicionar
+                </Button>
+              </div>
+              {prerequisites.fields.map((item, index) => (
+                <div
+                  key={item.id}
+                  className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_2fr_auto]"
+                >
+                  <FormField
+                    name={`prerequisites.${index}.type`}
+                    control={form.control}
+                    render={({ field }) => (
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="mission">Missão</SelectItem>
+                          <SelectItem value="company">Empresa</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  <FormField
+                    name={`prerequisites.${index}.activityId`}
+                    control={form.control}
+                    render={({ field }) =>
+                      form.watch(`prerequisites.${index}.type`) ===
+                      "mission" ? (
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione uma missão" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {missions
+                              .filter((option) => option.id !== currentId)
+                              .map((option) => (
+                                <SelectItem key={option.id} value={option.id}>
+                                  {option.title}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione uma empresa" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {companies
+                              .filter((company) => company.active)
+                              .map((company) => (
+                                <SelectItem key={company.id} value={company.id}>
+                                  {company.name}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      )
+                    }
+                  />
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="icon"
+                    aria-label="Remover pré-requisito"
+                    onClick={() => prerequisites.remove(index)}
+                  >
+                    <Trash2 className="size-4" />
+                  </Button>
+                </div>
+              ))}
+              <FormMessage>
+                {form.formState.errors.prerequisites?.message}
+              </FormMessage>
+            </div>
+          )}
+
+          <div className="border-t !border-slate-200 pt-5 md:col-span-8">
+            <h2 className="font-semibold text-slate-900">
+              Apresentação e publicação
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Imagem e disponibilidade para participantes.
+            </p>
+          </div>
+          <FormField
+            name="imageUrl"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className="md:col-span-8">
+                <FormLabel>Imagem da missão</FormLabel>
+                <div className="flex items-center gap-3">
+                  <FormControl>
                     <Input
-                      id="mission-image"
                       type="file"
                       accept="image/*"
                       onChange={handleImageFileChange}
                     />
-
-                    {field.value && (
-                      <Image
-                        src={field.value}
-                        alt="Preview"
-                        width={32}
-                        height={32}
-                        style={{
-                          maxWidth: 32,
-                          maxHeight: 32,
-                          objectFit: "cover",
-                          borderRadius: "4px",
-                        }}
-                      />
-                    )}
-                  </div>
-                </FormControl>
-                {fieldState.error && <span>{fieldState.error.message}</span>}
+                  </FormControl>
+                  {field.value && (
+                    <Image
+                      src={field.value}
+                      alt="Prévia da missão"
+                      width={48}
+                      height={48}
+                      className="size-12 rounded object-cover"
+                    />
+                  )}
+                </div>
+                <FormMessage />
               </FormItem>
             )}
           />
 
           <FormField
-            name="reviewers"
+            name="active"
             control={form.control}
             render={({ field }) => (
-              <FormItem className="col-span-8">
-                <FormLabel>Revisores (Emails)</FormLabel>
+              <FormItem className="md:col-span-8">
                 <FormControl>
-                  <div className="space-y-2">
-                    <div className="relative">
-                      <Input
-                        type="text"
-                        placeholder="Digite para buscar por email ou nome..."
-                        value={searchQuery}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          setSearchQuery(value);
-                          handleSearchWithDebounce(value);
-                          if (value.length >= 2) {
-                            setReviewerDropdownOpen(true);
-                          }
-                        }}
-                        onFocus={() => {
-                          if (searchQuery.length >= 2) {
-                            setReviewerDropdownOpen(true);
-                          }
-                        }}
-                        className="w-full"
-                      />
-                      {reviewerDropdownOpen && searchQuery.length >= 2 && (
-                        <div className="absolute z-50 mt-1 w-full rounded-md border bg-popover p-2 shadow-md max-h-60 overflow-y-auto">
-                          {searching ? (
-                            <div className="p-2 text-sm text-muted-foreground">
-                              Buscando...
-                            </div>
-                          ) : searchResults.length === 0 ? (
-                            <div className="p-2 text-sm text-muted-foreground">
-                              Nenhum perfil encontrado
-                            </div>
-                          ) : (
-                            searchResults.map((profile) => (
-                              <div
-                                key={profile.id}
-                                className="flex items-center space-x-2 p-2 hover:bg-accent rounded-sm cursor-pointer"
-                                onClick={() => {
-                                  const currentValue = field.value || [];
-                                  if (!currentValue.includes(profile.email)) {
-                                    field.onChange([
-                                      ...currentValue,
-                                      profile.email,
-                                    ]);
-                                    setSearchQuery("");
-                                    setSearchResults([]);
-                                    setReviewerDropdownOpen(false);
-                                  }
-                                }}
-                              >
-                                <Checkbox
-                                  checked={
-                                    field.value?.includes(profile.email) ||
-                                    false
-                                  }
-                                  onCheckedChange={() => {}}
-                                />
-                                <span className="text-sm">
-                                  {profile.email}
-                                  {profile.name && ` (${profile.name})`}
-                                </span>
-                              </div>
-                            ))
-                          )}
-                        </div>
-                      )}
-                    </div>
-                    {field.value.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {field.value.map((email) => (
-                          <div
-                            key={email}
-                            className="flex items-center gap-1 bg-devBlue-dark/20 text-white px-2 py-1 rounded-md text-sm"
-                          >
-                            <span>{email}</span>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const newValue = field.value.filter(
-                                  (e) => e !== email,
-                                );
-                                field.onChange(newValue);
-                              }}
-                              className="hover:text-devRed-dark"
-                            >
-                              <X className="w-3 h-3" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            name="qrMission"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <FormItem className="col-span-8 flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                <FormControl>
-                  <Checkbox
+                  <AdminVisibilityControl
                     checked={field.value}
                     onCheckedChange={field.onChange}
+                    label="Disponibilidade da missão"
+                    description="Missões ativas aparecem para os participantes e podem receber progresso."
                   />
                 </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Missão QR Code</FormLabel>
-                  <p className="text-sm text-muted-foreground">
-                    Marque se esta missão requer leitura de QR Code
-                  </p>
-                </div>
-                {fieldState.error && <span>{fieldState.error.message}</span>}
               </FormItem>
             )}
           />
 
-          <div className="col-span-8 md:col-span-8 flex gap-4 mt-4 justify-center">
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full text-white !bg-devBlue-dark rounded-xl border-1 border-devBlue-dark hover:border-white h-11"
-            >
-              {editing ? "Salvar alterações" : "Cadastrar"}
-            </Button>
+          <div className="sticky bottom-3 z-10 mt-4 flex justify-center p-3 md:col-span-8">
+            <div className="flex w-full flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                className="h-11 !border-slate-300 !bg-white !text-slate-700 hover:!bg-slate-50 hover:!text-slate-900"
+                onClick={() => window.history.back()}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                disabled={
+                  loading || loadingImage || form.formState.isSubmitting
+                }
+                className="admin-primary-action h-11 rounded-lg !bg-blue-600 sm:min-w-48"
+              >
+                {editing ? "Salvar alterações" : "Cadastrar"}
+              </Button>
+            </div>
           </div>
         </form>
       </Form>

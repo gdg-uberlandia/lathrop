@@ -1,16 +1,19 @@
 import { CURRENT_EVENT_ID } from "@/helpers/event";
 import {
   Talk,
-  TalkInput,
+  TalkCreate,
+  TalkUpdate,
+  talkCreateSchema,
   talkFieldsSchema,
-  talkInputSchema,
-} from "@/models/talk";
+  talkUpdateSchema,
+} from "@/contracts/talk";
 import { db } from "@/utils/db/index";
+import { getFirestoreCollectionName } from "@/utils/db/collection-name";
 import { Timestamp } from "firebase-admin/firestore";
 
-const IS_DEV_MODE = process.env.DEV_MODE === "true";
-const TALKS_COLLECTION = `talks${IS_DEV_MODE ? "_test" : ""}`;
-const SPEAKERS_COLLECTION = `speakers${IS_DEV_MODE ? "_test" : ""}`;
+const TALKS_COLLECTION = getFirestoreCollectionName("talks");
+const SPEAKERS_COLLECTION = getFirestoreCollectionName("speakers");
+const SCHEDULE_COLLECTION = getFirestoreCollectionName("schedule");
 
 const parseTalk = (id: string, value: FirebaseFirestore.DocumentData) =>
   talkFieldsSchema.parse({
@@ -59,8 +62,21 @@ export const getTalkById = async (talkId: string): Promise<Talk> => {
   return talk;
 };
 
-export const createTalk = async (input: TalkInput): Promise<Talk> => {
-  const data = talkInputSchema.parse(input);
+export const getTalksByIds = async (talkIds: string[]): Promise<Talk[]> => {
+  const ids = [...new Set(talkIds)];
+  if (!ids.length) return [];
+  const documents = await db.getAll(
+    ...ids.map((id) => db.collection(TALKS_COLLECTION).doc(id)),
+  );
+  return documents.flatMap((document) => {
+    if (!document.exists) return [];
+    const talk = parseTalk(document.id, document.data()!);
+    return talk.eventId === CURRENT_EVENT_ID ? [talk] : [];
+  });
+};
+
+export const createTalk = async (input: TalkCreate): Promise<Talk> => {
+  const data = talkCreateSchema.parse(input);
   await validateSpeakers(data.speakerIds);
   const ref = db.collection(TALKS_COLLECTION).doc(data.id);
   if ((await ref.get()).exists) {
@@ -77,9 +93,22 @@ export const createTalk = async (input: TalkInput): Promise<Talk> => {
   return talk;
 };
 
-export const updateTalk = async (input: TalkInput): Promise<Talk> => {
-  const data = talkInputSchema.parse(input);
+export const updateTalk = async (input: TalkUpdate): Promise<Talk> => {
+  const data = talkUpdateSchema.parse(input);
   const current = await getTalkById(data.id);
+  if (current.isActive && !data.isActive) {
+    const linkedSchedule = await db
+      .collection(SCHEDULE_COLLECTION)
+      .where("activity.talkId", "==", data.id)
+      .get();
+    if (
+      linkedSchedule.docs.some(
+        (document) => document.data().eventId === CURRENT_EVENT_ID,
+      )
+    ) {
+      throw new Error("Remova a palestra da programação antes de desativá-la.");
+    }
+  }
   await validateSpeakers(data.speakerIds);
   const talk = talkFieldsSchema.parse({
     ...data,
@@ -93,6 +122,17 @@ export const updateTalk = async (input: TalkInput): Promise<Talk> => {
 
 export const deleteTalk = async (talkId: string): Promise<string> => {
   await getTalkById(talkId);
+  const linkedSchedule = await db
+    .collection(SCHEDULE_COLLECTION)
+    .where("activity.talkId", "==", talkId)
+    .get();
+  if (
+    linkedSchedule.docs.some(
+      (document) => document.data().eventId === CURRENT_EVENT_ID,
+    )
+  ) {
+    throw new Error("Remova a palestra da programação antes de excluí-la.");
+  }
   await db.collection(TALKS_COLLECTION).doc(talkId).delete();
   return talkId;
 };
