@@ -26,6 +26,7 @@ import { useTalks } from "@/hooks/useTalks";
 import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Resolver, useForm } from "react-hook-form";
+import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 const timeValue = (value: Date) =>
@@ -45,6 +46,9 @@ export function ScheduleForm({
   onSubmit: (value: ScheduleInput) => unknown;
 }) {
   const { talks } = useTalks();
+  const [selectedType, setSelectedType] = useState<
+    "talk" | "opening" | "break" | "closing"
+  >(schedule?.activity.type ?? "opening");
   const form = useForm<ScheduleInput>({
     resolver: zodResolver(scheduleInputSchema) as Resolver<ScheduleInput>,
     defaultValues: schedule
@@ -66,7 +70,6 @@ export function ScheduleForm({
         },
   });
   useUnsavedChanges(form.formState.isDirty && !form.formState.isSubmitting);
-  const type = form.watch("activity.type");
   const changeType = (value: "talk" | "opening" | "break" | "closing") =>
     form.setValue(
       "activity",
@@ -78,6 +81,7 @@ export function ScheduleForm({
   const handleTypeChange = (
     value: "talk" | "opening" | "break" | "closing",
   ) => {
+    setSelectedType(value);
     changeType(value);
     form.setValue("track", value === "talk" ? "MINAS" : null, {
       shouldDirty: true,
@@ -93,13 +97,13 @@ export function ScheduleForm({
         <div className="md:col-span-8">
           <h2 className="font-semibold text-slate-900">Item da programação</h2>
           <p className="mt-1 text-sm text-slate-500">
-            Cada registro representa uma atividade em uma trilha e intervalo
-            definidos. Atividades gerais ocupam todas as trilhas.
+            Palestras pertencem a uma trilha. Abertura, intervalo e encerramento
+            são atividades gerais, sem trilha.
           </p>
         </div>
         <FormItem className="md:col-span-3">
           <FormLabel>Tipo</FormLabel>
-          <Select value={type} onValueChange={handleTypeChange}>
+          <Select value={selectedType} onValueChange={handleTypeChange}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -111,16 +115,16 @@ export function ScheduleForm({
             </SelectContent>
           </Select>
         </FormItem>
-        {type !== "break" ? (
+        {selectedType !== "break" ? (
           <FormField
             name="activity.talkId"
             control={form.control}
             render={({ field }) => (
               <FormItem className="md:col-span-5">
                 <FormLabel>
-                  {type === "talk"
+                  {selectedType === "talk"
                     ? "Palestra"
-                    : type === "opening"
+                    : selectedType === "opening"
                       ? "Palestra de abertura"
                       : "Palestra de encerramento"}
                 </FormLabel>
@@ -177,7 +181,7 @@ export function ScheduleForm({
             )}
           />
         ))}
-        {type === "talk" && (
+        {selectedType === "talk" && (
           <FormField
             name="track"
             control={form.control}
