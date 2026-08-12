@@ -125,10 +125,17 @@ export const scheduleFieldsSchema = z
     message: "O término deve ser posterior ao início.",
   });
 
+export const scheduleVisibilityInputSchema = z
+  .object({ active: z.boolean() })
+  .strict();
+
 export type ScheduleEntry = z.infer<typeof scheduleFieldsSchema>;
 export type ScheduleInput = z.infer<typeof scheduleInputSchema>;
 export type ScheduleTrack = z.infer<typeof scheduleTrackSchema>;
 export type ScheduleBlockInput = z.infer<typeof scheduleBlockInputSchema>;
+export type ScheduleVisibilityInput = z.infer<
+  typeof scheduleVisibilityInputSchema
+>;
 
 export function getScheduleTrackOrder(track: ScheduleTrack) {
   return SCHEDULE_TRACKS.find((item) => item.value === track)!.order;

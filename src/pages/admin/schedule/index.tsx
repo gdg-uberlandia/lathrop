@@ -1,4 +1,11 @@
 import { Button } from "@/assets/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/assets/components/ui/select";
 import { cn } from "@/assets/lib/utils";
 import {
   AdminEmptyState,
@@ -21,6 +28,7 @@ import {
   Copy,
   Eye,
   EyeOff,
+  FilterX,
   Pencil,
   Plus,
   Trash2,
@@ -62,12 +70,22 @@ const trackBorderStyles: Record<ScheduleTrack, string> = {
 
 export default function Schedules() {
   const router = useRouter();
-  const { schedule, deleteSchedule, loading, error, fetchSchedule } =
-    useSchedule();
+  const {
+    schedule,
+    deleteSchedule,
+    updateScheduleVisibility,
+    visibilityUpdatingId,
+    loading,
+    error,
+    fetchSchedule,
+  } = useSchedule();
   const { talks } = useTalks();
   const { speakers } = useSpeakers();
   const [selected, setSelected] = useState<ScheduleEntry | null>(null);
   const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [trackFilter, setTrackFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
   const talkNames = useMemo(
     () => new Map(talks.map((talk) => [talk.id, talk.title])),
     [talks],
@@ -149,17 +167,41 @@ export default function Schedules() {
       return map;
     }, new Map<string, ScheduleEntry[]>());
     return Array.from(groups.values())
-      .filter(
-        (items) =>
-          !term ||
-          items.some((item) =>
+      .filter((items) =>
+        items.some((item) => {
+          const matchesSearch =
+            !term ||
             `${name(item)} ${speakersFor(item).join(" ")} ${item.track ?? "geral"} ${typeLabel[item.activity.type]}`
               .toLocaleLowerCase("pt-BR")
-              .includes(term),
-          ),
+              .includes(term);
+          const matchesType =
+            typeFilter === "all" || item.activity.type === typeFilter;
+          const matchesTrack =
+            trackFilter === "all" ||
+            (trackFilter === "general"
+              ? item.track === null
+              : item.track === trackFilter);
+          const matchesStatus =
+            statusFilter === "all" ||
+            (statusFilter === "visible" && item.active) ||
+            (statusFilter === "hidden" && !item.active) ||
+            (statusFilter === "conflict" && conflicts.has(item.id));
+          return matchesSearch && matchesType && matchesTrack && matchesStatus;
+        }),
       )
       .sort((a, b) => a[0].startAt.getTime() - b[0].startAt.getTime());
-  }, [schedule, search, name, speakersFor]);
+  }, [
+    schedule,
+    search,
+    name,
+    speakersFor,
+    typeFilter,
+    trackFilter,
+    statusFilter,
+    conflicts,
+  ]);
+  const hasFilters =
+    typeFilter !== "all" || trackFilter !== "all" || statusFilter !== "all";
   const addHref = (start: string, end: string, track?: ScheduleTrack) => ({
     pathname: "/admin/schedule/add-schedule",
     query: { start, end, type: "talk", ...(track ? { track } : {}) },
@@ -186,20 +228,27 @@ export default function Schedules() {
           {typeLabel[item.activity.type]}
         </span>
         <div className="flex items-center gap-1">
-          <span
+          <Button
+            type="button"
+            size="icon"
+            variant="ghost"
             className={cn(
-              "inline-flex size-7 items-center justify-center rounded-md",
+              "size-7",
               item.active ? "text-emerald-600" : "text-slate-400",
             )}
             title={item.active ? "Visível" : "Oculta"}
-            aria-label={item.active ? "Atividade visível" : "Atividade oculta"}
+            aria-label={
+              item.active ? `Ocultar ${name(item)}` : `Exibir ${name(item)}`
+            }
+            onClick={() => void updateScheduleVisibility(item.id, !item.active)}
+            disabled={visibilityUpdatingId === item.id}
           >
             {item.active ? (
               <Eye className="size-4" />
             ) : (
               <EyeOff className="size-4" />
             )}
-          </span>
+          </Button>
           <Button
             size="icon"
             variant="ghost"
@@ -262,7 +311,60 @@ export default function Schedules() {
             </Link>
           </Button>
         </div>
-        <AdminListToolbar search={search} onSearchChange={setSearch} />
+        <AdminListToolbar search={search} onSearchChange={setSearch}>
+          <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <SelectTrigger className="h-10 w-full !border-slate-200 bg-white sm:w-40">
+              <SelectValue placeholder="Tipo" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os tipos</SelectItem>
+              <SelectItem value="talk">Palestras</SelectItem>
+              <SelectItem value="opening">Aberturas</SelectItem>
+              <SelectItem value="break">Intervalos</SelectItem>
+              <SelectItem value="closing">Encerramentos</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={trackFilter} onValueChange={setTrackFilter}>
+            <SelectTrigger className="h-10 w-full !border-slate-200 bg-white sm:w-40">
+              <SelectValue placeholder="Trilha" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas as trilhas</SelectItem>
+              <SelectItem value="general">Atividade geral</SelectItem>
+              {SCHEDULE_TRACKS.map((track) => (
+                <SelectItem key={track.value} value={track.value}>
+                  {track.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="h-10 w-full !border-slate-200 bg-white sm:w-40">
+              <SelectValue placeholder="Situação" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas as situações</SelectItem>
+              <SelectItem value="visible">Visíveis</SelectItem>
+              <SelectItem value="hidden">Ocultas</SelectItem>
+              <SelectItem value="conflict">Com conflito</SelectItem>
+            </SelectContent>
+          </Select>
+          {hasFilters && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-10 shrink-0 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+              onClick={() => {
+                setTypeFilter("all");
+                setTrackFilter("all");
+                setStatusFilter("all");
+              }}
+            >
+              <FilterX className="size-4" /> Limpar filtros
+            </Button>
+          )}
+        </AdminListToolbar>
         {error && (
           <AdminErrorState
             message={error}
@@ -274,15 +376,17 @@ export default function Schedules() {
         ) : !slots.length ? (
           <AdminEmptyState
             title={
-              search ? "Nenhuma atividade encontrada" : "Programação vazia"
+              search || hasFilters
+                ? "Nenhuma atividade encontrada"
+                : "Programação vazia"
             }
             description={
-              search
-                ? "Tente outro termo de busca."
+              search || hasFilters
+                ? "Altere a busca ou os filtros selecionados."
                 : "Adicione a primeira atividade do evento."
             }
             action={
-              !search
+              !search && !hasFilters
                 ? {
                     href: "/admin/schedule/add-schedule",
                     label: "Adicionar atividade",

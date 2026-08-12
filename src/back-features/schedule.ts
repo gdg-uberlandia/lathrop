@@ -8,6 +8,7 @@ import {
   scheduleFieldsSchema,
   scheduleInputSchema,
   scheduleBlockInputSchema,
+  scheduleVisibilityInputSchema,
 } from "@/contracts/schedule";
 import { CURRENT_EVENT_ID } from "@/helpers/event";
 import configValues from "@/helpers/config";
@@ -199,6 +200,18 @@ export async function deleteSchedule(id: string) {
   await readSchedule(id);
   await db.collection(COLLECTION).doc(id).delete();
   return id;
+}
+
+export async function updateScheduleVisibility(id: string, input: unknown) {
+  const { active } = scheduleVisibilityInputSchema.parse(input);
+  const current = await readSchedule(id);
+  const item = scheduleFieldsSchema.parse({
+    ...current,
+    active,
+    updatedAt: new Date(),
+  });
+  await db.collection(COLLECTION).doc(id).set(item);
+  return item;
 }
 
 export async function createScheduleBlock(

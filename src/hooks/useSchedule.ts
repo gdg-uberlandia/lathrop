@@ -7,6 +7,7 @@ import {
   getScheduleAPI,
   readScheduleAPI,
   updateScheduleAPI,
+  updateScheduleVisibilityAPI,
 } from "@/front-features/schedule";
 import { getAdminApiErrorMessage } from "@/lib/admin-api/errors";
 import { adminQueryKeys, resolveAdminAction } from "@/lib/admin-query";
@@ -56,6 +57,11 @@ export function useSchedule() {
     mutationFn: updateScheduleAPI,
     onSuccess: updateCache,
   });
+  const updateVisibility = useMutation({
+    mutationFn: ({ id, active }: { id: string; active: boolean }) =>
+      updateScheduleVisibilityAPI(id, active),
+    onSuccess: updateCache,
+  });
   const remove = useMutation({
     mutationFn: deleteScheduleAPI,
     onSuccess: (id) =>
@@ -68,6 +74,7 @@ export function useSchedule() {
     create.error ||
     createBlock.error ||
     update.error ||
+    updateVisibility.error ||
     remove.error;
   return {
     schedule: query.data ?? [],
@@ -76,7 +83,11 @@ export function useSchedule() {
       create.isPending ||
       createBlock.isPending ||
       update.isPending ||
+      updateVisibility.isPending ||
       remove.isPending,
+    visibilityUpdatingId: updateVisibility.isPending
+      ? updateVisibility.variables?.id
+      : null,
     error: error
       ? getAdminApiErrorMessage(error, "Erro ao processar programação")
       : null,
@@ -95,6 +106,8 @@ export function useSchedule() {
       resolveAdminAction(() => createBlock.mutateAsync(value)),
     updateSchedule: (value: ScheduleInput) =>
       resolveAdminAction(() => update.mutateAsync(value)),
+    updateScheduleVisibility: (id: string, active: boolean) =>
+      resolveAdminAction(() => updateVisibility.mutateAsync({ id, active })),
     deleteSchedule: (id: string) =>
       resolveAdminAction(() => remove.mutateAsync(id)),
   };

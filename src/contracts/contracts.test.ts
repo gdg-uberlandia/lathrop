@@ -21,6 +21,7 @@ import {
   getScheduleTrackOrder,
   scheduleBlockInputSchema,
   scheduleInputSchema,
+  scheduleVisibilityInputSchema,
 } from "./schedule";
 import { talkFieldsSchema } from "./talk";
 
@@ -138,6 +139,18 @@ describe("entradas administrativas", () => {
         ...block,
         talks: { ...block.talks, COMUNIDADE: "talk-minas" },
       }).success,
+      false,
+    );
+  });
+
+  it("aceita apenas o estado de visibilidade na ação rápida", () => {
+    assert.equal(
+      scheduleVisibilityInputSchema.safeParse({ active: false }).success,
+      true,
+    );
+    assert.equal(
+      scheduleVisibilityInputSchema.safeParse({ active: true, track: "MINAS" })
+        .success,
       false,
     );
   });

@@ -13,6 +13,11 @@ export const readScheduleAPI = (id: string, signal?: AbortSignal) =>
   adminApiRequest<ScheduleEntry>(`${PATH}/${id}`, { signal });
 export const updateScheduleAPI = (body: ScheduleInput) =>
   adminApiRequest<ScheduleEntry>(`${PATH}/${body.id}`, { method: "PUT", body });
+export const updateScheduleVisibilityAPI = (id: string, active: boolean) =>
+  adminApiRequest<ScheduleEntry>(`${PATH}/${id}`, {
+    method: "PATCH",
+    body: { active },
+  });
 export const deleteScheduleAPI = async (id: string) =>
   (await adminApiRequest<{ id: string }>(`${PATH}/${id}`, { method: "DELETE" }))
     .id;
