@@ -495,6 +495,112 @@ svg {
   background: #f8fafc;
 }
 
+/* Entity tables intentionally override legacy dark-theme and Bootstrap styles. */
+.admin-shell .admin-entity-table table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #334155;
+  font-size: 0.875rem;
+}
+
+.admin-shell .admin-entity-table thead,
+.admin-shell .admin-entity-table thead[class] {
+  background: #f8fafc !important;
+  color: #475569 !important;
+}
+
+.admin-shell .admin-entity-table thead tr {
+  height: 44px;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.admin-shell .admin-entity-table tbody tr {
+  min-height: 64px;
+  border-bottom: 1px solid #eef2f7 !important;
+  background: #fff;
+}
+
+.admin-shell .admin-entity-table tbody tr:last-child {
+  border-bottom: 0 !important;
+}
+
+.admin-shell .admin-entity-table tbody tr:hover {
+  background: #f8fafc !important;
+}
+
+.admin-shell .admin-entity-table :is(th, td) {
+  height: auto;
+  padding: 0.75rem 1rem !important;
+  border: 0 !important;
+  vertical-align: middle;
+  color: #475569 !important;
+}
+
+.admin-shell .admin-entity-table th {
+  white-space: nowrap;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  color: #64748b !important;
+}
+
+.admin-shell .admin-entity-table td.font-medium,
+.admin-shell .admin-entity-table td.font-bold,
+.admin-shell .admin-entity-table tbody td:nth-child(2) {
+  color: #1e293b !important;
+}
+
+.admin-shell .admin-entity-table tbody td > img {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 0.5rem !important;
+  object-fit: cover;
+}
+
+.admin-shell .admin-entity-table button[aria-label^="Editar"] {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid #bfdbfe !important;
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  box-shadow: none !important;
+}
+
+.admin-shell .admin-entity-table button[aria-label^="Editar"]:hover {
+  border-color: #93c5fd !important;
+  background: #dbeafe !important;
+  color: #1d4ed8 !important;
+}
+
+.admin-shell .admin-entity-table button[aria-label^="Excluir"] {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid #fecaca !important;
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+  box-shadow: none !important;
+}
+
+.admin-shell .admin-entity-table button[aria-label^="Excluir"]:hover {
+  border-color: #fca5a5 !important;
+  background: #fee2e2 !important;
+  color: #b91c1c !important;
+}
+
+.admin-shell .admin-entity-table button[aria-label^="Editar"] svg,
+.admin-shell .admin-entity-table button[aria-label^="Excluir"] svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.admin-shell .admin-entity-table tbody td:has(> button[aria-label^="Editar"]),
+.admin-shell .admin-entity-table tbody td:has(> button[aria-label^="Excluir"]) {
+  width: 3.5rem;
+  text-align: center !important;
+}
+
 .admin-shell .admin-content label {
   color: #334155;
   font-weight: 500;

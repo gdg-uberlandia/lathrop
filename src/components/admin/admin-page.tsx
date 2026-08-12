@@ -169,7 +169,7 @@ export function AdminListToolbar({
 
 export function AdminTableContainer({ children }: { children: ReactNode }) {
   return (
-    <div className="admin-surface mt-4 overflow-hidden rounded-xl [&>div]:overflow-x-auto">
+    <div className="admin-entity-table admin-surface mt-4 overflow-hidden rounded-xl [&>div]:overflow-x-auto">
       {children}
     </div>
   );
