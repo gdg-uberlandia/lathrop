@@ -185,6 +185,7 @@ export function ScheduleForm({
                 <FormControl>
                   <Input
                     type="time"
+                    step={900}
                     value={field.value}
                     onChange={field.onChange}
                   />

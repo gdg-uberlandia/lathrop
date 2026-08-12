@@ -33,7 +33,11 @@ export const scheduleActivitySchema = z.discriminatedUnion("type", [
 
 const timeSchema = z
   .string()
-  .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Informe um horário válido.");
+  .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Informe um horário válido.")
+  .refine(
+    (value) => Number(value.slice(3, 5)) % 15 === 0,
+    "Use intervalos de 15 minutos.",
+  );
 
 export const scheduleInputSchema = z
   .object({

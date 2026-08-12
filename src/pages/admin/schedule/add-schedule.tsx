@@ -27,7 +27,10 @@ export default function AddSchedulePage() {
         <AdminLoadingState label="Preparando o formulário..." />
       ) : (
         <ScheduleForm
-          onSubmit={createSchedule}
+          onSubmit={async (value) => {
+            const created = await createSchedule(value);
+            if (created) await router.push("/admin/schedule");
+          }}
           loading={loading}
           initialValues={{
             type,

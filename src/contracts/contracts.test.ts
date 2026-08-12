@@ -95,6 +95,17 @@ describe("entradas administrativas", () => {
       }).success,
       false,
     );
+    assert.equal(
+      scheduleInputSchema.safeParse({
+        id: "agenda-minuto-invalido",
+        startTime: "09:10",
+        endTime: "10:00",
+        track: "MINAS",
+        activity: { type: "talk", talkId: talkFixture.id },
+        active: true,
+      }).success,
+      false,
+    );
   });
 
   it("mantém a ordem fixa das trilhas", () => {
