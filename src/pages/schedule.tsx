@@ -135,23 +135,42 @@ export default function SchedulePage({
 
 export async function getServerSideProps() {
   try {
-    const [schedule, talks, speakers, publication] = await Promise.all([
+    const publication = await getSchedulePublication();
+    if (!publication.published) {
+      return {
+        props: { schedule: [], talks: [], speakers: [], published: false },
+      };
+    }
+    const [schedule, talks, speakers] = await Promise.all([
       getSchedule(),
       getAllTalks(),
       getAllSpeakers(),
-      getSchedulePublication(),
     ]);
+    const visibleSchedule = schedule.filter((item) => item.active);
+    const scheduledTalkIds = new Set(
+      visibleSchedule.flatMap((item) =>
+        item.activity.type === "break" ? [] : [item.activity.talkId],
+      ),
+    );
+    const scheduledTalks = talks.filter((talk) =>
+      scheduledTalkIds.has(talk.id),
+    );
+    const scheduledSpeakerIds = new Set(
+      scheduledTalks.flatMap((talk) => talk.speakerIds),
+    );
     return {
       props: {
-        schedule: (publication.published ? schedule : []).map((item) => ({
+        schedule: visibleSchedule.map((item) => ({
           ...item,
           startAt: item.startAt.toISOString(),
           endAt: item.endAt.toISOString(),
           createdAt: item.createdAt.toISOString(),
           updatedAt: item.updatedAt.toISOString(),
         })),
-        talks: talks.map(toPublicTalk),
-        speakers: speakers.map(toPublicSpeaker),
+        talks: scheduledTalks.map(toPublicTalk),
+        speakers: speakers
+          .filter((speaker) => scheduledSpeakerIds.has(speaker.id))
+          .map(toPublicSpeaker),
         published: publication.published,
       },
     };

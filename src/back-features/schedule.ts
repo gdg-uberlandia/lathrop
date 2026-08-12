@@ -32,9 +32,24 @@ const trackLabel = (track: ScheduleEntry["track"]) =>
     : "atividade geral";
 const intervalLabel = (item: ScheduleEntry) =>
   `${formatTime(item.startAt)}–${formatTime(item.endAt)}`;
-async function activityTitle(item: ScheduleEntry) {
+type ConflictContext = {
+  existing: ScheduleEntry[];
+  talks: Map<string, Promise<Talk>>;
+};
+const cachedTalk = (talkId: string, cache?: Map<string, Promise<Talk>>) => {
+  if (!cache) return getTalkById(talkId);
+  const current = cache.get(talkId);
+  if (current) return current;
+  const request = getTalkById(talkId);
+  cache.set(talkId, request);
+  return request;
+};
+async function activityTitle(
+  item: ScheduleEntry,
+  cache?: Map<string, Promise<Talk>>,
+) {
   if (item.activity.type === "break") return item.activity.title;
-  return getTalkById(item.activity.talkId)
+  return cachedTalk(item.activity.talkId, cache)
     .then((scheduledTalk) => scheduledTalk.title)
     .catch(() => "atividade já programada");
 }
@@ -58,15 +73,22 @@ async function validateTalk(input: ScheduleInput): Promise<Talk | null> {
     throw new Error("Apenas palestras ativas podem entrar na programação.");
   return talk;
 }
-async function validateConflict(input: ScheduleInput, talk: Talk | null) {
-  const interval = resolveInterval(input);
+async function getExistingSchedule(excludeId?: string) {
   const snapshot = await db
     .collection(COLLECTION)
     .where("eventId", "==", CURRENT_EVENT_ID)
     .get();
-  const existing = snapshot.docs
-    .filter((document) => document.id !== input.id)
+  return snapshot.docs
+    .filter((document) => document.id !== excludeId)
     .map((document) => parse(document.id, document.data()));
+}
+async function validateConflict(
+  input: ScheduleInput,
+  talk: Talk | null,
+  context?: ConflictContext,
+) {
+  const interval = resolveInterval(input);
+  const existing = context?.existing ?? (await getExistingSchedule(input.id));
   const duplicatedTalk = talk
     ? existing.find(
         (item) =>
@@ -86,7 +108,7 @@ async function validateConflict(input: ScheduleInput, talk: Talk | null) {
       item.track === null || input.track === null || item.track === input.track,
   );
   if (trackConflict) {
-    const conflictingTitle = await activityTitle(trackConflict);
+    const conflictingTitle = await activityTitle(trackConflict, context?.talks);
     throw new Error(
       `Este horário conflita com “${conflictingTitle}”, programada em ${intervalLabel(trackConflict)} como ${trackLabel(trackConflict.track)}.`,
     );
@@ -97,10 +119,12 @@ async function validateConflict(input: ScheduleInput, talk: Talk | null) {
       item.activity.type === "break"
         ? []
         : [
-            getTalkById(item.activity.talkId).then((scheduledTalk) => ({
-              item,
-              talk: scheduledTalk,
-            })),
+            cachedTalk(item.activity.talkId, context?.talks).then(
+              (scheduledTalk) => ({
+                item,
+                talk: scheduledTalk,
+              }),
+            ),
           ],
     ),
   );
@@ -227,6 +251,13 @@ export async function createScheduleBlock(
     active: data.active,
   }));
   const talks = await Promise.all(entries.map(validateTalk));
+  const conflictContext: ConflictContext = {
+    existing: await getExistingSchedule(),
+    talks: new Map(),
+  };
+  talks.forEach((talk) => {
+    if (talk) conflictContext.talks.set(talk.id, Promise.resolve(talk));
+  });
   const speakerTracks = new Map<string, string>();
   for (const [index, talk] of talks.entries()) {
     if (!talk) continue;
@@ -242,7 +273,9 @@ export async function createScheduleBlock(
     }
   }
   await Promise.all(
-    entries.map((entry, index) => validateConflict(entry, talks[index])),
+    entries.map((entry, index) =>
+      validateConflict(entry, talks[index], conflictContext),
+    ),
   );
   const now = new Date();
   const documents = entries.map((entry) =>

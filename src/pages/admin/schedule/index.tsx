@@ -139,40 +139,43 @@ export default function Schedules() {
   );
   const conflicts = useMemo(() => {
     const talkById = new Map(talks.map((talk) => [talk.id, talk]));
-    return new Set(
-      schedule.flatMap((item, index) =>
-        schedule.slice(index + 1).flatMap((other) => {
-          const overlaps =
-            item.startAt < other.endAt && other.startAt < item.endAt;
-          if (!overlaps) return [];
-          const sameTrack =
-            item.track === null ||
-            other.track === null ||
-            item.track === other.track;
-          const itemTalk =
-            item.activity.type === "break"
-              ? null
-              : talkById.get(item.activity.talkId);
-          const otherTalk =
-            other.activity.type === "break"
-              ? null
-              : talkById.get(other.activity.talkId);
-          const sameTalk = Boolean(
-            itemTalk && otherTalk && itemTalk.id === otherTalk.id,
-          );
-          const sharedSpeaker = Boolean(
-            itemTalk &&
-              otherTalk &&
-              itemTalk.speakerIds.some((speakerId) =>
-                otherTalk.speakerIds.includes(speakerId),
-              ),
-          );
-          return sameTrack || sameTalk || sharedSpeaker
-            ? [item.id, other.id]
-            : [];
-        }),
-      ),
+    const conflictIds = new Set<string>();
+    const ordered = [...schedule].sort(
+      (left, right) => left.startAt.getTime() - right.startAt.getTime(),
     );
+    ordered.forEach((item, index) => {
+      for (let next = index + 1; next < ordered.length; next += 1) {
+        const other = ordered[next];
+        if (other.startAt >= item.endAt) break;
+        const sameTrack =
+          item.track === null ||
+          other.track === null ||
+          item.track === other.track;
+        const itemTalk =
+          item.activity.type === "break"
+            ? null
+            : talkById.get(item.activity.talkId);
+        const otherTalk =
+          other.activity.type === "break"
+            ? null
+            : talkById.get(other.activity.talkId);
+        const sameTalk = Boolean(
+          itemTalk && otherTalk && itemTalk.id === otherTalk.id,
+        );
+        const sharedSpeaker = Boolean(
+          itemTalk &&
+            otherTalk &&
+            itemTalk.speakerIds.some((speakerId) =>
+              otherTalk.speakerIds.includes(speakerId),
+            ),
+        );
+        if (sameTrack || sameTalk || sharedSpeaker) {
+          conflictIds.add(item.id);
+          conflictIds.add(other.id);
+        }
+      }
+    });
+    return conflictIds;
   }, [schedule, talks]);
   const slots = useMemo(() => {
     const term = search.trim().toLocaleLowerCase("pt-BR");
@@ -402,8 +405,8 @@ export default function Schedules() {
               disabled={publicationLoading || !exportRows.length}
               className={
                 publication?.published
-                  ? "!bg-slate-700"
-                  : "admin-primary-action !bg-blue-600"
+                  ? "!border-slate-700 !bg-slate-700 !text-white hover:!border-slate-800 hover:!bg-slate-800 hover:!text-white"
+                  : "admin-primary-action !border-blue-600 !bg-blue-600 !text-white hover:!border-blue-700 hover:!bg-blue-700 hover:!text-white"
               }
               onClick={() => {
                 const next = !publication?.published;
