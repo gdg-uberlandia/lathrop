@@ -27,7 +27,9 @@ import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Resolver, useForm } from "react-hook-form";
 import { useState } from "react";
+import { useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { ScheduleTimeSelect } from "./schedule-time-select";
 
 const timeValue = (value: Date) =>
   new Intl.DateTimeFormat("pt-BR", {
@@ -50,6 +52,12 @@ export function ScheduleForm({
   onSubmit: (value: ScheduleInput) => unknown;
 }) {
   const { talks } = useTalks();
+  const currentTalkId =
+    schedule?.activity.type === "break" ? null : schedule?.activity.talkId;
+  const availableTalks = useMemo(
+    () => talks.filter((talk) => talk.isActive || talk.id === currentTalkId),
+    [currentTalkId, talks],
+  );
   const [selectedType, setSelectedType] = useState<
     "talk" | "opening" | "break" | "closing"
   >(schedule?.activity.type ?? initialValues?.type ?? "opening");
@@ -77,7 +85,7 @@ export function ScheduleForm({
               ? { type: "break", title: "Coffee-break" }
               : {
                   type: initialValues?.type ?? "opening",
-                  talkId: talks[0]?.id ?? "",
+                  talkId: availableTalks[0]?.id ?? "",
                 },
           active: true,
         },
@@ -88,7 +96,7 @@ export function ScheduleForm({
       "activity",
       value === "break"
         ? { type: "break", title: "Coffee-break" }
-        : { type: value, talkId: talks[0]?.id ?? "" },
+        : { type: value, talkId: availableTalks[0]?.id ?? "" },
       { shouldDirty: true, shouldValidate: true },
     );
   const handleTypeChange = (
@@ -146,7 +154,7 @@ export function ScheduleForm({
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
                   <SelectContent>
-                    {talks.map((talk) => (
+                    {availableTalks.map((talk) => (
                       <SelectItem key={talk.id} value={talk.id}>
                         {talk.title}
                       </SelectItem>
@@ -183,9 +191,7 @@ export function ScheduleForm({
                   {name === "startTime" ? "Início" : "Término"}
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    type="time"
-                    step={900}
+                  <ScheduleTimeSelect
                     value={field.value}
                     onChange={field.onChange}
                   />
@@ -239,10 +245,11 @@ export function ScheduleForm({
             </FormItem>
           )}
         />
-        <div className="sticky bottom-3 z-10 flex gap-3 rounded-xl border bg-white/95 p-3 shadow-xl md:col-span-8 md:justify-end">
+        <div className="sticky bottom-3 z-10 flex gap-3 p-3 md:col-span-8 md:justify-end">
           <Button
             type="button"
             variant="outline"
+            className="!border-slate-300 !bg-white !text-slate-700 hover:!bg-slate-50 hover:!text-slate-900"
             onClick={() => history.back()}
           >
             Cancelar

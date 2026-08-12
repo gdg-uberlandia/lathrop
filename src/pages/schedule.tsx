@@ -1,6 +1,7 @@
 import { getSchedule } from "@/back-features/schedule";
-import { getAllSpeakers } from "@/back-features/speakers";
-import { getAllTalks } from "@/back-features/talks";
+import { getSchedulePublication } from "@/back-features/schedule-publication";
+import { getSpeakersByIds } from "@/back-features/speakers";
+import { getTalksByIds } from "@/back-features/talks";
 import { Header } from "@/components/devfest-triangulo-2025/Header";
 import { ScheduleEntry, SCHEDULE_TRACKS } from "@/contracts/schedule";
 import { PublicSpeaker, toPublicSpeaker } from "@/contracts/speaker";
@@ -22,10 +23,12 @@ export default function SchedulePage({
   schedule,
   talks,
   speakers,
+  published,
 }: {
   schedule: SerializedSchedule[];
   talks: PublicTalk[];
   speakers: PublicSpeaker[];
+  published: boolean;
 }) {
   const talkMap = new Map(talks.map((talk) => [talk.id, talk]));
   const speakerMap = new Map(speakers.map((speaker) => [speaker.id, speaker]));
@@ -119,7 +122,7 @@ export default function SchedulePage({
               </section>
             );
           })}
-          {slots.length === 0 && (
+          {(!published || slots.length === 0) && (
             <p className="rounded-2xl border border-white/10 p-8 text-center text-white/60">
               A programação será publicada em breve.
             </p>
@@ -132,26 +135,43 @@ export default function SchedulePage({
 
 export async function getServerSideProps() {
   try {
-    const [schedule, talks, speakers] = await Promise.all([
-      getSchedule(),
-      getAllTalks(),
-      getAllSpeakers(),
-    ]);
+    const publication = await getSchedulePublication();
+    if (!publication.published) {
+      return {
+        props: { schedule: [], talks: [], speakers: [], published: false },
+      };
+    }
+    const schedule = await getSchedule();
+    const visibleSchedule = schedule.filter((item) => item.active);
+    const scheduledTalkIds = new Set(
+      visibleSchedule.flatMap((item) =>
+        item.activity.type === "break" ? [] : [item.activity.talkId],
+      ),
+    );
+    const scheduledTalks = await getTalksByIds([...scheduledTalkIds]);
+    const scheduledSpeakerIds = new Set(
+      scheduledTalks.flatMap((talk) => talk.speakerIds),
+    );
     return {
       props: {
-        schedule: schedule.map((item) => ({
+        schedule: visibleSchedule.map((item) => ({
           ...item,
           startAt: item.startAt.toISOString(),
           endAt: item.endAt.toISOString(),
           createdAt: item.createdAt.toISOString(),
           updatedAt: item.updatedAt.toISOString(),
         })),
-        talks: talks.map(toPublicTalk),
-        speakers: speakers.map(toPublicSpeaker),
+        talks: scheduledTalks.map(toPublicTalk),
+        speakers: (await getSpeakersByIds([...scheduledSpeakerIds])).map(
+          toPublicSpeaker,
+        ),
+        published: publication.published,
       },
     };
   } catch (error) {
     console.error(error);
-    return { props: { schedule: [], talks: [], speakers: [] } };
+    return {
+      props: { schedule: [], talks: [], speakers: [], published: false },
+    };
   }
 }

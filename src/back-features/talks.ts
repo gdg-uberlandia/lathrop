@@ -62,6 +62,19 @@ export const getTalkById = async (talkId: string): Promise<Talk> => {
   return talk;
 };
 
+export const getTalksByIds = async (talkIds: string[]): Promise<Talk[]> => {
+  const ids = [...new Set(talkIds)];
+  if (!ids.length) return [];
+  const documents = await db.getAll(
+    ...ids.map((id) => db.collection(TALKS_COLLECTION).doc(id)),
+  );
+  return documents.flatMap((document) => {
+    if (!document.exists) return [];
+    const talk = parseTalk(document.id, document.data()!);
+    return talk.eventId === CURRENT_EVENT_ID ? [talk] : [];
+  });
+};
+
 export const createTalk = async (input: TalkCreate): Promise<Talk> => {
   const data = talkCreateSchema.parse(input);
   await validateSpeakers(data.speakerIds);
@@ -83,6 +96,19 @@ export const createTalk = async (input: TalkCreate): Promise<Talk> => {
 export const updateTalk = async (input: TalkUpdate): Promise<Talk> => {
   const data = talkUpdateSchema.parse(input);
   const current = await getTalkById(data.id);
+  if (current.isActive && !data.isActive) {
+    const linkedSchedule = await db
+      .collection(SCHEDULE_COLLECTION)
+      .where("activity.talkId", "==", data.id)
+      .get();
+    if (
+      linkedSchedule.docs.some(
+        (document) => document.data().eventId === CURRENT_EVENT_ID,
+      )
+    ) {
+      throw new Error("Remova a palestra da programação antes de desativá-la.");
+    }
+  }
   await validateSpeakers(data.speakerIds);
   const talk = talkFieldsSchema.parse({
     ...data,

@@ -29,7 +29,10 @@ export function AdminFeedback() {
 
   useEffect(() => {
     if (!feedback) return;
-    const timeout = window.setTimeout(() => setFeedback(null), 4_000);
+    const timeout = window.setTimeout(
+      () => setFeedback(null),
+      feedback.type === "error" ? 8_000 : 4_000,
+    );
     return () => window.clearTimeout(timeout);
   }, [feedback]);
 
@@ -39,7 +42,7 @@ export function AdminFeedback() {
   return (
     <div
       role={feedback.type === "error" ? "alert" : "status"}
-      className="admin-surface fixed right-4 top-20 z-50 flex max-w-sm items-start gap-3 rounded-xl p-4 text-slate-800 shadow-xl"
+      className="admin-surface fixed right-4 top-20 z-50 flex max-w-md items-start gap-3 rounded-xl p-4 text-slate-800 shadow-xl"
     >
       <Icon
         className={

@@ -28,7 +28,6 @@ import { Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useEffect } from "react";
 import { useState } from "react";
-import QRCode from "qrcode";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
@@ -83,7 +82,15 @@ export function MissionsForm({
 
   useEffect(() => {
     if (!qrId) return setQrPreview("");
-    void QRCode.toDataURL(qrId, { width: 320, margin: 2 }).then(setQrPreview);
+    let active = true;
+    void import("qrcode").then(({ default: QRCode }) =>
+      QRCode.toDataURL(qrId, { width: 320, margin: 2 }).then((value) => {
+        if (active) setQrPreview(value);
+      }),
+    );
+    return () => {
+      active = false;
+    };
   }, [qrId]);
 
   useEffect(() => {
@@ -554,12 +561,12 @@ export function MissionsForm({
             )}
           />
 
-          <div className="sticky bottom-3 z-10 mt-4 flex justify-center rounded-xl border border-white/10 bg-background/95 p-3 shadow-xl backdrop-blur md:col-span-8">
+          <div className="sticky bottom-3 z-10 mt-4 flex justify-center p-3 md:col-span-8">
             <div className="flex w-full flex-col-reverse gap-3 sm:flex-row sm:justify-end">
               <Button
                 type="button"
                 variant="outline"
-                className="h-11 !border-slate-300"
+                className="h-11 !border-slate-300 !bg-white !text-slate-700 hover:!bg-slate-50 hover:!text-slate-900"
                 onClick={() => window.history.back()}
               >
                 Cancelar

@@ -199,12 +199,12 @@ export function SponsorsForm({
               )}
             />
 
-            <div className="sticky bottom-3 z-10 mt-4 flex justify-center rounded-xl border border-white/10 bg-background/95 p-3 shadow-xl backdrop-blur md:col-span-8">
+            <div className="sticky bottom-3 z-10 mt-4 flex justify-center p-3 md:col-span-8">
               <div className="flex w-full flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                 <Button
                   type="button"
                   variant="outline"
-                  className="h-11 !border-slate-300"
+                  className="h-11 !border-slate-300 !bg-white !text-slate-700 hover:!bg-slate-50 hover:!text-slate-900"
                   onClick={() => window.history.back()}
                 >
                   Cancelar

@@ -14,6 +14,7 @@ import { LogOut } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useCallback, useEffect } from "react";
 
 import {
   adminNavigationItems,
@@ -23,6 +24,32 @@ import {
 export function AppSidebar() {
   const router = useRouter();
   const { logout } = useAuth();
+  const warmRoute = useCallback(
+    async (url: string) => {
+      await router.prefetch(url);
+      if (process.env.NODE_ENV === "development") {
+        await fetch(url, { credentials: "same-origin" }).catch(() => undefined);
+      }
+    },
+    [router],
+  );
+
+  useEffect(() => {
+    const idle = window.requestIdleCallback?.bind(window);
+    const warm = async () => {
+      for (const item of adminNavigationItems.filter(
+        (item) => item.url !== router.pathname,
+      )) {
+        await warmRoute(item.url);
+      }
+    };
+    if (idle) {
+      const id = idle(() => void warm(), { timeout: 2_000 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const id = window.setTimeout(() => void warm(), 800);
+    return () => window.clearTimeout(id);
+  }, [router.pathname, warmRoute]);
 
   return (
     <Sidebar className="admin-sidebar">
@@ -45,6 +72,8 @@ export function AppSidebar() {
                   >
                     <Link
                       href={item.url}
+                      onMouseEnter={() => void warmRoute(item.url)}
+                      onFocus={() => void warmRoute(item.url)}
                       className="h-11 rounded-lg px-3"
                       aria-current={
                         isAdminNavigationItemActive(router.pathname, item)

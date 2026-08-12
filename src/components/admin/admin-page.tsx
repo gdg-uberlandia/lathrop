@@ -27,10 +27,23 @@ export function AdminPageHeader({
   description?: string;
   count?: number;
   icon: ComponentType<{ className?: string }>;
-  action?: { href: string; label: string };
+  action?:
+    | {
+        href: string;
+        label: string;
+        variant?: "primary" | "secondary";
+        icon?: ComponentType<{ className?: string }>;
+      }
+    | Array<{
+        href: string;
+        label: string;
+        variant?: "primary" | "secondary";
+        icon?: ComponentType<{ className?: string }>;
+      }>;
 }) {
+  const actions = action ? (Array.isArray(action) ? action : [action]) : [];
   return (
-    <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <header>
       <div className="flex min-w-0 items-center gap-3">
         <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-100">
           <Icon className="size-[18px]" />
@@ -51,16 +64,30 @@ export function AdminPageHeader({
           )}
         </div>
       </div>
-      {action && (
-        <Button
-          asChild
-          className="admin-primary-action h-10 gap-2 rounded-lg bg-blue-600 px-4 shadow-sm hover:bg-blue-700"
-        >
-          <Link href={action.href}>
-            <Plus className="size-4" />
-            {action.label}
-          </Link>
-        </Button>
+      {actions.length > 0 && (
+        <div className="mt-4 flex flex-wrap justify-end gap-2">
+          {actions.map((item) => (
+            <Button
+              key={item.href}
+              asChild
+              variant={item.variant === "secondary" ? "outline" : "default"}
+              className={
+                item.variant === "secondary"
+                  ? "h-10 gap-2 rounded-lg !border-blue-200 !bg-white px-4 !text-blue-700 hover:!border-blue-300 hover:!bg-blue-50 hover:!text-blue-800"
+                  : "admin-primary-action h-10 gap-2 rounded-lg bg-blue-600 px-4 shadow-sm hover:bg-blue-700"
+              }
+            >
+              <Link href={item.href}>
+                {item.icon ? (
+                  <item.icon className="size-4" />
+                ) : (
+                  <Plus className="size-4" />
+                )}
+                {item.label}
+              </Link>
+            </Button>
+          ))}
+        </div>
       )}
     </header>
   );

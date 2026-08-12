@@ -19,7 +19,9 @@ import { tagFieldsSchema, tagInputSchema } from "./tag";
 import {
   SCHEDULE_TRACKS,
   getScheduleTrackOrder,
+  scheduleBlockInputSchema,
   scheduleInputSchema,
+  scheduleVisibilityInputSchema,
 } from "./schedule";
 import { talkFieldsSchema } from "./talk";
 
@@ -115,6 +117,42 @@ describe("entradas administrativas", () => {
     );
     assert.equal(getScheduleTrackOrder("MINAS"), 0);
     assert.equal(getScheduleTrackOrder("COMUNIDADE"), 4);
+  });
+
+  it("valida um bloco completo com uma palestra por trilha", () => {
+    const block = {
+      startTime: "09:00",
+      endTime: "10:00",
+      talks: {
+        MINAS: "talk-minas",
+        CURADO: "talk-curado",
+        CANASTRA: "talk-canastra",
+        TRANCA: "talk-tranca",
+        COMUNIDADE: "talk-comunidade",
+      },
+      active: true,
+    };
+
+    assert.equal(scheduleBlockInputSchema.safeParse(block).success, true);
+    assert.equal(
+      scheduleBlockInputSchema.safeParse({
+        ...block,
+        talks: { ...block.talks, COMUNIDADE: "talk-minas" },
+      }).success,
+      false,
+    );
+  });
+
+  it("aceita apenas o estado de visibilidade na ação rápida", () => {
+    assert.equal(
+      scheduleVisibilityInputSchema.safeParse({ active: false }).success,
+      true,
+    );
+    assert.equal(
+      scheduleVisibilityInputSchema.safeParse({ active: true, track: "MINAS" })
+        .success,
+      false,
+    );
   });
 
   it("separa palestras por trilha de atividades gerais", () => {

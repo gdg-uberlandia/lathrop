@@ -14,6 +14,7 @@ import { adminNavigationItems } from "@/components/admin/admin-navigation";
 import { IconLoader2 } from "@tabler/icons-react";
 import Link from "next/link";
 import { ChevronDown, ChevronRight, LogOut, Plus, Search } from "lucide-react";
+import { AdminRouteProgress } from "@/components/admin/admin-route-progress";
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, isAdmin, logout, loading } = useAuth();
@@ -65,6 +66,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="admin-shell min-h-screen w-full">
+      <AdminRouteProgress />
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset className="admin-content min-w-0">
