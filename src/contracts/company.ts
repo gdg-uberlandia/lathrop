@@ -16,4 +16,11 @@ export const companyFieldsSchema = z
   })
   .strict();
 
+export const companyInputSchema = companyFieldsSchema.omit({
+  eventId: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type Company = z.infer<typeof companyFieldsSchema>;
+export type CompanyInput = z.infer<typeof companyInputSchema>;

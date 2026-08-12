@@ -19,12 +19,16 @@ import {
 import { Textarea } from "@/assets/components/ui/textarea";
 import Loading from "@/components/admin/loading-overlay";
 import { useImageUpload } from "@/hooks/useImageUpload";
+import { useMissions } from "@/hooks/useMissions";
+import { useCompanies } from "@/hooks/useCompanies";
 import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { Mission, MissionInput } from "@/models/mission";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useEffect } from "react";
+import { useState } from "react";
+import QRCode from "qrcode";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
@@ -60,6 +64,9 @@ export function MissionsForm({
   mission,
 }: MissionFormProps) {
   const { uploadImage, loadingImage } = useImageUpload();
+  const { missions } = useMissions();
+  const { companies } = useCompanies();
+  const [qrPreview, setQrPreview] = useState("");
   const form = useForm<MissionFormType>({
     resolver: zodResolver(missionSchema) as Resolver<MissionFormType>,
     defaultValues: defaults(mission),
@@ -71,6 +78,13 @@ export function MissionsForm({
   });
   const validationType = form.watch("validationType");
   const progressType = form.watch("progressRequirement.type");
+  const currentId = form.watch("id");
+  const qrId = form.watch("qrId");
+
+  useEffect(() => {
+    if (!qrId) return setQrPreview("");
+    void QRCode.toDataURL(qrId, { width: 320, margin: 2 }).then(setQrPreview);
+  }, [qrId]);
 
   useEffect(() => {
     form.reset(defaults(mission));
@@ -284,6 +298,33 @@ export function MissionsForm({
                     </Button>
                   </div>
                   <FormMessage />
+                  {qrPreview && (
+                    <div className="mt-4 flex flex-col items-start gap-3 rounded-xl border !border-slate-200 bg-white p-4 sm:flex-row sm:items-center">
+                      <Image
+                        src={qrPreview}
+                        alt="Prévia do QR Code da missão"
+                        width={144}
+                        height={144}
+                        unoptimized
+                      />
+                      <div>
+                        <p className="text-sm font-medium text-slate-800">
+                          QR Code público
+                        </p>
+                        <p className="mt-1 text-xs text-slate-500">
+                          O código representa o identificador público desta
+                          missão.
+                        </p>
+                        <a
+                          href={qrPreview}
+                          download={`missao-${currentId || "qr"}.png`}
+                          className="mt-3 inline-flex rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium !text-white hover:bg-blue-700"
+                        >
+                          Baixar PNG
+                        </a>
+                      </div>
+                    </div>
+                  )}
                 </FormItem>
               )}
             />
@@ -397,12 +438,46 @@ export function MissionsForm({
                   <FormField
                     name={`prerequisites.${index}.activityId`}
                     control={form.control}
-                    render={({ field }) => (
-                      <Input
-                        {...field}
-                        placeholder="Identificador da atividade"
-                      />
-                    )}
+                    render={({ field }) =>
+                      form.watch(`prerequisites.${index}.type`) ===
+                      "mission" ? (
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione uma missão" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {missions
+                              .filter((option) => option.id !== currentId)
+                              .map((option) => (
+                                <SelectItem key={option.id} value={option.id}>
+                                  {option.title}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione uma company" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {companies
+                              .filter((company) => company.active)
+                              .map((company) => (
+                                <SelectItem key={company.id} value={company.id}>
+                                  {company.name}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      )
+                    }
                   />
                   <Button
                     type="button"

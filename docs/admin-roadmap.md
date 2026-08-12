@@ -158,9 +158,9 @@ mesmos estados de interação.
 - [x] Adotar o contrato compatível com a Pokedex.
 - [x] Suportar QR, reviewer e progresso automático.
 - [x] Suportar ordem, XP, status e pré-requisitos.
-- [ ] Trocar IDs digitados por seletores de missões e companies.
-- [ ] Impedir dependências circulares.
-- [ ] Exibir e permitir baixar o QR público.
+- [x] Trocar IDs digitados por seletores de missões e companies.
+- [x] Impedir dependências circulares.
+- [x] Exibir e permitir baixar o QR público.
 - [x] Adicionar filtros e ativação rápida.
 - [ ] Adicionar testes do CRUD completo.
 
@@ -220,9 +220,10 @@ Recompensas trocadas por tickets são diferentes de prêmios de sorteio.
 
 Companies permanecem separadas de patrocinadores.
 
-- [ ] Confirmar se o gerenciamento fará parte deste admin.
-- [ ] Criar CRUD compatível com a Pokedex, se aprovado.
-- [ ] Integrar a seleção de companies aos pré-requisitos de missões.
+- [x] Confirmar se o gerenciamento fará parte deste admin.
+- [x] Criar CRUD compatível com a Pokedex.
+- [x] Integrar a seleção de companies aos pré-requisitos de missões.
+- [x] Impedir exclusão de company usada por uma missão.
 
 ### 17. Programação
 

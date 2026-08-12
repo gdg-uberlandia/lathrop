@@ -125,6 +125,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
                     ["Palestrante", "/admin/speakers/add-speaker"],
                     ["Palestra", "/admin/talks/add-talk"],
                     ["Patrocinador", "/admin/sponsors/add-sponsor"],
+                    ["Company", "/admin/companies/add-company"],
                     ["Missão", "/admin/missions/add-mission"],
                     ["Horário", "/admin/schedule/add-schedule"],
                   ].map(([label, href]) => (

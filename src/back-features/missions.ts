@@ -9,6 +9,8 @@ import {
 } from "@/models/mission";
 import { db } from "@/utils/db";
 import { getFirestoreCollectionName } from "@/utils/db/collection-name";
+import { validateMissionDependencies } from "@/lib/missions/dependencies";
+import { getAllCompanies } from "@/back-features/companies";
 
 const MISSIONS_COLLECTION = getFirestoreCollectionName("missions");
 
@@ -44,6 +46,11 @@ export async function getAllMissions(): Promise<Mission[]> {
 
 export async function createMission(input: MissionInput): Promise<Mission> {
   const data = missionInputSchema.parse(input);
+  validateMissionDependencies(
+    data,
+    await getAllMissions(),
+    (await getAllCompanies()).map((item) => item.id),
+  );
   const reference = db.collection(MISSIONS_COLLECTION).doc(data.id);
 
   if ((await reference.get()).exists) {
@@ -80,6 +87,11 @@ export async function getMissionById(missionId: string): Promise<Mission> {
 
 export async function updateMission(input: MissionInput): Promise<Mission> {
   const data = missionInputSchema.parse(input);
+  validateMissionDependencies(
+    data,
+    await getAllMissions(),
+    (await getAllCompanies()).map((item) => item.id),
+  );
   const current = await getMissionById(data.id);
   const mission = missionFieldsSchema.parse({
     ...data,
