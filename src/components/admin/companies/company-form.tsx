@@ -1,5 +1,6 @@
 import { Button } from "@/assets/components/ui/button";
 import { AdminQrCodeCard } from "@/components/admin/admin-qr-code-card";
+import { AdminImageUpload } from "@/components/admin/admin-image-upload";
 import { AdminVisibilityControl } from "@/components/admin/admin-visibility-control";
 import {
   Form,
@@ -15,7 +16,6 @@ import { Company, CompanyInput, companyInputSchema } from "@/contracts/company";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
@@ -28,7 +28,7 @@ export function CompanyForm({
   loading?: boolean;
   onSubmit: (value: CompanyInput) => Promise<unknown> | unknown;
 }) {
-  const { uploadImage, loadingImage } = useImageUpload();
+  const { uploadImage, loadingImage, error: uploadError } = useImageUpload();
   const form = useForm<CompanyInput>({
     resolver: zodResolver(companyInputSchema),
     defaultValues: company
@@ -54,16 +54,20 @@ export function CompanyForm({
         },
   });
   useUnsavedChanges(form.formState.isDirty && !form.formState.isSubmitting);
-  const upload = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-    field: "logoUrl" | "stampImageUrl",
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    form.setValue(field, await uploadImage(file, "companies"), {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
+  const upload = async (file: File, field: "logoUrl" | "stampImageUrl") => {
+    try {
+      form.setValue(
+        field,
+        await uploadImage(file, {
+          folder: "companies",
+          entityId: form.getValues("id"),
+          variant: field === "logoUrl" ? "logo" : "stamp",
+        }),
+        { shouldDirty: true, shouldValidate: true },
+      );
+    } catch {
+      // A mensagem do hook é exibida no componente.
+    }
   };
   return (
     <Form {...form}>
@@ -145,24 +149,13 @@ export function CompanyForm({
                 <FormLabel>
                   {name === "logoUrl" ? "Logo" : "Imagem do selo"}
                 </FormLabel>
-                <div className="flex items-center gap-3">
-                  <FormControl>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={(event) => void upload(event, name)}
-                    />
-                  </FormControl>
-                  {field.value && (
-                    <Image
-                      src={field.value}
-                      alt="Prévia"
-                      width={48}
-                      height={48}
-                      className="size-12 rounded-lg object-contain"
-                    />
-                  )}
-                </div>
+                <AdminImageUpload
+                  value={field.value}
+                  label={name === "logoUrl" ? "Logo" : "Imagem do selo"}
+                  loading={loadingImage}
+                  error={uploadError}
+                  onFileSelect={(file) => upload(file, name)}
+                />
                 <FormMessage />
               </FormItem>
             )}

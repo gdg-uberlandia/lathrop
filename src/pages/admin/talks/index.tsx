@@ -22,16 +22,15 @@ import {
 import { useSpeakers } from "@/hooks/useSpeakers";
 import { useTalks } from "@/hooks/useTalks";
 import { useAdminListState } from "@/hooks/useAdminListState";
-import { Talk } from "@/contracts/talk";
+import { Talk, TALK_FORMAT_LABELS } from "@/contracts/talk";
 import { Pencil, Presentation, Trash2 } from "lucide-react";
 import { useRouter } from "next/router";
+import {
+  adminDestinationWithReturnTo,
+  adminPathWithReturnTo,
+} from "@/lib/admin-return-path";
 import { useMemo, useState } from "react";
 
-const formatLabels = {
-  talk: "Talk",
-  panel: "Painel",
-  keynote: "Keynote",
-} as const;
 export default function TalksPage() {
   const router = useRouter();
   const { talks, removeTalk, updateTalk, loading, error, fetchTalks } =
@@ -65,7 +64,7 @@ export default function TalksPage() {
         evaluation === "all" || talk.evaluationStatus === evaluation;
       const matchesSearch =
         !term ||
-        [talk.title, talk.category, formatLabels[talk.format]]
+        [talk.title, talk.category, TALK_FORMAT_LABELS[talk.format]]
           .filter(Boolean)
           .some((value) => value!.toLocaleLowerCase("pt-BR").includes(term));
       return (
@@ -91,7 +90,7 @@ export default function TalksPage() {
           count={talks.length}
           icon={Presentation}
           action={{
-            href: "/admin/talks/add-talk",
+            href: adminPathWithReturnTo("/admin/talks/add-talk", router.asPath),
             label: "Cadastrar palestra",
           }}
         />
@@ -113,7 +112,7 @@ export default function TalksPage() {
             className="h-10 rounded-lg border border-white/10 bg-background px-3 text-sm"
           >
             <option value="all">Todos os formatos</option>
-            <option value="talk">Talk</option>
+            <option value="talk">Palestra</option>
             <option value="panel">Painel</option>
             <option value="keynote">Keynote</option>
           </select>
@@ -195,7 +194,7 @@ export default function TalksPage() {
                       {talk.title}
                     </TableCell>
                     <TableCell className="text-white/80">
-                      {formatLabels[talk.format]}
+                      {TALK_FORMAT_LABELS[talk.format]}
                     </TableCell>
                     <TableCell className="text-white/80">
                       {talk.speakerIds
@@ -233,7 +232,12 @@ export default function TalksPage() {
                           variant="secondary"
                           size="icon"
                           onClick={() =>
-                            router.push(`/admin/talks/edit/${talk.id}`)
+                            router.push(
+                              adminDestinationWithReturnTo(
+                                `/admin/talks/edit/${talk.id}`,
+                                router.asPath,
+                              ),
+                            )
                           }
                           aria-label={`Editar ${talk.title}`}
                         >

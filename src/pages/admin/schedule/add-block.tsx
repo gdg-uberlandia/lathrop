@@ -5,11 +5,12 @@ import {
 import { ScheduleBlockForm } from "@/components/admin/schedule/schedule-block-form";
 import { useSchedule } from "@/hooks/useSchedule";
 import { useRouter } from "next/router";
+import { scheduleTimeSchema } from "@/contracts/schedule";
 
-const validTime = (value: unknown) =>
-  typeof value === "string" && /^([01]\d|2[0-3]):(00|15|30|45)$/.test(value)
-    ? value
-    : undefined;
+const validTime = (value: unknown) => {
+  const parsed = scheduleTimeSchema.safeParse(value);
+  return parsed.success ? parsed.data : undefined;
+};
 
 export default function AddScheduleBlockPage() {
   const { createScheduleBlock, loading } = useSchedule();

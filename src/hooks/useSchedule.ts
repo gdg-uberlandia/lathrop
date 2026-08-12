@@ -17,11 +17,11 @@ import {
   ScheduleBlockInput,
   scheduleFieldsSchema,
 } from "@/contracts/schedule";
-export function useSchedule(load = true) {
+export function useSchedule() {
   const { isAdmin } = useAuth();
   const client = useQueryClient();
   const query = useQuery({
-    enabled: isAdmin && load,
+    enabled: isAdmin,
     queryKey: adminQueryKeys.schedule,
     queryFn: async ({ signal }) =>
       (await getScheduleAPI(signal)).map((item) =>

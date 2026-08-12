@@ -101,7 +101,7 @@ export default function AdminIndex() {
   const inactiveMissions = missions.filter((mission) => !mission.active);
   const scheduledTalkIds = new Set(
     schedule.flatMap((item) =>
-      item.activity.type === "talk" ? [item.activity.talkId] : [],
+      "talkId" in item.activity ? [item.activity.talkId] : [],
     ),
   );
   const unscheduledTalks = activeTalks.filter(
@@ -331,7 +331,7 @@ export default function AdminIndex() {
                   {schedule.slice(0, 7).map((slot) => {
                     const activity = slot.activity;
                     const activityName =
-                      activity.type === "break"
+                      "title" in activity
                         ? activity.title
                         : talks.find((talk) => talk.id === activity.talkId)
                             ?.title || "Palestra removida";

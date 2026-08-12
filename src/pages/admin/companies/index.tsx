@@ -22,9 +22,14 @@ import DeleteDialog from "@/components/admin/delete-dialog";
 import { Company } from "@/contracts/company";
 import { useAdminListState } from "@/hooks/useAdminListState";
 import { useCompanies } from "@/hooks/useCompanies";
-import { Building2, Pencil, Trash2 } from "lucide-react";
+import { Building2, ImageOff, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
+import { shouldBypassImageOptimization } from "@/helpers/image";
 import { useRouter } from "next/router";
+import {
+  adminDestinationWithReturnTo,
+  adminPathWithReturnTo,
+} from "@/lib/admin-return-path";
 import { useMemo, useState } from "react";
 
 export default function CompaniesPage() {
@@ -76,7 +81,10 @@ export default function CompaniesPage() {
           count={companies.length}
           icon={Building2}
           action={{
-            href: "/admin/companies/add-company",
+            href: adminPathWithReturnTo(
+              "/admin/companies/add-company",
+              router.asPath,
+            ),
             label: "Cadastrar empresa",
           }}
         />
@@ -122,6 +130,7 @@ export default function CompaniesPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Logo</TableHead>
+                  <TableHead>Selo</TableHead>
                   <TableHead>
                     <AdminSortButton
                       label="Nome"
@@ -158,8 +167,32 @@ export default function CompaniesPage() {
                         alt={`Logo ${item.name}`}
                         width={40}
                         height={40}
+                        unoptimized={shouldBypassImageOptimization(
+                          item.logoUrl,
+                        )}
                         className="size-10 rounded-lg object-contain"
                       />
+                    </TableCell>
+                    <TableCell>
+                      {item.stampImageUrl ? (
+                        <Image
+                          src={item.stampImageUrl}
+                          alt={`Selo ${item.name}`}
+                          width={40}
+                          height={40}
+                          unoptimized={shouldBypassImageOptimization(
+                            item.stampImageUrl,
+                          )}
+                          className="size-10 rounded-lg object-contain"
+                        />
+                      ) : (
+                        <span
+                          className="flex size-10 items-center justify-center rounded-lg bg-slate-100 text-slate-400"
+                          title="Selo não cadastrado"
+                        >
+                          <ImageOff className="size-4" />
+                        </span>
+                      )}
                     </TableCell>
                     <TableCell className="font-medium text-slate-800">
                       {item.name}
@@ -196,7 +229,12 @@ export default function CompaniesPage() {
                           size="icon"
                           aria-label={`Editar ${item.name}`}
                           onClick={() =>
-                            router.push(`/admin/companies/edit/${item.id}`)
+                            router.push(
+                              adminDestinationWithReturnTo(
+                                `/admin/companies/edit/${item.id}`,
+                                router.asPath,
+                              ),
+                            )
                           }
                         >
                           <Pencil />

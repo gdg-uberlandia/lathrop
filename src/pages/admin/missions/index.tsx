@@ -26,6 +26,10 @@ import { Mission } from "@/models/mission";
 import { Target, Pencil, Trash2, QrCode } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import {
+  adminDestinationWithReturnTo,
+  adminPathWithReturnTo,
+} from "@/lib/admin-return-path";
 import { useMemo, useState } from "react";
 
 export default function Missions() {
@@ -96,7 +100,10 @@ export default function Missions() {
           count={missions.length}
           icon={Target}
           action={{
-            href: "/admin/missions/add-mission",
+            href: adminPathWithReturnTo(
+              "/admin/missions/add-mission",
+              router.asPath,
+            ),
             label: "Cadastrar missão",
           }}
         />
@@ -248,7 +255,12 @@ export default function Missions() {
                           variant="secondary"
                           size="icon"
                           onClick={() =>
-                            router.push(`/admin/missions/edit/${mission.id}`)
+                            router.push(
+                              adminDestinationWithReturnTo(
+                                `/admin/missions/edit/${mission.id}`,
+                                router.asPath,
+                              ),
+                            )
                           }
                           aria-label={`Editar ${mission.title}`}
                         >

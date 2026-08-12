@@ -16,6 +16,13 @@ import {
 import Link from "next/link";
 import type { ComponentType, ReactNode } from "react";
 
+export type AdminPageAction = {
+  href: string;
+  label: string;
+  variant?: "primary" | "secondary";
+  icon?: ComponentType<{ className?: string }>;
+};
+
 export function AdminPageHeader({
   title,
   description,
@@ -27,19 +34,7 @@ export function AdminPageHeader({
   description?: string;
   count?: number;
   icon: ComponentType<{ className?: string }>;
-  action?:
-    | {
-        href: string;
-        label: string;
-        variant?: "primary" | "secondary";
-        icon?: ComponentType<{ className?: string }>;
-      }
-    | Array<{
-        href: string;
-        label: string;
-        variant?: "primary" | "secondary";
-        icon?: ComponentType<{ className?: string }>;
-      }>;
+  action?: AdminPageAction | readonly AdminPageAction[];
 }) {
   const actions = action ? (Array.isArray(action) ? action : [action]) : [];
   return (

@@ -2,17 +2,19 @@ import { AdminErrorState, AdminFormPage } from "@/components/admin/admin-page";
 import { TalksForm } from "@/components/admin/talks/talks-form";
 import { useSpeakers } from "@/hooks/useSpeakers";
 import { useTalks } from "@/hooks/useTalks";
+import { resolveAdminReturnTo } from "@/lib/admin-return-path";
 import { useRouter } from "next/router";
 
 export default function AddTalkPage() {
   const router = useRouter();
+  const returnTo = resolveAdminReturnTo(router.query.returnTo, "/admin/talks");
   const { error: speakersError, speakers } = useSpeakers();
   const { addTalk, error, loading } = useTalks();
   return (
     <AdminFormPage
       title="Cadastrar palestra"
       description="Defina conteúdo, formato, avaliação e palestrantes responsáveis."
-      backHref="/admin/talks"
+      backHref={returnTo}
       backLabel="Voltar para palestras"
     >
       {(error || speakersError) && (
@@ -28,7 +30,7 @@ export default function AddTalkPage() {
         loading={loading}
         onSubmit={async (data) => {
           const talk = await addTalk(data);
-          if (talk) await router.push("/admin/talks");
+          if (talk) await router.push(returnTo);
         }}
       />
     </AdminFormPage>

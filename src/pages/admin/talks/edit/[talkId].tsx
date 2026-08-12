@@ -8,11 +8,13 @@ import { TalksForm } from "@/components/admin/talks/talks-form";
 import { Talk } from "@/contracts/talk";
 import { useSpeakers } from "@/hooks/useSpeakers";
 import { useTalks } from "@/hooks/useTalks";
+import { resolveAdminReturnTo } from "@/lib/admin-return-path";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export default function EditTalkPage() {
   const router = useRouter();
+  const returnTo = resolveAdminReturnTo(router.query.returnTo, "/admin/talks");
   const { error: speakersError, speakers } = useSpeakers();
   const { error, fetchTalk, updateTalk, loading } = useTalks();
   const [talk, setTalk] = useState<Talk | null>(null);
@@ -28,7 +30,7 @@ export default function EditTalkPage() {
     <AdminFormPage
       title="Editar palestra"
       description="Atualize conteúdo, formato, avaliação e responsáveis."
-      backHref="/admin/talks"
+      backHref={returnTo}
       backLabel="Voltar para palestras"
     >
       {(error || speakersError) && (
@@ -48,7 +50,7 @@ export default function EditTalkPage() {
           loading={loading}
           onSubmit={async (data) => {
             const updated = await updateTalk(data);
-            if (updated) await router.push("/admin/talks");
+            if (updated) await router.push(returnTo);
           }}
         />
       )}

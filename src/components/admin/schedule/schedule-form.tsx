@@ -38,6 +38,20 @@ const timeValue = (value: Date) =>
     hour12: false,
     timeZone: "America/Sao_Paulo",
   }).format(value);
+type ScheduleActivityType =
+  | "talk"
+  | "opening"
+  | "opening_keynote"
+  | "break"
+  | "closing"
+  | "closing_keynote";
+type LinkedActivityType = "talk" | "opening_keynote" | "closing_keynote";
+const isLinkedActivity = (
+  value: ScheduleActivityType,
+): value is LinkedActivityType =>
+  value === "talk" ||
+  value === "opening_keynote" ||
+  value === "closing_keynote";
 export function ScheduleForm({
   schedule,
   initialValues,
@@ -47,20 +61,31 @@ export function ScheduleForm({
   schedule?: ScheduleEntry;
   initialValues?: Partial<
     Pick<ScheduleInput, "startTime" | "endTime" | "track">
-  > & { type?: "talk" | "opening" | "break" | "closing" };
+  > & { type?: ScheduleActivityType };
   loading?: boolean;
   onSubmit: (value: ScheduleInput) => unknown;
 }) {
   const { talks } = useTalks();
   const currentTalkId =
-    schedule?.activity.type === "break" ? null : schedule?.activity.talkId;
-  const availableTalks = useMemo(
-    () => talks.filter((talk) => talk.isActive || talk.id === currentTalkId),
-    [currentTalkId, talks],
+    schedule?.activity && "talkId" in schedule.activity
+      ? schedule.activity.talkId
+      : null;
+  const [selectedType, setSelectedType] = useState<ScheduleActivityType>(
+    schedule?.activity.type ?? initialValues?.type ?? "opening",
   );
-  const [selectedType, setSelectedType] = useState<
-    "talk" | "opening" | "break" | "closing"
-  >(schedule?.activity.type ?? initialValues?.type ?? "opening");
+  const availableTalks = useMemo(
+    () =>
+      talks.filter((talk) => {
+        if (!talk.isActive && talk.id !== currentTalkId) return false;
+        if (
+          selectedType === "opening_keynote" ||
+          selectedType === "closing_keynote"
+        )
+          return talk.format === "keynote";
+        return isLinkedActivity(selectedType);
+      }),
+    [currentTalkId, selectedType, talks],
+  );
   const form = useForm<ScheduleInput>({
     resolver: zodResolver(scheduleInputSchema) as Resolver<ScheduleInput>,
     defaultValues: schedule
@@ -80,28 +105,56 @@ export function ScheduleForm({
             initialValues?.type === "talk"
               ? (initialValues.track ?? "MINAS")
               : null,
-          activity:
-            initialValues?.type === "break"
-              ? { type: "break", title: "Coffee-break" }
-              : {
-                  type: initialValues?.type ?? "opening",
-                  talkId: availableTalks[0]?.id ?? "",
-                },
+          activity: ["opening", "break", "closing"].includes(
+            initialValues?.type ?? "opening",
+          )
+            ? {
+                type: (initialValues?.type ?? "opening") as
+                  | "opening"
+                  | "break"
+                  | "closing",
+                title:
+                  initialValues?.type === "break"
+                    ? "Coffee-break"
+                    : initialValues?.type === "closing"
+                      ? "Encerramento"
+                      : "Abertura",
+              }
+            : {
+                type: initialValues?.type as
+                  | "talk"
+                  | "opening_keynote"
+                  | "closing_keynote",
+                talkId: availableTalks[0]?.id ?? "",
+              },
           active: true,
         },
   });
   useUnsavedChanges(form.formState.isDirty && !form.formState.isSubmitting);
-  const changeType = (value: "talk" | "opening" | "break" | "closing") =>
+  const talkForType = (value: LinkedActivityType) =>
+    talks.find((talk) => {
+      if (!talk.isActive && talk.id !== currentTalkId) return false;
+      if (value === "opening_keynote" || value === "closing_keynote")
+        return talk.format === "keynote";
+      return true;
+    })?.id ?? "";
+  const changeType = (value: ScheduleActivityType) =>
     form.setValue(
       "activity",
-      value === "break"
-        ? { type: "break", title: "Coffee-break" }
-        : { type: value, talkId: availableTalks[0]?.id ?? "" },
+      !isLinkedActivity(value)
+        ? {
+            type: value as "opening" | "break" | "closing",
+            title:
+              value === "break"
+                ? "Coffee-break"
+                : value === "closing"
+                  ? "Encerramento"
+                  : "Abertura",
+          }
+        : { type: value, talkId: talkForType(value) },
       { shouldDirty: true, shouldValidate: true },
     );
-  const handleTypeChange = (
-    value: "talk" | "opening" | "break" | "closing",
-  ) => {
+  const handleTypeChange = (value: ScheduleActivityType) => {
     setSelectedType(value);
     changeType(value);
     form.setValue("track", value === "talk" ? "MINAS" : null, {
@@ -118,8 +171,8 @@ export function ScheduleForm({
         <div className="md:col-span-8">
           <h2 className="font-semibold text-slate-900">Item da programação</h2>
           <p className="mt-1 text-sm text-slate-500">
-            Palestras pertencem a uma trilha. Abertura, intervalo e encerramento
-            são atividades gerais, sem trilha.
+            Palestras pertencem a uma trilha. Aberturas, intervalos,
+            encerramentos e keynotes não possuem trilha.
           </p>
         </div>
         <FormItem className="md:col-span-3">
@@ -131,12 +184,18 @@ export function ScheduleForm({
             <SelectContent>
               <SelectItem value="talk">Palestra</SelectItem>
               <SelectItem value="opening">Abertura</SelectItem>
+              <SelectItem value="opening_keynote">
+                Keynote de abertura
+              </SelectItem>
               <SelectItem value="break">Intervalo</SelectItem>
               <SelectItem value="closing">Encerramento</SelectItem>
+              <SelectItem value="closing_keynote">
+                Keynote de encerramento
+              </SelectItem>
             </SelectContent>
           </Select>
         </FormItem>
-        {selectedType !== "break" ? (
+        {isLinkedActivity(selectedType) ? (
           <FormField
             name="activity.talkId"
             control={form.control}
@@ -145,9 +204,9 @@ export function ScheduleForm({
                 <FormLabel>
                   {selectedType === "talk"
                     ? "Palestra"
-                    : selectedType === "opening"
-                      ? "Palestra de abertura"
-                      : "Palestra de encerramento"}
+                    : selectedType === "opening_keynote"
+                      ? "Keynote de abertura"
+                      : "Keynote de encerramento"}
                 </FormLabel>
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger>
@@ -171,7 +230,13 @@ export function ScheduleForm({
             control={form.control}
             render={({ field }) => (
               <FormItem className="md:col-span-5">
-                <FormLabel>Título</FormLabel>
+                <FormLabel>
+                  {selectedType === "opening"
+                    ? "Nome da abertura"
+                    : selectedType === "closing"
+                      ? "Nome do encerramento"
+                      : "Nome do intervalo"}
+                </FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>

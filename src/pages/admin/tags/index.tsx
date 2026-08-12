@@ -26,6 +26,10 @@ import { Pencil, Tags, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
+import {
+  adminDestinationWithReturnTo,
+  adminPathWithReturnTo,
+} from "@/lib/admin-return-path";
 export default function TagsPage() {
   const router = useRouter();
   const { tags, loading, error, fetchTags, updateTag, removeTag } = useTags();
@@ -59,7 +63,10 @@ export default function TagsPage() {
           description="Gerencie descobertas por QR consumidas pela Pokedex."
           count={tags.length}
           icon={Tags}
-          action={{ href: "/admin/tags/add-tag", label: "Cadastrar tag" }}
+          action={{
+            href: adminPathWithReturnTo("/admin/tags/add-tag", router.asPath),
+            label: "Cadastrar tag",
+          }}
         />
         <AdminListToolbar search={list.search} onSearchChange={list.setSearch}>
           <select
@@ -167,7 +174,12 @@ export default function TagsPage() {
                           variant="secondary"
                           aria-label={`Editar ${item.name}`}
                           onClick={() =>
-                            router.push(`/admin/tags/edit/${item.id}`)
+                            router.push(
+                              adminDestinationWithReturnTo(
+                                `/admin/tags/edit/${item.id}`,
+                                router.asPath,
+                              ),
+                            )
                           }
                         >
                           <Pencil />

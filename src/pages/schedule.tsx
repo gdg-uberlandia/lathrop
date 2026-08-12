@@ -43,19 +43,23 @@ export default function SchedulePage({
         groups.set(key, [...(groups.get(key) ?? []), item]);
         return groups;
       }, new Map<string, SerializedSchedule[]>()),
-  ).map(([, items]) => items.sort((a, b) => (a.order ?? -1) - (b.order ?? -1)));
+  ).map(([, items]) => items);
 
   const content = (item: SerializedSchedule) => {
     const talk =
-      item.activity.type === "break" ? null : talkMap.get(item.activity.talkId);
+      "talkId" in item.activity ? talkMap.get(item.activity.talkId) : null;
     const prefix =
       item.activity.type === "opening"
         ? "Abertura"
-        : item.activity.type === "closing"
-          ? "Encerramento"
-          : null;
+        : item.activity.type === "opening_keynote"
+          ? "Keynote de abertura"
+          : item.activity.type === "closing"
+            ? "Encerramento"
+            : item.activity.type === "closing_keynote"
+              ? "Keynote de encerramento"
+              : null;
     const title =
-      item.activity.type === "break"
+      "title" in item.activity
         ? item.activity.title
         : (talk?.title ?? "Palestra removida");
     const names =
@@ -145,7 +149,7 @@ export async function getServerSideProps() {
     const visibleSchedule = schedule.filter((item) => item.active);
     const scheduledTalkIds = new Set(
       visibleSchedule.flatMap((item) =>
-        item.activity.type === "break" ? [] : [item.activity.talkId],
+        "talkId" in item.activity ? [item.activity.talkId] : [],
       ),
     );
     const scheduledTalks = await getTalksByIds([...scheduledTalkIds]);

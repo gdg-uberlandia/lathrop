@@ -26,6 +26,10 @@ import { shouldBypassImageOptimization } from "@/helpers/image";
 import { Megaphone, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import {
+  adminDestinationWithReturnTo,
+  adminPathWithReturnTo,
+} from "@/lib/admin-return-path";
 import { useMemo, useState } from "react";
 
 export default function Speakers() {
@@ -80,7 +84,10 @@ export default function Speakers() {
           count={speakers.length}
           icon={Megaphone}
           action={{
-            href: "/admin/speakers/add-speaker",
+            href: adminPathWithReturnTo(
+              "/admin/speakers/add-speaker",
+              router.asPath,
+            ),
             label: "Cadastrar palestrante",
           }}
         />
@@ -207,7 +214,12 @@ export default function Speakers() {
                           variant="secondary"
                           size="icon"
                           onClick={() =>
-                            router.push(`/admin/speakers/edit/${item.id}`)
+                            router.push(
+                              adminDestinationWithReturnTo(
+                                `/admin/speakers/edit/${item.id}`,
+                                router.asPath,
+                              ),
+                            )
                           }
                           aria-label={`Editar ${item.name}`}
                         >

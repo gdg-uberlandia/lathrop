@@ -32,7 +32,6 @@ import {
   CalendarDays,
   Copy,
   Eye,
-  EyeOff,
   FilterX,
   FileDown,
   FileImage,
@@ -66,8 +65,10 @@ const nextSlot = (start: Date, end: Date) => {
 const typeLabel = {
   talk: "Palestra",
   opening: "Abertura",
+  opening_keynote: "Keynote de abertura",
   break: "Intervalo",
   closing: "Encerramento",
+  closing_keynote: "Keynote de encerramento",
 } as const;
 const trackBorderStyles: Record<ScheduleTrack, string> = {
   MINAS: "!border-amber-200 hover:!border-amber-300",
@@ -76,18 +77,38 @@ const trackBorderStyles: Record<ScheduleTrack, string> = {
   TRANCA: "!border-blue-200 hover:!border-blue-300",
   COMUNIDADE: "!border-emerald-200 hover:!border-emerald-300",
 };
+const trackLabels = new Map(
+  SCHEDULE_TRACKS.map((track) => [track.value, track.label]),
+);
+const intervalLabel = (item: ScheduleEntry) =>
+  `${formatTime(item.startAt)}–${formatTime(item.endAt)}`;
+const scheduleActions = [
+  {
+    href: "/admin/schedule/add-schedule",
+    label: "Adicionar atividade",
+  },
+  {
+    href: "/admin/schedule/add-block",
+    label: "Cadastrar bloco completo",
+    variant: "secondary",
+  },
+  {
+    href: "/admin/schedule/preview",
+    label: "Prévia pública",
+    variant: "secondary",
+    icon: Eye,
+  },
+] as const;
 
 export default function Schedules() {
   const router = useRouter();
   const {
     schedule,
     deleteSchedule,
-    updateScheduleVisibility,
-    visibilityUpdatingId,
     loading,
     error: scheduleError,
     fetchSchedule,
-  } = useSchedule(false);
+  } = useSchedule();
   const {
     workspace,
     loading: workspaceLoading,
@@ -136,7 +157,7 @@ export default function Schedules() {
   const name = useCallback(
     (item: ScheduleEntry) =>
       workspaceEntries.get(item.id)?.title ??
-      (item.activity.type === "break"
+      ("title" in item.activity
         ? item.activity.title
         : (talkNames.get(item.activity.talkId) ?? "Carregando palestra...")),
     [talkNames, workspaceEntries],
@@ -144,14 +165,18 @@ export default function Schedules() {
   const speakersFor = useCallback(
     (item: ScheduleEntry) =>
       workspaceEntries.get(item.id)?.speakerNames ??
-      (item.activity.type === "break"
-        ? []
-        : (talkSpeakers.get(item.activity.talkId) ?? [])),
+      ("talkId" in item.activity
+        ? (talkSpeakers.get(item.activity.talkId) ?? [])
+        : []),
     [talkSpeakers, workspaceEntries],
   );
   const conflicts = useMemo(() => {
     const talkById = new Map(talks.map((talk) => [talk.id, talk]));
-    const conflictIds = new Set<string>();
+    const details = new Map<string, string[]>();
+    const addReason = (item: ScheduleEntry, reason: string) => {
+      const current = details.get(item.id) ?? [];
+      if (!current.includes(reason)) details.set(item.id, [...current, reason]);
+    };
     const ordered = [...schedule].sort(
       (left, right) => left.startAt.getTime() - right.startAt.getTime(),
     );
@@ -164,13 +189,11 @@ export default function Schedules() {
           other.track === null ||
           item.track === other.track;
         const itemTalk =
-          item.activity.type === "break"
-            ? null
-            : talkById.get(item.activity.talkId);
+          "talkId" in item.activity ? talkById.get(item.activity.talkId) : null;
         const otherTalk =
-          other.activity.type === "break"
-            ? null
-            : talkById.get(other.activity.talkId);
+          "talkId" in other.activity
+            ? talkById.get(other.activity.talkId)
+            : null;
         const sameTalk = Boolean(
           itemTalk && otherTalk && itemTalk.id === otherTalk.id,
         );
@@ -181,14 +204,48 @@ export default function Schedules() {
               otherTalk.speakerIds.includes(speakerId),
             ),
         );
-        if (sameTrack || sameTalk || sharedSpeaker) {
-          conflictIds.add(item.id);
-          conflictIds.add(other.id);
+        if (sameTalk) {
+          addReason(
+            item,
+            `A mesma palestra também está programada em ${intervalLabel(other)}.`,
+          );
+          addReason(
+            other,
+            `A mesma palestra também está programada em ${intervalLabel(item)}.`,
+          );
+        }
+        if (sameTrack) {
+          const reasonFor = (
+            current: ScheduleEntry,
+            conflicting: ScheduleEntry,
+          ) => {
+            if (conflicting.track === null)
+              return `“${name(conflicting)}” é uma atividade geral em ${intervalLabel(conflicting)} e ocupa todas as trilhas.`;
+            if (current.track === null)
+              return `Esta atividade geral sobrepõe “${name(conflicting)}” em ${intervalLabel(conflicting)}, na trilha ${trackLabels.get(conflicting.track)}.`;
+            return `“${name(conflicting)}” também ocupa a trilha ${trackLabels.get(conflicting.track)} em ${intervalLabel(conflicting)}.`;
+          };
+          addReason(item, reasonFor(item, other));
+          addReason(other, reasonFor(other, item));
+        }
+        if (sharedSpeaker && itemTalk && otherTalk) {
+          const sharedNames = itemTalk.speakerIds
+            .filter((speakerId) => otherTalk.speakerIds.includes(speakerId))
+            .map((speakerId) => speakerNames.get(speakerId) ?? "Palestrante")
+            .join(", ");
+          addReason(
+            item,
+            `${sharedNames} também participa de “${name(other)}” no mesmo horário.`,
+          );
+          addReason(
+            other,
+            `${sharedNames} também participa de “${name(item)}” no mesmo horário.`,
+          );
         }
       }
     });
-    return conflictIds;
-  }, [schedule, talks]);
+    return details;
+  }, [name, schedule, speakerNames, talks]);
   const slots = useMemo(() => {
     const term = search.trim().toLocaleLowerCase("pt-BR");
     const groups = schedule.reduce((map, item) => {
@@ -273,28 +330,7 @@ export default function Schedules() {
         <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
           {typeLabel[item.activity.type]}
         </span>
-        <div className="flex items-center gap-1">
-          <Button
-            type="button"
-            size="icon"
-            variant="ghost"
-            className={cn(
-              "size-7",
-              item.active ? "text-emerald-600" : "text-slate-400",
-            )}
-            title={item.active ? "Visível" : "Oculta"}
-            aria-label={
-              item.active ? `Ocultar ${name(item)}` : `Exibir ${name(item)}`
-            }
-            onClick={() => void updateScheduleVisibility(item.id, !item.active)}
-            disabled={visibilityUpdatingId === item.id}
-          >
-            {item.active ? (
-              <Eye className="size-4" />
-            ) : (
-              <EyeOff className="size-4" />
-            )}
-          </Button>
+        <div className="flex shrink-0 items-center gap-1">
           <Button
             size="icon"
             variant="ghost"
@@ -326,9 +362,19 @@ export default function Schedules() {
         </ul>
       )}
       {conflicts.has(item.id) && (
-        <p className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-amber-700">
-          <TriangleAlert className="size-3.5" /> Conflito
-        </p>
+        <div className="mt-2 rounded-lg border !border-amber-200 bg-amber-50 p-2 text-amber-800">
+          <p className="flex items-center gap-1 text-xs font-semibold">
+            <TriangleAlert className="size-3.5 shrink-0" /> Conflito na
+            programação
+          </p>
+          <ul className="mt-1 space-y-1 pl-4 text-xs leading-4">
+            {conflicts.get(item.id)?.map((reason) => (
+              <li key={reason} className="list-disc">
+                {reason}
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </article>
   );
@@ -341,23 +387,7 @@ export default function Schedules() {
           description="Monte o cronograma por horário e trilha; atividades gerais ocupam toda a grade."
           count={schedule.length}
           icon={CalendarDays}
-          action={[
-            {
-              href: "/admin/schedule/add-schedule",
-              label: "Adicionar atividade",
-            },
-            {
-              href: "/admin/schedule/add-block",
-              label: "Cadastrar bloco completo",
-              variant: "secondary",
-            },
-            {
-              href: "/admin/schedule/preview",
-              label: "Prévia pública",
-              variant: "secondary",
-              icon: Eye,
-            },
-          ]}
+          action={scheduleActions}
         />
         <section className="mt-4 flex flex-col gap-3 rounded-xl border !border-slate-200 bg-white p-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
@@ -444,8 +474,14 @@ export default function Schedules() {
               <SelectItem value="all">Todos os tipos</SelectItem>
               <SelectItem value="talk">Palestras</SelectItem>
               <SelectItem value="opening">Aberturas</SelectItem>
+              <SelectItem value="opening_keynote">
+                Keynotes de abertura
+              </SelectItem>
               <SelectItem value="break">Intervalos</SelectItem>
               <SelectItem value="closing">Encerramentos</SelectItem>
+              <SelectItem value="closing_keynote">
+                Keynotes de encerramento
+              </SelectItem>
             </SelectContent>
           </Select>
           <Select value={trackFilter} onValueChange={setTrackFilter}>

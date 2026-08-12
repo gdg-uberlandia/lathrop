@@ -5,12 +5,17 @@ import {
 } from "@/components/admin/admin-page";
 import { MissionsForm } from "@/components/admin/missions/missions-form";
 import { useMissions } from "@/hooks/useMissions";
+import { resolveAdminReturnTo } from "@/lib/admin-return-path";
 import { Mission, MissionInput } from "@/models/mission";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export default function EditMissionPage() {
   const router = useRouter();
+  const returnTo = resolveAdminReturnTo(
+    router.query.returnTo,
+    "/admin/missions",
+  );
   const { loading, fetchMission, updateMission } = useMissions();
   const [mission, setMission] = useState<Mission | null>(null);
   const [resolved, setResolved] = useState(false);
@@ -23,14 +28,14 @@ export default function EditMissionPage() {
   }, [fetchMission, router.query.missionId]);
   const update = async (data: MissionInput) => {
     const result = await updateMission(data);
-    if (result) await router.push("/admin/missions");
+    if (result) await router.push(returnTo);
     return result;
   };
   return (
     <AdminFormPage
       title="Editar missão"
       description="Atualize regras, recompensa e disponibilidade da missão."
-      backHref="/admin/missions"
+      backHref={returnTo}
       backLabel="Voltar para missões"
     >
       {!resolved ? (

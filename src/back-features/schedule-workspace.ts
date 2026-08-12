@@ -6,14 +6,16 @@ import { SCHEDULE_TRACKS } from "@/contracts/schedule";
 const typeLabels = {
   talk: "Palestra",
   opening: "Abertura",
+  opening_keynote: "Keynote de abertura",
   break: "Intervalo",
   closing: "Encerramento",
+  closing_keynote: "Keynote de encerramento",
 } as const;
 
 export async function getScheduleWorkspace() {
   const schedule = await getSchedule();
   const talkIds = schedule.flatMap((item) =>
-    item.activity.type === "break" ? [] : [item.activity.talkId],
+    "talkId" in item.activity ? [item.activity.talkId] : [],
   );
   const talks = await getTalksByIds(talkIds);
   const speakers = await getSpeakersByIds(
@@ -25,11 +27,11 @@ export async function getScheduleWorkspace() {
   );
   const entries = schedule.map((item) => {
     const talk =
-      item.activity.type === "break" ? null : talkMap.get(item.activity.talkId);
+      "talkId" in item.activity ? talkMap.get(item.activity.talkId) : null;
     return {
       id: item.id,
       title:
-        item.activity.type === "break"
+        "title" in item.activity
           ? item.activity.title
           : (talk?.title ?? "Palestra removida"),
       speakerNames:
