@@ -1,5 +1,6 @@
 import { Button } from "@/assets/components/ui/button";
-import { Checkbox } from "@/assets/components/ui/checkbox";
+import { AdminQrCodeCard } from "@/components/admin/admin-qr-code-card";
+import { AdminVisibilityControl } from "@/components/admin/admin-visibility-control";
 import {
   Form,
   FormControl,
@@ -15,7 +16,6 @@ import { useImageUpload } from "@/hooks/useImageUpload";
 import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
@@ -29,7 +29,6 @@ export function TagForm({
   onSubmit: (value: TagInput) => unknown;
 }) {
   const { uploadImage, loadingImage } = useImageUpload();
-  const [qr, setQr] = useState("");
   const form = useForm<TagInput>({
     resolver: zodResolver(tagInputSchema),
     defaultValues: tag
@@ -55,18 +54,6 @@ export function TagForm({
         },
   });
   useUnsavedChanges(form.formState.isDirty && !form.formState.isSubmitting);
-  const qrId = form.watch("qrId");
-  useEffect(() => {
-    let active = true;
-    void import("qrcode").then(({ default: QRCode }) =>
-      QRCode.toDataURL(qrId, { width: 320, margin: 2 }).then((value) => {
-        if (active) setQr(value);
-      }),
-    );
-    return () => {
-      active = false;
-    };
-  }, [qrId]);
   const upload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file)
@@ -91,7 +78,7 @@ export function TagForm({
           name="name"
           control={form.control}
           render={({ field }) => (
-            <FormItem className="md:col-span-5">
+            <FormItem className="md:col-span-8">
               <FormLabel>Nome</FormLabel>
               <FormControl>
                 <Input {...field} />
@@ -179,32 +166,26 @@ export function TagForm({
             </FormItem>
           )}
         />
-        <div className="md:col-span-3">
-          {qr && (
-            <>
-              <Image src={qr} alt="QR da tag" width={128} height={128} />
-              <a
-                href={qr}
-                download={`tag-${form.watch("id")}.png`}
-                className="mt-2 inline-flex rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium !text-white"
-              >
-                Baixar QR
-              </a>
-            </>
-          )}
+        <div className="md:col-span-8">
+          <AdminQrCodeCard
+            value={form.watch("qrId")}
+            downloadName={`tag-${form.watch("id")}`}
+            entityLabel="esta tag"
+          />
         </div>
         <FormField
           name="active"
           control={form.control}
           render={({ field }) => (
-            <FormItem className="flex items-center gap-3 md:col-span-8">
+            <FormItem className="md:col-span-8">
               <FormControl>
-                <Checkbox
+                <AdminVisibilityControl
                   checked={field.value}
-                  onCheckedChange={(value) => field.onChange(value === true)}
+                  onCheckedChange={field.onChange}
+                  label="Disponibilidade da tag"
+                  description="Tags ativas podem ser lidas e exibidas para os participantes."
                 />
               </FormControl>
-              <FormLabel>Tag ativa</FormLabel>
             </FormItem>
           )}
         />

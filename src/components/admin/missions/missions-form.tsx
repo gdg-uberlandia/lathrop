@@ -1,5 +1,6 @@
 import { Button } from "@/assets/components/ui/button";
-import { Checkbox } from "@/assets/components/ui/checkbox";
+import { AdminQrCodeCard } from "@/components/admin/admin-qr-code-card";
+import { AdminVisibilityControl } from "@/components/admin/admin-visibility-control";
 import {
   Form,
   FormControl,
@@ -27,7 +28,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useEffect } from "react";
-import { useState } from "react";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
@@ -65,7 +65,6 @@ export function MissionsForm({
   const { uploadImage, loadingImage } = useImageUpload();
   const { missions } = useMissions();
   const { companies } = useCompanies();
-  const [qrPreview, setQrPreview] = useState("");
   const form = useForm<MissionFormType>({
     resolver: zodResolver(missionSchema) as Resolver<MissionFormType>,
     defaultValues: defaults(mission),
@@ -78,20 +77,6 @@ export function MissionsForm({
   const validationType = form.watch("validationType");
   const progressType = form.watch("progressRequirement.type");
   const currentId = form.watch("id");
-  const qrId = form.watch("qrId");
-
-  useEffect(() => {
-    if (!qrId) return setQrPreview("");
-    let active = true;
-    void import("qrcode").then(({ default: QRCode }) =>
-      QRCode.toDataURL(qrId, { width: 320, margin: 2 }).then((value) => {
-        if (active) setQrPreview(value);
-      }),
-    );
-    return () => {
-      active = false;
-    };
-  }, [qrId]);
 
   useEffect(() => {
     form.reset(defaults(mission));
@@ -305,33 +290,13 @@ export function MissionsForm({
                     </Button>
                   </div>
                   <FormMessage />
-                  {qrPreview && (
-                    <div className="mt-4 flex flex-col items-start gap-3 rounded-xl border !border-slate-200 bg-white p-4 sm:flex-row sm:items-center">
-                      <Image
-                        src={qrPreview}
-                        alt="Prévia do QR Code da missão"
-                        width={144}
-                        height={144}
-                        unoptimized
-                      />
-                      <div>
-                        <p className="text-sm font-medium text-slate-800">
-                          QR Code público
-                        </p>
-                        <p className="mt-1 text-xs text-slate-500">
-                          O código representa o identificador público desta
-                          missão.
-                        </p>
-                        <a
-                          href={qrPreview}
-                          download={`missao-${currentId || "qr"}.png`}
-                          className="mt-3 inline-flex rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium !text-white hover:bg-blue-700"
-                        >
-                          Baixar PNG
-                        </a>
-                      </div>
-                    </div>
-                  )}
+                  <div className="mt-4">
+                    <AdminQrCodeCard
+                      value={field.value}
+                      downloadName={`missao-${currentId || "qr"}`}
+                      entityLabel="esta missão"
+                    />
+                  </div>
                 </FormItem>
               )}
             />
@@ -360,7 +325,7 @@ export function MissionsForm({
                       <SelectContent>
                         <SelectItem value="connections">Conexões</SelectItem>
                         <SelectItem value="companies">
-                          Companies visitadas
+                          Empresas visitadas
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -404,7 +369,7 @@ export function MissionsForm({
                 <div>
                   <FormLabel>Pré-requisitos</FormLabel>
                   <p className="text-xs text-muted-foreground">
-                    Missões ou companies que precisam ser concluídas antes.
+                    Missões ou empresas que precisam ser concluídas antes.
                   </p>
                 </div>
                 <Button
@@ -437,7 +402,7 @@ export function MissionsForm({
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="mission">Missão</SelectItem>
-                          <SelectItem value="company">Company</SelectItem>
+                          <SelectItem value="company">Empresa</SelectItem>
                         </SelectContent>
                       </Select>
                     )}
@@ -471,7 +436,7 @@ export function MissionsForm({
                           onValueChange={field.onChange}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="Selecione uma company" />
+                            <SelectValue placeholder="Selecione uma empresa" />
                           </SelectTrigger>
                           <SelectContent>
                             {companies
@@ -544,19 +509,15 @@ export function MissionsForm({
             name="active"
             control={form.control}
             render={({ field }) => (
-              <FormItem className="flex items-center gap-3 space-y-0 rounded-xl border p-4 md:col-span-8">
+              <FormItem className="md:col-span-8">
                 <FormControl>
-                  <Checkbox
+                  <AdminVisibilityControl
                     checked={field.value}
                     onCheckedChange={field.onChange}
+                    label="Disponibilidade da missão"
+                    description="Missões ativas aparecem para os participantes e podem receber progresso."
                   />
                 </FormControl>
-                <div>
-                  <FormLabel>Missão ativa</FormLabel>
-                  <p className="text-xs text-muted-foreground">
-                    Somente missões ativas aparecem para participantes.
-                  </p>
-                </div>
               </FormItem>
             )}
           />

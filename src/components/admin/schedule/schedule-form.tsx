@@ -1,5 +1,5 @@
 import { Button } from "@/assets/components/ui/button";
-import { Checkbox } from "@/assets/components/ui/checkbox";
+import { AdminVisibilityControl } from "@/components/admin/admin-visibility-control";
 import {
   Form,
   FormControl,
@@ -234,14 +234,17 @@ export function ScheduleForm({
           name="active"
           control={form.control}
           render={({ field }) => (
-            <FormItem className="flex items-center gap-3 md:col-span-8">
+            <FormItem className="md:col-span-8">
               <FormControl>
-                <Checkbox
+                <AdminVisibilityControl
                   checked={field.value}
-                  onCheckedChange={(value) => field.onChange(value === true)}
+                  onCheckedChange={field.onChange}
+                  label="Visibilidade da atividade"
+                  description="Atividades visíveis aparecem na programação pública do evento."
+                  activeLabel="Visível"
+                  inactiveLabel="Oculta"
                 />
               </FormControl>
-              <FormLabel>Exibir na programação</FormLabel>
             </FormItem>
           )}
         />

@@ -1,5 +1,6 @@
 import { Button } from "@/assets/components/ui/button";
-import { Checkbox } from "@/assets/components/ui/checkbox";
+import { AdminQrCodeCard } from "@/components/admin/admin-qr-code-card";
+import { AdminVisibilityControl } from "@/components/admin/admin-visibility-control";
 import {
   Form,
   FormControl,
@@ -72,7 +73,7 @@ export function CompanyForm({
       >
         <div className="md:col-span-8">
           <h2 className="font-semibold text-slate-900">
-            Informações da company
+            Informações da empresa
           </h2>
           <p className="mt-1 text-sm text-slate-500">
             Dados consumidos pelas missões e pela Pokedex.
@@ -167,18 +168,26 @@ export function CompanyForm({
             )}
           />
         ))}
+        <div className="md:col-span-8">
+          <AdminQrCodeCard
+            value={form.watch("qrId")}
+            downloadName={`empresa-${form.watch("id")}`}
+            entityLabel="esta empresa"
+          />
+        </div>
         <FormField
           name="active"
           control={form.control}
           render={({ field }) => (
-            <FormItem className="flex items-center gap-3 md:col-span-8">
+            <FormItem className="md:col-span-8">
               <FormControl>
-                <Checkbox
+                <AdminVisibilityControl
                   checked={field.value}
-                  onCheckedChange={(value) => field.onChange(value === true)}
+                  onCheckedChange={field.onChange}
+                  label="Disponibilidade da empresa"
+                  description="Empresas ativas podem participar de missões e aparecer para os participantes."
                 />
               </FormControl>
-              <FormLabel>Company ativa</FormLabel>
             </FormItem>
           )}
         />
@@ -196,7 +205,7 @@ export function CompanyForm({
             disabled={loading || loadingImage || form.formState.isSubmitting}
             className="admin-primary-action h-11 !bg-blue-600 sm:min-w-48"
           >
-            {company ? "Salvar alterações" : "Cadastrar company"}
+            {company ? "Salvar alterações" : "Cadastrar empresa"}
           </Button>
         </div>
       </form>
