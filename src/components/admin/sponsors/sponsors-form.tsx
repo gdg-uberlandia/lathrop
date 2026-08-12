@@ -23,6 +23,7 @@ import {
   Form,
 } from "@/assets/components/ui/form";
 import Image from "next/image";
+import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 
 export interface SponsorFormProps {
   editing?: boolean;
@@ -49,6 +50,7 @@ export function SponsorsForm({
       level: sponsor?.level ?? "",
     },
   });
+  useUnsavedChanges(form.formState.isDirty && !form.formState.isSubmitting);
 
   const handlePhotoFileChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -57,7 +59,7 @@ export function SponsorsForm({
     if (!file) return;
     try {
       const url = await uploadImage(file, "sponsors");
-      form.setValue("logo", url, { shouldValidate: true });
+      form.setValue("logo", url, { shouldDirty: true, shouldValidate: true });
     } catch (err) {
       console.error("Erro ao enviar foto", err);
     }
@@ -94,7 +96,7 @@ export function SponsorsForm({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onFormSubmit)}
-            className="grid grid-cols-1 md:grid-cols-8 gap-6 p-4"
+            className="grid grid-cols-1 gap-6 rounded-2xl border border-white/10 bg-devGray-dark/20 p-4 md:grid-cols-8 md:p-6"
           >
             <FormField
               name="name"
@@ -189,10 +191,10 @@ export function SponsorsForm({
               )}
             />
 
-            <div className="col-span-8 md:col-span-8 flex gap-4 mt-4 justify-center">
+            <div className="sticky bottom-3 z-10 col-span-8 mt-4 flex justify-center rounded-xl border border-white/10 bg-background/95 p-3 shadow-xl backdrop-blur">
               <Button
                 type="submit"
-                disabled={loading}
+                disabled={loading || form.formState.isSubmitting}
                 className="w-full text-white !bg-devBlue-dark rounded-xl border-1 border-devBlue-dark hover:border-white h-11"
               >
                 {editing ? "Salvar alterações" : "Cadastrar"}

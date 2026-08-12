@@ -11,6 +11,7 @@ import { Input } from "@/assets/components/ui/input";
 import { Textarea } from "@/assets/components/ui/textarea";
 import Loading from "@/components/admin/loading-overlay";
 import { useImageUpload } from "@/hooks/useImageUpload";
+import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { Speaker, SpeakerInput } from "@/contracts/speaker";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
@@ -49,6 +50,7 @@ export function SpeakersForm({
     resolver: zodResolver(speakerFormSchema),
     defaultValues: emptyValues(),
   });
+  useUnsavedChanges(form.formState.isDirty && !form.formState.isSubmitting);
 
   useEffect(() => {
     if (!speaker) return;
@@ -108,7 +110,7 @@ export function SpeakersForm({
             "Revise os campos destacados antes de salvar o palestrante.",
           );
         })}
-        className="grid grid-cols-1 gap-6 p-4 md:grid-cols-8"
+        className="grid grid-cols-1 gap-6 rounded-2xl border border-white/10 bg-devGray-dark/20 p-4 md:grid-cols-8 md:p-6"
       >
         <FormField
           name="name"
@@ -227,7 +229,7 @@ export function SpeakersForm({
             </FormItem>
           )}
         />
-        <div className="md:col-span-8">
+        <div className="sticky bottom-3 z-10 rounded-xl border border-white/10 bg-background/95 p-3 shadow-xl backdrop-blur md:col-span-8">
           {validationError && (
             <p role="alert" className="mb-3 text-devRed">
               {validationError}
@@ -240,7 +242,7 @@ export function SpeakersForm({
           )}
           <Button
             type="submit"
-            disabled={loading}
+            disabled={loading || form.formState.isSubmitting}
             className="h-11 w-full rounded-xl !bg-devBlue-dark text-white"
           >
             {editing ? "Salvar alterações" : "Cadastrar palestrante"}

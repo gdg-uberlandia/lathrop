@@ -36,6 +36,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 
 export function ScheduleForm({
   onSubmit,
@@ -54,6 +55,7 @@ export function ScheduleForm({
           speeches: [{ id: uuidv4(), topic: "registration", order: 0 }],
         },
   });
+  useUnsavedChanges(form.formState.isDirty && !form.formState.isSubmitting);
   const { fields, append, remove, move } = useFieldArray({
     control: form.control,
     name: "speeches",
@@ -132,7 +134,7 @@ export function ScheduleForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleFormSubmit)}
-        className="grid grid-cols-12 gap-6 p-4"
+        className="grid grid-cols-12 gap-6 rounded-2xl border border-white/10 bg-devGray-dark/20 p-4 md:p-6"
       >
         {/* Horário inicial */}
         <FormField
@@ -286,7 +288,7 @@ export function ScheduleForm({
           )}
         </div>
 
-        <div className="col-span-12 flex gap-4 mt-4 justify-center">
+        <div className="sticky bottom-3 z-10 col-span-12 mt-4 flex gap-4 rounded-xl border border-white/10 bg-background/95 p-3 shadow-xl backdrop-blur">
           {!editing && (
             <Button
               type="button"
@@ -300,7 +302,7 @@ export function ScheduleForm({
           )}
           <Button
             type="submit"
-            disabled={loading}
+            disabled={loading || form.formState.isSubmitting}
             className="w-full text-white !bg-devBlue-dark rounded-xl border-1 border-devBlue-dark hover:border-white h-11"
           >
             {loading ? "Salvando..." : editing ? "Atualizar" : "Cadastrar"}

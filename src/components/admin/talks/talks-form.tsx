@@ -20,6 +20,7 @@ import { Talk, TalkInput } from "@/contracts/talk";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { v4 as uuidv4 } from "uuid";
 import { TalkFormType, talkFormSchema } from "./talks-schema";
 
@@ -51,6 +52,7 @@ export function TalksForm({
     resolver: zodResolver(talkFormSchema),
     defaultValues: defaults(),
   });
+  useUnsavedChanges(form.formState.isDirty && !form.formState.isSubmitting);
   useEffect(() => {
     if (talk)
       form.reset({
@@ -78,7 +80,7 @@ export function TalksForm({
             "Revise os campos destacados antes de salvar a palestra.",
           );
         })}
-        className="grid grid-cols-1 gap-6 p-4 md:grid-cols-8"
+        className="grid grid-cols-1 gap-6 rounded-2xl border border-white/10 bg-devGray-dark/20 p-4 md:grid-cols-8 md:p-6"
       >
         <FormField
           name="title"
@@ -227,7 +229,7 @@ export function TalksForm({
             </FormItem>
           )}
         />
-        <div className="md:col-span-8">
+        <div className="sticky bottom-3 z-10 rounded-xl border border-white/10 bg-background/95 p-3 shadow-xl backdrop-blur md:col-span-8">
           {validationError && (
             <p role="alert" className="mb-3 text-devRed">
               {validationError}
@@ -240,7 +242,9 @@ export function TalksForm({
           )}
           <Button
             type="submit"
-            disabled={loading || speakers.length === 0}
+            disabled={
+              loading || form.formState.isSubmitting || speakers.length === 0
+            }
             className="h-11 w-full !bg-devBlue-dark text-white"
           >
             {talk ? "Salvar alterações" : "Cadastrar palestra"}

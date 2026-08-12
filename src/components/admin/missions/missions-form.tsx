@@ -19,6 +19,7 @@ import {
 import { Textarea } from "@/assets/components/ui/textarea";
 import Loading from "@/components/admin/loading-overlay";
 import { useImageUpload } from "@/hooks/useImageUpload";
+import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { Mission, MissionInput } from "@/models/mission";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
@@ -63,6 +64,7 @@ export function MissionsForm({
     resolver: zodResolver(missionSchema) as Resolver<MissionFormType>,
     defaultValues: defaults(mission),
   });
+  useUnsavedChanges(form.formState.isDirty && !form.formState.isSubmitting);
   const prerequisites = useFieldArray({
     control: form.control,
     name: "prerequisites",
@@ -107,7 +109,10 @@ export function MissionsForm({
     const file = event.target.files?.[0];
     if (!file) return;
     const url = await uploadImage(file, "missions");
-    form.setValue("imageUrl", url, { shouldValidate: true });
+    form.setValue("imageUrl", url, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
   };
 
   return (
@@ -116,7 +121,7 @@ export function MissionsForm({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(submitHandler)}
-          className="grid grid-cols-1 gap-6 p-4 md:grid-cols-8"
+          className="grid grid-cols-1 gap-6 rounded-2xl border border-white/10 bg-devGray-dark/20 p-4 md:grid-cols-8 md:p-6"
         >
           <FormField
             name="id"
@@ -447,10 +452,10 @@ export function MissionsForm({
             )}
           />
 
-          <div className="col-span-8 mt-4 flex justify-center">
+          <div className="sticky bottom-3 z-10 col-span-8 mt-4 flex justify-center rounded-xl border border-white/10 bg-background/95 p-3 shadow-xl backdrop-blur">
             <Button
               type="submit"
-              disabled={loading || loadingImage}
+              disabled={loading || loadingImage || form.formState.isSubmitting}
               className="h-11 w-full rounded-xl border-1 border-devBlue-dark !bg-devBlue-dark text-white hover:border-white"
             >
               {editing ? "Salvar alterações" : "Cadastrar"}
