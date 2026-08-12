@@ -72,8 +72,9 @@ export default function Schedules() {
           talk.id,
           talk.speakerIds
             .map((speakerId) => speakerNames.get(speakerId))
-            .filter(Boolean)
-            .join(" · "),
+            .filter((speakerName): speakerName is string =>
+              Boolean(speakerName),
+            ),
         ]),
       ),
     [speakerNames, talks],
@@ -88,8 +89,8 @@ export default function Schedules() {
   const speakersFor = useCallback(
     (item: ScheduleEntry) =>
       item.activity.type === "break"
-        ? ""
-        : (talkSpeakers.get(item.activity.talkId) ?? ""),
+        ? []
+        : (talkSpeakers.get(item.activity.talkId) ?? []),
     [talkSpeakers],
   );
   const conflicts = useMemo(
@@ -123,7 +124,7 @@ export default function Schedules() {
         (items) =>
           !term ||
           items.some((item) =>
-            `${name(item)} ${speakersFor(item)} ${item.track ?? "geral"} ${typeLabel[item.activity.type]}`
+            `${name(item)} ${speakersFor(item).join(" ")} ${item.track ?? "geral"} ${typeLabel[item.activity.type]}`
               .toLocaleLowerCase("pt-BR")
               .includes(term),
           ),
@@ -138,7 +139,7 @@ export default function Schedules() {
   const card = (item: ScheduleEntry) => (
     <article
       className={cn(
-        "group flex h-full min-h-24 flex-col rounded-xl border-2 bg-white p-2.5 shadow-sm transition hover:shadow-md",
+        "group flex h-full min-h-32 flex-col rounded-xl border-2 bg-white p-3 shadow-sm transition hover:shadow-md",
         item.track
           ? trackBorderStyles[item.track]
           : "!border-slate-200 hover:!border-slate-300",
@@ -177,10 +178,12 @@ export default function Schedules() {
       <h3 className="mt-1 line-clamp-2 text-sm font-semibold leading-snug text-slate-900">
         {name(item)}
       </h3>
-      {speakersFor(item) && (
-        <p className="mt-1 line-clamp-1 text-xs text-slate-500">
-          {speakersFor(item)}
-        </p>
+      {speakersFor(item).length > 0 && (
+        <ul className="mt-2 space-y-0.5 text-xs text-slate-500">
+          {speakersFor(item).map((speakerName) => (
+            <li key={speakerName}>{speakerName}</li>
+          ))}
+        </ul>
       )}
       {conflicts.has(item.id) && (
         <p className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-amber-700">
@@ -282,7 +285,7 @@ export default function Schedules() {
                                 <Button
                                   asChild
                                   variant="ghost"
-                                  className="h-full min-h-24 w-full border border-dashed !border-slate-200 text-slate-400 hover:!border-blue-300 hover:bg-blue-50 hover:text-blue-700"
+                                  className="h-full min-h-32 w-full border border-dashed !border-slate-200 text-slate-400 hover:!border-blue-300 hover:bg-blue-50 hover:text-blue-700"
                                 >
                                   <Link href={addHref(start, end, track.value)}>
                                     <Plus className="mr-1 size-4" /> Adicionar
