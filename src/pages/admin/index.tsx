@@ -4,7 +4,9 @@ import { useSchedule } from "@/hooks/useSchedule";
 import { useSpeakers } from "@/hooks/useSpeakers";
 import { useSponsors } from "@/hooks/useSponsors";
 import { useTalks } from "@/hooks/useTalks";
-import { SpeechTopicName } from "@/models/schedule";
+import { useCompanies } from "@/hooks/useCompanies";
+import { useTags } from "@/hooks/useTags";
+import { useRaffles } from "@/hooks/useRaffles";
 import {
   ArrowRight,
   Building2,
@@ -14,6 +16,8 @@ import {
   Mic2,
   TriangleAlert,
   Users,
+  Tags,
+  Gift,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -22,6 +26,10 @@ const metricStyles = [
   { icon: Mic2, color: "bg-emerald-50 text-emerald-700 ring-emerald-100" },
   { icon: Building2, color: "bg-amber-50 text-amber-700 ring-amber-100" },
   { icon: Flag, color: "bg-red-50 text-red-700 ring-red-100" },
+  { icon: Building2, color: "bg-violet-50 text-violet-700 ring-violet-100" },
+  { icon: Tags, color: "bg-cyan-50 text-cyan-700 ring-cyan-100" },
+  { icon: Gift, color: "bg-pink-50 text-pink-700 ring-pink-100" },
+  { icon: CalendarDays, color: "bg-indigo-50 text-indigo-700 ring-indigo-100" },
 ];
 
 function getTimestamp(value: unknown) {
@@ -79,6 +87,9 @@ export default function AdminIndex() {
   const { talks, loading: loadingTalks } = useTalks();
   const { missions, loading: loadingMissions } = useMissions();
   const { schedule, loading: loadingSchedule } = useSchedule();
+  const { companies, loading: loadingCompanies } = useCompanies();
+  const { tags, loading: loadingTags } = useTags();
+  const { raffles, loading: loadingRaffles } = useRaffles();
   const sponsorCount = sponsors.reduce(
     (total, level) => total + level.items.length,
     0,
@@ -92,6 +103,14 @@ export default function AdminIndex() {
     (speaker) => !speaker.photoUrl || !speaker.miniBio,
   );
   const inactiveMissions = missions.filter((mission) => !mission.active);
+  const scheduledTalkIds = new Set(
+    schedule.flatMap((item) =>
+      item.activity.type === "talk" ? [item.activity.talkId] : [],
+    ),
+  );
+  const unscheduledTalks = activeTalks.filter(
+    (talk) => !scheduledTalkIds.has(talk.id),
+  );
   const totalTalks = Math.max(talks.length, 1);
   const activePercent = Math.round((activeTalks.length / totalTalks) * 100);
   const reviewPercent = Math.round((openTalks.length / totalTalks) * 100);
@@ -101,7 +120,10 @@ export default function AdminIndex() {
     loadingSponsors ||
     loadingTalks ||
     loadingMissions ||
-    loadingSchedule;
+    loadingSchedule ||
+    loadingCompanies ||
+    loadingTags ||
+    loadingRaffles;
   const metrics = [
     ["Palestrantes", speakers.length, "/admin/speakers"],
     ["Palestras ativas", activeTalks.length, "/admin/talks"],
@@ -111,8 +133,20 @@ export default function AdminIndex() {
       missions.length - inactiveMissions.length,
       "/admin/missions",
     ],
+    ["Companies", companies.length, "/admin/companies"],
+    ["Tags ativas", tags.filter((tag) => tag.active).length, "/admin/tags"],
+    ["Prêmios", raffles.length, "/admin/raffles"],
+    ["Atividades", schedule.length, "/admin/schedule"],
   ] as const;
   const pendingItems = [
+    {
+      count: unscheduledTalks.length,
+      label: "Palestras sem programação",
+      description: "Ainda não possuem data e sala",
+      href: "/admin/schedule",
+      color: "bg-violet-50 text-violet-700",
+      icon: CalendarDays,
+    },
     {
       count: incompleteSpeakers.length,
       label: "Palestrantes incompletos",
@@ -307,24 +341,26 @@ export default function AdminIndex() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {schedule.slice(0, 7).flatMap((slot) =>
-                    slot.speeches.slice(0, 1).map((speech) => (
-                      <tr
-                        key={`${slot.id}-${speech.id}`}
-                        className="hover:bg-slate-50"
-                      >
+                  {schedule.slice(0, 7).map((slot) => {
+                    const activity = slot.activity;
+                    const activityName =
+                      activity.type === "talk"
+                        ? talks.find((talk) => talk.id === activity.talkId)
+                            ?.title || "Palestra removida"
+                        : activity.title;
+                    return (
+                      <tr key={slot.id} className="hover:bg-slate-50">
                         <td className="whitespace-nowrap px-4 py-3 font-medium text-slate-700">
-                          {slot.start}–{slot.end}
+                          {new Intl.DateTimeFormat("pt-BR", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }).format(slot.startAt)}
                         </td>
                         <td className="max-w-56 truncate px-4 py-3 text-slate-700">
-                          {speech.title ||
-                            SpeechTopicName[
-                              speech.topic as keyof typeof SpeechTopicName
-                            ] ||
-                            "Atividade"}
+                          {activityName}
                         </td>
                         <td className="px-4 py-3 text-slate-500">
-                          {speech.path || "Geral"}
+                          {slot.room || "Geral"}
                         </td>
                         <td className="px-4 py-3">
                           <span className="inline-flex items-center gap-1.5 text-emerald-700">
@@ -333,8 +369,8 @@ export default function AdminIndex() {
                           </span>
                         </td>
                       </tr>
-                    )),
-                  )}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

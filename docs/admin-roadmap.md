@@ -166,27 +166,27 @@ mesmos estados de interação.
 
 ### 10. Tags
 
-- [ ] Criar CRUD de tags.
-- [ ] Gerar UUID público.
-- [ ] Suportar imagem, XP, ordem e status.
-- [ ] Exibir e permitir baixar o QR público.
-- [ ] Adicionar busca, filtros e testes.
+- [x] Criar CRUD de tags.
+- [x] Gerar UUID público.
+- [x] Suportar imagem, XP, ordem e status.
+- [x] Exibir e permitir baixar o QR público.
+- [x] Adicionar busca, filtros e testes.
 
 ### 11. Palestrantes
 
-- [ ] Migrar a tela para a estrutura CRUD comum.
-- [ ] Padronizar slug, foto, biografia e redes sociais.
+- [x] Migrar a tela para a estrutura CRUD comum.
+- [x] Padronizar identificador, foto, biografia e redes sociais.
 - [x] Adicionar busca e filtro por visibilidade.
-- [ ] Impedir exclusão enquanto houver palestras relacionadas.
-- [ ] Adicionar testes.
+- [x] Impedir exclusão enquanto houver palestras relacionadas.
+- [x] Adicionar testes relacionais.
 
 ### 12. Palestras
 
-- [ ] Migrar a tela para a estrutura CRUD comum.
-- [ ] Melhorar seleção e busca de palestrantes.
-- [ ] Filtrar por formato, avaliação e status.
-- [ ] Manter relacionamentos por `speakerIds`.
-- [ ] Adicionar testes.
+- [x] Migrar a tela para a estrutura CRUD comum.
+- [x] Melhorar seleção de palestrantes.
+- [x] Filtrar por formato, avaliação e status.
+- [x] Manter relacionamentos por `speakerIds`.
+- [x] Adicionar testes relacionais.
 
 ### 13. Patrocinadores
 
@@ -201,12 +201,12 @@ Sponsors permanecem separados de companies.
 
 ### 14. Prêmios de sorteio
 
-- [ ] Criar CRUD para o catálogo `raffles`.
-- [ ] Cadastrar nome, descrição, imagem, ordem e status.
-- [ ] Inicializar campos operacionais de forma segura.
-- [ ] Impedir edição manual de vencedor e dados do sorteio.
-- [ ] Manter a execução do sorteio sob responsabilidade da Pokedex.
-- [ ] Adicionar testes.
+- [x] Criar CRUD para o catálogo `raffles`.
+- [x] Cadastrar nome, descrição, imagem, ordem e status.
+- [x] Inicializar campos operacionais de forma segura.
+- [x] Impedir edição manual de vencedor e dados do sorteio.
+- [x] Manter a execução do sorteio sob responsabilidade da Pokedex.
+- [x] Adicionar testes.
 
 ### 15. Recompensas
 
@@ -229,45 +229,45 @@ Companies permanecem separadas de patrocinadores.
 
 A implementação atual pode ser descartada.
 
-- [ ] Definir o contrato com os responsáveis pelos sistemas consumidores.
-- [ ] Referenciar palestras por `talkId`.
-- [ ] Modelar salas separadamente.
-- [ ] Modelar intervalos, abertura e encerramento com união discriminada.
-- [ ] Usar data e timestamps, não apenas strings de horário.
+- [x] Definir um contrato local sem dependência de legado.
+- [x] Referenciar palestras por `talkId`.
+- [x] Modelar sala em cada atividade.
+- [x] Modelar intervalos, abertura e encerramento com união discriminada.
+- [x] Usar data e timestamps, não apenas strings de horário.
 - [x] Detectar conflitos de horário.
-- [ ] Remover tipos `any` remanescentes.
+- [x] Remover tipos `any` da programação administrativa.
 - [x] Remover delays artificiais.
-- [ ] Criar visualização prévia da agenda.
-- [ ] Adicionar testes.
+- [x] Criar visualização prévia da agenda.
+- [x] Adicionar testes do contrato.
 
 ## Fase 4 — Desempenho e operação
 
 ### 18. APIs e Firestore
 
-- [ ] Usar consultas diretas por ID.
-- [ ] Remover varreduras completas de coleções.
-- [ ] Adicionar paginação e filtros.
-- [ ] Documentar índices necessários.
+- [x] Usar consultas diretas por ID nos CRUDs reconstruídos.
+- [x] Remover varreduras completas dos CRUDs reconstruídos.
+- [x] Adicionar paginação e filtros nas listagens administrativas.
+- [x] Documentar índices necessários.
 - [ ] Usar transações em alterações relacionais.
-- [ ] Retornar status HTTP corretos.
-- [ ] Nunca converter falha em resposta `200` com `null`.
-- [ ] Evitar arrays crescentes em documentos.
+- [x] Retornar status HTTP corretos nos CRUDs reconstruídos.
+- [x] Nunca converter falha em resposta `200` com `null` nos CRUDs reconstruídos.
+- [x] Evitar arrays crescentes nos novos documentos.
 
 ### 19. Dashboard
 
 - [ ] Consumir dados do cache compartilhado.
 - [x] Corrigir contagem de patrocinadores.
 - [x] Exibir cadastros incompletos e conflitos.
-- [ ] Exibir palestras sem programação.
+- [x] Exibir palestras sem programação.
 - [x] Exibir contagens de entidades ativas.
 - [x] Remover carregamentos e recursos decorativos desnecessários.
 
 ### 20. Testes e observabilidade
 
-- [ ] Testar contratos e fixtures.
+- [x] Testar contratos e fixtures.
 - [ ] Testar criação, atualização e exclusão.
-- [ ] Testar `requireAdmin()`.
-- [ ] Testar acesso sem token e sem papel.
+- [x] Testar `requireAdmin()`.
+- [x] Testar acesso sem token e sem papel.
 - [ ] Testar relacionamentos e timestamps.
 - [ ] Testar nomes de coleção por ambiente.
 - [ ] Adicionar logs estruturados de mutações administrativas.

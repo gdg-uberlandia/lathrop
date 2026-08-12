@@ -12,10 +12,11 @@ import {
   talkFixture,
 } from "./fixtures";
 import { missionFieldsSchema } from "./mission";
-import { raffleFieldsSchema } from "./raffle";
+import { raffleFieldsSchema, raffleInputSchema } from "./raffle";
 import { rewardFieldsSchema } from "./reward";
 import { speakerFieldsSchema } from "./speaker";
-import { tagFieldsSchema } from "./tag";
+import { tagFieldsSchema, tagInputSchema } from "./tag";
+import { scheduleInputSchema } from "./schedule";
 import { talkFieldsSchema } from "./talk";
 
 describe("contratos compartilhados", () => {
@@ -42,6 +43,59 @@ describe("contratos compartilhados", () => {
     });
 
     assert.equal(result.success, false);
+  });
+});
+
+describe("entradas administrativas", () => {
+  it("não permite alterar campos operacionais de sorteio", () => {
+    assert.equal(raffleInputSchema.safeParse(raffleFixture).success, true);
+    const parsed = raffleInputSchema.parse(raffleFixture);
+    assert.equal("winnerId" in parsed, false);
+    assert.equal("status" in parsed, false);
+  });
+
+  it("exige os campos públicos da tag", () => {
+    const {
+      eventId: _eventId,
+      createdAt: _createdAt,
+      updatedAt: _updatedAt,
+      ...input
+    } = tagFixture;
+    assert.equal(tagInputSchema.safeParse(input).success, true);
+    assert.equal(
+      tagInputSchema.safeParse({ ...input, qrId: "inválido" }).success,
+      false,
+    );
+  });
+
+  it("valida horários e atividades da programação", () => {
+    const startAt = new Date("2026-10-31T12:00:00.000Z");
+    assert.equal(
+      scheduleInputSchema.safeParse({
+        id: "agenda-1",
+        date: "2026-10-31",
+        startAt,
+        endAt: new Date("2026-10-31T13:00:00.000Z"),
+        room: "Minas",
+        activity: { type: "talk", talkId: talkFixture.id },
+        active: true,
+        order: 0,
+      }).success,
+      true,
+    );
+    assert.equal(
+      scheduleInputSchema.safeParse({
+        id: "agenda-1",
+        date: "2026-10-31",
+        startAt,
+        endAt: startAt,
+        room: null,
+        activity: { type: "break", title: "Intervalo" },
+        active: true,
+        order: 0,
+      }).success,
+      false,
+    );
   });
 });
 
