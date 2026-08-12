@@ -5,37 +5,36 @@ interface Database extends admin.firestore.Firestore {}
 let db: Database;
 
 if (!admin.apps.length) {
-  if (!process.env.FB_ADMIN_PRIVATE_KEY) {
-    throw new Error(
-      "Missing Firebase private key configuration in environment variables",
-    );
-  }
-  if (!process.env.FB_ADMIN_DATABASE_URL) {
-    throw new Error(
-      "Missing Firebase database URL configuration in environment variables",
-    );
-  }
-  if (!process.env.NEXT_PUBLIC_FB_PROJECT_ID) {
-    throw new Error(
-      "Missing Firebase project ID configuration in environment variables",
-    );
-  }
-  if (!process.env.FB_ADMIN_CLIENT_EMAIL) {
-    throw new Error(
-      "Missing Firebase client email configuration in environment variables",
-    );
-  }
-  const appName = process.env.NEXT_PUBLIC_FB_PROJECT_ID;
-  const adminConfig = {
-    credential: admin.credential.cert({
-      projectId: process.env.NEXT_PUBLIC_FB_PROJECT_ID,
-      clientEmail: process.env.FB_ADMIN_CLIENT_EMAIL,
-      privateKey: process.env.FB_ADMIN_PRIVATE_KEY.replace(/\\n/g, "\n"),
-    }),
-    databaseURL: process.env.FB_ADMIN_DATABASE_URL,
-  };
+  const projectId = process.env.NEXT_PUBLIC_FB_PROJECT_ID;
+  const clientEmail = process.env.FB_ADMIN_CLIENT_EMAIL;
+  const privateKey = process.env.FB_ADMIN_PRIVATE_KEY;
 
-  admin.initializeApp(adminConfig);
+  if (projectId && clientEmail && privateKey) {
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        projectId,
+        clientEmail,
+        privateKey: privateKey.replace(/\\n/g, "\n"),
+      }),
+      // This is only needed by Realtime Database, not by Firestore.
+      databaseURL: process.env.FB_ADMIN_DATABASE_URL,
+      storageBucket: process.env.NEXT_PUBLIC_FB_STORAGE_BUCKET,
+    });
+  } else if (
+    process.env.FIREBASE_CONFIG ||
+    process.env.GOOGLE_CLOUD_PROJECT ||
+    process.env.GCLOUD_PROJECT
+  ) {
+    // App Hosting supplies FIREBASE_CONFIG and Application Default Credentials
+    // automatically in both the build and runtime environments.
+    admin.initializeApp();
+  } else {
+    throw new Error(
+      "Missing Firebase Admin configuration. Set FB_ADMIN_PRIVATE_KEY, " +
+        "FB_ADMIN_CLIENT_EMAIL and NEXT_PUBLIC_FB_PROJECT_ID locally, or use " +
+        "the credentials automatically provided by Firebase App Hosting.",
+    );
+  }
 
   db = admin.firestore();
 
