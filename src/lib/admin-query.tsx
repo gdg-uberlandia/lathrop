@@ -1,7 +1,15 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  MutationCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 
 import { AdminApiError } from "@/lib/admin-api/errors";
+import {
+  AdminFeedback,
+  notifyAdminFeedback,
+} from "@/components/admin/admin-feedback";
 
 function shouldRetry(failureCount: number, error: unknown) {
   if (
@@ -18,6 +26,21 @@ export function AdminQueryProvider({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
+        mutationCache: new MutationCache({
+          onError: (error) =>
+            notifyAdminFeedback({
+              type: "error",
+              message:
+                error instanceof Error
+                  ? error.message
+                  : "Não foi possível concluir a operação",
+            }),
+          onSuccess: () =>
+            notifyAdminFeedback({
+              type: "success",
+              message: "Alterações salvas com sucesso",
+            }),
+        }),
         defaultOptions: {
           queries: {
             gcTime: 10 * 60 * 1_000,
@@ -33,7 +56,10 @@ export function AdminQueryProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      {children}
+      <AdminFeedback />
+    </QueryClientProvider>
   );
 }
 

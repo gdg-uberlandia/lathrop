@@ -16,8 +16,8 @@ export default function DeleteDialog({
   onClose,
   title = "Tem certeza que deseja realizar a exclusão?",
   description = "Esta ação não pode ser desfeita. Isso irá remover permanentemente os dados do registro.",
-  confirmText = "Continue",
-  cancelText = "Cancel",
+  confirmText = "Excluir",
+  cancelText = "Cancelar",
 }: {
   open: boolean;
   onConfirm: () => void;
