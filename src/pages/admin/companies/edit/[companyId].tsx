@@ -6,11 +6,16 @@ import {
 import { CompanyForm } from "@/components/admin/companies/company-form";
 import { Company } from "@/contracts/company";
 import { useCompanies } from "@/hooks/useCompanies";
+import { resolveAdminReturnTo } from "@/lib/admin-return-path";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export default function EditCompanyPage() {
   const router = useRouter();
+  const returnTo = resolveAdminReturnTo(
+    router.query.returnTo,
+    "/admin/companies",
+  );
   const { fetchCompany, updateCompany, loading } = useCompanies();
   const [company, setCompany] = useState<Company | null>(null);
   const [resolved, setResolved] = useState(false);
@@ -25,7 +30,7 @@ export default function EditCompanyPage() {
     <AdminFormPage
       title="Editar empresa"
       description="Atualize os dados da empresa participante."
-      backHref="/admin/companies"
+      backHref={returnTo}
       backLabel="Voltar para empresas"
     >
       {!resolved ? (
@@ -41,7 +46,7 @@ export default function EditCompanyPage() {
           loading={loading}
           onSubmit={async (value) => {
             const result = await updateCompany(value);
-            if (result) await router.push("/admin/companies");
+            if (result) await router.push(returnTo);
           }}
         />
       )}

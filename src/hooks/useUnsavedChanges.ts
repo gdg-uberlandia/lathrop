@@ -13,17 +13,25 @@ export function useUnsavedChanges(enabled: boolean) {
       event.preventDefault();
       event.returnValue = MESSAGE;
     };
-    const beforeRouteChange = () => {
-      if (window.confirm(MESSAGE)) return;
-      router.events.emit("routeChangeError");
-      throw new Error("Route change aborted: unsaved form");
-    };
+    const originalPush = router.push.bind(router);
+    const originalReplace = router.replace.bind(router);
+    const guardedPush: typeof router.push = (...args) =>
+      window.confirm(MESSAGE) ? originalPush(...args) : Promise.resolve(false);
+    const guardedReplace: typeof router.replace = (...args) =>
+      window.confirm(MESSAGE)
+        ? originalReplace(...args)
+        : Promise.resolve(false);
+
+    router.push = guardedPush;
+    router.replace = guardedReplace;
+    router.beforePopState(() => window.confirm(MESSAGE));
 
     window.addEventListener("beforeunload", beforeUnload);
-    router.events.on("routeChangeStart", beforeRouteChange);
     return () => {
       window.removeEventListener("beforeunload", beforeUnload);
-      router.events.off("routeChangeStart", beforeRouteChange);
+      if (router.push === guardedPush) router.push = originalPush;
+      if (router.replace === guardedReplace) router.replace = originalReplace;
+      router.beforePopState(() => true);
     };
-  }, [enabled, router.events]);
+  }, [enabled, router]);
 }

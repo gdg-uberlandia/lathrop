@@ -6,10 +6,15 @@ import {
 import { RaffleForm } from "@/components/admin/raffles/raffle-form";
 import { Raffle } from "@/contracts/raffle";
 import { useRaffles } from "@/hooks/useRaffles";
+import { resolveAdminReturnTo } from "@/lib/admin-return-path";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 export default function EditRafflePage() {
   const router = useRouter();
+  const returnTo = resolveAdminReturnTo(
+    router.query.returnTo,
+    "/admin/raffles",
+  );
   const { fetchRaffle, updateRaffle, loading } = useRaffles();
   const [raffle, setRaffle] = useState<Raffle | null>(null);
   const [resolved, setResolved] = useState(false);
@@ -24,7 +29,7 @@ export default function EditRafflePage() {
     <AdminFormPage
       title="Editar prêmio"
       description="Campos operacionais do sorteio são somente leitura."
-      backHref="/admin/raffles"
+      backHref={returnTo}
       backLabel="Voltar para prêmios"
     >
       {!resolved ? (
@@ -39,7 +44,7 @@ export default function EditRafflePage() {
           raffle={raffle}
           loading={loading}
           onSubmit={async (value) => {
-            if (await updateRaffle(value)) await router.push("/admin/raffles");
+            if (await updateRaffle(value)) await router.push(returnTo);
           }}
         />
       )}

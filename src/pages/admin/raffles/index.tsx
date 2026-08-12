@@ -22,9 +22,14 @@ import DeleteDialog from "@/components/admin/delete-dialog";
 import { Raffle } from "@/contracts/raffle";
 import { useAdminListState } from "@/hooks/useAdminListState";
 import { useRaffles } from "@/hooks/useRaffles";
-import { Gift, Pencil, Trash2 } from "lucide-react";
+import { shouldBypassImageOptimization } from "@/helpers/image";
+import { Gift, ImageOff, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import {
+  adminDestinationWithReturnTo,
+  adminPathWithReturnTo,
+} from "@/lib/admin-return-path";
 import { useMemo, useState } from "react";
 const statusLabel = {
   pending: "Pendente",
@@ -66,7 +71,10 @@ export default function RafflesPage() {
           count={raffles.length}
           icon={Gift}
           action={{
-            href: "/admin/raffles/add-raffle",
+            href: adminPathWithReturnTo(
+              "/admin/raffles/add-raffle",
+              router.asPath,
+            ),
             label: "Cadastrar prêmio",
           }}
         />
@@ -146,10 +154,18 @@ export default function RafflesPage() {
                           alt=""
                           width={40}
                           height={40}
+                          unoptimized={shouldBypassImageOptimization(
+                            item.imageUrl,
+                          )}
                           className="size-10 rounded-lg object-contain"
                         />
                       ) : (
-                        "—"
+                        <span
+                          className="flex size-10 items-center justify-center rounded-lg bg-slate-100 text-slate-400"
+                          title="Imagem não cadastrada"
+                        >
+                          <ImageOff className="size-4" />
+                        </span>
                       )}
                     </TableCell>
                     <TableCell className="font-medium">
@@ -185,7 +201,12 @@ export default function RafflesPage() {
                           variant="secondary"
                           aria-label={`Editar ${item.prizeName}`}
                           onClick={() =>
-                            router.push(`/admin/raffles/edit/${item.id}`)
+                            router.push(
+                              adminDestinationWithReturnTo(
+                                `/admin/raffles/edit/${item.id}`,
+                                router.asPath,
+                              ),
+                            )
                           }
                         >
                           <Pencil />

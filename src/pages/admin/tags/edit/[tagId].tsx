@@ -6,10 +6,12 @@ import {
 import { TagForm } from "@/components/admin/tags/tag-form";
 import { Tag } from "@/contracts/tag";
 import { useTags } from "@/hooks/useTags";
+import { resolveAdminReturnTo } from "@/lib/admin-return-path";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 export default function EditTagPage() {
   const router = useRouter();
+  const returnTo = resolveAdminReturnTo(router.query.returnTo, "/admin/tags");
   const { fetchTag, updateTag, loading } = useTags();
   const [tag, setTag] = useState<Tag | null>(null);
   const [resolved, setResolved] = useState(false);
@@ -24,7 +26,7 @@ export default function EditTagPage() {
     <AdminFormPage
       title="Editar tag"
       description="Atualize a descoberta."
-      backHref="/admin/tags"
+      backHref={returnTo}
       backLabel="Voltar para tags"
     >
       {!resolved ? (
@@ -36,10 +38,11 @@ export default function EditTagPage() {
         />
       ) : (
         <TagForm
+          key={tag.id}
           tag={tag}
           loading={loading}
           onSubmit={async (value) => {
-            if (await updateTag(value)) await router.push("/admin/tags");
+            if (await updateTag(value)) await router.push(returnTo);
           }}
         />
       )}
