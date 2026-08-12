@@ -123,11 +123,19 @@ export function MissionsForm({
           onSubmit={form.handleSubmit(submitHandler)}
           className="grid grid-cols-1 gap-6 rounded-2xl border border-white/10 bg-devGray-dark/20 p-4 md:grid-cols-8 md:p-6"
         >
+          <div className="md:col-span-8">
+            <h2 className="font-semibold text-slate-900">
+              Informações principais
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Identificação e conteúdo apresentado ao participante.
+            </p>
+          </div>
           <FormField
             name="id"
             control={form.control}
             render={({ field }) => (
-              <FormItem className="col-span-8 md:col-span-4">
+              <FormItem className="md:col-span-4">
                 <FormLabel>Identificador</FormLabel>
                 <FormControl>
                   <Input
@@ -148,7 +156,7 @@ export function MissionsForm({
             name="title"
             control={form.control}
             render={({ field }) => (
-              <FormItem className="col-span-8 md:col-span-4">
+              <FormItem className="md:col-span-4">
                 <FormLabel>Título</FormLabel>
                 <FormControl>
                   <Input {...field} />
@@ -162,21 +170,32 @@ export function MissionsForm({
             name="description"
             control={form.control}
             render={({ field }) => (
-              <FormItem className="col-span-8">
+              <FormItem className="md:col-span-8">
                 <FormLabel>Descrição</FormLabel>
                 <FormControl>
                   <Textarea {...field} rows={4} />
                 </FormControl>
+                <p className="text-right text-xs text-slate-400">
+                  {field.value.length}/1000
+                </p>
                 <FormMessage />
               </FormItem>
             )}
           />
 
+          <div className="border-t !border-slate-200 pt-5 md:col-span-8">
+            <h2 className="font-semibold text-slate-900">
+              Validação e recompensa
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Regras necessárias para concluir a missão.
+            </p>
+          </div>
           <FormField
             name="validationType"
             control={form.control}
             render={({ field }) => (
-              <FormItem className="col-span-8 md:col-span-4">
+              <FormItem className="md:col-span-4">
                 <FormLabel>Tipo de validação</FormLabel>
                 <Select value={field.value} onValueChange={field.onChange}>
                   <FormControl>
@@ -203,7 +222,7 @@ export function MissionsForm({
             name="order"
             control={form.control}
             render={({ field }) => (
-              <FormItem className="col-span-4 md:col-span-2">
+              <FormItem className="md:col-span-2">
                 <FormLabel>Ordem</FormLabel>
                 <FormControl>
                   <Input
@@ -224,7 +243,7 @@ export function MissionsForm({
             name="xpAwarded"
             control={form.control}
             render={({ field }) => (
-              <FormItem className="col-span-4 md:col-span-2">
+              <FormItem className="md:col-span-2">
                 <FormLabel>XP concedido</FormLabel>
                 <FormControl>
                   <Input
@@ -250,7 +269,7 @@ export function MissionsForm({
               name="qrId"
               control={form.control}
               render={({ field }) => (
-                <FormItem className="col-span-8">
+                <FormItem className="md:col-span-8">
                   <FormLabel>Identificador público do QR Code</FormLabel>
                   <div className="flex gap-2">
                     <FormControl>
@@ -271,7 +290,7 @@ export function MissionsForm({
           )}
 
           {validationType === "automatic" && (
-            <div className="col-span-8 grid grid-cols-1 gap-4 rounded-xl border p-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 rounded-xl border p-4 md:col-span-8 md:grid-cols-2">
               <FormField
                 name="progressRequirement.type"
                 control={form.control}
@@ -332,7 +351,7 @@ export function MissionsForm({
           )}
 
           {validationType !== "automatic" && (
-            <div className="col-span-8 space-y-3 rounded-xl border p-4">
+            <div className="space-y-3 rounded-xl border p-4 md:col-span-8">
               <div className="flex items-center justify-between">
                 <div>
                   <FormLabel>Pré-requisitos</FormLabel>
@@ -355,7 +374,7 @@ export function MissionsForm({
               {prerequisites.fields.map((item, index) => (
                 <div
                   key={item.id}
-                  className="grid grid-cols-[1fr_2fr_auto] gap-2"
+                  className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_2fr_auto]"
                 >
                   <FormField
                     name={`prerequisites.${index}.type`}
@@ -402,11 +421,19 @@ export function MissionsForm({
             </div>
           )}
 
+          <div className="border-t !border-slate-200 pt-5 md:col-span-8">
+            <h2 className="font-semibold text-slate-900">
+              Apresentação e publicação
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Imagem e disponibilidade para participantes.
+            </p>
+          </div>
           <FormField
             name="imageUrl"
             control={form.control}
             render={({ field }) => (
-              <FormItem className="col-span-8">
+              <FormItem className="md:col-span-8">
                 <FormLabel>Imagem da missão</FormLabel>
                 <div className="flex items-center gap-3">
                   <FormControl>
@@ -435,7 +462,7 @@ export function MissionsForm({
             name="active"
             control={form.control}
             render={({ field }) => (
-              <FormItem className="col-span-8 flex items-center gap-3 space-y-0 rounded-xl border p-4">
+              <FormItem className="flex items-center gap-3 space-y-0 rounded-xl border p-4 md:col-span-8">
                 <FormControl>
                   <Checkbox
                     checked={field.value}
@@ -452,14 +479,26 @@ export function MissionsForm({
             )}
           />
 
-          <div className="sticky bottom-3 z-10 col-span-8 mt-4 flex justify-center rounded-xl border border-white/10 bg-background/95 p-3 shadow-xl backdrop-blur">
-            <Button
-              type="submit"
-              disabled={loading || loadingImage || form.formState.isSubmitting}
-              className="h-11 w-full rounded-xl border-1 border-devBlue-dark !bg-devBlue-dark text-white hover:border-white"
-            >
-              {editing ? "Salvar alterações" : "Cadastrar"}
-            </Button>
+          <div className="sticky bottom-3 z-10 mt-4 flex justify-center rounded-xl border border-white/10 bg-background/95 p-3 shadow-xl backdrop-blur md:col-span-8">
+            <div className="flex w-full flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                className="h-11 !border-slate-300"
+                onClick={() => window.history.back()}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                disabled={
+                  loading || loadingImage || form.formState.isSubmitting
+                }
+                className="admin-primary-action h-11 rounded-lg !bg-blue-600 sm:min-w-48"
+              >
+                {editing ? "Salvar alterações" : "Cadastrar"}
+              </Button>
+            </div>
           </div>
         </form>
       </Form>

@@ -134,24 +134,30 @@ export function ScheduleForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleFormSubmit)}
-        className="grid grid-cols-12 gap-6 rounded-2xl border border-white/10 bg-devGray-dark/20 p-4 md:p-6"
+        className="grid grid-cols-1 gap-6 rounded-2xl border border-white/10 bg-devGray-dark/20 p-4 md:grid-cols-12 md:p-6"
       >
+        <div className="md:col-span-12">
+          <h2 className="font-semibold text-slate-900">Horário</h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Defina o início e o fim deste bloco da programação.
+          </p>
+        </div>
         {/* Horário inicial */}
         <FormField
           control={form.control}
           name="start"
           render={({ field }) => (
-            <FormItem className="col-span-6">
+            <FormItem className="md:col-span-6">
               <FormLabel>Início</FormLabel>
               <FormControl>
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2 sm:flex-row">
                   <Select
                     value={field.value.split(":")[0]}
                     onValueChange={(h) =>
                       field.onChange(`${h}:${field.value.split(":")[1]}`)
                     }
                   >
-                    <SelectTrigger className="w-40">
+                    <SelectTrigger className="w-full sm:w-40">
                       <SelectValue placeholder="Hora" />
                     </SelectTrigger>
                     <SelectContent>
@@ -172,7 +178,7 @@ export function ScheduleForm({
                       field.onChange(`${field.value.split(":")[0]}:${m}`)
                     }
                   >
-                    <SelectTrigger className="w-40">
+                    <SelectTrigger className="w-full sm:w-40">
                       <SelectValue placeholder="Minuto" />
                     </SelectTrigger>
                     <SelectContent>
@@ -197,17 +203,17 @@ export function ScheduleForm({
           control={form.control}
           name="end"
           render={({ field }) => (
-            <FormItem className="col-span-6">
+            <FormItem className="md:col-span-6">
               <FormLabel>Fim</FormLabel>
               <FormControl>
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2 sm:flex-row">
                   <Select
                     value={field.value.split(":")[0]}
                     onValueChange={(h) =>
                       field.onChange(`${h}:${field.value.split(":")[1]}`)
                     }
                   >
-                    <SelectTrigger className="w-40">
+                    <SelectTrigger className="w-full sm:w-40">
                       <SelectValue placeholder="Hora" />
                     </SelectTrigger>
                     <SelectContent>
@@ -228,7 +234,7 @@ export function ScheduleForm({
                       field.onChange(`${field.value.split(":")[0]}:${m}`)
                     }
                   >
-                    <SelectTrigger className="w-40">
+                    <SelectTrigger className="w-full sm:w-40">
                       <SelectValue placeholder="Minuto" />
                     </SelectTrigger>
                     <SelectContent>
@@ -249,6 +255,12 @@ export function ScheduleForm({
           )}
         />
 
+        <div className="border-t !border-slate-200 pt-5 md:col-span-12">
+          <h2 className="font-semibold text-slate-900">Atividades</h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Adicione e reordene o conteúdo exibido neste horário.
+          </p>
+        </div>
         {/* Lista de Speechs dinâmicos */}
         <DndContext
           sensors={sensors}
@@ -275,7 +287,7 @@ export function ScheduleForm({
           </SortableContext>
         </DndContext>
 
-        <div className="col-span-12 flex justify-end mb-4">
+        <div className="mb-4 flex justify-end md:col-span-12">
           {fields.length < 5 && (
             <Button
               type="button"
@@ -288,7 +300,7 @@ export function ScheduleForm({
           )}
         </div>
 
-        <div className="sticky bottom-3 z-10 col-span-12 mt-4 flex gap-4 rounded-xl border border-white/10 bg-background/95 p-3 shadow-xl backdrop-blur">
+        <div className="sticky bottom-3 z-10 mt-4 flex flex-col gap-3 rounded-xl border border-white/10 bg-background/95 p-3 shadow-xl backdrop-blur sm:flex-row md:col-span-12">
           {!editing && (
             <Button
               type="button"
@@ -301,9 +313,18 @@ export function ScheduleForm({
             </Button>
           )}
           <Button
+            type="button"
+            variant="outline"
+            disabled={loading}
+            className="h-11 w-full !border-slate-300"
+            onClick={() => window.history.back()}
+          >
+            Cancelar
+          </Button>
+          <Button
             type="submit"
             disabled={loading || form.formState.isSubmitting}
-            className="w-full text-white !bg-devBlue-dark rounded-xl border-1 border-devBlue-dark hover:border-white h-11"
+            className="admin-primary-action h-11 w-full rounded-lg !bg-blue-600"
           >
             {loading ? "Salvando..." : editing ? "Atualizar" : "Cadastrar"}
           </Button>

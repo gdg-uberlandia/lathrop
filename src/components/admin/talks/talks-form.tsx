@@ -82,6 +82,14 @@ export function TalksForm({
         })}
         className="grid grid-cols-1 gap-6 rounded-2xl border border-white/10 bg-devGray-dark/20 p-4 md:grid-cols-8 md:p-6"
       >
+        <div className="md:col-span-8">
+          <h2 className="font-semibold text-slate-900">
+            Conteúdo e responsáveis
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Informações exibidas na programação pública.
+          </p>
+        </div>
         <FormField
           name="title"
           control={form.control}
@@ -181,10 +189,21 @@ export function TalksForm({
               <FormControl>
                 <Textarea {...field} rows={7} />
               </FormControl>
+              <p className="text-right text-xs text-slate-400">
+                {field.value.length}/3000
+              </p>
               {fieldState.error && <span>{fieldState.error.message}</span>}
             </FormItem>
           )}
         />
+        <div className="border-t !border-slate-200 pt-5 md:col-span-8">
+          <h2 className="font-semibold text-slate-900">
+            Publicação e avaliação
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Controle quando a palestra fica disponível e pode ser avaliada.
+          </p>
+        </div>
         <FormField
           name="evaluationStatus"
           control={form.control}
@@ -240,15 +259,25 @@ export function TalksForm({
               {form.formState.errors.id.message}
             </p>
           )}
-          <Button
-            type="submit"
-            disabled={
-              loading || form.formState.isSubmitting || speakers.length === 0
-            }
-            className="h-11 w-full !bg-devBlue-dark text-white"
-          >
-            {talk ? "Salvar alterações" : "Cadastrar palestra"}
-          </Button>
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              className="h-11 !border-slate-300"
+              onClick={() => window.history.back()}
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              disabled={
+                loading || form.formState.isSubmitting || speakers.length === 0
+              }
+              className="admin-primary-action h-11 !bg-blue-600 sm:min-w-48"
+            >
+              {talk ? "Salvar alterações" : "Cadastrar palestra"}
+            </Button>
+          </div>
         </div>
       </form>
     </Form>

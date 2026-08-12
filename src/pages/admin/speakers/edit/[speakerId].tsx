@@ -1,71 +1,49 @@
-import Loading from "@/components/admin/loading-overlay";
+import {
+  AdminEmptyState,
+  AdminErrorState,
+  AdminFormPage,
+  AdminLoadingState,
+} from "@/components/admin/admin-page";
 import { SpeakersForm } from "@/components/admin/speakers/speakers-form";
-import { useSpeakers } from "@/hooks/useSpeakers";
 import { Speaker } from "@/contracts/speaker";
-import { ChevronLeft } from "lucide-react";
-import Link from "next/link";
+import { useSpeakers } from "@/hooks/useSpeakers";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export default function EditSpeakerPage() {
   const router = useRouter();
   const { error, loading, fetchSpeaker, updateSpeaker } = useSpeakers();
-  const { speakerId } = router.query;
   const [speaker, setSpeaker] = useState<Speaker | null>(null);
-
   useEffect(() => {
-    const fetchData = async () => {
-      if (speakerId) {
-        const data = await fetchSpeaker(String(speakerId));
-        setSpeaker(data);
-      }
-    };
-    fetchData();
-  }, [speakerId, fetchSpeaker]);
-
+    if (typeof router.query.speakerId === "string")
+      void fetchSpeaker(router.query.speakerId).then(setSpeaker);
+  }, [fetchSpeaker, router.query.speakerId]);
   return (
-    <>
-      {loading && <Loading />}
-      <div className="p-4">
-        <div className="flex w-full items-center gap-2 justify-between">
-          <Link
-            href="/admin/speakers"
-            className="text-white size-12 bg-devGray-light/40 flex items-center justify-center bg-devBlue-dark border-1 border-white/5 hover:border-1 hover:border-devBlue-dark hover:!text-devBlue-dark rounded-full"
-          >
-            <ChevronLeft />
-          </Link>
-          <div className="grow">
-            <h1 className="text-xl text-white/80">Edição de Palestrante</h1>
-          </div>
-        </div>
-
-        <div className="mt-12 flex flex-col lg:flex-row lg:justify-center lg:items-start gap-8">
-          <div className="w-full max-w-[900px] mx-auto">
-            {error && (
-              <p role="alert" className="mb-4 text-devRed">
-                {error}
-              </p>
-            )}
-            {!speaker && !loading ? (
-              <h2>Palestrante não encontrado</h2>
-            ) : (
-              speaker && (
-                <div>
-                  <SpeakersForm
-                    onSubmit={async (input) => {
-                      const updatedSpeaker = await updateSpeaker(input);
-                      if (updatedSpeaker) await router.push("/admin/speakers");
-                    }}
-                    loading={loading}
-                    speaker={speaker}
-                    editing
-                  />
-                </div>
-              )
-            )}
-          </div>
-        </div>
-      </div>
-    </>
+    <AdminFormPage
+      title="Editar palestrante"
+      description="Atualize as informações públicas e profissionais."
+      backHref="/admin/speakers"
+      backLabel="Voltar para palestrantes"
+    >
+      {error && <AdminErrorState message={error} />}
+      {!speaker && loading ? (
+        <AdminLoadingState />
+      ) : !speaker ? (
+        <AdminEmptyState
+          title="Palestrante não encontrado"
+          description="O registro pode ter sido removido ou o endereço está incorreto."
+        />
+      ) : (
+        <SpeakersForm
+          speaker={speaker}
+          editing
+          loading={loading}
+          onSubmit={async (input) => {
+            const updated = await updateSpeaker(input);
+            if (updated) await router.push("/admin/speakers");
+          }}
+        />
+      )}
+    </AdminFormPage>
   );
 }

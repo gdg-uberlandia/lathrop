@@ -112,6 +112,14 @@ export function SpeakersForm({
         })}
         className="grid grid-cols-1 gap-6 rounded-2xl border border-white/10 bg-devGray-dark/20 p-4 md:grid-cols-8 md:p-6"
       >
+        <div className="md:col-span-8">
+          <h2 className="font-semibold text-slate-900">
+            Informações principais
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Identificação e apresentação pública do palestrante.
+          </p>
+        </div>
         <FormField
           name="name"
           control={form.control}
@@ -184,10 +192,19 @@ export function SpeakersForm({
               <FormControl>
                 <Textarea {...field} rows={5} />
               </FormControl>
+              <p className="text-right text-xs text-slate-400">
+                {field.value.length}/3000
+              </p>
               {fieldState.error && <span>{fieldState.error.message}</span>}
             </FormItem>
           )}
         />
+        <div className="border-t !border-slate-200 pt-5 md:col-span-8">
+          <h2 className="font-semibold text-slate-900">Contato e publicação</h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Redes sociais e visibilidade no site.
+          </p>
+        </div>
         <FormField
           name="socialMedia.instagram"
           control={form.control}
@@ -240,13 +257,23 @@ export function SpeakersForm({
               {form.formState.errors.id.message}
             </p>
           )}
-          <Button
-            type="submit"
-            disabled={loading || form.formState.isSubmitting}
-            className="h-11 w-full rounded-xl !bg-devBlue-dark text-white"
-          >
-            {editing ? "Salvar alterações" : "Cadastrar palestrante"}
-          </Button>
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              className="h-11 !border-slate-300 sm:w-auto"
+              onClick={() => window.history.back()}
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              disabled={loading || form.formState.isSubmitting}
+              className="admin-primary-action h-11 rounded-lg !bg-blue-600 sm:min-w-48"
+            >
+              {editing ? "Salvar alterações" : "Cadastrar palestrante"}
+            </Button>
+          </div>
         </div>
       </form>
     </Form>

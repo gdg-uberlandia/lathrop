@@ -31,7 +31,7 @@ const SortableSpeech = function (props: any) {
     <div
       ref={sortable.setNodeRef}
       style={style}
-      className="col-span-12 py-4 border-1 border-devGray bg-devGray-dark/60 rounded-xl grid grid-cols-12"
+      className="admin-surface grid grid-cols-[auto_1fr_auto] rounded-xl py-4 md:col-span-12"
     >
       <div className="h-10 flex items-center justify-center">
         <GripVertical
@@ -40,7 +40,7 @@ const SortableSpeech = function (props: any) {
           className="cursor-grab size-5 bg-transparent text-devGray-light"
         />
       </div>
-      <div className="col-span-10 flex flex-col gap-4 ">
+      <div className="min-w-0 px-2 flex flex-col gap-4">
         <FormField
           control={form.control}
           name={`speeches.${idx}.topic`}
@@ -290,7 +290,8 @@ const SortableSpeech = function (props: any) {
           size="sm"
           onClick={() => handleRemoveSpeech(idx)}
           disabled={fieldsLength <= 1}
-          className="border-1 hover:bg-devRed-dark rounded-xl size-10"
+          aria-label={`Remover atividade ${idx + 1}`}
+          className="size-10 rounded-lg !border-slate-200 text-slate-500 hover:bg-red-50 hover:text-red-600"
         >
           <X />
         </Button>
