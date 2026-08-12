@@ -1,4 +1,5 @@
 import { Button } from "@/assets/components/ui/button";
+import { cn } from "@/assets/lib/utils";
 import {
   AdminEmptyState,
   AdminErrorState,
@@ -15,6 +16,7 @@ import {
 } from "@/contracts/schedule";
 import { useSchedule } from "@/hooks/useSchedule";
 import { useTalks } from "@/hooks/useTalks";
+import { useSpeakers } from "@/hooks/useSpeakers";
 import {
   CalendarDays,
   Pencil,
@@ -39,17 +41,42 @@ const typeLabel = {
   break: "Intervalo",
   closing: "Encerramento",
 } as const;
+const trackBorderStyles: Record<ScheduleTrack, string> = {
+  MINAS: "!border-amber-400 hover:!border-amber-500",
+  CURADO: "!border-red-400 hover:!border-red-500",
+  CANASTRA: "!border-pink-400 hover:!border-pink-500",
+  TRANCA: "!border-blue-400 hover:!border-blue-500",
+  COMUNIDADE: "!border-emerald-400 hover:!border-emerald-500",
+};
 
 export default function Schedules() {
   const router = useRouter();
   const { schedule, deleteSchedule, loading, error, fetchSchedule } =
     useSchedule();
   const { talks } = useTalks();
+  const { speakers } = useSpeakers();
   const [selected, setSelected] = useState<ScheduleEntry | null>(null);
   const [search, setSearch] = useState("");
   const talkNames = useMemo(
     () => new Map(talks.map((talk) => [talk.id, talk.title])),
     [talks],
+  );
+  const speakerNames = useMemo(
+    () => new Map(speakers.map((speaker) => [speaker.id, speaker.name])),
+    [speakers],
+  );
+  const talkSpeakers = useMemo(
+    () =>
+      new Map(
+        talks.map((talk) => [
+          talk.id,
+          talk.speakerIds
+            .map((speakerId) => speakerNames.get(speakerId))
+            .filter(Boolean)
+            .join(" · "),
+        ]),
+      ),
+    [speakerNames, talks],
   );
   const name = useCallback(
     (item: ScheduleEntry) =>
@@ -57,6 +84,13 @@ export default function Schedules() {
         ? item.activity.title
         : (talkNames.get(item.activity.talkId) ?? "Palestra removida"),
     [talkNames],
+  );
+  const speakersFor = useCallback(
+    (item: ScheduleEntry) =>
+      item.activity.type === "break"
+        ? ""
+        : (talkSpeakers.get(item.activity.talkId) ?? ""),
+    [talkSpeakers],
   );
   const conflicts = useMemo(
     () =>
@@ -89,20 +123,27 @@ export default function Schedules() {
         (items) =>
           !term ||
           items.some((item) =>
-            `${name(item)} ${item.track ?? "geral"} ${typeLabel[item.activity.type]}`
+            `${name(item)} ${speakersFor(item)} ${item.track ?? "geral"} ${typeLabel[item.activity.type]}`
               .toLocaleLowerCase("pt-BR")
               .includes(term),
           ),
       )
       .sort((a, b) => a[0].startAt.getTime() - b[0].startAt.getTime());
-  }, [schedule, search, name]);
+  }, [schedule, search, name, speakersFor]);
   const addHref = (start: string, end: string, track?: ScheduleTrack) => ({
     pathname: "/admin/schedule/add-schedule",
     query: { start, end, type: "talk", ...(track ? { track } : {}) },
   });
 
   const card = (item: ScheduleEntry) => (
-    <article className="group flex h-full min-h-32 flex-col rounded-xl border !border-slate-200 bg-white p-3 shadow-sm transition hover:border-blue-200 hover:shadow-md">
+    <article
+      className={cn(
+        "group flex h-full min-h-24 flex-col rounded-xl border-2 bg-white p-2.5 shadow-sm transition hover:shadow-md",
+        item.track
+          ? trackBorderStyles[item.track]
+          : "!border-slate-200 hover:!border-slate-300",
+      )}
+    >
       <div className="flex items-start justify-between gap-2">
         <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
           {typeLabel[item.activity.type]}
@@ -133,11 +174,16 @@ export default function Schedules() {
           </Button>
         </div>
       </div>
-      <h3 className="mt-2 line-clamp-3 text-sm font-semibold leading-snug text-slate-900">
+      <h3 className="mt-1 line-clamp-2 text-sm font-semibold leading-snug text-slate-900">
         {name(item)}
       </h3>
+      {speakersFor(item) && (
+        <p className="mt-1 line-clamp-1 text-xs text-slate-500">
+          {speakersFor(item)}
+        </p>
+      )}
       {conflicts.has(item.id) && (
-        <p className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-amber-700">
+        <p className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-amber-700">
           <TriangleAlert className="size-3.5" /> Conflito
         </p>
       )}
@@ -236,7 +282,7 @@ export default function Schedules() {
                                 <Button
                                   asChild
                                   variant="ghost"
-                                  className="h-full min-h-32 w-full border border-dashed !border-slate-200 text-slate-400 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"
+                                  className="h-full min-h-24 w-full border border-dashed !border-slate-200 text-slate-400 hover:!border-blue-300 hover:bg-blue-50 hover:text-blue-700"
                                 >
                                   <Link href={addHref(start, end, track.value)}>
                                     <Plus className="mr-1 size-4" /> Adicionar
