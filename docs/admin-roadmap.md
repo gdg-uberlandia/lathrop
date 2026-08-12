@@ -14,6 +14,8 @@ gravar documentos compatíveis com os contratos consumidos pela Pokedex.
 - Toda mutação administrativa passa pelas APIs do site.
 - UX e UI devem permanecer consistentes em todas as entidades.
 - Páginas legadas podem ser descartadas quando a reconstrução for mais segura.
+- Não serão criados novos testes automatizados no repositório do site; a suíte
+  existente será apenas preservada durante as alterações.
 
 ## Estado atual
 

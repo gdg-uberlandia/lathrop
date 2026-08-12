@@ -16,7 +16,6 @@ import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import QRCode from "qrcode";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
@@ -58,7 +57,15 @@ export function TagForm({
   useUnsavedChanges(form.formState.isDirty && !form.formState.isSubmitting);
   const qrId = form.watch("qrId");
   useEffect(() => {
-    void QRCode.toDataURL(qrId, { width: 320, margin: 2 }).then(setQr);
+    let active = true;
+    void import("qrcode").then(({ default: QRCode }) =>
+      QRCode.toDataURL(qrId, { width: 320, margin: 2 }).then((value) => {
+        if (active) setQr(value);
+      }),
+    );
+    return () => {
+      active = false;
+    };
   }, [qrId]);
   const upload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];

@@ -28,7 +28,6 @@ import { Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useEffect } from "react";
 import { useState } from "react";
-import QRCode from "qrcode";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
@@ -83,7 +82,15 @@ export function MissionsForm({
 
   useEffect(() => {
     if (!qrId) return setQrPreview("");
-    void QRCode.toDataURL(qrId, { width: 320, margin: 2 }).then(setQrPreview);
+    let active = true;
+    void import("qrcode").then(({ default: QRCode }) =>
+      QRCode.toDataURL(qrId, { width: 320, margin: 2 }).then((value) => {
+        if (active) setQrPreview(value);
+      }),
+    );
+    return () => {
+      active = false;
+    };
   }, [qrId]);
 
   useEffect(() => {
