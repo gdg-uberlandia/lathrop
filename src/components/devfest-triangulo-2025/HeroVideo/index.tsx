@@ -79,10 +79,10 @@ export const HeroVideo = ({ videoId, children }: Props) => {
   return (
     <section
       ref={heroRef}
-      className="relative isolate min-h-[600px] w-full overflow-hidden bg-black md:min-h-[700px] lg:aspect-video lg:min-h-0"
+      className="relative isolate h-[calc(100svh-68px)] min-h-[480px] w-full overflow-hidden bg-black"
     >
       <h1 className="sr-only">DevFest Triângulo 2026</h1>
-      <div className="pointer-events-none absolute inset-0 scale-125">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
         {shouldLoadVideo && (
           <iframe
             ref={iframeRef}
@@ -93,8 +93,7 @@ export const HeroVideo = ({ videoId, children }: Props) => {
             tabIndex={-1}
             aria-hidden="true"
             frameBorder="0"
-            width="100%"
-            height="100%"
+            className="absolute left-1/2 top-1/2 h-[56.25vw] min-h-full w-[177.78vh] min-w-full -translate-x-1/2 -translate-y-1/2 border-0"
             onLoad={() => setIsVideoReady(true)}
           />
         )}
@@ -102,20 +101,20 @@ export const HeroVideo = ({ videoId, children }: Props) => {
 
       <div className="absolute inset-0 z-10 bg-black/80" />
 
-      <div className="absolute inset-0 z-20 mx-auto flex w-full max-w-xl flex-col items-center justify-center px-6 text-center text-devWhite-ice">
+      <div className="absolute inset-0 z-20 mx-auto flex w-full max-w-xl flex-col items-center justify-center px-6 py-6 text-center text-devWhite-ice">
         <Image
           alt="DevFest Triângulo 2026"
           src={AndroidCheese}
           priority
-          className="h-auto w-48 object-contain sm:w-64 lg:w-72"
+          className="h-auto w-36 object-contain [@media(min-height:700px)]:w-52 [@media(min-height:900px)]:w-64"
         />
         <Image
           alt="DevFest Triângulo 2026"
           src={Title}
           priority
-          className="h-auto w-full max-w-lg object-contain"
+          className="h-auto w-full max-w-sm object-contain [@media(min-height:800px)]:max-w-lg"
         />
-        <div className="mt-4 flex flex-col items-center gap-3 text-sm sm:flex-row sm:gap-6 sm:text-base">
+        <div className="mt-3 flex flex-col items-center gap-2 text-sm sm:flex-row sm:gap-6 [@media(min-height:800px)]:mt-4 [@media(min-height:800px)]:text-base">
           <span className="flex items-center gap-2">
             <CalendarDays className="size-5 text-devYellow" />
             <span>31 de Outubro</span>

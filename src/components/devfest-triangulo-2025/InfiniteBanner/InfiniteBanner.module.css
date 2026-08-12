@@ -18,7 +18,7 @@
   content: "";
   position: absolute;
   top: 0;
-  width: 170px;
+  width: clamp(64px, 12vw, 170px);
   height: 100%;
   z-index: 10;
   pointer-events: none;
@@ -26,12 +26,24 @@
 
 .InfiniteBannerWrapper::before {
   left: 0;
-  background: linear-gradient(to right, var(--black) 0%, transparent 100%);
+  background: linear-gradient(
+    to right,
+    #000 0%,
+    rgb(0 0 0 / 92%) 24%,
+    rgb(0 0 0 / 58%) 54%,
+    transparent 100%
+  );
 }
 
 .InfiniteBannerWrapper::after {
   right: 0;
-  background: linear-gradient(to left, var(--black) 0%, transparent 100%);
+  background: linear-gradient(
+    to left,
+    #000 0%,
+    rgb(0 0 0 / 92%) 24%,
+    rgb(0 0 0 / 58%) 54%,
+    transparent 100%
+  );
 }
 
 .InfiniteBannerTrack {
