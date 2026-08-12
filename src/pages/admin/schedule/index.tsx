@@ -53,11 +53,11 @@ const typeLabel = {
   closing: "Encerramento",
 } as const;
 const trackBorderStyles: Record<ScheduleTrack, string> = {
-  MINAS: "!border-amber-400 hover:!border-amber-500",
-  CURADO: "!border-red-400 hover:!border-red-500",
-  CANASTRA: "!border-pink-400 hover:!border-pink-500",
-  TRANCA: "!border-blue-400 hover:!border-blue-500",
-  COMUNIDADE: "!border-emerald-400 hover:!border-emerald-500",
+  MINAS: "!border-amber-200 hover:!border-amber-300",
+  CURADO: "!border-red-200 hover:!border-red-300",
+  CANASTRA: "!border-pink-200 hover:!border-pink-300",
+  TRANCA: "!border-blue-200 hover:!border-blue-300",
+  COMUNIDADE: "!border-emerald-200 hover:!border-emerald-300",
 };
 
 export default function Schedules() {
