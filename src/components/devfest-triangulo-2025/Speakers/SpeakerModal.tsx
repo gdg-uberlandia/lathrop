@@ -162,7 +162,7 @@ const SpeakerModal: React.FC<ModalProps> = ({
                       ? "Keynote"
                       : talk.format === "panel"
                         ? "Painel"
-                        : "Talk"}
+                        : "Palestra"}
                   </>
                 </Tag>
                 <h3 className="mt-2">{talk.title}</h3>

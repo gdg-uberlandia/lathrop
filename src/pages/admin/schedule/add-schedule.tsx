@@ -4,18 +4,35 @@ import {
 } from "@/components/admin/admin-page";
 import { ScheduleForm } from "@/components/admin/schedule/schedule-form";
 import { useSchedule } from "@/hooks/useSchedule";
-import { ScheduleTrack, scheduleTrackSchema } from "@/contracts/schedule";
+import {
+  ScheduleTrack,
+  scheduleTimeSchema,
+  scheduleTrackSchema,
+} from "@/contracts/schedule";
 import { useRouter } from "next/router";
 
 export default function AddSchedulePage() {
   const { createSchedule, loading } = useSchedule();
   const router = useRouter();
-  const type = ["talk", "opening", "break", "closing"].includes(
-    String(router.query.type),
-  )
-    ? (router.query.type as "talk" | "opening" | "break" | "closing")
+  const type = [
+    "talk",
+    "opening",
+    "opening_keynote",
+    "break",
+    "closing",
+    "closing_keynote",
+  ].includes(String(router.query.type))
+    ? (router.query.type as
+        | "talk"
+        | "opening"
+        | "opening_keynote"
+        | "break"
+        | "closing"
+        | "closing_keynote")
     : undefined;
   const parsedTrack = scheduleTrackSchema.safeParse(router.query.track);
+  const parsedStart = scheduleTimeSchema.safeParse(router.query.start);
+  const parsedEnd = scheduleTimeSchema.safeParse(router.query.end);
   return (
     <AdminFormPage
       title="Adicionar horário"
@@ -34,14 +51,8 @@ export default function AddSchedulePage() {
           loading={loading}
           initialValues={{
             type,
-            startTime:
-              typeof router.query.start === "string"
-                ? router.query.start
-                : undefined,
-            endTime:
-              typeof router.query.end === "string"
-                ? router.query.end
-                : undefined,
+            startTime: parsedStart.success ? parsedStart.data : undefined,
+            endTime: parsedEnd.success ? parsedEnd.data : undefined,
             track: parsedTrack.success
               ? (parsedTrack.data as ScheduleTrack)
               : undefined,

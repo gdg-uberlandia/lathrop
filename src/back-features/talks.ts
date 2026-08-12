@@ -6,6 +6,7 @@ import {
   talkCreateSchema,
   talkFieldsSchema,
   talkUpdateSchema,
+  normalizeStoredTalkFormat,
 } from "@/contracts/talk";
 import { db } from "@/utils/db/index";
 import { getFirestoreCollectionName } from "@/utils/db/collection-name";
@@ -19,6 +20,7 @@ const parseTalk = (id: string, value: FirebaseFirestore.DocumentData) =>
   talkFieldsSchema.parse({
     ...value,
     id,
+    format: normalizeStoredTalkFormat(value.format),
     createdAt:
       value.createdAt instanceof Timestamp
         ? value.createdAt.toDate()

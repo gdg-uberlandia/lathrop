@@ -5,12 +5,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/assets/components/ui/select";
-
-const TIME_OPTIONS = Array.from({ length: 24 * 4 }, (_, index) => {
-  const hour = Math.floor(index / 4);
-  const minute = (index % 4) * 15;
-  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
-});
+const START_MINUTES = 8 * 60;
+const END_MINUTES = 21 * 60;
+const TIME_OPTIONS = Array.from(
+  { length: (END_MINUTES - START_MINUTES) / 10 + 1 },
+  (_, index) => {
+    const totalMinutes = START_MINUTES + index * 10;
+    const hour = Math.floor(totalMinutes / 60);
+    const minute = totalMinutes % 60;
+    return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+  },
+);
 
 export function ScheduleTimeSelect({
   value,

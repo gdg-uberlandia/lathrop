@@ -74,9 +74,11 @@ export default function SchedulePreviewPage() {
             /schedule
           </span>
         </div>
-        <div className="min-h-[640px] bg-slate-950 p-5 text-white md:p-10">
-          <h2 className="text-3xl font-bold">Programação do evento</h2>
-          <p className="mt-2 text-white/60">
+        <div className="min-h-[640px] bg-slate-950 p-5 !text-white md:p-10">
+          <h2 className="text-3xl font-bold !text-white">
+            Programação do evento
+          </h2>
+          <p className="mt-2 !text-slate-300">
             Confira os horários, trilhas e conteúdos do DevFest Triângulo.
           </p>
           <div className="mt-8 space-y-7">
@@ -84,7 +86,7 @@ export default function SchedulePreviewPage() {
               const first = items[0];
               return (
                 <section key={`${first.startAt}-${first.endAt}`}>
-                  <h3 className="mb-3 font-semibold text-white/80">
+                  <h3 className="mb-3 font-semibold !text-slate-200">
                     {time(first.startAt)}–{time(first.endAt)}
                   </h3>
                   <div
@@ -96,7 +98,7 @@ export default function SchedulePreviewPage() {
                   >
                     {items.map((item) => {
                       const talk =
-                        item.activity.type === "break"
+                        "title" in item.activity
                           ? null
                           : talkMap.get(item.activity.talkId);
                       const names = talk?.speakerIds
@@ -106,22 +108,22 @@ export default function SchedulePreviewPage() {
                       return (
                         <article
                           key={item.id}
-                          className="rounded-2xl border !border-white/10 bg-white/5 p-5"
+                          className="rounded-2xl border !border-white/10 bg-white/5 p-5 !text-white"
                         >
-                          <span className="text-xs text-white/60">
+                          <span className="text-xs !text-slate-300">
                             {item.track
                               ? SCHEDULE_TRACKS.find(
                                   (track) => track.value === item.track,
                                 )?.label
                               : "Geral"}
                           </span>
-                          <h4 className="mt-3 font-semibold">
-                            {item.activity.type === "break"
+                          <h4 className="mt-3 font-semibold !text-white">
+                            {"title" in item.activity
                               ? item.activity.title
                               : (talk?.title ?? "Palestra removida")}
                           </h4>
                           {names && (
-                            <p className="mt-2 text-sm text-white/70">
+                            <p className="mt-2 text-sm !text-slate-200">
                               {names}
                             </p>
                           )}

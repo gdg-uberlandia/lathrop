@@ -100,7 +100,7 @@ describe("entradas administrativas", () => {
     assert.equal(
       scheduleInputSchema.safeParse({
         id: "agenda-minuto-invalido",
-        startTime: "09:10",
+        startTime: "09:05",
         endTime: "10:00",
         track: "MINAS",
         activity: { type: "talk", talkId: talkFixture.id },
@@ -166,7 +166,7 @@ describe("entradas administrativas", () => {
       scheduleInputSchema.safeParse({
         ...base,
         track: null,
-        activity: { type: "opening", talkId: talkFixture.id },
+        activity: { type: "opening", title: "Abertura" },
       }).success,
       true,
     );

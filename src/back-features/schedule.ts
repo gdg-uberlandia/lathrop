@@ -48,7 +48,7 @@ async function activityTitle(
   item: ScheduleEntry,
   cache?: Map<string, Promise<Talk>>,
 ) {
-  if (item.activity.type === "break") return item.activity.title;
+  if ("title" in item.activity) return item.activity.title;
   return cachedTalk(item.activity.talkId, cache)
     .then((scheduledTalk) => scheduledTalk.title)
     .catch(() => "atividade já programada");
@@ -65,12 +65,21 @@ const parse = (id: string, value: FirebaseFirestore.DocumentData) =>
     updatedAt: toDate(value.updatedAt),
   });
 async function validateTalk(input: ScheduleInput): Promise<Talk | null> {
-  if (input.activity.type === "break") return null;
+  if (!("talkId" in input.activity)) return null;
   const talk = await getTalkById(input.activity.talkId).catch(() => null);
   if (!talk || talk.eventId !== CURRENT_EVENT_ID)
     throw new Error("Selecione uma palestra válida deste evento.");
   if (!talk.isActive)
     throw new Error("Apenas palestras ativas podem entrar na programação.");
+  const isScheduledKeynote =
+    input.activity.type === "opening_keynote" ||
+    input.activity.type === "closing_keynote";
+  if (isScheduledKeynote && talk.format !== "keynote")
+    throw new Error(
+      input.activity.type === "opening_keynote"
+        ? "Selecione uma palestra do tipo Keynote de abertura."
+        : "Selecione uma palestra do tipo Keynote de encerramento.",
+    );
   return talk;
 }
 async function getExistingSchedule(excludeId?: string) {
@@ -108,9 +117,7 @@ async function getPotentialConflicts(input: ScheduleInput, talk: Talk | null) {
     const item = parse(document.id, document.data());
     if (item.eventId !== CURRENT_EVENT_ID) return [];
     const duplicated =
-      talk &&
-      item.activity.type !== "break" &&
-      item.activity.talkId === talk.id;
+      talk && "talkId" in item.activity && item.activity.talkId === talk.id;
     const overlaps =
       interval.startAt < item.endAt && item.startAt < interval.endAt;
     return duplicated || overlaps ? [item] : [];
@@ -126,8 +133,7 @@ async function validateConflict(
     context?.existing ?? (await getPotentialConflicts(input, talk));
   const duplicatedTalk = talk
     ? existing.find(
-        (item) =>
-          item.activity.type !== "break" && item.activity.talkId === talk.id,
+        (item) => "talkId" in item.activity && item.activity.talkId === talk.id,
       )
     : null;
   if (duplicatedTalk) {
@@ -151,7 +157,7 @@ async function validateConflict(
   if (!talk) return;
   const overlappingTalks = await Promise.all(
     overlapping.flatMap((item) =>
-      item.activity.type === "break"
+      !("talkId" in item.activity)
         ? []
         : [
             cachedTalk(item.activity.talkId, context?.talks).then(
@@ -206,11 +212,7 @@ export async function getSchedule(): Promise<ScheduleEntry[]> {
     .get();
   return snapshot.docs
     .map((doc) => parse(doc.id, doc.data()))
-    .sort(
-      (a, b) =>
-        a.startAt.getTime() - b.startAt.getTime() ||
-        (a.order ?? -1) - (b.order ?? -1),
-    );
+    .sort((a, b) => a.startAt.getTime() - b.startAt.getTime());
 }
 export async function readSchedule(id: string): Promise<ScheduleEntry> {
   const document = await db.collection(COLLECTION).doc(id).get();

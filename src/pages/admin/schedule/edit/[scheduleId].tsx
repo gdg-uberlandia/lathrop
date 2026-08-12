@@ -22,9 +22,7 @@ export default function EditSchedulePage() {
   const navigation = useMemo(() => {
     if (!schedule) return null;
     const ordered = [...scheduleItems].sort(
-      (left, right) =>
-        left.startAt.getTime() - right.startAt.getTime() ||
-        (left.order ?? -1) - (right.order ?? -1),
+      (left, right) => left.startAt.getTime() - right.startAt.getTime(),
     );
     const index = ordered.findIndex((item) => item.id === schedule.id);
     return index < 0

@@ -120,7 +120,7 @@ export function TalksForm({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="talk">Talk</SelectItem>
+                  <SelectItem value="talk">Palestra</SelectItem>
                   <SelectItem value="panel">Painel</SelectItem>
                   <SelectItem value="keynote">Keynote</SelectItem>
                 </SelectContent>
