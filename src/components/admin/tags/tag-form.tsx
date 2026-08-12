@@ -1,5 +1,6 @@
 import { Button } from "@/assets/components/ui/button";
 import { AdminQrCodeCard } from "@/components/admin/admin-qr-code-card";
+import { AdminImageUpload } from "@/components/admin/admin-image-upload";
 import { AdminVisibilityControl } from "@/components/admin/admin-visibility-control";
 import {
   Form,
@@ -15,7 +16,7 @@ import { Tag, TagInput, tagInputSchema } from "@/contracts/tag";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
@@ -28,7 +29,7 @@ export function TagForm({
   loading?: boolean;
   onSubmit: (value: TagInput) => unknown;
 }) {
-  const { uploadImage, loadingImage } = useImageUpload();
+  const { uploadImage, loadingImage, error: uploadError } = useImageUpload();
   const form = useForm<TagInput>({
     resolver: zodResolver(tagInputSchema),
     defaultValues: tag
@@ -53,14 +54,37 @@ export function TagForm({
           xpAwarded: null,
         },
   });
+  useEffect(() => {
+    if (!tag) return;
+    form.reset({
+      id: tag.id,
+      qrId: tag.qrId,
+      name: tag.name,
+      description: tag.description,
+      imageUrl: tag.imageUrl,
+      active: tag.active,
+      order: tag.order,
+      xpAwarded: tag.xpAwarded,
+    });
+  }, [form, tag]);
   useUnsavedChanges(form.formState.isDirty && !form.formState.isSubmitting);
-  const upload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file)
-      form.setValue("imageUrl", await uploadImage(file, "tags"), {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
+  const upload = async (file: File) => {
+    try {
+      form.setValue(
+        "imageUrl",
+        await uploadImage(file, {
+          folder: "tags",
+          entityId: form.getValues("id"),
+          variant: "image",
+        }),
+        {
+          shouldDirty: true,
+          shouldValidate: true,
+        },
+      );
+    } catch {
+      // A mensagem do hook é exibida junto ao campo.
+    }
   };
   return (
     <Form {...form}>
@@ -144,24 +168,15 @@ export function TagForm({
           name="imageUrl"
           control={form.control}
           render={({ field }) => (
-            <FormItem className="md:col-span-5">
+            <FormItem className="md:col-span-8">
               <FormLabel>Imagem</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => void upload(e)}
-                />
-              </FormControl>
-              {field.value && (
-                <Image
-                  src={field.value}
-                  alt="Prévia"
-                  width={72}
-                  height={72}
-                  className="mt-3 size-18 rounded-lg object-contain"
-                />
-              )}
+              <AdminImageUpload
+                value={field.value}
+                label="Imagem da tag"
+                loading={loadingImage}
+                error={uploadError}
+                onFileSelect={upload}
+              />
               <FormMessage />
             </FormItem>
           )}

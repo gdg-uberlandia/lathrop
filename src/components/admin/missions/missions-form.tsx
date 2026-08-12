@@ -1,6 +1,7 @@
 import { Button } from "@/assets/components/ui/button";
 import { AdminQrCodeCard } from "@/components/admin/admin-qr-code-card";
 import { AdminVisibilityControl } from "@/components/admin/admin-visibility-control";
+import { AdminImageUpload } from "@/components/admin/admin-image-upload";
 import {
   Form,
   FormControl,
@@ -18,7 +19,6 @@ import {
   SelectValue,
 } from "@/assets/components/ui/select";
 import { Textarea } from "@/assets/components/ui/textarea";
-import Loading from "@/components/admin/loading-overlay";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { useMissions } from "@/hooks/useMissions";
 import { useCompanies } from "@/hooks/useCompanies";
@@ -26,7 +26,6 @@ import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { Mission, MissionInput } from "@/models/mission";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
-import Image from "next/image";
 import { useEffect } from "react";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
@@ -42,7 +41,7 @@ interface MissionFormProps {
 
 function defaults(mission?: Mission): MissionFormType {
   return {
-    id: mission?.id ?? "",
+    id: mission?.id ?? uuidv4(),
     title: mission?.title ?? "",
     description: mission?.description ?? "",
     imageUrl: mission?.imageUrl ?? null,
@@ -62,7 +61,7 @@ export function MissionsForm({
   onSubmit,
   mission,
 }: MissionFormProps) {
-  const { uploadImage, loadingImage } = useImageUpload();
+  const { uploadImage, loadingImage, error: uploadError } = useImageUpload();
   const { missions } = useMissions();
   const { companies } = useCompanies();
   const form = useForm<MissionFormType>({
@@ -109,21 +108,24 @@ export function MissionsForm({
     if (!editing && result) form.reset(defaults());
   };
 
-  const handleImageFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    const url = await uploadImage(file, "missions");
-    form.setValue("imageUrl", url, {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
+  const handleImageFileChange = async (file: File) => {
+    try {
+      const url = await uploadImage(file, {
+        folder: "missions",
+        entityId: form.getValues("id"),
+        variant: "image",
+      });
+      form.setValue("imageUrl", url, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+    } catch {
+      // A mensagem do hook é exibida no componente.
+    }
   };
 
   return (
     <>
-      {loadingImage && <Loading />}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(submitHandler)}
@@ -482,24 +484,14 @@ export function MissionsForm({
             render={({ field }) => (
               <FormItem className="md:col-span-8">
                 <FormLabel>Imagem da missão</FormLabel>
-                <div className="flex items-center gap-3">
-                  <FormControl>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageFileChange}
-                    />
-                  </FormControl>
-                  {field.value && (
-                    <Image
-                      src={field.value}
-                      alt="Prévia da missão"
-                      width={48}
-                      height={48}
-                      className="size-12 rounded object-cover"
-                    />
-                  )}
-                </div>
+                <AdminImageUpload
+                  value={field.value}
+                  label="Imagem da missão"
+                  loading={loadingImage}
+                  error={uploadError}
+                  previewFit="cover"
+                  onFileSelect={handleImageFileChange}
+                />
                 <FormMessage />
               </FormItem>
             )}

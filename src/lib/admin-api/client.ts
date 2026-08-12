@@ -7,7 +7,10 @@ type QueryValue = string | number | boolean | null | undefined;
 type AdminApiRequestOptions = Omit<RequestInit, "body"> & {
   body?: BodyInit | object | null;
   query?: Record<string, QueryValue>;
+  retryOnNetworkError?: boolean;
 };
+
+const NETWORK_RETRY_DELAY_MS = 500;
 
 function createUrl(path: string, query?: Record<string, QueryValue>) {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
@@ -69,7 +72,13 @@ export async function adminApiRequest<T>(
   path: string,
   options: AdminApiRequestOptions = {},
 ): Promise<T> {
-  const { body, headers: customHeaders, query, ...requestOptions } = options;
+  const {
+    body,
+    headers: customHeaders,
+    query,
+    retryOnNetworkError = false,
+    ...requestOptions
+  } = options;
   const requestBody = createRequestBody(body);
   const headers = new Headers(customHeaders);
 
@@ -78,12 +87,43 @@ export async function adminApiRequest<T>(
   }
   headers.set("Authorization", await getAuthorizationHeader());
 
-  const execute = () =>
+  const fetchRequest = () =>
     fetch(createUrl(path, query), {
       ...requestOptions,
       body: requestBody,
       headers,
     });
+  const execute = async () => {
+    try {
+      return await fetchRequest();
+    } catch (networkError) {
+      if (retryOnNetworkError && window.navigator.onLine) {
+        console.warn(
+          `[admin-api] Falha de rede em ${path}; realizando uma nova tentativa.`,
+          networkError,
+        );
+        await new Promise((resolve) =>
+          window.setTimeout(resolve, NETWORK_RETRY_DELAY_MS),
+        );
+        try {
+          return await fetchRequest();
+        } catch (retryError) {
+          console.error(
+            `[admin-api] A nova tentativa de ${path} também falhou.`,
+            retryError,
+          );
+        }
+      } else {
+        console.error(`[admin-api] Falha de rede em ${path}.`, networkError);
+      }
+      throw new AdminApiError(
+        0,
+        window.navigator.onLine
+          ? "O servidor não respondeu ao upload. Tente novamente em instantes."
+          : "Você está sem conexão. Reconecte-se e tente novamente.",
+      );
+    }
+  };
 
   let response = await execute();
   if (response.status === 401 && auth.currentUser) {

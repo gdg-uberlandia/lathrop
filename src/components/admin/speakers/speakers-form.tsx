@@ -1,5 +1,6 @@
 import { Button } from "@/assets/components/ui/button";
 import { AdminVisibilityControl } from "@/components/admin/admin-visibility-control";
+import { AdminImageUpload } from "@/components/admin/admin-image-upload";
 import {
   Form,
   FormControl,
@@ -9,13 +10,10 @@ import {
 } from "@/assets/components/ui/form";
 import { Input } from "@/assets/components/ui/input";
 import { Textarea } from "@/assets/components/ui/textarea";
-import Loading from "@/components/admin/loading-overlay";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { Speaker, SpeakerInput } from "@/contracts/speaker";
-import { shouldBypassImageOptimization } from "@/helpers/image";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
@@ -86,22 +84,21 @@ export function SpeakersForm({
     if (!editing) form.reset(emptyValues());
   };
 
-  const uploadPhoto = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      try {
-        const url = await uploadImage(file, "speakers");
-        form.setValue("photoUrl", url, {
-          shouldValidate: true,
-          shouldDirty: true,
-        });
-      } catch {
-        // O hook expõe a mensagem de erro junto ao campo.
-      }
+  const uploadPhoto = async (file: File) => {
+    try {
+      const url = await uploadImage(file, {
+        folder: "speakers",
+        entityId: form.getValues("id"),
+        variant: "photo",
+      });
+      form.setValue("photoUrl", url, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    } catch {
+      // O hook expõe a mensagem de erro junto ao campo.
     }
   };
-
-  if (loadingImage) return <Loading />;
 
   return (
     <Form {...form}>
@@ -140,24 +137,16 @@ export function SpeakersForm({
           render={({ field, fieldState }) => (
             <FormItem className="md:col-span-4">
               <FormLabel>Foto</FormLabel>
-              <FormControl>
-                <div className="flex items-center gap-2">
-                  <Input type="file" accept="image/*" onChange={uploadPhoto} />
-                  {field.value && (
-                    <Image
-                      src={field.value}
-                      unoptimized={shouldBypassImageOptimization(field.value)}
-                      alt="Preview"
-                      width={40}
-                      height={40}
-                      className="size-10 rounded-full object-cover"
-                    />
-                  )}
-                  <input type="hidden" {...field} />
-                </div>
-              </FormControl>
+              <AdminImageUpload
+                value={field.value}
+                label="Foto do palestrante"
+                loading={loadingImage}
+                error={uploadError}
+                previewFit="cover"
+                onFileSelect={uploadPhoto}
+              />
+              <input type="hidden" {...field} />
               {fieldState.error && <span>{fieldState.error.message}</span>}
-              {uploadError && <span>{uploadError}</span>}
             </FormItem>
           )}
         />

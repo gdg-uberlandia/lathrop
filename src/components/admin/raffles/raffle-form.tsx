@@ -1,5 +1,6 @@
 import { Button } from "@/assets/components/ui/button";
 import { AdminVisibilityControl } from "@/components/admin/admin-visibility-control";
+import { AdminImageUpload } from "@/components/admin/admin-image-upload";
 import {
   Form,
   FormControl,
@@ -14,7 +15,6 @@ import { Raffle, RaffleInput, raffleInputSchema } from "@/contracts/raffle";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
@@ -27,7 +27,7 @@ export function RaffleForm({
   loading?: boolean;
   onSubmit: (value: RaffleInput) => unknown;
 }) {
-  const { uploadImage, loadingImage } = useImageUpload();
+  const { uploadImage, loadingImage, error: uploadError } = useImageUpload();
   const form = useForm<RaffleInput>({
     resolver: zodResolver(raffleInputSchema),
     defaultValues: raffle
@@ -49,13 +49,23 @@ export function RaffleForm({
         },
   });
   useUnsavedChanges(form.formState.isDirty && !form.formState.isSubmitting);
-  const upload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file)
-      form.setValue("imageUrl", await uploadImage(file, "raffles"), {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
+  const upload = async (file: File) => {
+    try {
+      form.setValue(
+        "imageUrl",
+        await uploadImage(file, {
+          folder: "raffles",
+          entityId: form.getValues("id"),
+          variant: "image",
+        }),
+        {
+          shouldDirty: true,
+          shouldValidate: true,
+        },
+      );
+    } catch {
+      // A mensagem do hook é exibida no componente.
+    }
   };
   return (
     <Form {...form}>
@@ -125,22 +135,13 @@ export function RaffleForm({
           render={({ field }) => (
             <FormItem className="md:col-span-8">
               <FormLabel>Imagem</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => void upload(e)}
-                />
-              </FormControl>
-              {field.value && (
-                <Image
-                  src={field.value}
-                  alt="Prévia"
-                  width={96}
-                  height={96}
-                  className="mt-3 size-24 rounded-lg object-contain"
-                />
-              )}
+              <AdminImageUpload
+                value={field.value}
+                label="Imagem do prêmio"
+                loading={loadingImage}
+                error={uploadError}
+                onFileSelect={upload}
+              />
               <FormMessage />
             </FormItem>
           )}

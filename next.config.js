@@ -21,6 +21,7 @@ const createNextConfig = (phase) => ({
       "storage.googleapis.com",
       "api.dicebear.com",
       "pokedex.devfesttriangulo.com.br",
+      "localhost",
     ],
   },
   /*exportPathMap: async function (
