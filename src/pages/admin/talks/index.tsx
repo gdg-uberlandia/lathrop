@@ -49,6 +49,8 @@ export default function TalksPage() {
     sortItems,
   } = useAdminListState();
   const [status, setStatus] = useState("all");
+  const [format, setFormat] = useState("all");
+  const [evaluation, setEvaluation] = useState("all");
   const names = useMemo(
     () => new Map(speakers.map((speaker) => [speaker.id, speaker.name])),
     [speakers],
@@ -58,14 +60,19 @@ export default function TalksPage() {
     return talks.filter((talk) => {
       const matchesStatus =
         status === "all" || String(talk.isActive) === status;
+      const matchesFormat = format === "all" || talk.format === format;
+      const matchesEvaluation =
+        evaluation === "all" || talk.evaluationStatus === evaluation;
       const matchesSearch =
         !term ||
         [talk.title, talk.category, formatLabels[talk.format]]
           .filter(Boolean)
           .some((value) => value!.toLocaleLowerCase("pt-BR").includes(term));
-      return matchesStatus && matchesSearch;
+      return (
+        matchesStatus && matchesFormat && matchesEvaluation && matchesSearch
+      );
     });
-  }, [search, status, talks]);
+  }, [evaluation, format, search, status, talks]);
   const pagination = paginate(
     sortItems(filteredTalks, {
       name: (item) => item.title,
@@ -96,6 +103,28 @@ export default function TalksPage() {
             <option value="all">Todas</option>
             <option value="true">Ativas</option>
             <option value="false">Inativas</option>
+          </select>
+          <select
+            aria-label="Filtrar por formato"
+            value={format}
+            onChange={(event) => setFormat(event.target.value)}
+            className="h-10 rounded-lg border border-white/10 bg-background px-3 text-sm"
+          >
+            <option value="all">Todos os formatos</option>
+            <option value="talk">Talk</option>
+            <option value="panel">Painel</option>
+            <option value="keynote">Keynote</option>
+          </select>
+          <select
+            aria-label="Filtrar por avaliação"
+            value={evaluation}
+            onChange={(event) => setEvaluation(event.target.value)}
+            className="h-10 rounded-lg border border-white/10 bg-background px-3 text-sm"
+          >
+            <option value="all">Todas as avaliações</option>
+            <option value="locked">Bloqueada</option>
+            <option value="open">Aberta</option>
+            <option value="closed">Encerrada</option>
           </select>
         </AdminListToolbar>
         {error && (
