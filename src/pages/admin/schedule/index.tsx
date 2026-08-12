@@ -107,11 +107,31 @@ export default function Schedules() {
         <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
           {typeLabel[item.activity.type]}
         </span>
-        <AdminStatusBadge
-          active={item.active}
-          activeLabel="Visível"
-          inactiveLabel="Oculta"
-        />
+        <div className="flex items-center gap-1">
+          <AdminStatusBadge
+            active={item.active}
+            activeLabel="Visível"
+            inactiveLabel="Oculta"
+          />
+          <Button
+            size="icon"
+            variant="ghost"
+            className="size-7"
+            aria-label={`Editar ${name(item)}`}
+            onClick={() => router.push(`/admin/schedule/edit/${item.id}`)}
+          >
+            <Pencil className="size-3.5" />
+          </Button>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="size-7 text-red-600"
+            aria-label={`Excluir ${name(item)}`}
+            onClick={() => setSelected(item)}
+          >
+            <Trash2 className="size-3.5" />
+          </Button>
+        </div>
       </div>
       <h3 className="mt-2 line-clamp-3 text-sm font-semibold leading-snug text-slate-900">
         {name(item)}
@@ -121,26 +141,6 @@ export default function Schedules() {
           <TriangleAlert className="size-3.5" /> Conflito
         </p>
       )}
-      <div className="mt-auto flex justify-end gap-1 pt-3">
-        <Button
-          size="icon"
-          variant="ghost"
-          className="size-8"
-          aria-label={`Editar ${name(item)}`}
-          onClick={() => router.push(`/admin/schedule/edit/${item.id}`)}
-        >
-          <Pencil className="size-3.5" />
-        </Button>
-        <Button
-          size="icon"
-          variant="ghost"
-          className="size-8 text-red-600"
-          aria-label={`Excluir ${name(item)}`}
-          onClick={() => setSelected(item)}
-        >
-          <Trash2 className="size-3.5" />
-        </Button>
-      </div>
     </article>
   );
 
