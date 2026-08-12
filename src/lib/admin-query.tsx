@@ -66,11 +66,13 @@ export function AdminQueryProvider({ children }: { children: ReactNode }) {
 export const adminQueryKeys = {
   companies: ["admin", "companies"] as const,
   missions: ["admin", "missions"] as const,
+  raffles: ["admin", "raffles"] as const,
   profiles: ["admin", "profiles"] as const,
   schedule: ["admin", "schedule"] as const,
   speakers: ["admin", "speakers"] as const,
   sponsors: ["admin", "sponsors"] as const,
   talks: ["admin", "talks"] as const,
+  tags: ["admin", "tags"] as const,
 };
 
 export async function resolveAdminAction<T>(action: () => Promise<T>) {

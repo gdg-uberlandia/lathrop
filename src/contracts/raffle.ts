@@ -35,4 +35,14 @@ export const raffleFieldsSchema = z.object({
   updatedAt: z.date(),
 });
 
+export const raffleInputSchema = raffleFieldsSchema.pick({
+  id: true,
+  prizeName: true,
+  description: true,
+  imageUrl: true,
+  order: true,
+  active: true,
+});
+
 export type Raffle = z.infer<typeof raffleFieldsSchema>;
+export type RaffleInput = z.infer<typeof raffleInputSchema>;

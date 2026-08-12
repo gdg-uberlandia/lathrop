@@ -6,6 +6,8 @@ import {
   Megaphone,
   Presentation,
   Trophy,
+  Tags,
+  Gift,
   type LucideIcon,
 } from "lucide-react";
 
@@ -24,6 +26,8 @@ export const adminNavigationItems: AdminNavigationItem[] = [
   { title: "Companies", url: "/admin/companies", icon: Building2 },
   { title: "Programação", url: "/admin/schedule", icon: Calendar },
   { title: "Missões", url: "/admin/missions", icon: Trophy },
+  { title: "Tags", url: "/admin/tags", icon: Tags },
+  { title: "Prêmios", url: "/admin/raffles", icon: Gift },
 ];
 
 export function isAdminNavigationItemActive(

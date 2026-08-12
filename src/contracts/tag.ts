@@ -16,4 +16,11 @@ export const tagFieldsSchema = z
   })
   .strict();
 
+export const tagInputSchema = tagFieldsSchema.omit({
+  eventId: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type Tag = z.infer<typeof tagFieldsSchema>;
+export type TagInput = z.infer<typeof tagInputSchema>;
