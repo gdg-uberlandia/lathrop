@@ -295,22 +295,18 @@ export default function Schedules() {
           description="Monte o cronograma por horário e trilha; atividades gerais ocupam toda a grade."
           count={schedule.length}
           icon={CalendarDays}
-          action={{
-            href: "/admin/schedule/add-schedule",
-            label: "Adicionar atividade",
-          }}
+          action={[
+            {
+              href: "/admin/schedule/add-schedule",
+              label: "Adicionar atividade",
+            },
+            {
+              href: "/admin/schedule/add-block",
+              label: "Cadastrar bloco completo",
+              variant: "secondary",
+            },
+          ]}
         />
-        <div className="mb-4 flex justify-end">
-          <Button
-            asChild
-            variant="outline"
-            className="!border-blue-200 !bg-white !text-blue-700 hover:!border-blue-300 hover:!bg-blue-50 hover:!text-blue-800"
-          >
-            <Link href="/admin/schedule/add-block">
-              <Plus className="mr-2 size-4" /> Cadastrar bloco completo
-            </Link>
-          </Button>
-        </div>
         <AdminListToolbar search={search} onSearchChange={setSearch}>
           <Select value={typeFilter} onValueChange={setTypeFilter}>
             <SelectTrigger className="h-10 w-full !border-slate-200 bg-white sm:w-40">
