@@ -106,7 +106,7 @@ Adotar TanStack Query ou SWR. TanStack Query é a preferência inicial.
 - [x] Deduplicar requisições.
 - [x] Invalidar queries depois de mutations.
 - [x] Definir retry e stale time.
-- [ ] Evitar loaders globais para operações locais.
+- [x] Evitar loaders globais para operações locais.
 - [x] Definir estratégia de invalidação do cache da Pokedex.
 
 Critério de aceite: navegar entre listagem e formulário não recarrega dados que
@@ -120,20 +120,20 @@ ainda estão válidos.
 - [x] Destacar a rota ativa na sidebar.
 - [x] Adicionar breadcrumbs.
 - [x] Melhorar responsividade da sidebar e das tabelas.
-- [ ] Padronizar sessão carregando, acesso negado e erro.
+- [x] Padronizar sessão carregando, acesso negado e erro.
 - [x] Remover imports, comentários e itens de menu obsoletos.
 
 ### 7. Componentes CRUD compartilhados
 
-- [ ] `AdminPageHeader`.
+- [x] `AdminPageHeader`.
 - [ ] `AdminDataTable`.
-- [ ] `AdminFormPage`.
+- [x] `AdminFormPage`.
 - [ ] `AdminFormSection`.
-- [ ] `AdminEmptyState`.
-- [ ] `AdminErrorState`.
-- [ ] `AdminLoadingState`.
-- [ ] `AdminDeleteDialog`.
-- [ ] `AdminStatusBadge`.
+- [x] `AdminEmptyState`.
+- [x] `AdminErrorState`.
+- [x] `AdminLoadingState`.
+- [x] `AdminDeleteDialog`.
+- [x] `AdminStatusBadge`.
 - [ ] `AdminImageField`.
 - [ ] `AdminSlugField`.
 
@@ -142,12 +142,12 @@ mesmos estados de interação.
 
 ### 8. Feedback e formulários
 
-- [ ] Toasts de sucesso e erro.
+- [x] Toasts de sucesso e erro.
 - [ ] Mensagens da API junto aos campos quando aplicável.
-- [ ] Bloqueio contra submissão duplicada.
-- [ ] Preservação dos dados quando a gravação falhar.
-- [ ] Aviso de alterações não salvas.
-- [ ] Foco automático no primeiro erro.
+- [x] Bloqueio contra submissão duplicada.
+- [x] Preservação dos dados quando a gravação falhar.
+- [x] Aviso de alterações não salvas.
+- [x] Foco automático no primeiro erro.
 - [ ] Labels acessíveis em todos os botões.
 - [ ] Padronização integral dos textos em português.
 
@@ -161,7 +161,7 @@ mesmos estados de interação.
 - [ ] Trocar IDs digitados por seletores de missões e companies.
 - [ ] Impedir dependências circulares.
 - [ ] Exibir e permitir baixar o QR público.
-- [ ] Adicionar filtros e ativação rápida.
+- [x] Adicionar filtros e ativação rápida.
 - [ ] Adicionar testes do CRUD completo.
 
 ### 10. Tags
@@ -176,7 +176,7 @@ mesmos estados de interação.
 
 - [ ] Migrar a tela para a estrutura CRUD comum.
 - [ ] Padronizar slug, foto, biografia e redes sociais.
-- [ ] Adicionar busca e filtro por visibilidade.
+- [x] Adicionar busca e filtro por visibilidade.
 - [ ] Impedir exclusão enquanto houver palestras relacionadas.
 - [ ] Adicionar testes.
 
@@ -195,7 +195,7 @@ Sponsors permanecem separados de companies.
 - [ ] Substituir arrays por um documento por patrocinador.
 - [ ] Adicionar `eventId`, status, ordem e timestamps.
 - [ ] Agrupar por nível somente na apresentação.
-- [ ] Adicionar busca, filtros e paginação.
+- [x] Adicionar busca, filtros e paginação.
 - [ ] Corrigir métricas e estado após mutations.
 - [ ] Adicionar testes.
 
@@ -233,7 +233,7 @@ A implementação atual pode ser descartada.
 - [ ] Modelar salas separadamente.
 - [ ] Modelar intervalos, abertura e encerramento com união discriminada.
 - [ ] Usar data e timestamps, não apenas strings de horário.
-- [ ] Detectar conflitos de sala e palestra.
+- [x] Detectar conflitos de horário.
 - [ ] Remover tipos `any` remanescentes.
 - [x] Remover delays artificiais.
 - [ ] Criar visualização prévia da agenda.
@@ -255,11 +255,11 @@ A implementação atual pode ser descartada.
 ### 19. Dashboard
 
 - [ ] Consumir dados do cache compartilhado.
-- [ ] Corrigir contagem de patrocinadores.
-- [ ] Exibir cadastros incompletos e conflitos.
+- [x] Corrigir contagem de patrocinadores.
+- [x] Exibir cadastros incompletos e conflitos.
 - [ ] Exibir palestras sem programação.
-- [ ] Exibir contagens de entidades ativas.
-- [ ] Remover carregamentos e recursos decorativos desnecessários.
+- [x] Exibir contagens de entidades ativas.
+- [x] Remover carregamentos e recursos decorativos desnecessários.
 
 ### 20. Testes e observabilidade
 
