@@ -10,9 +10,10 @@ import { CURRENT_EVENT_ID } from "@/helpers/event";
 import configValues from "@/helpers/config";
 import { db } from "@/utils/db";
 import { getFirestoreCollectionName } from "@/utils/db/collection-name";
+import { Talk } from "@/contracts/talk";
+import { getTalkById } from "@/back-features/talks";
 
 const COLLECTION = getFirestoreCollectionName("schedule");
-const TALKS_COLLECTION = getFirestoreCollectionName("talks");
 const toDate = (value: unknown) =>
   value instanceof Timestamp ? value.toDate() : value;
 const parse = (id: string, value: FirebaseFirestore.DocumentData) =>
@@ -24,34 +25,61 @@ const parse = (id: string, value: FirebaseFirestore.DocumentData) =>
     createdAt: toDate(value.createdAt),
     updatedAt: toDate(value.updatedAt),
   });
-async function validateTalk(input: ScheduleInput) {
-  if (input.activity.type === "break") return;
-  const talk = await db
-    .collection(TALKS_COLLECTION)
-    .doc(input.activity.talkId)
-    .get();
-  if (!talk.exists || talk.data()?.eventId !== CURRENT_EVENT_ID)
+async function validateTalk(input: ScheduleInput): Promise<Talk | null> {
+  if (input.activity.type === "break") return null;
+  const talk = await getTalkById(input.activity.talkId).catch(() => null);
+  if (!talk || talk.eventId !== CURRENT_EVENT_ID)
     throw new Error("Selecione uma palestra válida deste evento.");
+  if (!talk.isActive)
+    throw new Error("Apenas palestras ativas podem entrar na programação.");
+  return talk;
 }
-async function validateConflict(input: ScheduleInput) {
+async function validateConflict(input: ScheduleInput, talk: Talk | null) {
   const interval = resolveInterval(input);
   const snapshot = await db
     .collection(COLLECTION)
     .where("eventId", "==", CURRENT_EVENT_ID)
     .get();
-  const conflict = snapshot.docs
+  const existing = snapshot.docs
     .filter((document) => document.id !== input.id)
-    .map((document) => parse(document.id, document.data()))
-    .some(
+    .map((document) => parse(document.id, document.data()));
+  if (
+    talk &&
+    existing.some(
       (item) =>
-        (item.track === null ||
-          input.track === null ||
-          item.track === input.track) &&
-        interval.startAt < item.endAt &&
-        item.startAt < interval.endAt,
-    );
-  if (conflict)
+        item.activity.type !== "break" && item.activity.talkId === talk.id,
+    )
+  ) {
+    throw new Error("Esta palestra já foi adicionada à programação.");
+  }
+  const overlapping = existing.filter(
+    (item) => interval.startAt < item.endAt && item.startAt < interval.endAt,
+  );
+  const trackConflict = overlapping.some(
+    (item) =>
+      item.track === null || input.track === null || item.track === input.track,
+  );
+  if (trackConflict)
     throw new Error("Já existe uma atividade conflitante neste intervalo.");
+  if (!talk) return;
+  const overlappingTalkIds = overlapping.flatMap((item) =>
+    item.activity.type === "break" ? [] : [item.activity.talkId],
+  );
+  const overlappingTalks = await Promise.all(
+    [...new Set(overlappingTalkIds)].map((talkId) => getTalkById(talkId)),
+  );
+  const candidateSpeakers = new Set(talk.speakerIds);
+  if (
+    overlappingTalks.some((scheduledTalk) =>
+      scheduledTalk.speakerIds.some((speakerId) =>
+        candidateSpeakers.has(speakerId),
+      ),
+    )
+  ) {
+    throw new Error(
+      "Um palestrante desta palestra já está alocado neste horário.",
+    );
+  }
 }
 function resolveInterval(input: ScheduleInput) {
   const eventDate = String(configValues.eventDate).slice(0, 10);
@@ -95,8 +123,8 @@ export async function createSchedule(
   input: ScheduleInput,
 ): Promise<ScheduleEntry> {
   const data = scheduleInputSchema.parse(input);
-  await validateTalk(data);
-  await validateConflict(data);
+  const talk = await validateTalk(data);
+  await validateConflict(data, talk);
   const reference = db.collection(COLLECTION).doc(data.id);
   if ((await reference.get()).exists)
     throw new Error("Já existe um item com este ID.");
@@ -114,8 +142,8 @@ export async function updateSchedule(
   input: ScheduleInput,
 ): Promise<ScheduleEntry> {
   const data = scheduleInputSchema.parse(input);
-  await validateTalk(data);
-  await validateConflict(data);
+  const talk = await validateTalk(data);
+  await validateConflict(data, talk);
   const current = await readSchedule(data.id);
   const item = scheduleFieldsSchema.parse({
     ...toStoredFields(data),

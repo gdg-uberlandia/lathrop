@@ -19,6 +19,7 @@ import { useTalks } from "@/hooks/useTalks";
 import { useSpeakers } from "@/hooks/useSpeakers";
 import {
   CalendarDays,
+  ExternalLink,
   Pencil,
   Plus,
   Trash2,
@@ -93,25 +94,43 @@ export default function Schedules() {
         : (talkSpeakers.get(item.activity.talkId) ?? []),
     [talkSpeakers],
   );
-  const conflicts = useMemo(
-    () =>
-      new Set(
-        schedule.flatMap((item, index) =>
-          schedule
-            .slice(index + 1)
-            .flatMap((other) =>
-              (item.track === null ||
-                other.track === null ||
-                item.track === other.track) &&
-              item.startAt < other.endAt &&
-              other.startAt < item.endAt
-                ? [item.id, other.id]
-                : [],
-            ),
-        ),
+  const conflicts = useMemo(() => {
+    const talkById = new Map(talks.map((talk) => [talk.id, talk]));
+    return new Set(
+      schedule.flatMap((item, index) =>
+        schedule.slice(index + 1).flatMap((other) => {
+          const overlaps =
+            item.startAt < other.endAt && other.startAt < item.endAt;
+          if (!overlaps) return [];
+          const sameTrack =
+            item.track === null ||
+            other.track === null ||
+            item.track === other.track;
+          const itemTalk =
+            item.activity.type === "break"
+              ? null
+              : talkById.get(item.activity.talkId);
+          const otherTalk =
+            other.activity.type === "break"
+              ? null
+              : talkById.get(other.activity.talkId);
+          const sameTalk = Boolean(
+            itemTalk && otherTalk && itemTalk.id === otherTalk.id,
+          );
+          const sharedSpeaker = Boolean(
+            itemTalk &&
+              otherTalk &&
+              itemTalk.speakerIds.some((speakerId) =>
+                otherTalk.speakerIds.includes(speakerId),
+              ),
+          );
+          return sameTrack || sameTalk || sharedSpeaker
+            ? [item.id, other.id]
+            : [];
+        }),
       ),
-    [schedule],
-  );
+    );
+  }, [schedule, talks]);
   const slots = useMemo(() => {
     const term = search.trim().toLocaleLowerCase("pt-BR");
     const groups = schedule.reduce((map, item) => {
@@ -164,6 +183,19 @@ export default function Schedules() {
           >
             <Pencil className="size-3.5" />
           </Button>
+          {item.activity.type !== "break" && (
+            <Button
+              asChild
+              size="icon"
+              variant="ghost"
+              className="size-7 text-blue-600"
+              aria-label={`Abrir palestra ${name(item)}`}
+            >
+              <Link href={`/admin/talks/edit/${item.activity.talkId}`}>
+                <ExternalLink className="size-3.5" />
+              </Link>
+            </Button>
+          )}
           <Button
             size="icon"
             variant="ghost"
