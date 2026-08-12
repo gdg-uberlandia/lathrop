@@ -15,6 +15,7 @@ import {
   AdminPageHeader,
   AdminPagination,
   AdminStatusBadge,
+  AdminSortButton,
   AdminTableContainer,
 } from "@/components/admin/admin-page";
 import DeleteDialog from "@/components/admin/delete-dialog";
@@ -48,7 +49,14 @@ export default function RafflesPage() {
       ),
     [raffles, status, list.search],
   );
-  const pagination = list.paginate(filtered);
+  const pagination = list.paginate(
+    list.sortItems(filtered, {
+      name: (item) => item.prizeName,
+      order: (item) => item.order,
+      draw: (item) => item.status,
+      active: (item) => Number(item.active),
+    }),
+  );
   return (
     <>
       <main className="p-4 sm:p-6">
@@ -93,10 +101,38 @@ export default function RafflesPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Imagem</TableHead>
-                  <TableHead>Prêmio</TableHead>
-                  <TableHead>Ordem</TableHead>
-                  <TableHead>Sorteio</TableHead>
-                  <TableHead>Ativo</TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Prêmio"
+                      active={list.sort === "name"}
+                      direction={list.direction}
+                      onClick={() => list.toggleSort("name")}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Ordem"
+                      active={list.sort === "order"}
+                      direction={list.direction}
+                      onClick={() => list.toggleSort("order")}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Sorteio"
+                      active={list.sort === "draw"}
+                      direction={list.direction}
+                      onClick={() => list.toggleSort("draw")}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Ativo"
+                      active={list.sort === "active"}
+                      direction={list.direction}
+                      onClick={() => list.toggleSort("active")}
+                    />
+                  </TableHead>
                   <TableHead>Ações</TableHead>
                 </TableRow>
               </TableHeader>
@@ -147,6 +183,7 @@ export default function RafflesPage() {
                         <Button
                           size="icon"
                           variant="secondary"
+                          aria-label={`Editar ${item.prizeName}`}
                           onClick={() =>
                             router.push(`/admin/raffles/edit/${item.id}`)
                           }
@@ -156,6 +193,7 @@ export default function RafflesPage() {
                         <Button
                           size="icon"
                           variant="secondary"
+                          aria-label={`Excluir ${item.prizeName}`}
                           disabled={item.status !== "pending"}
                           onClick={() => setSelected(item)}
                         >

@@ -177,10 +177,15 @@ export default function Sponsors() {
           <AdminTableContainer>
             <Table className="rounded-xl overflow-hidden border-collapse">
               <TableCaption />
-              <TableHeader className="bg-devGray-dark text-white">
+              <TableHeader>
                 <TableRow>
-                  <TableHead className="p-3 text-white w-24 text-center">
-                    Nível
+                  <TableHead className="w-24 p-3">
+                    <AdminSortButton
+                      label="Nível"
+                      active={sort === "level"}
+                      direction={direction}
+                      onClick={() => toggleSort("level")}
+                    />
                   </TableHead>
                   <TableHead className="p-3">
                     <AdminSortButton
@@ -190,8 +195,7 @@ export default function Sponsors() {
                       onClick={() => toggleSort("name")}
                     />
                   </TableHead>
-                  <TableHead className="p-3 text-white text-center w-14"></TableHead>
-                  <TableHead className="p-3 text-white text-center w-14"></TableHead>
+                  <TableHead className="text-right">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -207,33 +211,31 @@ export default function Sponsors() {
                     <TableCell className="p-3 text-white/80 font-bold">
                       {sponsor.name}
                     </TableCell>
-                    <TableCell className="px-3 text-white/80 text-right">
-                      <Button
-                        disabled={loading}
-                        variant="secondary"
-                        size="icon"
-                        className="size-8 text-devGreen-dark hover:text-devGreen bg-transparent p-0"
-                        onClick={() =>
-                          router.push(
-                            `/admin/sponsors/edit/${sponsor.levelName}?id=${sponsor.id}`,
-                          )
-                        }
-                        aria-label={`Editar ${sponsor.name}`}
-                      >
-                        <Pencil />
-                      </Button>
-                    </TableCell>
-                    <TableCell className="px-3 text-white/80 text-right">
-                      <Button
-                        variant="secondary"
-                        size="icon"
-                        disabled={loading}
-                        className="size-8 text-devRed-dark hover:text-devRed bg-transparent p-0"
-                        onClick={() => handleOpenDialogDelete(sponsor)}
-                        aria-label={`Excluir ${sponsor.name}`}
-                      >
-                        <Trash2 />
-                      </Button>
+                    <TableCell>
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          disabled={loading}
+                          variant="secondary"
+                          size="icon"
+                          onClick={() =>
+                            router.push(
+                              `/admin/sponsors/edit/${sponsor.levelName}?id=${sponsor.id}`,
+                            )
+                          }
+                          aria-label={`Editar ${sponsor.name}`}
+                        >
+                          <Pencil />
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          disabled={loading}
+                          onClick={() => handleOpenDialogDelete(sponsor)}
+                          aria-label={`Excluir ${sponsor.name}`}
+                        >
+                          <Trash2 />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

@@ -429,9 +429,16 @@ svg {
 .admin-shell textarea,
 .admin-shell select,
 .admin-shell button[role="combobox"] {
+  height: 2.75rem;
+  border-radius: 0.5rem;
   color: var(--admin-text);
   background-color: var(--admin-surface);
   border-color: var(--admin-border-strong) !important;
+}
+
+.admin-shell input:not([type="hidden"]) {
+  min-height: 2.75rem;
+  border-radius: 0.5rem;
 }
 
 .admin-shell input::placeholder,
@@ -505,12 +512,13 @@ svg {
 
 .admin-shell .admin-entity-table thead,
 .admin-shell .admin-entity-table thead[class] {
-  background: #f8fafc !important;
-  color: #475569 !important;
+  background: #f1f5f9 !important;
+  color: #334155 !important;
 }
 
 .admin-shell .admin-entity-table thead tr {
   height: 44px;
+  background: #f1f5f9 !important;
   border-bottom: 1px solid #e2e8f0 !important;
 }
 
@@ -541,7 +549,18 @@ svg {
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.025em;
-  color: #64748b !important;
+  background: #f1f5f9 !important;
+  color: #334155 !important;
+}
+
+.admin-shell .admin-entity-table th:has(> button):hover {
+  background-color: #dbeafe !important;
+  color: #1e3a8a !important;
+}
+
+.admin-shell .admin-entity-table th:not(:has(> button)):hover {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
 }
 
 .admin-shell .admin-entity-table td.font-medium,
@@ -589,6 +608,14 @@ svg {
   color: #b91c1c !important;
 }
 
+.admin-shell .admin-entity-table button[aria-label^="Editar"]:disabled,
+.admin-shell .admin-entity-table button[aria-label^="Excluir"]:disabled {
+  border-color: #e2e8f0 !important;
+  background: #f8fafc !important;
+  color: #94a3b8 !important;
+  opacity: 0.65;
+}
+
 .admin-shell .admin-entity-table button[aria-label^="Editar"] svg,
 .admin-shell .admin-entity-table button[aria-label^="Excluir"] svg {
   width: 1rem;
@@ -601,6 +628,15 @@ svg {
   text-align: center !important;
 }
 
+.admin-shell .admin-entity-table :is(th, td):last-child {
+  width: 7rem;
+  text-align: right !important;
+}
+
+.admin-shell .admin-entity-table td:last-child > .flex {
+  justify-content: flex-end;
+}
+
 .admin-shell .admin-content label {
   color: #334155;
   font-weight: 500;
@@ -609,6 +645,71 @@ svg {
 .admin-shell .admin-content [role="dialog"] {
   color: var(--admin-text);
   background: var(--admin-surface);
+}
+
+/* Explicit admin button palette prevents legacy theme and Bootstrap variables
+   from turning semantic button variants into dark buttons with blue text. */
+.admin-shell .admin-content [data-button-variant="default"] {
+  border-color: #2563eb;
+  background-color: #2563eb;
+  color: #fff;
+  box-shadow: none;
+}
+
+.admin-shell .admin-content [data-button-size="default"] {
+  height: 2.75rem;
+  border-radius: 0.5rem;
+}
+
+.admin-shell .admin-content [data-button-size="icon"] {
+  height: 2.75rem;
+  width: 2.75rem;
+  border-radius: 0.5rem;
+}
+.admin-shell .admin-content [data-button-variant="default"]:hover {
+  background-color: #1d4ed8;
+}
+.admin-shell .admin-content [data-button-variant="outline"] {
+  border-color: #cbd5e1;
+  background-color: #fff;
+  color: #334155;
+  box-shadow: none;
+}
+.admin-shell .admin-content [data-button-variant="outline"]:hover {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+.admin-shell .admin-content [data-button-variant="secondary"] {
+  border: 1px solid #e2e8f0;
+  background-color: #f1f5f9;
+  color: #334155;
+  box-shadow: none;
+}
+.admin-shell .admin-content [data-button-variant="secondary"]:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
+}
+.admin-shell .admin-content [data-button-variant="ghost"] {
+  background-color: transparent;
+  color: #475569;
+  box-shadow: none;
+}
+.admin-shell .admin-content [data-button-variant="ghost"]:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+.admin-shell .admin-content [data-button-variant="destructive"] {
+  background-color: #dc2626;
+  color: #fff;
+  box-shadow: none;
+}
+.admin-shell .admin-content [data-button-variant="destructive"]:hover {
+  background-color: #b91c1c;
+}
+.admin-shell .admin-content [data-button-variant="link"] {
+  background: transparent;
+  color: #2563eb;
+  box-shadow: none;
 }
 
 @layer base {

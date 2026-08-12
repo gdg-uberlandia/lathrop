@@ -64,6 +64,8 @@ export default function Missions() {
   const pagination = paginate(
     sortItems(filteredMissions, {
       name: (item) => item.title,
+      description: (item) => item.description,
+      qr: (item) => item.qrId ?? "",
       order: (item) => item.order,
       status: (item) => Number(item.active),
     }),
@@ -139,9 +141,9 @@ export default function Missions() {
           <AdminTableContainer>
             <Table className="rounded-xl overflow-hidden border-collapse">
               <TableCaption />
-              <TableHeader className="bg-devGray-dark text-white">
+              <TableHeader>
                 <TableRow>
-                  <TableHead className="p-3 text-white ">Imagem</TableHead>
+                  <TableHead className="p-3">Imagem</TableHead>
                   <TableHead className="p-3">
                     <AdminSortButton
                       label="Nome"
@@ -150,13 +152,31 @@ export default function Missions() {
                       onClick={() => toggleSort("name")}
                     />
                   </TableHead>
-                  <TableHead className="p-3 text-white ">Descrição</TableHead>
-                  <TableHead className="p-3 text-white text-center">
-                    QR Code
+                  <TableHead className="p-3">
+                    <AdminSortButton
+                      label="Descrição"
+                      active={sort === "description"}
+                      direction={direction}
+                      onClick={() => toggleSort("description")}
+                    />
                   </TableHead>
-                  <TableHead className="p-3 text-white">Status</TableHead>
-                  <TableHead className="p-3 text-white text-center"></TableHead>
-                  <TableHead className="p-3 text-white text-center"></TableHead>
+                  <TableHead className="p-3">
+                    <AdminSortButton
+                      label="QR Code"
+                      active={sort === "qr"}
+                      direction={direction}
+                      onClick={() => toggleSort("qr")}
+                    />
+                  </TableHead>
+                  <TableHead className="p-3">
+                    <AdminSortButton
+                      label="Status"
+                      active={sort === "status"}
+                      direction={direction}
+                      onClick={() => toggleSort("status")}
+                    />
+                  </TableHead>
+                  <TableHead className="text-right">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -221,31 +241,29 @@ export default function Missions() {
                         />
                       </button>
                     </TableCell>
-                    <TableCell className="px-3 text-white/80 text-right">
-                      <Button
-                        disabled={loading}
-                        variant="secondary"
-                        size="icon"
-                        className="size-8 text-devGreen-dark hover:text-devGreen bg-transparent p-0"
-                        onClick={() =>
-                          router.push(`/admin/missions/edit/${mission.id}`)
-                        }
-                        aria-label={`Editar ${mission.title}`}
-                      >
-                        <Pencil />
-                      </Button>
-                    </TableCell>
-                    <TableCell className="px-3 text-white/80 text-right">
-                      <Button
-                        variant="secondary"
-                        size="icon"
-                        disabled={loading}
-                        className="size-8 text-devRed-dark hover:text-devRed bg-transparent p-0"
-                        onClick={() => handleOpenDialogDelete(mission)}
-                        aria-label={`Excluir ${mission.title}`}
-                      >
-                        <Trash2 />
-                      </Button>
+                    <TableCell>
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          disabled={loading}
+                          variant="secondary"
+                          size="icon"
+                          onClick={() =>
+                            router.push(`/admin/missions/edit/${mission.id}`)
+                          }
+                          aria-label={`Editar ${mission.title}`}
+                        >
+                          <Pencil />
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          disabled={loading}
+                          onClick={() => handleOpenDialogDelete(mission)}
+                          aria-label={`Excluir ${mission.title}`}
+                        >
+                          <Trash2 />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

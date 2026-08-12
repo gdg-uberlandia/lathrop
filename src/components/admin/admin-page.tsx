@@ -234,7 +234,7 @@ export function AdminSortButton({
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex items-center gap-1.5 font-medium text-slate-600 hover:text-slate-950"
+      className="inline-flex w-full items-center gap-1.5 rounded-md px-1 py-1 font-semibold text-slate-700 transition-colors hover:text-slate-950"
     >
       {label}
       <ArrowUpDown

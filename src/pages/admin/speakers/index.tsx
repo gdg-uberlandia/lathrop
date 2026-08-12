@@ -126,7 +126,7 @@ export default function Speakers() {
         ) : (
           <AdminTableContainer>
             <Table>
-              <TableHeader className="bg-devGray-dark">
+              <TableHeader>
                 <TableRow>
                   <TableHead />
                   <TableHead>
@@ -153,8 +153,7 @@ export default function Speakers() {
                       onClick={() => toggleSort("status")}
                     />
                   </TableHead>
-                  <TableHead />
-                  <TableHead />
+                  <TableHead className="text-right">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -203,26 +202,26 @@ export default function Speakers() {
                       </button>
                     </TableCell>
                     <TableCell>
-                      <Button
-                        variant="secondary"
-                        size="icon"
-                        onClick={() =>
-                          router.push(`/admin/speakers/edit/${item.id}`)
-                        }
-                        aria-label={`Editar ${item.name}`}
-                      >
-                        <Pencil />
-                      </Button>
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="secondary"
-                        size="icon"
-                        onClick={() => setSpeaker(item)}
-                        aria-label={`Excluir ${item.name}`}
-                      >
-                        <Trash2 />
-                      </Button>
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          onClick={() =>
+                            router.push(`/admin/speakers/edit/${item.id}`)
+                          }
+                          aria-label={`Editar ${item.name}`}
+                        >
+                          <Pencil />
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          onClick={() => setSpeaker(item)}
+                          aria-label={`Excluir ${item.name}`}
+                        >
+                          <Trash2 />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

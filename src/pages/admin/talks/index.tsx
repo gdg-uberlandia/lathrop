@@ -77,6 +77,8 @@ export default function TalksPage() {
     sortItems(filteredTalks, {
       name: (item) => item.title,
       format: (item) => item.format,
+      speakers: (item) =>
+        item.speakerIds.map((id) => names.get(id) ?? "").join(" "),
       status: (item) => Number(item.isActive),
     }),
   );
@@ -149,7 +151,7 @@ export default function TalksPage() {
         ) : (
           <AdminTableContainer>
             <Table>
-              <TableHeader className="bg-devGray-dark">
+              <TableHeader>
                 <TableRow>
                   <TableHead>
                     <AdminSortButton
@@ -167,7 +169,14 @@ export default function TalksPage() {
                       onClick={() => toggleSort("format")}
                     />
                   </TableHead>
-                  <TableHead className="text-white">Palestrantes</TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Palestrantes"
+                      active={sort === "speakers"}
+                      direction={direction}
+                      onClick={() => toggleSort("speakers")}
+                    />
+                  </TableHead>
                   <TableHead>
                     <AdminSortButton
                       label="Status"
@@ -176,8 +185,7 @@ export default function TalksPage() {
                       onClick={() => toggleSort("status")}
                     />
                   </TableHead>
-                  <TableHead />
-                  <TableHead />
+                  <TableHead className="text-right">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -220,26 +228,26 @@ export default function TalksPage() {
                       </button>
                     </TableCell>
                     <TableCell>
-                      <Button
-                        variant="secondary"
-                        size="icon"
-                        onClick={() =>
-                          router.push(`/admin/talks/edit/${talk.id}`)
-                        }
-                        aria-label={`Editar ${talk.title}`}
-                      >
-                        <Pencil />
-                      </Button>
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="secondary"
-                        size="icon"
-                        onClick={() => setSelected(talk)}
-                        aria-label={`Excluir ${talk.title}`}
-                      >
-                        <Trash2 />
-                      </Button>
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          onClick={() =>
+                            router.push(`/admin/talks/edit/${talk.id}`)
+                          }
+                          aria-label={`Editar ${talk.title}`}
+                        >
+                          <Pencil />
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          onClick={() => setSelected(talk)}
+                          aria-label={`Excluir ${talk.title}`}
+                        >
+                          <Trash2 />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

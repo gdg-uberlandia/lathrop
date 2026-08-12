@@ -15,6 +15,7 @@ import {
   AdminPageHeader,
   AdminPagination,
   AdminStatusBadge,
+  AdminSortButton,
   AdminTableContainer,
 } from "@/components/admin/admin-page";
 import DeleteDialog from "@/components/admin/delete-dialog";
@@ -46,6 +47,8 @@ export default function TagsPage() {
     list.sortItems(filtered, {
       name: (item) => item.name,
       order: (item) => item.order,
+      xp: (item) => item.xpAwarded ?? 0,
+      status: (item) => Number(item.active),
     }),
   );
   return (
@@ -85,10 +88,38 @@ export default function TagsPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Imagem</TableHead>
-                  <TableHead>Nome</TableHead>
-                  <TableHead>Ordem</TableHead>
-                  <TableHead>XP</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Nome"
+                      active={list.sort === "name"}
+                      direction={list.direction}
+                      onClick={() => list.toggleSort("name")}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Ordem"
+                      active={list.sort === "order"}
+                      direction={list.direction}
+                      onClick={() => list.toggleSort("order")}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="XP"
+                      active={list.sort === "xp"}
+                      direction={list.direction}
+                      onClick={() => list.toggleSort("xp")}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Status"
+                      active={list.sort === "status"}
+                      direction={list.direction}
+                      onClick={() => list.toggleSort("status")}
+                    />
+                  </TableHead>
                   <TableHead>Ações</TableHead>
                 </TableRow>
               </TableHeader>
@@ -134,6 +165,7 @@ export default function TagsPage() {
                         <Button
                           size="icon"
                           variant="secondary"
+                          aria-label={`Editar ${item.name}`}
                           onClick={() =>
                             router.push(`/admin/tags/edit/${item.id}`)
                           }
@@ -143,6 +175,7 @@ export default function TagsPage() {
                         <Button
                           size="icon"
                           variant="secondary"
+                          aria-label={`Excluir ${item.name}`}
                           onClick={() => setSelected(item)}
                         >
                           <Trash2 />
