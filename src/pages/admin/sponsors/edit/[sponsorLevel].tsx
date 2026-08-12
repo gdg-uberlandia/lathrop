@@ -13,6 +13,7 @@ export default function EditSponsorPage() {
   const router = useRouter();
   const { loading, fetchSponsor, updateSponsor } = useSponsors();
   const [sponsor, setSponsor] = useState<Sponsor | null>(null);
+  const [resolved, setResolved] = useState(false);
   const sponsorId =
     typeof router.query.id === "string" ? router.query.id : null;
   const sponsorLevel =
@@ -20,8 +21,11 @@ export default function EditSponsorPage() {
       ? router.query.sponsorLevel
       : null;
   useEffect(() => {
-    if (sponsorId && sponsorLevel)
-      void fetchSponsor({ sponsorId, sponsorLevel }).then(setSponsor);
+    if (!sponsorId || !sponsorLevel) return;
+    setResolved(false);
+    void fetchSponsor({ sponsorId, sponsorLevel })
+      .then(setSponsor)
+      .finally(() => setResolved(true));
   }, [fetchSponsor, sponsorId, sponsorLevel]);
   return (
     <AdminFormPage
@@ -30,7 +34,7 @@ export default function EditSponsorPage() {
       backHref="/admin/sponsors"
       backLabel="Voltar para patrocinadores"
     >
-      {!sponsor && loading ? (
+      {!resolved ? (
         <AdminLoadingState />
       ) : !sponsor ? (
         <AdminEmptyState
