@@ -39,16 +39,16 @@ export function AdminFeedback() {
   return (
     <div
       role={feedback.type === "error" ? "alert" : "status"}
-      className="fixed right-4 top-20 z-50 flex max-w-sm items-start gap-3 rounded-xl border border-white/15 bg-devGray-dark p-4 text-white shadow-2xl"
+      className="admin-surface fixed right-4 top-20 z-50 flex max-w-sm items-start gap-3 rounded-xl p-4 text-slate-800 shadow-xl"
     >
       <Icon
         className={
-          feedback.type === "success" ? "text-emerald-300" : "text-red-300"
+          feedback.type === "success" ? "text-emerald-600" : "text-red-600"
         }
       />
       <p className="flex-1 text-sm">{feedback.message}</p>
       <button aria-label="Fechar mensagem" onClick={() => setFeedback(null)}>
-        <X className="size-4 text-white/60" />
+        <X className="size-4 text-slate-400" />
       </button>
     </div>
   );

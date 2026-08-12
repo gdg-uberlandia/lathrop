@@ -1,6 +1,7 @@
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -9,6 +10,8 @@ import {
   SidebarMenuItem,
 } from "@/assets/components/ui/sidebar";
 import { LogoGDG } from "@/assets/images/LogoGDG";
+import { LogOut } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -19,16 +22,17 @@ import {
 
 export function AppSidebar() {
   const router = useRouter();
+  const { logout } = useAuth();
 
   return (
-    <Sidebar>
-      <SidebarHeader className="flex items-center h-16">
-        <LogoGDG inverted width={220} />
+    <Sidebar className="admin-sidebar">
+      <SidebarHeader className="flex h-20 items-center border-b border-white/10 px-5">
+        <LogoGDG inverted width={180} />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupContent className="px-1">
-            <SidebarMenu className="gap-1">
+          <SidebarGroupContent className="px-2 py-3">
+            <SidebarMenu className="gap-1.5">
               {adminNavigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
@@ -37,18 +41,18 @@ export function AppSidebar() {
                       router.pathname,
                       item,
                     )}
-                    className="data-[active=true]:bg-devBlue-dark data-[active=true]:text-white"
+                    className="h-11 rounded-lg text-slate-300 hover:bg-white/10 hover:text-white data-[active=true]:bg-blue-600 data-[active=true]:font-medium data-[active=true]:text-white"
                   >
                     <Link
                       href={item.url}
-                      className="text-white h-14 rounded-xl px-3"
+                      className="h-11 rounded-lg px-3"
                       aria-current={
                         isAdminNavigationItemActive(router.pathname, item)
                           ? "page"
                           : undefined
                       }
                     >
-                      <item.icon className="!size-5 mr-1" />
+                      <item.icon className="mr-1 !size-[18px]" />
                       <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
@@ -58,6 +62,19 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter className="border-t border-white/10 p-3">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={() => void logout()}
+              className="h-10 rounded-lg text-slate-300 hover:bg-white/10 hover:text-white"
+            >
+              <LogOut className="size-[18px]" />
+              <span>Sair</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }
