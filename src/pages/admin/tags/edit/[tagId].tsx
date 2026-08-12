@@ -12,9 +12,13 @@ export default function EditTagPage() {
   const router = useRouter();
   const { fetchTag, updateTag, loading } = useTags();
   const [tag, setTag] = useState<Tag | null>(null);
+  const [resolved, setResolved] = useState(false);
   useEffect(() => {
-    if (typeof router.query.tagId === "string")
-      void fetchTag(router.query.tagId).then(setTag);
+    if (typeof router.query.tagId !== "string") return;
+    setResolved(false);
+    void fetchTag(router.query.tagId)
+      .then(setTag)
+      .finally(() => setResolved(true));
   }, [fetchTag, router.query.tagId]);
   return (
     <AdminFormPage
@@ -23,7 +27,7 @@ export default function EditTagPage() {
       backHref="/admin/tags"
       backLabel="Voltar para tags"
     >
-      {!tag && loading ? (
+      {!resolved ? (
         <AdminLoadingState />
       ) : !tag ? (
         <AdminEmptyState

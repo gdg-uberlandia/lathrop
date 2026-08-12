@@ -16,9 +16,13 @@ export default function EditTalkPage() {
   const { error: speakersError, speakers } = useSpeakers();
   const { error, fetchTalk, updateTalk, loading } = useTalks();
   const [talk, setTalk] = useState<Talk | null>(null);
+  const [resolved, setResolved] = useState(false);
   useEffect(() => {
-    if (typeof router.query.talkId === "string")
-      void fetchTalk(router.query.talkId).then(setTalk);
+    if (typeof router.query.talkId !== "string") return;
+    setResolved(false);
+    void fetchTalk(router.query.talkId)
+      .then(setTalk)
+      .finally(() => setResolved(true));
   }, [fetchTalk, router.query.talkId]);
   return (
     <AdminFormPage
@@ -30,7 +34,7 @@ export default function EditTalkPage() {
       {(error || speakersError) && (
         <AdminErrorState message={(error || speakersError)!} />
       )}
-      {!talk && loading ? (
+      {!resolved ? (
         <AdminLoadingState />
       ) : !talk ? (
         <AdminEmptyState

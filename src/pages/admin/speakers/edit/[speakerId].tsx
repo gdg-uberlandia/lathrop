@@ -14,9 +14,13 @@ export default function EditSpeakerPage() {
   const router = useRouter();
   const { error, loading, fetchSpeaker, updateSpeaker } = useSpeakers();
   const [speaker, setSpeaker] = useState<Speaker | null>(null);
+  const [resolved, setResolved] = useState(false);
   useEffect(() => {
-    if (typeof router.query.speakerId === "string")
-      void fetchSpeaker(router.query.speakerId).then(setSpeaker);
+    if (typeof router.query.speakerId !== "string") return;
+    setResolved(false);
+    void fetchSpeaker(router.query.speakerId)
+      .then(setSpeaker)
+      .finally(() => setResolved(true));
   }, [fetchSpeaker, router.query.speakerId]);
   return (
     <AdminFormPage
@@ -26,7 +30,7 @@ export default function EditSpeakerPage() {
       backLabel="Voltar para palestrantes"
     >
       {error && <AdminErrorState message={error} />}
-      {!speaker && loading ? (
+      {!resolved ? (
         <AdminLoadingState />
       ) : !speaker ? (
         <AdminEmptyState

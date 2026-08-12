@@ -13,9 +13,13 @@ export default function EditMissionPage() {
   const router = useRouter();
   const { loading, fetchMission, updateMission } = useMissions();
   const [mission, setMission] = useState<Mission | null>(null);
+  const [resolved, setResolved] = useState(false);
   useEffect(() => {
-    if (typeof router.query.missionId === "string")
-      void fetchMission(router.query.missionId).then(setMission);
+    if (typeof router.query.missionId !== "string") return;
+    setResolved(false);
+    void fetchMission(router.query.missionId)
+      .then(setMission)
+      .finally(() => setResolved(true));
   }, [fetchMission, router.query.missionId]);
   const update = async (data: MissionInput) => {
     const result = await updateMission(data);
@@ -29,7 +33,7 @@ export default function EditMissionPage() {
       backHref="/admin/missions"
       backLabel="Voltar para missões"
     >
-      {!mission && loading ? (
+      {!resolved ? (
         <AdminLoadingState />
       ) : !mission ? (
         <AdminEmptyState

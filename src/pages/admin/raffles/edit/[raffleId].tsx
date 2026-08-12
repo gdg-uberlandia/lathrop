@@ -12,9 +12,13 @@ export default function EditRafflePage() {
   const router = useRouter();
   const { fetchRaffle, updateRaffle, loading } = useRaffles();
   const [raffle, setRaffle] = useState<Raffle | null>(null);
+  const [resolved, setResolved] = useState(false);
   useEffect(() => {
-    if (typeof router.query.raffleId === "string")
-      void fetchRaffle(router.query.raffleId).then(setRaffle);
+    if (typeof router.query.raffleId !== "string") return;
+    setResolved(false);
+    void fetchRaffle(router.query.raffleId)
+      .then(setRaffle)
+      .finally(() => setResolved(true));
   }, [fetchRaffle, router.query.raffleId]);
   return (
     <AdminFormPage
@@ -23,7 +27,7 @@ export default function EditRafflePage() {
       backHref="/admin/raffles"
       backLabel="Voltar para prêmios"
     >
-      {!raffle && loading ? (
+      {!resolved ? (
         <AdminLoadingState />
       ) : !raffle ? (
         <AdminEmptyState
