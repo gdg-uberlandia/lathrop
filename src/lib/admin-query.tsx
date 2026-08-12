@@ -64,11 +64,13 @@ export function AdminQueryProvider({ children }: { children: ReactNode }) {
 }
 
 export const adminQueryKeys = {
+  dashboard: ["admin", "dashboard"] as const,
   companies: ["admin", "companies"] as const,
   missions: ["admin", "missions"] as const,
   raffles: ["admin", "raffles"] as const,
   profiles: ["admin", "profiles"] as const,
   schedule: ["admin", "schedule"] as const,
+  scheduleWorkspace: ["admin", "schedule", "workspace"] as const,
   schedulePublication: ["admin", "schedule", "publication"] as const,
   speakers: ["admin", "speakers"] as const,
   sponsors: ["admin", "sponsors"] as const,

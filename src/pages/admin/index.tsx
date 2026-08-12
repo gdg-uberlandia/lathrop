@@ -1,12 +1,5 @@
 import { AdminLoadingState } from "@/components/admin/admin-page";
-import { useMissions } from "@/hooks/useMissions";
-import { useSchedule } from "@/hooks/useSchedule";
-import { useSpeakers } from "@/hooks/useSpeakers";
-import { useSponsors } from "@/hooks/useSponsors";
-import { useTalks } from "@/hooks/useTalks";
-import { useCompanies } from "@/hooks/useCompanies";
-import { useTags } from "@/hooks/useTags";
-import { useRaffles } from "@/hooks/useRaffles";
+import { useAdminDashboard } from "@/hooks/useAdminDashboard";
 import {
   ArrowRight,
   Building2,
@@ -82,14 +75,17 @@ function Panel({
 }
 
 export default function AdminIndex() {
-  const { speakers, loading: loadingSpeakers } = useSpeakers();
-  const { sponsors, loading: loadingSponsors } = useSponsors();
-  const { talks, loading: loadingTalks } = useTalks();
-  const { missions, loading: loadingMissions } = useMissions();
-  const { schedule, loading: loadingSchedule } = useSchedule();
-  const { companies, loading: loadingCompanies } = useCompanies();
-  const { tags, loading: loadingTags } = useTags();
-  const { raffles, loading: loadingRaffles } = useRaffles();
+  const { data, loading } = useAdminDashboard();
+  const {
+    speakers,
+    sponsors,
+    talks,
+    missions,
+    schedule,
+    companies,
+    tags,
+    raffles,
+  } = data;
   const sponsorCount = sponsors.reduce(
     (total, level) => total + level.items.length,
     0,
@@ -115,15 +111,6 @@ export default function AdminIndex() {
   const activePercent = Math.round((activeTalks.length / totalTalks) * 100);
   const reviewPercent = Math.round((openTalks.length / totalTalks) * 100);
   const inactivePercent = Math.max(0, 100 - activePercent - reviewPercent);
-  const loading =
-    loadingSpeakers ||
-    loadingSponsors ||
-    loadingTalks ||
-    loadingMissions ||
-    loadingSchedule ||
-    loadingCompanies ||
-    loadingTags ||
-    loadingRaffles;
   const metrics = [
     ["Palestrantes", speakers.length, "/admin/speakers"],
     ["Palestras ativas", activeTalks.length, "/admin/talks"],
