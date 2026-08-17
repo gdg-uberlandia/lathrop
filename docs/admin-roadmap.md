@@ -32,28 +32,33 @@ gravar documentos compatíveis com os contratos consumidos pela Pokedex.
 
 ### 1. Autorização administrativa
 
-Separar autenticação de autorização e exigir o papel no perfil do usuário:
+Separar autenticação de autorização. Firebase Authentication comprova a
+identidade, `adminUsers/{uid}` autoriza o acesso administrativo e o perfil
+materializa o papel efetivo:
 
 ```ts
 {
-  accessRoles: ["participant", "admin"];
+  accessRoles: ["admin"];
 }
 ```
 
 Entregas:
 
-- [x] Criar `requireAdmin()` para validar token e `profiles/{uid}.accessRoles`.
+- [x] Criar `requireAdmin()` para validar token e `adminUsers/{uid}`.
+- [x] Criar ou promover o perfil administrativo no primeiro login autorizado.
+- [x] Resolver perfis compartilhados por UID e e-mail sem criar duplicatas.
 - [x] Substituir `requireAuth()` nas APIs administrativas.
 - [x] Retornar `401` para sessão inválida e `403` para usuário sem papel.
 - [x] Criar experiência de acesso não autorizado.
 - [x] Atualizar a autorização quando `accessRoles` for alterado.
 - [ ] Registrar operador e horário nas mutações administrativas.
 
-Critério de aceite: um usuário cujo perfil não contenha `admin` em `accessRoles`
-não acessa páginas nem APIs administrativas.
+Critério de aceite: somente uma conta Email/Password com
+`adminUsers/{uid}.isActive == true` acessa páginas e APIs administrativas.
 
-O papel é administrado no documento de perfil. O site não cria perfis nem altera
-`accessRoles` como efeito colateral do login.
+O primeiro login autorizado cria um perfil compatível com a Pokedex ou promove
+o perfil encontrado, substituindo `accessRoles` por `["admin"]`. O fluxo está
+detalhado em [Autenticação e autorização administrativa](./admin-authentication.md).
 
 ### 2. Regras do Firestore
 
