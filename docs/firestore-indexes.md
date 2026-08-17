@@ -11,6 +11,10 @@ A proteção relacional de palestras consulta `schedule.activity.talkId` e a de
 palestrantes consulta `talks.speakerIds` com `array-contains`; ambas usam
 índices automáticos de campo único.
 
+A autorização administrativa busca `profiles.email` para reconciliar o
+Firebase UID do painel com o Google `sub` usado pela Pokedex. Essa consulta usa
+o índice automático de campo único. Não desative o índice de `profiles.email`.
+
 Não desative índices para `eventId`, `activity.talkId` ou `speakerIds`.
 Os nomes reais das coleções podem receber o sufixo de ambiente definido por
 `getFirestoreCollectionName()`.
