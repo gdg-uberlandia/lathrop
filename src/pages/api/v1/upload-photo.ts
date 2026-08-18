@@ -1,9 +1,14 @@
+import { randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
 
 import {
   IMAGE_UPLOAD_TARGETS,
   ImageUploadFolder,
 } from "@/contracts/image-upload";
+import {
+  createFirebaseDownloadUrl,
+  resolveBucketName,
+} from "@/lib/firebase-storage";
 import { admin } from "@/utils/db";
 import { getStorage } from "firebase-admin/storage";
 import formidable from "formidable";
@@ -29,21 +34,6 @@ const fieldValue = (value: string[] | string | undefined) =>
 
 function isUploadFolder(value: string): value is ImageUploadFolder {
   return value in IMAGE_UPLOAD_TARGETS;
-}
-
-function resolveBucketName() {
-  const configuredBucket =
-    process.env.FB_ADMIN_STORAGE_BUCKET?.trim() ||
-    process.env.NEXT_PUBLIC_FB_STORAGE_BUCKET?.trim() ||
-    process.env.NEXT_PUBLIC_FB_BUCKET?.trim();
-
-  if (!configuredBucket) {
-    throw new Error("Firebase Storage bucket não configurado");
-  }
-
-  return configuredBucket.includes(".")
-    ? configuredBucket
-    : `${configuredBucket}.firebasestorage.app`;
 }
 
 function isStoragePermissionError(error: unknown) {
@@ -104,13 +94,20 @@ export default async function handler(
 
     const objectPrefix = `${folder}/${entityId}/${variant}`;
     const objectName = `${objectPrefix}${extension}`;
-    const bucket = getStorage(admin.app()).bucket(resolveBucketName());
+    const firebaseApp = admin.app();
+    const bucket = getStorage(firebaseApp).bucket(
+      resolveBucketName(firebaseApp.options.storageBucket),
+    );
     const upload = bucket.file(objectName);
+    const downloadToken = randomUUID();
 
     await upload.save(await fs.readFile(file.filepath), {
       metadata: {
         contentType: file.mimetype,
         cacheControl: "public, max-age=3600",
+        metadata: {
+          firebaseStorageDownloadTokens: downloadToken,
+        },
       },
       resumable: false,
     });
@@ -125,10 +122,11 @@ export default async function handler(
         ),
     );
 
-    const [url] = await upload.getSignedUrl({
-      action: "read",
-      expires: "03-01-2030",
-    });
+    const url = createFirebaseDownloadUrl(
+      bucket.name,
+      objectName,
+      downloadToken,
+    );
 
     return res.status(200).json({ url });
   } catch (error) {
