@@ -1,16 +1,14 @@
 import { auth } from "@/utils/firebaseClient";
 
-import { AdminApiError, type AdminApiErrorPayload } from "./errors";
+import { AdminApiError } from "./errors";
+import { parseAdminApiResponse } from "./response";
 
 type QueryValue = string | number | boolean | null | undefined;
 
 type AdminApiRequestOptions = Omit<RequestInit, "body"> & {
   body?: BodyInit | object | null;
   query?: Record<string, QueryValue>;
-  retryOnNetworkError?: boolean;
 };
-
-const NETWORK_RETRY_DELAY_MS = 500;
 
 function createUrl(path: string, query?: Record<string, QueryValue>) {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
@@ -50,35 +48,11 @@ function createRequestBody(body: AdminApiRequestOptions["body"]) {
   return JSON.stringify(body);
 }
 
-async function parseResponse<T>(response: Response): Promise<T> {
-  const contentType = response.headers.get("content-type") ?? "";
-  const payload = contentType.includes("application/json")
-    ? await response.json()
-    : await response.text();
-
-  if (!response.ok) {
-    const errorPayload = payload as AdminApiErrorPayload;
-    throw new AdminApiError(
-      response.status,
-      errorPayload.error || errorPayload.message || "Erro inesperado na API",
-      errorPayload.issues,
-    );
-  }
-
-  return payload as T;
-}
-
 export async function adminApiRequest<T>(
   path: string,
   options: AdminApiRequestOptions = {},
 ): Promise<T> {
-  const {
-    body,
-    headers: customHeaders,
-    query,
-    retryOnNetworkError = false,
-    ...requestOptions
-  } = options;
+  const { body, headers: customHeaders, query, ...requestOptions } = options;
   const requestBody = createRequestBody(body);
   const headers = new Headers(customHeaders);
 
@@ -97,25 +71,8 @@ export async function adminApiRequest<T>(
     try {
       return await fetchRequest();
     } catch (networkError) {
-      if (retryOnNetworkError && window.navigator.onLine) {
-        console.warn(
-          `[admin-api] Falha de rede em ${path}; realizando uma nova tentativa.`,
-          networkError,
-        );
-        await new Promise((resolve) =>
-          window.setTimeout(resolve, NETWORK_RETRY_DELAY_MS),
-        );
-        try {
-          return await fetchRequest();
-        } catch (retryError) {
-          console.error(
-            `[admin-api] A nova tentativa de ${path} também falhou.`,
-            retryError,
-          );
-        }
-      } else {
-        console.error(`[admin-api] Falha de rede em ${path}.`, networkError);
-      }
+      if (requestOptions.signal?.aborted) throw networkError;
+      console.error(`[admin-api] Falha de rede em ${path}.`, networkError);
       throw new AdminApiError(
         0,
         window.navigator.onLine
@@ -126,10 +83,11 @@ export async function adminApiRequest<T>(
   };
 
   let response = await execute();
+
   if (response.status === 401 && auth.currentUser) {
     headers.set("Authorization", await getAuthorizationHeader(true));
     response = await execute();
   }
 
-  return parseResponse<T>(response);
+  return parseAdminApiResponse<T>(response);
 }

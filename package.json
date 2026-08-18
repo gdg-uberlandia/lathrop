@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "tsx --test src/**/*.test.ts",
+    "test": "tsx --test \"src/**/*.test.ts\"",
     "export": "next export",
     "copy_root": "cp out/index.html functions/",
     "deploy": "firebase deploy --only hosting",
