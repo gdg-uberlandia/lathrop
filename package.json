@@ -83,6 +83,9 @@
     "firebase@12.12.1": true,
     "unrs-resolver@1.12.2": true,
     "protobufjs@7.6.4": true,
-    "@firebase/util@1.15.1": true
+    "@firebase/util@1.15.2": true,
+    "esbuild@0.28.2": true,
+    "core-js@3.50.0": true,
+    "protobufjs@7.6.5": true
   }
 }
