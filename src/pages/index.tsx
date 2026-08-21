@@ -1,4 +1,5 @@
 import { getAllSpeakers } from "@/back-features/speakers";
+import { getAllSponsorLevels } from "@/back-features/sponsors";
 import { getAllTalks } from "@/back-features/talks";
 import type { GetServerSidePropsContext } from "next";
 import dynamic from "next/dynamic";
@@ -8,6 +9,7 @@ import { Header } from "@/components/devfest-triangulo-2025/Header";
 import { Presentation } from "@/components/devfest-triangulo-2025/Presentation";
 import { PublicSpeakerSummary } from "@/contracts/speaker";
 import { PublicTalkSummary } from "@/contracts/talk";
+import type { SponsorLevel } from "@/models/sponsor";
 import styles from "@/styles/Home.module.css";
 
 import { HeroVideo } from "@/components/devfest-triangulo-2025/HeroVideo";
@@ -61,10 +63,15 @@ const Faq = dynamic(() =>
 
 interface HomePageProps {
   initialSpeakers: Array<PublicSpeakerSummary>;
+  initialSponsors: Array<SponsorLevel>;
   initialTalks: Array<PublicTalkSummary>;
 }
 
-const Home = ({ initialSpeakers, initialTalks }: HomePageProps) => {
+const Home = ({
+  initialSpeakers,
+  initialSponsors,
+  initialTalks,
+}: HomePageProps) => {
   return (
     <>
       <ErrorBoundary>
@@ -205,7 +212,7 @@ const Home = ({ initialSpeakers, initialTalks }: HomePageProps) => {
 
           <SponsorsSection
             className={deferredHomepageSectionClassName}
-            sponsors={[]}
+            sponsors={initialSponsors}
             id="sponsors"
           />
 
@@ -220,8 +227,9 @@ const Home = ({ initialSpeakers, initialTalks }: HomePageProps) => {
 
 export async function getServerSideProps({ res }: GetServerSidePropsContext) {
   try {
-    const [speakers, talks] = await Promise.all([
+    const [speakers, sponsors, talks] = await Promise.all([
       getAllSpeakers(),
+      getAllSponsorLevels(),
       getAllTalks(),
     ]);
 
@@ -251,6 +259,7 @@ export async function getServerSideProps({ res }: GetServerSidePropsContext) {
             photoUrl,
           }),
         ),
+        initialSponsors: sponsors,
         initialTalks: publicTalks.map(({ id, title, speakerIds }) => ({
           id,
           title,
@@ -264,6 +273,7 @@ export async function getServerSideProps({ res }: GetServerSidePropsContext) {
     return {
       props: {
         initialSpeakers: [],
+        initialSponsors: [],
         initialTalks: [],
       },
     };

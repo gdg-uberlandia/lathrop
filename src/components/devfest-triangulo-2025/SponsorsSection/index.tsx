@@ -6,22 +6,22 @@ import { SponsorCategory, type SponsorLevel } from "@/models/sponsor";
 import configValues from "@/helpers/config";
 
 const sponsorSizeClasses: Record<string, string> = {
-  "superior:horizontal": "h-[115px] w-[320px]",
-  "superior:vertical": "size-[150px]",
-  "diamond:horizontal": "h-[100px] w-[275px]",
-  "diamond:vertical": "size-[135px]",
-  "gold:horizontal": "h-20 w-[220px]",
-  "gold:vertical": "size-[120px]",
-  "silver:horizontal": "h-[65px] w-[190px]",
-  "silver:vertical": "size-[105px]",
-  "bronze:horizontal": "h-[50px] w-[155px]",
-  "bronze:vertical": "size-[90px]",
-  "iron:horizontal": "h-10 w-[115px]",
-  "iron:vertical": "size-[75px]",
-  "ruby:horizontal": "h-[35px] w-[90px]",
-  "ruby:vertical": "size-[60px]",
-  "support:horizontal": "h-[35px] w-[90px]",
-  "support:vertical": "size-[60px]",
+  "superior:horizontal": "h-[210px] w-[560px]",
+  "superior:vertical": "size-[260px]",
+  "diamond:horizontal": "h-[180px] w-[470px]",
+  "diamond:vertical": "size-[230px]",
+  "gold:horizontal": "h-[155px] w-[390px]",
+  "gold:vertical": "size-[205px]",
+  "silver:horizontal": "h-[130px] w-[330px]",
+  "silver:vertical": "size-[180px]",
+  "bronze:horizontal": "h-[110px] w-[285px]",
+  "bronze:vertical": "size-[155px]",
+  "iron:horizontal": "h-[95px] w-[245px]",
+  "iron:vertical": "size-[135px]",
+  "ruby:horizontal": "h-20 w-[220px]",
+  "ruby:vertical": "size-[120px]",
+  "support:horizontal": "h-20 w-[220px]",
+  "support:vertical": "size-[120px]",
 };
 
 interface SponsorsSectionsProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -186,7 +186,7 @@ const SponsorLevel = ({ sponsorLevel: { name, items } }: SponsorLevelProps) => {
                 className="transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-devBlue-dark motion-reduce:transition-none"
               >
                 <div
-                  className={`relative ${sponsorSizeClasses[`${item.level}:${item.format}`] ?? "h-20 w-[120px]"}`}
+                  className={`relative max-w-[90vw] ${sponsorSizeClasses[`${item.level}:${item.format}`] ?? "h-[130px] w-[330px]"}`}
                 >
                   <Image
                     className="object-contain"
