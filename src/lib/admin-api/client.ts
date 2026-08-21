@@ -14,6 +14,10 @@ function createUrl(path: string, query?: Record<string, QueryValue>) {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   const url = new URL(normalizedPath, window.location.origin);
 
+  if (!url.pathname.endsWith("/")) {
+    url.pathname = `${url.pathname}/`;
+  }
+
   for (const [key, value] of Object.entries(query ?? {})) {
     if (value !== null && value !== undefined) {
       url.searchParams.set(key, String(value));

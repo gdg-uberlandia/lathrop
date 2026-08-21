@@ -28,7 +28,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 async function fetchAdminRole(currentUser: User, forceTokenRefresh = false) {
   const token = await currentUser.getIdToken(forceTokenRefresh);
-  const response = await fetch("/api/auth/session", {
+  const response = await fetch("/api/auth/session/", {
     headers: { Authorization: `Bearer ${token}` },
   });
 
