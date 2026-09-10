@@ -141,8 +141,9 @@ const Home = ({
             tags={[
               { text: "O maior da América Latina" },
               { text: "+ 2.000 participantes" },
-              { text: "4 trilhas de conteúdo" },
+              { text: "5 trilhas de conteúdo" },
               { text: "+ 20 palestras" },
+              { text: "Lounge Especialistas" },
             ]}
             title={
               <>

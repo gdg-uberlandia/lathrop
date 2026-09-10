@@ -6,22 +6,22 @@ import { SponsorCategory, type SponsorLevel } from "@/models/sponsor";
 import configValues from "@/helpers/config";
 
 const sponsorSizeClasses: Record<string, string> = {
-  "superior:horizontal": "h-[210px] w-[560px]",
-  "superior:vertical": "size-[260px]",
-  "diamond:horizontal": "h-[180px] w-[470px]",
-  "diamond:vertical": "size-[230px]",
-  "gold:horizontal": "h-[155px] w-[390px]",
-  "gold:vertical": "size-[205px]",
-  "silver:horizontal": "h-[130px] w-[330px]",
-  "silver:vertical": "size-[180px]",
-  "bronze:horizontal": "h-[110px] w-[285px]",
-  "bronze:vertical": "size-[155px]",
-  "iron:horizontal": "h-[95px] w-[245px]",
-  "iron:vertical": "size-[135px]",
-  "ruby:horizontal": "h-20 w-[220px]",
-  "ruby:vertical": "size-[120px]",
-  "support:horizontal": "h-20 w-[220px]",
-  "support:vertical": "size-[120px]",
+  "superior:horizontal": "h-[142.8px] w-[380.8px]",
+  "superior:vertical": "size-[176.8px]",
+  "diamond:horizontal": "h-[122.4px] w-[319.6px]",
+  "diamond:vertical": "size-[156.4px]",
+  "gold:horizontal": "h-[105.4px] w-[265.2px]",
+  "gold:vertical": "size-[139.4px]",
+  "silver:horizontal": "h-[88.4px] w-[224.4px]",
+  "silver:vertical": "size-[122.4px]",
+  "bronze:horizontal": "h-[74.8px] w-[193.8px]",
+  "bronze:vertical": "size-[105.4px]",
+  "iron:horizontal": "h-[64.6px] w-[166.6px]",
+  "iron:vertical": "size-[91.8px]",
+  "ruby:horizontal": "h-[54.4px] w-[149.6px]",
+  "ruby:vertical": "size-[81.6px]",
+  "support:horizontal": "h-[54.4px] w-[149.6px]",
+  "support:vertical": "size-[81.6px]",
 };
 
 interface SponsorsSectionsProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -78,7 +78,9 @@ export const SponsorsSection = ({
               src={MiniCheese}
               alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
             />
-            <p>Patrocinadores</p>
+            <h2 className="text-3xl font-bold text-devWhite-ice">
+              Patrocinadores
+            </h2>
           </span>
 
           {payingSponsors.map((sponsorLevel) => (
@@ -92,10 +94,10 @@ export const SponsorsSection = ({
                   src={MiniCheese}
                   alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
                 />
-                <p>
+                <h2 className="text-xl font-bold text-devWhite-ice">
                   Empresas que investem em seus{" "}
                   <span className="text-devBlue-dark">colaboradores</span>
-                </p>
+                </h2>
               </span>
 
               <div className="flex flex-wrap justify-center gap-12">
@@ -130,10 +132,10 @@ export const SponsorsSection = ({
                   src={MiniCheese}
                   alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
                 />
-                <p>
+                <h2 className="text-xl font-bold text-devWhite-ice">
                   Release
                   <span className="text-devBlue-dark">Trains</span>
-                </p>
+                </h2>
               </span>
               <p>Caravanas confirmadas para o DevFest Triângulo</p>
 
@@ -186,7 +188,7 @@ const SponsorLevel = ({ sponsorLevel: { name, items } }: SponsorLevelProps) => {
                 className="transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-devBlue-dark motion-reduce:transition-none"
               >
                 <div
-                  className={`relative max-w-[90vw] ${sponsorSizeClasses[`${item.level}:${item.format}`] ?? "h-[130px] w-[330px]"}`}
+                  className={`relative max-w-[90vw] ${sponsorSizeClasses[`${item.level}:${item.format}`] ?? "h-[88.4px] w-[224.4px]"}`}
                 >
                   <Image
                     className="object-contain"
