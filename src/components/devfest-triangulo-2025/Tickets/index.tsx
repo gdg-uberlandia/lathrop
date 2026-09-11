@@ -20,12 +20,12 @@ export const Tickets = () => {
           priceBadge="Minimal Build"
           soldOut
         /> */}
-        <Ticket name="Básico, mas incrível" price={135} batch={1} />
+        <Ticket name="Básico, mas incrível" price={170} batch={2} />
         <Ticket
           name="Combo Completo"
-          price={170}
+          price={210}
           withShirt
-          batch={1}
+          batch={2}
           bestValue
         />
       </div>
