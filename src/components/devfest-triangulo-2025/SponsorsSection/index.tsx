@@ -6,8 +6,8 @@ import { SponsorCategory, type SponsorLevel } from "@/models/sponsor";
 import configValues from "@/helpers/config";
 
 const sponsorSizeClasses: Record<string, string> = {
-  "superior:horizontal": "h-[142.8px] w-[380.8px]",
-  "superior:vertical": "size-[176.8px]",
+  "superior:horizontal": "h-[170px] w-[440px]",
+  "superior:vertical": "size-[210px]",
   "diamond:horizontal": "h-[122.4px] w-[319.6px]",
   "diamond:vertical": "size-[156.4px]",
   "gold:horizontal": "h-[105.4px] w-[265.2px]",
@@ -45,7 +45,15 @@ export const SponsorsSection = ({
         items[0]?.level !== SponsorCategory.CARAVANS &&
         items[0]?.level !== SponsorCategory.STAFF,
     )
-    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    .sort((a, b) => {
+      const aIsOrganization = a.items[0]?.level === SponsorCategory.SUPERIOR;
+      const bIsOrganization = b.items[0]?.level === SponsorCategory.SUPERIOR;
+
+      return (
+        Number(bIsOrganization) - Number(aIsOrganization) ||
+        (a.order ?? 0) - (b.order ?? 0)
+      );
+    });
 
   return (
     <Presentation
@@ -188,14 +196,18 @@ const SponsorLevel = ({ sponsorLevel: { name, items } }: SponsorLevelProps) => {
                 className="transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-devBlue-dark motion-reduce:transition-none"
               >
                 <div
-                  className={`relative max-w-[90vw] ${sponsorSizeClasses[`${item.level}:${item.format}`] ?? "h-[88.4px] w-[224.4px]"}`}
+                  className={`relative max-w-[90vw] ${sponsorSizeClasses[`${item.level}:${item.format}`] ?? (item.level === SponsorCategory.SUPERIOR ? sponsorSizeClasses["superior:horizontal"] : "h-[88.4px] w-[224.4px]")}`}
                 >
                   <Image
                     className="object-contain"
                     src={item.logo}
                     alt={item.name}
                     fill
-                    sizes="320px"
+                    sizes={
+                      item.level === SponsorCategory.SUPERIOR
+                        ? "(max-width: 489px) 90vw, 440px"
+                        : "320px"
+                    }
                     // style={{ filter: "grayscale(1)" }}
                   />
                 </div>
