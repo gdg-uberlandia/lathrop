@@ -8,6 +8,7 @@ import LogoMenu from "@/assets/images/LogoMenu";
 
 const NAV_ITEMS = [
   { name: "O que é o Devfest?", ref: "#about" },
+  { name: "Palestrantes", ref: "#speakers " },
   { name: "Patrocinadores", ref: "#sponsors" },
 ];
 

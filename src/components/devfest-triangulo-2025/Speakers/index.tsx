@@ -40,6 +40,7 @@ export const Speakers = ({
         className,
       )}
       aria-labelledby="speakers-title"
+      id="speakers"
     >
       <SectionHeading id="speakers-title">
         <span>Quem</span> inspira o presente e constrói o futuro, está aqui
