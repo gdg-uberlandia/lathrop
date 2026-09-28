@@ -89,6 +89,7 @@ export const raffleFixture = {
   id: "notebook",
   eventId: "devfest-triangulo-2026",
   prizeName: "Notebook",
+  sponsorId: null,
   description: "Prêmio principal do evento.",
   imageUrl: "https://example.com/notebook.png",
   order: 1,

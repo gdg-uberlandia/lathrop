@@ -4,6 +4,7 @@ import { urlSchema } from "./url";
 export const raffleFieldsSchema = z.object({
   id: z.string().trim().min(1).max(128),
   eventId: z.string().trim().min(1).max(128),
+  sponsorId: z.string().trim().min(1).max(128).nullable().optional(),
   prizeName: z.string().trim().min(1).max(120),
   description: z.string().trim().max(240).nullable(),
   imageUrl: urlSchema().nullable(),
@@ -39,6 +40,7 @@ export const raffleFieldsSchema = z.object({
 export const raffleInputSchema = raffleFieldsSchema.pick({
   id: true,
   prizeName: true,
+  sponsorId: true,
   description: true,
   imageUrl: true,
   order: true,

@@ -10,6 +10,14 @@ import {
   FormMessage,
 } from "@/assets/components/ui/form";
 import { Input } from "@/assets/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/assets/components/ui/select";
+import { useSponsors } from "@/hooks/useSponsors";
 import { Textarea } from "@/assets/components/ui/textarea";
 import { Raffle, RaffleInput, raffleInputSchema } from "@/contracts/raffle";
 import { useImageUpload } from "@/hooks/useImageUpload";
@@ -28,12 +36,26 @@ export function RaffleForm({
   onSubmit: (value: RaffleInput) => unknown;
 }) {
   const { uploadImage, loadingImage, error: uploadError } = useImageUpload();
+  const {
+    sponsors,
+    loading: sponsorsLoading,
+    error: sponsorsError,
+  } = useSponsors();
+  const sponsorOptions = Array.from(
+    new Map(
+      sponsors
+        .flatMap((level) => level.items)
+        .filter((sponsor) => !!sponsor.id)
+        .map((sponsor) => [sponsor.id!, sponsor]),
+    ).values(),
+  ).sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
   const form = useForm<RaffleInput>({
     resolver: zodResolver(raffleInputSchema),
     defaultValues: raffle
       ? {
           id: raffle.id,
           prizeName: raffle.prizeName,
+          sponsorId: raffle.sponsorId ?? null,
           description: raffle.description,
           imageUrl: raffle.imageUrl,
           order: raffle.order,
@@ -42,6 +64,7 @@ export function RaffleForm({
       : {
           id: uuidv4(),
           prizeName: "",
+          sponsorId: null,
           description: null,
           imageUrl: null,
           order: 0,
@@ -107,6 +130,50 @@ export function RaffleForm({
                   onChange={(e) => field.onChange(e.target.valueAsNumber)}
                 />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="sponsorId"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem className="md:col-span-8">
+              <FormLabel>Patrocinador do prêmio (opcional)</FormLabel>
+              <Select
+                value={field.value ?? "none"}
+                onValueChange={(value) =>
+                  field.onChange(value === "none" ? null : value)
+                }
+                disabled={sponsorsLoading || !!sponsorsError}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sem patrocinador" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="none">Sem patrocinador</SelectItem>
+                  {field.value &&
+                    !sponsorOptions.some(
+                      (sponsor) => sponsor.id === field.value,
+                    ) && (
+                      <SelectItem value={field.value}>
+                        Patrocinador associado (indisponível no catálogo)
+                      </SelectItem>
+                    )}
+                  {sponsorOptions.map((sponsor) => (
+                    <SelectItem key={sponsor.id} value={sponsor.id!}>
+                      {sponsor.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {sponsorsError && (
+                <p role="alert" className="text-sm text-devRed">
+                  {sponsorsError}
+                </p>
+              )}
               <FormMessage />
             </FormItem>
           )}

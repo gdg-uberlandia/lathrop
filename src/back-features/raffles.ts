@@ -1,3 +1,4 @@
+import { getSponsorById } from "@/back-features/sponsors";
 import { Timestamp } from "firebase-admin/firestore";
 import {
   Raffle,
@@ -50,9 +51,11 @@ export async function createRaffle(input: RaffleInput): Promise<Raffle> {
   const reference = db.collection(COLLECTION).doc(data.id);
   if ((await reference.get()).exists)
     throw new Error("Já existe um prêmio com este ID.");
+  if (data.sponsorId) await getSponsorById(data.sponsorId);
   const now = new Date();
   const raffle = raffleFieldsSchema.parse({
     ...data,
+    sponsorId: data.sponsorId ?? null,
     eventId: CURRENT_EVENT_ID,
     status: "pending",
     currentAttemptId: null,
@@ -74,6 +77,9 @@ export async function createRaffle(input: RaffleInput): Promise<Raffle> {
 export async function updateRaffle(input: RaffleInput): Promise<Raffle> {
   const data = raffleInputSchema.parse(input);
   const current = await getRaffleById(data.id);
+  if (data.sponsorId && data.sponsorId !== current.sponsorId) {
+    await getSponsorById(data.sponsorId);
+  }
   const raffle = raffleFieldsSchema.parse({
     ...current,
     ...data,
