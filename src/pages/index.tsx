@@ -244,10 +244,7 @@ export async function getServerSideProps({ res }: GetServerSidePropsContext) {
         talk.speakerIds.some((speakerId) => visibleSpeakerIds.has(speakerId)),
     );
 
-    res.setHeader(
-      "Cache-Control",
-      "public, s-maxage=300, stale-while-revalidate=3600",
-    );
+    res.setHeader("Cache-Control", "private, no-store");
 
     return {
       props: {

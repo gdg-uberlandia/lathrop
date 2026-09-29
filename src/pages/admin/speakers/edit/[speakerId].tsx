@@ -5,7 +5,7 @@ import {
   AdminLoadingState,
 } from "@/components/admin/admin-page";
 import { SpeakersForm } from "@/components/admin/speakers/speakers-form";
-import { Speaker } from "@/contracts/speaker";
+import { AdminSpeaker as Speaker } from "@/contracts/speaker-publication";
 import { useSpeakers } from "@/hooks/useSpeakers";
 import { resolveAdminReturnTo } from "@/lib/admin-return-path";
 import { useRouter } from "next/router";

@@ -52,3 +52,6 @@ hosting.*
 
 serviceAccount.json
 env.*
+
+/functions/node_modules/
+/functions/lib/

@@ -1,6 +1,6 @@
 import {
   deleteSpeaker,
-  getSpeakerById,
+  getAdminSpeakerById,
   updateSpeaker,
 } from "@/back-features/speakers";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -19,7 +19,7 @@ export default async function handler(
 
   if (req.method === "GET") {
     try {
-      const speaker = await getSpeakerById(speakerId);
+      const speaker = await getAdminSpeakerById(speakerId);
       return res.status(200).json(speaker);
     } catch (error: any) {
       return res

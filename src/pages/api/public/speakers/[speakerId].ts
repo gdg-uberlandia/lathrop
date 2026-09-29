@@ -8,6 +8,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  res.setHeader("Cache-Control", "private, no-store");
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
     return res.status(405).json({ error: "Método não permitido." });
@@ -33,10 +34,6 @@ export default async function handler(
       (talk) => talk.isActive && talk.speakerIds.includes(speaker.id),
     );
 
-    res.setHeader(
-      "Cache-Control",
-      "public, s-maxage=300, stale-while-revalidate=3600",
-    );
     return res.status(200).json({
       speaker: toPublicSpeaker(speaker),
       talks: activeTalks.map(toPublicTalk),

@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { createSpeaker, getAllSpeakers } from "@/back-features/speakers";
+import { createSpeaker, getAllAdminSpeakers } from "@/back-features/speakers";
 import { requireAdmin } from "@/utils/api/require-admin";
 
 export default async function handler(
@@ -10,7 +10,7 @@ export default async function handler(
 
   try {
     if (req.method === "GET") {
-      const speakers = await getAllSpeakers();
+      const speakers = await getAllAdminSpeakers();
       return res.status(200).json(speakers);
     }
 

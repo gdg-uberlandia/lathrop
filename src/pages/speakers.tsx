@@ -1,3 +1,4 @@
+import type { GetServerSidePropsContext } from "next";
 import React from "react";
 
 import styles from "../styles/Speakers.module.css";
@@ -55,17 +56,25 @@ const SpeakersPage = ({ speakers, talks }: SpeakersPageProps) => {
   );
 };
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ res }: GetServerSidePropsContext) {
+  res.setHeader("Cache-Control", "private, no-store");
   try {
     const [speakers, talks] = await Promise.all([
       getAllSpeakers(),
       getAllTalks(),
     ]);
 
+    const visibleSpeakers = speakers.filter((speaker) => speaker.isVisible);
+    const visibleIds = new Set(visibleSpeakers.map((speaker) => speaker.id));
     return {
       props: {
-        speakers: speakers.map(toPublicSpeaker),
-        talks: talks.map(toPublicTalk),
+        speakers: visibleSpeakers.map(toPublicSpeaker),
+        talks: talks
+          .filter(
+            (talk) =>
+              talk.isActive && talk.speakerIds.some((id) => visibleIds.has(id)),
+          )
+          .map(toPublicTalk),
       },
     };
   } catch (error) {

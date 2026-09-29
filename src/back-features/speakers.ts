@@ -1,16 +1,18 @@
 import { CURRENT_EVENT_ID } from "@/helpers/event";
-import {
-  Speaker,
-  SpeakerCreate,
-  SpeakerUpdate,
-  speakerCreateSchema,
-  speakerFieldsSchema,
-  speakerUpdateSchema,
-} from "@/contracts/speaker";
+import { Speaker, speakerFieldsSchema } from "@/contracts/speaker";
 import { db } from "@/utils/db/index";
 import { getFirestoreCollectionName } from "@/utils/db/collection-name";
 import { Timestamp } from "firebase-admin/firestore";
 
+import {
+  adminSpeakerInputSchema,
+  type AdminSpeaker,
+  type AdminSpeakerInput,
+} from "@/contracts/speaker-publication";
+
+const PUBLICATIONS_COLLECTION = getFirestoreCollectionName(
+  "speakerPublications",
+);
 const SPEAKERS_COLLECTION = getFirestoreCollectionName("speakers");
 const TALKS_COLLECTION = getFirestoreCollectionName("talks");
 
@@ -40,15 +42,12 @@ export const getAllSpeakers = async (): Promise<Speaker[]> => {
     .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
 };
 
-export const createSpeaker = async (input: SpeakerCreate): Promise<Speaker> => {
-  const data = speakerCreateSchema.parse(input);
+export const createSpeaker = async (
+  input: AdminSpeakerInput,
+): Promise<AdminSpeaker> => {
+  const { publishAt = null, ...data } = adminSpeakerInputSchema.parse(input);
   const docRef = db.collection(SPEAKERS_COLLECTION).doc(data.id);
-  const existing = await docRef.get();
-
-  if (existing.exists) {
-    throw new Error(`Palestrante com id ${data.id} já existe.`);
-  }
-
+  const publicationRef = db.collection(PUBLICATIONS_COLLECTION).doc(data.id);
   const now = new Date();
   const speaker = speakerFieldsSchema.parse({
     ...data,
@@ -56,8 +55,53 @@ export const createSpeaker = async (input: SpeakerCreate): Promise<Speaker> => {
     createdAt: now,
     updatedAt: now,
   });
-  await docRef.create(speaker);
-  return speaker;
+  await db.runTransaction(async (transaction) => {
+    const existing = await transaction.get(docRef);
+    if (existing.exists)
+      throw new Error(`Palestrante com id ${data.id} já existe.`);
+    transaction.create(docRef, speaker);
+    if (publishAt)
+      transaction.set(publicationRef, {
+        speakerId: data.id,
+        eventId: CURRENT_EVENT_ID,
+        publishAt,
+        updatedAt: now,
+      });
+    else transaction.delete(publicationRef);
+  });
+  return { ...speaker, publishAt };
+};
+
+export const getAllAdminSpeakers = async (): Promise<AdminSpeaker[]> => {
+  const [speakers, publications] = await Promise.all([
+    getAllSpeakers(),
+    db
+      .collection(PUBLICATIONS_COLLECTION)
+      .where("eventId", "==", CURRENT_EVENT_ID)
+      .get(),
+  ]);
+  const dates = new Map(
+    publications.docs.map((doc) => [doc.id, doc.data().publishAt as string]),
+  );
+  return speakers.map((speaker) => ({
+    ...speaker,
+    publishAt: dates.get(speaker.id) ?? null,
+  }));
+};
+
+export const getAdminSpeakerById = async (
+  id: string,
+): Promise<AdminSpeaker> => {
+  const [speaker, publication] = await Promise.all([
+    getSpeakerById(id),
+    db.collection(PUBLICATIONS_COLLECTION).doc(id).get(),
+  ]);
+  const value = publication.data();
+  return {
+    ...speaker,
+    publishAt:
+      value?.eventId === CURRENT_EVENT_ID ? (value.publishAt ?? null) : null,
+  };
 };
 
 export const getSpeakerById = async (speakerId: string): Promise<Speaker> => {
@@ -89,17 +133,47 @@ export const getSpeakersByIds = async (
   });
 };
 
-export const updateSpeaker = async (input: SpeakerUpdate): Promise<Speaker> => {
-  const data = speakerUpdateSchema.parse(input);
-  const current = await getSpeakerById(data.id);
-  const speaker = speakerFieldsSchema.parse({
-    ...data,
-    eventId: CURRENT_EVENT_ID,
-    createdAt: current.createdAt,
-    updatedAt: new Date(),
+export const updateSpeaker = async (
+  input: AdminSpeakerInput,
+): Promise<AdminSpeaker> => {
+  const { publishAt, ...data } = adminSpeakerInputSchema.parse(input);
+  const speakerRef = db.collection(SPEAKERS_COLLECTION).doc(data.id);
+  const publicationRef = db.collection(PUBLICATIONS_COLLECTION).doc(data.id);
+  return db.runTransaction(async (transaction) => {
+    const [currentDoc, publicationDoc] = await Promise.all([
+      transaction.get(speakerRef),
+      transaction.get(publicationRef),
+    ]);
+    if (!currentDoc.exists || currentDoc.data()?.eventId !== CURRENT_EVENT_ID) {
+      throw new Error(`Palestrante com id ${data.id} não encontrado.`);
+    }
+    const current = parseSpeaker(currentDoc.id, currentDoc.data()!);
+    const publication = publicationDoc.data();
+    const nextPublishAt = data.isVisible
+      ? null
+      : publishAt === undefined
+        ? publication?.eventId === CURRENT_EVENT_ID
+          ? (publication.publishAt ?? null)
+          : null
+        : publishAt;
+    const now = new Date();
+    const speaker = speakerFieldsSchema.parse({
+      ...data,
+      eventId: CURRENT_EVENT_ID,
+      createdAt: current.createdAt,
+      updatedAt: now,
+    });
+    transaction.set(speakerRef, speaker);
+    if (nextPublishAt)
+      transaction.set(publicationRef, {
+        speakerId: data.id,
+        eventId: CURRENT_EVENT_ID,
+        publishAt: nextPublishAt,
+        updatedAt: now,
+      });
+    else transaction.delete(publicationRef);
+    return { ...speaker, publishAt: nextPublishAt };
   });
-  await db.collection(SPEAKERS_COLLECTION).doc(data.id).set(speaker);
-  return speaker;
 };
 
 export const deleteSpeaker = async (speakerId: string): Promise<string> => {
@@ -117,6 +191,9 @@ export const deleteSpeaker = async (speakerId: string): Promise<string> => {
     throw new Error("Remova o palestrante das palestras antes de excluí-lo.");
   }
 
-  await db.collection(SPEAKERS_COLLECTION).doc(speakerId).delete();
+  const batch = db.batch();
+  batch.delete(db.collection(SPEAKERS_COLLECTION).doc(speakerId));
+  batch.delete(db.collection(PUBLICATIONS_COLLECTION).doc(speakerId));
+  await batch.commit();
   return speakerId;
 };

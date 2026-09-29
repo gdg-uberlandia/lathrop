@@ -1,6 +1,10 @@
+import { useCallback } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { Speaker, SpeakerInput } from "@/contracts/speaker";
+import {
+  AdminSpeaker as Speaker,
+  AdminSpeakerInput as SpeakerInput,
+} from "@/contracts/speaker-publication";
 import { useAuth } from "@/context/AuthContext";
 import {
   createSpeakerAPI,
@@ -17,6 +21,7 @@ export function useSpeakers() {
   const queryClient = useQueryClient();
   const speakersQuery = useQuery({
     enabled: isAdmin,
+    refetchOnWindowFocus: true,
     queryKey: adminQueryKeys.speakers,
     queryFn: ({ signal }) => getSpeakersAPI(signal),
   });
@@ -44,6 +49,17 @@ export function useSpeakers() {
       ),
   });
 
+  const fetchSpeaker = useCallback(
+    (speakerId: string) =>
+      resolveAdminAction(() =>
+        queryClient.fetchQuery({
+          queryKey: [...adminQueryKeys.speakers, speakerId],
+          queryFn: ({ signal }) => readSpeakerAPI(speakerId, signal),
+        }),
+      ),
+    [queryClient],
+  );
+
   const error =
     speakersQuery.error ||
     createMutation.error ||
@@ -61,13 +77,7 @@ export function useSpeakers() {
       ? getAdminApiErrorMessage(error, "Erro ao processar palestrantes")
       : null,
     fetchSpeakers: speakersQuery.refetch,
-    fetchSpeaker: (speakerId: string) =>
-      resolveAdminAction(() =>
-        queryClient.fetchQuery({
-          queryKey: [...adminQueryKeys.speakers, speakerId],
-          queryFn: ({ signal }) => readSpeakerAPI(speakerId, signal),
-        }),
-      ),
+    fetchSpeaker,
     addSpeaker: (speaker: SpeakerInput) =>
       resolveAdminAction(() => createMutation.mutateAsync(speaker)),
     removeSpeaker: (speakerId: string) =>

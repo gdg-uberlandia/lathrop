@@ -1,3 +1,7 @@
+import {
+  publicationInputToIso,
+  publicationInputValue,
+} from "@/lib/speaker-publication-time";
 import { Button } from "@/assets/components/ui/button";
 import { AdminVisibilityControl } from "@/components/admin/admin-visibility-control";
 import { AdminImageUpload } from "@/components/admin/admin-image-upload";
@@ -12,7 +16,10 @@ import { Input } from "@/assets/components/ui/input";
 import { Textarea } from "@/assets/components/ui/textarea";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
-import { Speaker, SpeakerInput } from "@/contracts/speaker";
+import {
+  AdminSpeaker as Speaker,
+  AdminSpeakerInput as SpeakerInput,
+} from "@/contracts/speaker-publication";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -35,6 +42,7 @@ const emptyValues = (): SpeakerFormType => ({
   photoUrl: "",
   socialMedia: { instagram: "", linkedIn: "" },
   isVisible: true,
+  publishAt: "",
 });
 
 export function SpeakersForm({
@@ -65,6 +73,7 @@ export function SpeakersForm({
         linkedIn: speaker.socialMedia.linkedIn ?? "",
       },
       isVisible: speaker.isVisible,
+      publishAt: publicationInputValue(speaker.publishAt),
     });
   }, [form, speaker]);
 
@@ -72,6 +81,7 @@ export function SpeakersForm({
     setValidationError("");
     await onSubmit({
       ...data,
+      publishAt: data.isVisible ? null : publicationInputToIso(data.publishAt),
       company: data.company || null,
       title: data.title || null,
       miniBio: data.miniBio || null,
@@ -230,7 +240,14 @@ export function SpeakersForm({
               <FormControl>
                 <AdminVisibilityControl
                   checked={field.value}
-                  onCheckedChange={field.onChange}
+                  onCheckedChange={(checked) => {
+                    field.onChange(checked);
+                    if (checked)
+                      form.setValue("publishAt", "", {
+                        shouldDirty: true,
+                        shouldValidate: true,
+                      });
+                  }}
                   label="Visibilidade do palestrante"
                   description="Palestrantes visíveis podem aparecer no site e na programação pública."
                   activeLabel="Visível"
@@ -240,6 +257,48 @@ export function SpeakersForm({
             </FormItem>
           )}
         />
+        {!form.watch("isVisible") && (
+          <FormField
+            name="publishAt"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <FormItem className="md:col-span-8">
+                <FormLabel>Publicar em (opcional)</FormLabel>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="datetime-local"
+                      step={1800}
+                      aria-describedby="publication-help"
+                      className="sm:max-w-xs"
+                    />
+                  </FormControl>
+                  {field.value && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => field.onChange("")}
+                    >
+                      Cancelar agendamento
+                    </Button>
+                  )}
+                </div>
+                <p id="publication-help" className="text-sm text-slate-500">
+                  Horário de Brasília. Escolha um horário terminado em :00 ou
+                  :30. O palestrante permanece oculto até a publicação
+                  automática. Deixe vazio para publicar manualmente. Salve para
+                  confirmar as alterações.
+                </p>
+                {fieldState.error && (
+                  <p role="alert" className="text-sm text-devRed">
+                    {fieldState.error.message}
+                  </p>
+                )}
+              </FormItem>
+            )}
+          />
+        )}
         <div className="sticky bottom-3 z-10 p-3 md:col-span-8">
           {validationError && (
             <p role="alert" className="mb-3 text-devRed">
