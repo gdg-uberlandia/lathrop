@@ -60,6 +60,32 @@ describe("entradas administrativas", () => {
     assert.equal("status" in parsed, false);
   });
 
+  it("aceita prêmios antigos e permite associar ou remover um patrocinador", () => {
+    const { sponsorId: _sponsorId, ...legacy } = raffleFixture;
+    assert.equal(raffleFieldsSchema.safeParse(legacy).success, true);
+    for (const sponsorId of [null, "sponsor-1"]) {
+      const input = raffleInputSchema.parse({ ...raffleFixture, sponsorId });
+      assert.equal(input.sponsorId, sponsorId);
+      assert.equal(
+        raffleFieldsSchema.parse({ ...raffleFixture, sponsorId }).sponsorId,
+        sponsorId,
+      );
+    }
+    for (const sponsorId of ["", "   ", "a".repeat(129), 123]) {
+      assert.equal(
+        raffleInputSchema.safeParse({ ...raffleFixture, sponsorId }).success,
+        false,
+      );
+    }
+  });
+
+  it("permite vários prêmios associados ao mesmo patrocinador", () => {
+    const prizes = ["premio-1", "premio-2"].map((id) =>
+      raffleInputSchema.parse({ ...raffleFixture, id, sponsorId: "sponsor-1" }),
+    );
+    assert.equal(prizes[0].sponsorId, prizes[1].sponsorId);
+  });
+
   it("exige os campos públicos da tag", () => {
     const {
       eventId: _eventId,

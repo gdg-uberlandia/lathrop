@@ -65,3 +65,16 @@ naquele repositório.
 
 Não adicione metadados, como `schemaVersion`, diretamente aos documentos sem
 combinar a mudança com a Pokedex: alguns schemas consumidores são estritos.
+
+## Patrocinador de um prêmio
+
+`raffles.sponsorId` é uma referência opcional e anulável ao `id` de um item
+no catálogo `sponsors` do evento (não ao ID do nível de patrocínio e não a
+`companies`). Vários prêmios podem referenciar o mesmo patrocinador.
+Documentos antigos sem o campo continuam válidos; `null` remove a associação.
+O site valida a existência do patrocinador ao criar ou alterar a referência.
+Uma associação existente é preservada quando o campo não é enviado numa edição.
+
+A Pokédex preserva o campo na leitura e nas cópias de simulação, sem exibi-lo
+nas telas. Se o patrocinador for removido do catálogo, o prêmio mantém a
+referência histórica; o admin permite substituí-la ou removê-la.
