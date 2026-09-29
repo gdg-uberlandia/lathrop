@@ -1,3 +1,4 @@
+import { formatPublicationTime } from "@/lib/speaker-publication-time";
 import { Button } from "@/assets/components/ui/button";
 import {
   Table,
@@ -21,7 +22,7 @@ import {
 } from "@/components/admin/admin-page";
 import { useSpeakers } from "@/hooks/useSpeakers";
 import { useAdminListState } from "@/hooks/useAdminListState";
-import { Speaker } from "@/contracts/speaker";
+import { AdminSpeaker as Speaker } from "@/contracts/speaker-publication";
 import { shouldBypassImageOptimization } from "@/helpers/image";
 import { Megaphone, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -58,7 +59,10 @@ export default function Speakers() {
     const term = search.trim().toLocaleLowerCase("pt-BR");
     return speakers.filter((item) => {
       const matchesStatus =
-        visibility === "all" || String(item.isVisible) === visibility;
+        visibility === "all" ||
+        (visibility === "scheduled"
+          ? !item.isVisible && !!item.publishAt
+          : String(item.isVisible) === visibility);
       const matchesSearch =
         !term ||
         [item.name, item.company, item.title]
@@ -101,6 +105,7 @@ export default function Speakers() {
             <option value="all">Todos</option>
             <option value="true">Visíveis</option>
             <option value="false">Ocultos</option>
+            <option value="scheduled">Agendados</option>
           </select>
         </AdminListToolbar>
         {error && (
@@ -187,7 +192,11 @@ export default function Speakers() {
                       <button
                         type="button"
                         disabled={loading}
-                        title="Alterar visibilidade"
+                        title={
+                          item.publishAt
+                            ? "Publicar agora e cancelar o agendamento"
+                            : "Alterar visibilidade"
+                        }
                         onClick={() =>
                           void updateSpeaker({
                             id: item.id,
@@ -198,15 +207,21 @@ export default function Speakers() {
                             photoUrl: item.photoUrl,
                             socialMedia: item.socialMedia,
                             isVisible: !item.isVisible,
+                            publishAt: null,
                           })
                         }
                       >
                         <AdminStatusBadge
                           active={item.isVisible}
                           activeLabel="Visível"
-                          inactiveLabel="Oculto"
+                          inactiveLabel={item.publishAt ? "Agendado" : "Oculto"}
                         />
                       </button>
+                      {!item.isVisible && item.publishAt && (
+                        <p className="mt-1 text-xs text-slate-500">
+                          {formatPublicationTime(item.publishAt)} (Brasília)
+                        </p>
+                      )}
                     </TableCell>
                     <TableCell>
                       <div className="flex justify-end gap-2">

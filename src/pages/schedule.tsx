@@ -1,3 +1,4 @@
+import type { GetServerSidePropsContext } from "next";
 import { getSchedule } from "@/back-features/schedule";
 import { getSchedulePublication } from "@/back-features/schedule-publication";
 import { getSpeakersByIds } from "@/back-features/speakers";
@@ -137,7 +138,8 @@ export default function SchedulePage({
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ res }: GetServerSidePropsContext) {
+  res.setHeader("Cache-Control", "private, no-store");
   try {
     const publication = await getSchedulePublication();
     if (!publication.published) {
@@ -166,9 +168,9 @@ export async function getServerSideProps() {
           updatedAt: item.updatedAt.toISOString(),
         })),
         talks: scheduledTalks.map(toPublicTalk),
-        speakers: (await getSpeakersByIds([...scheduledSpeakerIds])).map(
-          toPublicSpeaker,
-        ),
+        speakers: (await getSpeakersByIds([...scheduledSpeakerIds]))
+          .filter((speaker) => speaker.isVisible)
+          .map(toPublicSpeaker),
         published: publication.published,
       },
     };

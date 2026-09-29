@@ -1,4 +1,7 @@
-import { Speaker, SpeakerInput } from "@/contracts/speaker";
+import {
+  AdminSpeaker as Speaker,
+  AdminSpeakerInput as SpeakerInput,
+} from "@/contracts/speaker-publication";
 import { adminApiRequest } from "@/lib/admin-api/client";
 
 const SPEAKERS_API_PATH = "/api/v1/speakers";
