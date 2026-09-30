@@ -134,6 +134,10 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
                     <Link
                       key={href}
                       href={href}
+                      onClick={(event) => {
+                        const menu = event.currentTarget.closest("details");
+                        if (menu) menu.open = false;
+                      }}
                       className="block rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-950"
                     >
                       {label}

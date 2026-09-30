@@ -34,7 +34,7 @@ const emptyValues = (): SpeakerFormType => ({
   miniBio: "",
   photoUrl: "",
   socialMedia: { instagram: "", linkedIn: "" },
-  isVisible: true,
+  isVisible: false,
 });
 
 export function SpeakersForm({
@@ -70,7 +70,7 @@ export function SpeakersForm({
 
   const submitHandler = async (data: SpeakerFormType) => {
     setValidationError("");
-    await onSubmit({
+    const result = await onSubmit({
       ...data,
       company: data.company || null,
       title: data.title || null,
@@ -81,7 +81,7 @@ export function SpeakersForm({
         linkedIn: data.socialMedia.linkedIn || null,
       },
     });
-    if (!editing) form.reset(emptyValues());
+    if (!editing && result) form.reset(emptyValues());
   };
 
   const uploadPhoto = async (file: File) => {

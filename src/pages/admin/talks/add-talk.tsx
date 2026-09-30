@@ -8,6 +8,10 @@ import { useRouter } from "next/router";
 export default function AddTalkPage() {
   const router = useRouter();
   const returnTo = resolveAdminReturnTo(router.query.returnTo, "/admin/talks");
+  const initialSpeakerId =
+    typeof router.query.speakerId === "string"
+      ? router.query.speakerId
+      : undefined;
   const { error: speakersError, speakers } = useSpeakers();
   const { addTalk, error, loading } = useTalks();
   return (
@@ -26,6 +30,8 @@ export default function AddTalkPage() {
         </div>
       )}
       <TalksForm
+        key={initialSpeakerId ?? "new-talk"}
+        initialSpeakerId={initialSpeakerId}
         speakers={speakers}
         loading={loading}
         onSubmit={async (data) => {

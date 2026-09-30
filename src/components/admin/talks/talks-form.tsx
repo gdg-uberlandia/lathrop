@@ -30,16 +30,17 @@ import { Search, UserRound } from "lucide-react";
 interface TalksFormProps {
   speakers: Speaker[];
   talk?: Talk;
+  initialSpeakerId?: string;
   loading?: boolean;
   onSubmit: (data: TalkInput) => void | Promise<unknown>;
 }
-const defaults = (): TalkFormType => ({
+const defaults = (initialSpeakerId?: string): TalkFormType => ({
   id: uuidv4(),
   title: "",
   description: "",
   category: null,
   format: "talk",
-  speakerIds: [],
+  speakerIds: initialSpeakerId ? [initialSpeakerId] : [],
   evaluationStatus: "locked",
   isActive: true,
 });
@@ -47,6 +48,7 @@ const defaults = (): TalkFormType => ({
 export function TalksForm({
   speakers,
   talk,
+  initialSpeakerId,
   loading,
   onSubmit,
 }: TalksFormProps) {
@@ -54,7 +56,7 @@ export function TalksForm({
   const [speakerSearch, setSpeakerSearch] = useState("");
   const form = useForm<TalkFormType>({
     resolver: zodResolver(talkFormSchema),
-    defaultValues: defaults(),
+    defaultValues: defaults(initialSpeakerId),
   });
   useUnsavedChanges(form.formState.isDirty && !form.formState.isSubmitting);
   useEffect(() => {

@@ -27,6 +27,7 @@ export const Tickets = () => {
           withShirt
           batch={2}
           bestValue
+          soldOut
         />
       </div>
     </section>
