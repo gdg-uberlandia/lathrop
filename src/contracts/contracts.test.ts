@@ -325,3 +325,32 @@ describe("missões por palavra-chave", () => {
     );
   });
 });
+
+describe("missão de networking por interesse", () => {
+  const mission = {
+    ...missionFixture,
+    qrId: null,
+    validationType: "automatic",
+    prerequisites: [],
+    progressRequirement: { type: "shared-interests", target: 3 },
+  };
+  it("aceita a meta de pessoas com interesses em comum", () => {
+    assert.equal(missionFieldsSchema.safeParse(mission).success, true);
+    const { eventId, createdAt, updatedAt, ...input } =
+      missionFieldsSchema.parse(mission);
+    assert.deepEqual(missionInputSchema.parse(input).progressRequirement, {
+      type: "shared-interests",
+      target: 3,
+    });
+  });
+  it("exige uma meta numérica positiva", () => {
+    for (const target of [0, -1, "all", 1.5])
+      assert.equal(
+        missionFieldsSchema.safeParse({
+          ...mission,
+          progressRequirement: { type: "shared-interests", target },
+        }).success,
+        false,
+      );
+  });
+});

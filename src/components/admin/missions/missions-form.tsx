@@ -385,7 +385,9 @@ export function MissionsForm({
                     <FormLabel>Progresso acompanhado</FormLabel>
                     <Select
                       value={field.value}
-                      onValueChange={(value: "connections" | "companies") => {
+                      onValueChange={(
+                        value: "connections" | "companies" | "shared-interests",
+                      ) => {
                         field.onChange(value);
                         form.setValue("progressRequirement.target", 1);
                       }}
@@ -397,6 +399,9 @@ export function MissionsForm({
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="connections">Conexões</SelectItem>
+                        <SelectItem value="shared-interests">
+                          Networking por interesse
+                        </SelectItem>
                         <SelectItem value="companies">
                           Empresas visitadas
                         </SelectItem>
@@ -406,6 +411,13 @@ export function MissionsForm({
                   </FormItem>
                 )}
               />
+              {progressType === "shared-interests" && (
+                <p className="text-sm text-muted-foreground md:col-span-2">
+                  Conta pessoas distintas com pelo menos um interesse em comum
+                  registrado na criação da conexão. Conexões anteriores sem esse
+                  registro não contam.
+                </p>
+              )}
               <FormField
                 name="progressRequirement.target"
                 control={form.control}
