@@ -5,6 +5,28 @@ import { Tag } from "../Tag";
 import { SponsorCategory, type SponsorLevel } from "@/models/sponsor";
 import configValues from "@/helpers/config";
 
+const sponsorLevelOrder = [
+  "superior",
+  "diamond",
+  "golden",
+  "silver",
+  "bronze",
+  "iron",
+  "ruby",
+  "ametista",
+  "support",
+  "staff",
+];
+
+const getSponsorLevelOrder = ({ items }: SponsorLevel) => {
+  const level = items[0]?.level;
+  const index = sponsorLevelOrder.indexOf(
+    level === SponsorCategory.GOLD ? "golden" : level,
+  );
+
+  return index === -1 ? sponsorLevelOrder.length : index;
+};
+
 const sponsorSizeClasses: Record<string, string> = {
   "superior:horizontal": "h-[170px] w-[440px]",
   "superior:vertical": "size-[210px]",
@@ -45,15 +67,7 @@ export const SponsorsSection = ({
         items[0]?.level !== SponsorCategory.CARAVANS &&
         items[0]?.level !== SponsorCategory.STAFF,
     )
-    .sort((a, b) => {
-      const aIsOrganization = a.items[0]?.level === SponsorCategory.SUPERIOR;
-      const bIsOrganization = b.items[0]?.level === SponsorCategory.SUPERIOR;
-
-      return (
-        Number(bIsOrganization) - Number(aIsOrganization) ||
-        (a.order ?? 0) - (b.order ?? 0)
-      );
-    });
+    .sort((a, b) => getSponsorLevelOrder(a) - getSponsorLevelOrder(b));
 
   return (
     <Presentation
