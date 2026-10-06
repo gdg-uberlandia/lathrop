@@ -11,7 +11,7 @@ import {
   tagFixture,
   talkFixture,
 } from "./fixtures";
-import { missionFieldsSchema } from "./mission";
+import { missionFieldsSchema, missionInputSchema } from "./mission";
 import { raffleFieldsSchema, raffleInputSchema } from "./raffle";
 import { rewardFieldsSchema } from "./reward";
 import { speakerFieldsSchema } from "./speaker";
@@ -256,6 +256,199 @@ describe("regras relacionais de palestras", () => {
       talkFieldsSchema.safeParse({
         ...talkFixture,
         speakerIds: [speakerFixture.id, speakerFixture.id],
+      }).success,
+      false,
+    );
+  });
+});
+
+describe("missões por palavra-chave", () => {
+  const keywordMission = {
+    ...missionFixture,
+    validationType: "keyword",
+    qrId: null,
+    keywordConfig: {
+      acceptedAnswers: ["Conexão", "Networking"],
+      maxAttempts: 3,
+    },
+  };
+  it("aceita o contrato de criação e edição compatível com a Pokedex", () => {
+    const parsed = missionFieldsSchema.parse(keywordMission);
+    const { eventId, createdAt, updatedAt, ...input } = parsed;
+    assert.deepEqual(
+      missionInputSchema.parse(input).keywordConfig,
+      keywordMission.keywordConfig,
+    );
+  });
+  it("mantém cadastros antigos sem configuração de palavra-chave", () => {
+    const { keywordConfig, ...legacy } = missionFixture;
+    assert.equal(missionFieldsSchema.parse(legacy).keywordConfig, null);
+  });
+  it("exige respostas válidas e limite de tentativas", () => {
+    for (const keywordConfig of [
+      null,
+      { acceptedAnswers: [], maxAttempts: 3 },
+      { acceptedAnswers: [" "], maxAttempts: 3 },
+      { acceptedAnswers: ["a".repeat(121)], maxAttempts: 3 },
+      { acceptedAnswers: Array(21).fill("ok"), maxAttempts: 3 },
+      { acceptedAnswers: ["ok"], maxAttempts: 0 },
+      { acceptedAnswers: ["ok"], maxAttempts: 101 },
+    ]) {
+      assert.equal(
+        missionFieldsSchema.safeParse({ ...keywordMission, keywordConfig })
+          .success,
+        false,
+      );
+    }
+  });
+  it("rejeita QR, progresso automático e configuração em outros tipos", () => {
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...keywordMission,
+        qrId: missionFixture.qrId,
+      }).success,
+      false,
+    );
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...keywordMission,
+        progressRequirement: { type: "connections", target: 1 },
+      }).success,
+      false,
+    );
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...keywordMission,
+        validationType: "reviewer",
+      }).success,
+      false,
+    );
+  });
+});
+
+describe("missão de networking por interesse", () => {
+  const mission = {
+    ...missionFixture,
+    qrId: null,
+    validationType: "automatic",
+    prerequisites: [],
+    progressRequirement: { type: "shared-interests", target: 3 },
+  };
+  it("aceita a meta de pessoas com interesses em comum", () => {
+    assert.equal(missionFieldsSchema.safeParse(mission).success, true);
+    const { eventId, createdAt, updatedAt, ...input } =
+      missionFieldsSchema.parse(mission);
+    assert.deepEqual(missionInputSchema.parse(input).progressRequirement, {
+      type: "shared-interests",
+      target: 3,
+    });
+  });
+  it("exige uma meta numérica positiva", () => {
+    for (const target of [0, -1, "all", 1.5])
+      assert.equal(
+        missionFieldsSchema.safeParse({
+          ...mission,
+          progressRequirement: { type: "shared-interests", target },
+        }).success,
+        false,
+      );
+  });
+});
+
+describe("missão de quiz relâmpago", () => {
+  const quizConfig = {
+    questions: [
+      {
+        id: "q1",
+        prompt: "Qual a resposta?",
+        options: ["A", "B"],
+        correctOptionIndex: 1,
+      },
+    ],
+    minCorrectAnswers: 1,
+    maxAttempts: 3,
+  };
+  const mission = {
+    ...missionFixture,
+    qrId: null,
+    prerequisites: [],
+    validationType: "quiz",
+    quizConfig,
+  };
+  it("aceita criação e edição com gabarito no contrato administrativo", () => {
+    const { eventId, createdAt, updatedAt, ...input } =
+      missionFieldsSchema.parse(mission);
+    assert.deepEqual(missionInputSchema.parse(input).quizConfig, quizConfig);
+  });
+  it("mantém missões antigas compatíveis", () => {
+    const { quizConfig: omitted, ...legacy } = missionFixture;
+    assert.equal(missionFieldsSchema.parse(legacy).quizConfig, null);
+  });
+  it("rejeita configuração incompleta ou impossível", () => {
+    for (const config of [
+      null,
+      { ...quizConfig, questions: [] },
+      { ...quizConfig, minCorrectAnswers: 2 },
+      { ...quizConfig, maxAttempts: 0 },
+      { ...quizConfig, maxAttempts: 101 },
+      {
+        ...quizConfig,
+        questions: [{ ...quizConfig.questions[0], correctOptionIndex: 2 }],
+      },
+      {
+        ...quizConfig,
+        questions: [{ ...quizConfig.questions[0], options: ["A", "A"] }],
+      },
+      {
+        ...quizConfig,
+        questions: [quizConfig.questions[0], quizConfig.questions[0]],
+      },
+    ])
+      assert.equal(
+        missionFieldsSchema.safeParse({ ...mission, quizConfig: config })
+          .success,
+        false,
+      );
+  });
+  it("limita cada pergunta a três alternativas", () => {
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...mission,
+        quizConfig: {
+          ...quizConfig,
+          questions: [
+            { ...quizConfig.questions[0], options: ["A", "B", "C", "D"] },
+          ],
+        },
+      }).success,
+      false,
+    );
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...mission,
+        quizConfig: {
+          ...quizConfig,
+          questions: [{ ...quizConfig.questions[0], options: ["A", "B", "C"] }],
+        },
+      }).success,
+      true,
+    );
+  });
+  it("proíbe QR e campos de quiz nos outros tipos", () => {
+    assert.equal(
+      missionFieldsSchema.safeParse({ ...mission, qrId: missionFixture.qrId })
+        .success,
+      false,
+    );
+    assert.equal(
+      missionFieldsSchema.safeParse({ ...mission, validationType: "reviewer" })
+        .success,
+      false,
+    );
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...mission,
+        progressRequirement: { type: "connections", target: 1 },
       }).success,
       false,
     );

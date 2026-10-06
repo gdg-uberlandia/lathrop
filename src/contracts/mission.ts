@@ -1,13 +1,22 @@
 import { z } from "zod";
+import { missionQuizConfigSchema } from "./mission-quiz";
 import { urlSchema } from "./url";
 
 export const missionValidationTypeSchema = z.enum([
   "qr",
   "reviewer",
   "automatic",
+  "keyword",
+  "quiz",
 ]);
 
 export const missionProgressRequirementSchema = z.discriminatedUnion("type", [
+  z
+    .object({
+      type: z.literal("shared-interests"),
+      target: z.number().int().positive(),
+    })
+    .strict(),
   z
     .object({
       type: z.literal("connections"),
@@ -46,6 +55,18 @@ const missionBaseSchema = z
     description: z.string().trim().min(1).max(1_000),
     imageUrl: urlSchema().nullable(),
     validationType: missionValidationTypeSchema,
+    quizConfig: missionQuizConfigSchema.nullable().default(null),
+    keywordConfig: z
+      .object({
+        acceptedAnswers: z
+          .array(z.string().trim().min(1).max(120))
+          .min(1)
+          .max(20),
+        maxAttempts: z.number().int().min(1).max(100),
+      })
+      .strict()
+      .nullable()
+      .default(null),
     progressRequirement: missionProgressRequirementSchema
       .nullable()
       .default(null),
@@ -59,13 +80,33 @@ const missionBaseSchema = z
   .strict();
 
 type MissionRules = {
-  validationType: "qr" | "reviewer" | "automatic";
+  validationType: "qr" | "reviewer" | "automatic" | "keyword" | "quiz";
+  quizConfig?: unknown;
+  keywordConfig?: unknown;
   qrId: string | null;
   progressRequirement?: unknown;
   prerequisites?: unknown[];
 };
 
 function validateMissionRules(mission: MissionRules, context: z.RefinementCtx) {
+  if ((mission.validationType === "quiz") !== Boolean(mission.quizConfig))
+    context.addIssue({
+      code: "custom",
+      path: ["quizConfig"],
+      message:
+        "Configure perguntas, acertos e tentativas apenas para missões de quiz",
+    });
+  if (
+    (mission.validationType === "keyword") !==
+    Boolean(mission.keywordConfig)
+  ) {
+    context.addIssue({
+      code: "custom",
+      path: ["keywordConfig"],
+      message:
+        "Defina respostas e limite de tentativas apenas para missões por palavra-chave",
+    });
+  }
   if (mission.validationType === "qr" && !mission.qrId) {
     context.addIssue({
       code: "custom",

@@ -30,6 +30,8 @@ import { useEffect } from "react";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
+import { MissionQuizFields } from "./mission-quiz-fields";
+
 import { MissionFormType, missionSchema } from "./missions-schema";
 
 interface MissionFormProps {
@@ -47,6 +49,8 @@ function defaults(mission?: Mission): MissionFormType {
     imageUrl: mission?.imageUrl ?? null,
     validationType: mission?.validationType ?? "reviewer",
     qrId: mission?.qrId ?? null,
+    keywordConfig: mission?.keywordConfig ?? null,
+    quizConfig: mission?.quizConfig ?? null,
     progressRequirement: mission?.progressRequirement ?? null,
     prerequisites: mission?.prerequisites ?? [],
     active: mission?.active ?? true,
@@ -82,6 +86,32 @@ export function MissionsForm({
   }, [form, mission]);
 
   useEffect(() => {
+    if (validationType === "quiz") {
+      if (!form.getValues("quizConfig"))
+        form.setValue("quizConfig", {
+          questions: [
+            {
+              id: uuidv4(),
+              prompt: "",
+              options: ["", "", ""],
+              correctOptionIndex: 0,
+            },
+          ],
+          minCorrectAnswers: 1,
+          maxAttempts: 3,
+        });
+    } else {
+      form.setValue("quizConfig", null);
+    }
+    if (validationType === "keyword") {
+      if (!form.getValues("keywordConfig"))
+        form.setValue("keywordConfig", {
+          acceptedAnswers: [""],
+          maxAttempts: 3,
+        });
+    } else {
+      form.setValue("keywordConfig", null);
+    }
     if (validationType === "qr") {
       if (!form.getValues("qrId")) form.setValue("qrId", uuidv4());
       form.setValue("progressRequirement", null);
@@ -215,6 +245,8 @@ export function MissionsForm({
                     <SelectItem value="reviewer">
                       Aprovação por revisor
                     </SelectItem>
+                    <SelectItem value="quiz">Quiz relâmpago</SelectItem>
+                    <SelectItem value="keyword">Palavra-chave</SelectItem>
                     <SelectItem value="qr">Leitura de QR Code</SelectItem>
                     <SelectItem value="automatic">
                       Progresso automático
@@ -304,6 +336,68 @@ export function MissionsForm({
             />
           )}
 
+          {validationType === "quiz" && <MissionQuizFields form={form} />}
+
+          {validationType === "keyword" && (
+            <div className="grid grid-cols-1 gap-4 rounded-xl border p-4 md:col-span-8 md:grid-cols-2">
+              <FormField
+                name="keywordConfig.acceptedAnswers"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Respostas aceitas</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        value={(field.value ?? []).join("\n")}
+                        onChange={(event) =>
+                          field.onChange(event.target.value.split("\n"))
+                        }
+                        placeholder={"Conexão\nNetworking"}
+                        rows={4}
+                      />
+                    </FormControl>
+                    <p className="text-xs text-muted-foreground">
+                      Uma resposta por linha, até 20 respostas de 120
+                      caracteres. Maiúsculas e acentos são ignorados.
+                    </p>
+                    <FormMessage />
+                    {form.formState.errors.keywordConfig?.acceptedAnswers && (
+                      <p role="alert" className="text-sm text-destructive">
+                        Informe de 1 a 20 respostas não vazias, com até 120
+                        caracteres cada.
+                      </p>
+                    )}
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="keywordConfig.maxAttempts"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Limite de tentativas</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min={1}
+                        max={100}
+                        value={field.value ?? ""}
+                        onChange={(event) =>
+                          field.onChange(event.target.valueAsNumber)
+                        }
+                      />
+                    </FormControl>
+                    <p className="text-xs text-muted-foreground">
+                      De 1 a 100 por participante. Editar as respostas não
+                      reinicia as tentativas já utilizadas.
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
+
           {validationType === "automatic" && (
             <div className="grid grid-cols-1 gap-4 rounded-xl border p-4 md:col-span-8 md:grid-cols-2">
               <FormField
@@ -314,7 +408,9 @@ export function MissionsForm({
                     <FormLabel>Progresso acompanhado</FormLabel>
                     <Select
                       value={field.value}
-                      onValueChange={(value: "connections" | "companies") => {
+                      onValueChange={(
+                        value: "connections" | "companies" | "shared-interests",
+                      ) => {
                         field.onChange(value);
                         form.setValue("progressRequirement.target", 1);
                       }}
@@ -326,6 +422,9 @@ export function MissionsForm({
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="connections">Conexões</SelectItem>
+                        <SelectItem value="shared-interests">
+                          Networking por interesse
+                        </SelectItem>
                         <SelectItem value="companies">
                           Empresas visitadas
                         </SelectItem>
@@ -335,6 +434,13 @@ export function MissionsForm({
                   </FormItem>
                 )}
               />
+              {progressType === "shared-interests" && (
+                <p className="text-sm text-muted-foreground md:col-span-2">
+                  Conta pessoas distintas com pelo menos um interesse em comum
+                  registrado na criação da conexão. Conexões anteriores sem esse
+                  registro não contam.
+                </p>
+              )}
               <FormField
                 name="progressRequirement.target"
                 control={form.control}
