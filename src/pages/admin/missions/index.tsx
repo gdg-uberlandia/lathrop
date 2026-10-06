@@ -233,6 +233,7 @@ export default function Missions() {
                             description: mission.description,
                             imageUrl: mission.imageUrl,
                             validationType: mission.validationType,
+                            keywordConfig: mission.keywordConfig,
                             progressRequirement: mission.progressRequirement,
                             prerequisites: mission.prerequisites,
                             active: !mission.active,

@@ -47,6 +47,7 @@ function defaults(mission?: Mission): MissionFormType {
     imageUrl: mission?.imageUrl ?? null,
     validationType: mission?.validationType ?? "reviewer",
     qrId: mission?.qrId ?? null,
+    keywordConfig: mission?.keywordConfig ?? null,
     progressRequirement: mission?.progressRequirement ?? null,
     prerequisites: mission?.prerequisites ?? [],
     active: mission?.active ?? true,
@@ -82,6 +83,15 @@ export function MissionsForm({
   }, [form, mission]);
 
   useEffect(() => {
+    if (validationType === "keyword") {
+      if (!form.getValues("keywordConfig"))
+        form.setValue("keywordConfig", {
+          acceptedAnswers: [""],
+          maxAttempts: 3,
+        });
+    } else {
+      form.setValue("keywordConfig", null);
+    }
     if (validationType === "qr") {
       if (!form.getValues("qrId")) form.setValue("qrId", uuidv4());
       form.setValue("progressRequirement", null);
@@ -215,6 +225,7 @@ export function MissionsForm({
                     <SelectItem value="reviewer">
                       Aprovação por revisor
                     </SelectItem>
+                    <SelectItem value="keyword">Palavra-chave</SelectItem>
                     <SelectItem value="qr">Leitura de QR Code</SelectItem>
                     <SelectItem value="automatic">
                       Progresso automático
@@ -302,6 +313,66 @@ export function MissionsForm({
                 </FormItem>
               )}
             />
+          )}
+
+          {validationType === "keyword" && (
+            <div className="grid grid-cols-1 gap-4 rounded-xl border p-4 md:col-span-8 md:grid-cols-2">
+              <FormField
+                name="keywordConfig.acceptedAnswers"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Respostas aceitas</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        value={(field.value ?? []).join("\n")}
+                        onChange={(event) =>
+                          field.onChange(event.target.value.split("\n"))
+                        }
+                        placeholder={"Conexão\nNetworking"}
+                        rows={4}
+                      />
+                    </FormControl>
+                    <p className="text-xs text-muted-foreground">
+                      Uma resposta por linha, até 20 respostas de 120
+                      caracteres. Maiúsculas e acentos são ignorados.
+                    </p>
+                    <FormMessage />
+                    {form.formState.errors.keywordConfig?.acceptedAnswers && (
+                      <p role="alert" className="text-sm text-destructive">
+                        Informe de 1 a 20 respostas não vazias, com até 120
+                        caracteres cada.
+                      </p>
+                    )}
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="keywordConfig.maxAttempts"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Limite de tentativas</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min={1}
+                        max={100}
+                        value={field.value ?? ""}
+                        onChange={(event) =>
+                          field.onChange(event.target.valueAsNumber)
+                        }
+                      />
+                    </FormControl>
+                    <p className="text-xs text-muted-foreground">
+                      De 1 a 100 por participante. Editar as respostas não
+                      reinicia as tentativas já utilizadas.
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           )}
 
           {validationType === "automatic" && (

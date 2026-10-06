@@ -11,7 +11,7 @@ import {
   tagFixture,
   talkFixture,
 } from "./fixtures";
-import { missionFieldsSchema } from "./mission";
+import { missionFieldsSchema, missionInputSchema } from "./mission";
 import { raffleFieldsSchema, raffleInputSchema } from "./raffle";
 import { rewardFieldsSchema } from "./reward";
 import { speakerFieldsSchema } from "./speaker";
@@ -256,6 +256,70 @@ describe("regras relacionais de palestras", () => {
       talkFieldsSchema.safeParse({
         ...talkFixture,
         speakerIds: [speakerFixture.id, speakerFixture.id],
+      }).success,
+      false,
+    );
+  });
+});
+
+describe("missões por palavra-chave", () => {
+  const keywordMission = {
+    ...missionFixture,
+    validationType: "keyword",
+    qrId: null,
+    keywordConfig: {
+      acceptedAnswers: ["Conexão", "Networking"],
+      maxAttempts: 3,
+    },
+  };
+  it("aceita o contrato de criação e edição compatível com a Pokedex", () => {
+    const parsed = missionFieldsSchema.parse(keywordMission);
+    const { eventId, createdAt, updatedAt, ...input } = parsed;
+    assert.deepEqual(
+      missionInputSchema.parse(input).keywordConfig,
+      keywordMission.keywordConfig,
+    );
+  });
+  it("mantém cadastros antigos sem configuração de palavra-chave", () => {
+    const { keywordConfig, ...legacy } = missionFixture;
+    assert.equal(missionFieldsSchema.parse(legacy).keywordConfig, null);
+  });
+  it("exige respostas válidas e limite de tentativas", () => {
+    for (const keywordConfig of [
+      null,
+      { acceptedAnswers: [], maxAttempts: 3 },
+      { acceptedAnswers: [" "], maxAttempts: 3 },
+      { acceptedAnswers: ["a".repeat(121)], maxAttempts: 3 },
+      { acceptedAnswers: Array(21).fill("ok"), maxAttempts: 3 },
+      { acceptedAnswers: ["ok"], maxAttempts: 0 },
+      { acceptedAnswers: ["ok"], maxAttempts: 101 },
+    ]) {
+      assert.equal(
+        missionFieldsSchema.safeParse({ ...keywordMission, keywordConfig })
+          .success,
+        false,
+      );
+    }
+  });
+  it("rejeita QR, progresso automático e configuração em outros tipos", () => {
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...keywordMission,
+        qrId: missionFixture.qrId,
+      }).success,
+      false,
+    );
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...keywordMission,
+        progressRequirement: { type: "connections", target: 1 },
+      }).success,
+      false,
+    );
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...keywordMission,
+        validationType: "reviewer",
       }).success,
       false,
     );
