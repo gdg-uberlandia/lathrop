@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { missionQuizConfigSchema } from "./mission-quiz";
 import { urlSchema } from "./url";
 
 export const missionValidationTypeSchema = z.enum([
@@ -6,6 +7,7 @@ export const missionValidationTypeSchema = z.enum([
   "reviewer",
   "automatic",
   "keyword",
+  "quiz",
 ]);
 
 export const missionProgressRequirementSchema = z.discriminatedUnion("type", [
@@ -53,6 +55,7 @@ const missionBaseSchema = z
     description: z.string().trim().min(1).max(1_000),
     imageUrl: urlSchema().nullable(),
     validationType: missionValidationTypeSchema,
+    quizConfig: missionQuizConfigSchema.nullable().default(null),
     keywordConfig: z
       .object({
         acceptedAnswers: z
@@ -77,7 +80,8 @@ const missionBaseSchema = z
   .strict();
 
 type MissionRules = {
-  validationType: "qr" | "reviewer" | "automatic" | "keyword";
+  validationType: "qr" | "reviewer" | "automatic" | "keyword" | "quiz";
+  quizConfig?: unknown;
   keywordConfig?: unknown;
   qrId: string | null;
   progressRequirement?: unknown;
@@ -85,6 +89,13 @@ type MissionRules = {
 };
 
 function validateMissionRules(mission: MissionRules, context: z.RefinementCtx) {
+  if ((mission.validationType === "quiz") !== Boolean(mission.quizConfig))
+    context.addIssue({
+      code: "custom",
+      path: ["quizConfig"],
+      message:
+        "Configure perguntas, acertos e tentativas apenas para missões de quiz",
+    });
   if (
     (mission.validationType === "keyword") !==
     Boolean(mission.keywordConfig)
