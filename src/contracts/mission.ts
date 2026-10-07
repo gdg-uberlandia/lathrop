@@ -5,6 +5,7 @@ export const missionValidationTypeSchema = z.enum([
   "qr",
   "reviewer",
   "automatic",
+  "keyword",
 ]);
 
 export const missionProgressRequirementSchema = z.discriminatedUnion("type", [
@@ -46,6 +47,17 @@ const missionBaseSchema = z
     description: z.string().trim().min(1).max(1_000),
     imageUrl: urlSchema().nullable(),
     validationType: missionValidationTypeSchema,
+    keywordConfig: z
+      .object({
+        acceptedAnswers: z
+          .array(z.string().trim().min(1).max(120))
+          .min(1)
+          .max(20),
+        maxAttempts: z.number().int().min(1).max(100),
+      })
+      .strict()
+      .nullable()
+      .default(null),
     progressRequirement: missionProgressRequirementSchema
       .nullable()
       .default(null),
@@ -59,13 +71,25 @@ const missionBaseSchema = z
   .strict();
 
 type MissionRules = {
-  validationType: "qr" | "reviewer" | "automatic";
+  validationType: "qr" | "reviewer" | "automatic" | "keyword";
+  keywordConfig?: unknown;
   qrId: string | null;
   progressRequirement?: unknown;
   prerequisites?: unknown[];
 };
 
 function validateMissionRules(mission: MissionRules, context: z.RefinementCtx) {
+  if (
+    (mission.validationType === "keyword") !==
+    Boolean(mission.keywordConfig)
+  ) {
+    context.addIssue({
+      code: "custom",
+      path: ["keywordConfig"],
+      message:
+        "Defina respostas e limite de tentativas apenas para missões por palavra-chave",
+    });
+  }
   if (mission.validationType === "qr" && !mission.qrId) {
     context.addIssue({
       code: "custom",

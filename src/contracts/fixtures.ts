@@ -31,6 +31,7 @@ export const missionFixture = {
   description: "Leia o QR code disponível no estande.",
   imageUrl: "https://example.com/mission.png",
   validationType: "qr",
+  keywordConfig: null,
   progressRequirement: null,
   prerequisites: [{ type: "company", activityId: "google" }],
   active: true,

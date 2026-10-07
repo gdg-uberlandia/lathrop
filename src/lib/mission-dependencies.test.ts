@@ -9,6 +9,7 @@ const mission = (id: string, dependencies: string[] = []): MissionInput => ({
   description: "Descrição válida",
   imageUrl: null,
   validationType: "reviewer",
+  keywordConfig: null,
   qrId: null,
   progressRequirement: null,
   prerequisites: dependencies.map((activityId) => ({
