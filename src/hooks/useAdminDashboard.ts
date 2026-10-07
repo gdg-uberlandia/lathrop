@@ -65,5 +65,6 @@ export function useAdminDashboard() {
     data: query.data ?? empty,
     loading: query.isFetching,
     error: query.error,
+    refetch: query.refetch,
   };
 }

@@ -1,4 +1,8 @@
-import { AdminLoadingState } from "@/components/admin/admin-page";
+import {
+  AdminErrorState,
+  AdminLoadingState,
+} from "@/components/admin/admin-page";
+import { getAdminApiErrorMessage } from "@/lib/admin-api/errors";
 import { useAdminDashboard } from "@/hooks/useAdminDashboard";
 import {
   ArrowRight,
@@ -75,7 +79,7 @@ function Panel({
 }
 
 export default function AdminIndex() {
-  const { data, loading } = useAdminDashboard();
+  const { data, loading, error, refetch } = useAdminDashboard();
   const {
     speakers,
     sponsors,
@@ -196,6 +200,17 @@ export default function AdminIndex() {
     )
     .slice(0, 5);
 
+  if (error) {
+    return (
+      <AdminErrorState
+        message={getAdminApiErrorMessage(
+          error,
+          "Não foi possível carregar os dados do painel.",
+        )}
+        onRetry={() => void refetch()}
+      />
+    );
+  }
   if (loading && metrics.every(([, value]) => value === 0)) {
     return (
       <main className="p-4 sm:p-6 lg:p-7">
