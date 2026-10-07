@@ -11,6 +11,12 @@ export const missionValidationTypeSchema = z.enum([
 export const missionProgressRequirementSchema = z.discriminatedUnion("type", [
   z
     .object({
+      type: z.literal("shared-interests"),
+      target: z.number().int().positive(),
+    })
+    .strict(),
+  z
+    .object({
       type: z.literal("connections"),
       target: z.number().int().positive(),
     })
