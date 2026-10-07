@@ -10,6 +10,14 @@ const createNextConfig = (phase) => ({
   swcMinify: true,
   trailingSlash: true,
   images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "pokedex.heldsonluiz.dev.br",
+        port: "",
+        pathname: "/images/assets/**",
+      },
+    ],
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 2592000,
     domains: [
