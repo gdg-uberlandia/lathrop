@@ -30,6 +30,8 @@ import { useEffect } from "react";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
+import { MissionQuizFields } from "./mission-quiz-fields";
+
 import { MissionFormType, missionSchema } from "./missions-schema";
 
 interface MissionFormProps {
@@ -48,6 +50,7 @@ function defaults(mission?: Mission): MissionFormType {
     validationType: mission?.validationType ?? "reviewer",
     qrId: mission?.qrId ?? null,
     keywordConfig: mission?.keywordConfig ?? null,
+    quizConfig: mission?.quizConfig ?? null,
     progressRequirement: mission?.progressRequirement ?? null,
     prerequisites: mission?.prerequisites ?? [],
     active: mission?.active ?? true,
@@ -83,6 +86,23 @@ export function MissionsForm({
   }, [form, mission]);
 
   useEffect(() => {
+    if (validationType === "quiz") {
+      if (!form.getValues("quizConfig"))
+        form.setValue("quizConfig", {
+          questions: [
+            {
+              id: uuidv4(),
+              prompt: "",
+              options: ["", "", ""],
+              correctOptionIndex: 0,
+            },
+          ],
+          minCorrectAnswers: 1,
+          maxAttempts: 3,
+        });
+    } else {
+      form.setValue("quizConfig", null);
+    }
     if (validationType === "keyword") {
       if (!form.getValues("keywordConfig"))
         form.setValue("keywordConfig", {
@@ -225,6 +245,7 @@ export function MissionsForm({
                     <SelectItem value="reviewer">
                       Aprovação por revisor
                     </SelectItem>
+                    <SelectItem value="quiz">Quiz relâmpago</SelectItem>
                     <SelectItem value="keyword">Palavra-chave</SelectItem>
                     <SelectItem value="qr">Leitura de QR Code</SelectItem>
                     <SelectItem value="automatic">
@@ -314,6 +335,8 @@ export function MissionsForm({
               )}
             />
           )}
+
+          {validationType === "quiz" && <MissionQuizFields form={form} />}
 
           {validationType === "keyword" && (
             <div className="grid grid-cols-1 gap-4 rounded-xl border p-4 md:col-span-8 md:grid-cols-2">

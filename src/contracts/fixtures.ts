@@ -32,6 +32,7 @@ export const missionFixture = {
   imageUrl: "https://example.com/mission.png",
   validationType: "qr",
   keywordConfig: null,
+  quizConfig: null,
   progressRequirement: null,
   prerequisites: [{ type: "company", activityId: "google" }],
   active: true,

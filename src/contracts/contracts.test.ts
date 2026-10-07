@@ -354,3 +354,103 @@ describe("missão de networking por interesse", () => {
       );
   });
 });
+
+describe("missão de quiz relâmpago", () => {
+  const quizConfig = {
+    questions: [
+      {
+        id: "q1",
+        prompt: "Qual a resposta?",
+        options: ["A", "B"],
+        correctOptionIndex: 1,
+      },
+    ],
+    minCorrectAnswers: 1,
+    maxAttempts: 3,
+  };
+  const mission = {
+    ...missionFixture,
+    qrId: null,
+    prerequisites: [],
+    validationType: "quiz",
+    quizConfig,
+  };
+  it("aceita criação e edição com gabarito no contrato administrativo", () => {
+    const { eventId, createdAt, updatedAt, ...input } =
+      missionFieldsSchema.parse(mission);
+    assert.deepEqual(missionInputSchema.parse(input).quizConfig, quizConfig);
+  });
+  it("mantém missões antigas compatíveis", () => {
+    const { quizConfig: omitted, ...legacy } = missionFixture;
+    assert.equal(missionFieldsSchema.parse(legacy).quizConfig, null);
+  });
+  it("rejeita configuração incompleta ou impossível", () => {
+    for (const config of [
+      null,
+      { ...quizConfig, questions: [] },
+      { ...quizConfig, minCorrectAnswers: 2 },
+      { ...quizConfig, maxAttempts: 0 },
+      { ...quizConfig, maxAttempts: 101 },
+      {
+        ...quizConfig,
+        questions: [{ ...quizConfig.questions[0], correctOptionIndex: 2 }],
+      },
+      {
+        ...quizConfig,
+        questions: [{ ...quizConfig.questions[0], options: ["A", "A"] }],
+      },
+      {
+        ...quizConfig,
+        questions: [quizConfig.questions[0], quizConfig.questions[0]],
+      },
+    ])
+      assert.equal(
+        missionFieldsSchema.safeParse({ ...mission, quizConfig: config })
+          .success,
+        false,
+      );
+  });
+  it("limita cada pergunta a três alternativas", () => {
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...mission,
+        quizConfig: {
+          ...quizConfig,
+          questions: [
+            { ...quizConfig.questions[0], options: ["A", "B", "C", "D"] },
+          ],
+        },
+      }).success,
+      false,
+    );
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...mission,
+        quizConfig: {
+          ...quizConfig,
+          questions: [{ ...quizConfig.questions[0], options: ["A", "B", "C"] }],
+        },
+      }).success,
+      true,
+    );
+  });
+  it("proíbe QR e campos de quiz nos outros tipos", () => {
+    assert.equal(
+      missionFieldsSchema.safeParse({ ...mission, qrId: missionFixture.qrId })
+        .success,
+      false,
+    );
+    assert.equal(
+      missionFieldsSchema.safeParse({ ...mission, validationType: "reviewer" })
+        .success,
+      false,
+    );
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...mission,
+        progressRequirement: { type: "connections", target: 1 },
+      }).success,
+      false,
+    );
+  });
+});
