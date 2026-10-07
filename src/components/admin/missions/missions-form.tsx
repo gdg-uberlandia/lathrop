@@ -409,7 +409,11 @@ export function MissionsForm({
                     <Select
                       value={field.value}
                       onValueChange={(
-                        value: "connections" | "companies" | "shared-interests",
+                        value:
+                          | "connections"
+                          | "companies"
+                          | "tags"
+                          | "shared-interests",
                       ) => {
                         field.onChange(value);
                         form.setValue("progressRequirement.target", 1);
@@ -425,6 +429,7 @@ export function MissionsForm({
                         <SelectItem value="shared-interests">
                           Networking por interesse
                         </SelectItem>
+                        <SelectItem value="tags">Tags coletadas</SelectItem>
                         <SelectItem value="companies">
                           Empresas visitadas
                         </SelectItem>
@@ -447,23 +452,49 @@ export function MissionsForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Meta</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        value={field.value ?? ""}
-                        placeholder={
-                          progressType === "companies"
-                            ? "Número ou all"
-                            : "Quantidade"
+                    {(progressType === "companies" ||
+                      progressType === "tags") && (
+                      <Select
+                        value={field.value === "all" ? "all" : "quantity"}
+                        onValueChange={(value) =>
+                          field.onChange(value === "all" ? "all" : 1)
                         }
-                        onChange={(event) => {
-                          const value = event.target.value.trim();
-                          field.onChange(
-                            value === "all" ? "all" : Number(value),
-                          );
-                        }}
-                      />
-                    </FormControl>
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="quantity">
+                            Quantidade específica
+                          </SelectItem>
+                          <SelectItem value="all">
+                            {progressType === "tags"
+                              ? "Todas as tags"
+                              : "Todas as empresas"}
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                    {field.value !== "all" && (
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min={1}
+                          step={1}
+                          value={field.value ?? ""}
+                          placeholder="Quantidade"
+                          onChange={(event) =>
+                            field.onChange(
+                              event.target.value === ""
+                                ? undefined
+                                : event.target.valueAsNumber,
+                            )
+                          }
+                        />
+                      </FormControl>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}

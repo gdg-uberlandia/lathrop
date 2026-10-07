@@ -25,6 +25,12 @@ export const missionProgressRequirementSchema = z.discriminatedUnion("type", [
     .strict(),
   z
     .object({
+      type: z.literal("tags"),
+      target: z.union([z.number().int().positive(), z.literal("all")]),
+    })
+    .strict(),
+  z
+    .object({
       type: z.literal("companies"),
       target: z.union([z.number().int().positive(), z.literal("all")]),
     })

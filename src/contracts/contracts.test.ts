@@ -454,3 +454,22 @@ describe("missão de quiz relâmpago", () => {
     );
   });
 });
+
+it("accepts all companies and all tags as automatic mission targets", () => {
+  for (const type of ["companies", "tags"]) {
+    const result = missionInputSchema.safeParse({
+      id: "all-items",
+      title: "Colete todos",
+      description: "Complete o catálogo",
+      qrId: null,
+      imageUrl: null,
+      validationType: "automatic",
+      progressRequirement: { type, target: "all" },
+      prerequisites: [],
+      active: true,
+      order: 0,
+      xpAwarded: 50,
+    });
+    assert.equal(result.success, true);
+  }
+});
