@@ -17,6 +17,7 @@ const SPONSORS_LIST: string[] = [
   "silver",
   "bronze",
   "iron",
+  "first-time",
   "ruby",
   "ametista",
   "support",
