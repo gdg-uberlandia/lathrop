@@ -1,4 +1,6 @@
 import {
+  Bell,
+  Users,
   Calendar,
   Building2,
   DollarSign,
@@ -20,15 +22,23 @@ export type AdminNavigationItem = {
 
 export const adminNavigationItems: AdminNavigationItem[] = [
   { title: "Painel", url: "/admin", icon: Home, exact: true },
+  { title: "Avisos", url: "/admin/notices", icon: Bell },
+  { title: "Empresas", url: "/admin/companies", icon: Building2 },
+  { title: "Missões", url: "/admin/missions", icon: Trophy },
   { title: "Palestrantes", url: "/admin/speakers", icon: Megaphone },
   { title: "Palestras", url: "/admin/talks", icon: Presentation },
+  { title: "Participantes", url: "/admin/participants", icon: Users },
   { title: "Patrocinadores", url: "/admin/sponsors", icon: DollarSign },
-  { title: "Empresas", url: "/admin/companies", icon: Building2 },
   { title: "Programação", url: "/admin/schedule", icon: Calendar },
-  { title: "Missões", url: "/admin/missions", icon: Trophy },
-  { title: "Tags", url: "/admin/tags", icon: Tags },
   { title: "Prêmios", url: "/admin/raffles", icon: Gift },
+  { title: "Tags", url: "/admin/tags", icon: Tags },
 ];
+
+export function getAdminNavigationItems(pushEnabled: boolean) {
+  return adminNavigationItems.filter(
+    (item) => pushEnabled || item.url !== "/admin/notices",
+  );
+}
 
 export function isAdminNavigationItemActive(
   pathname: string,

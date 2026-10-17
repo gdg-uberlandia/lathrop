@@ -50,8 +50,7 @@ export default function TagsPage() {
   const pagination = list.paginate(
     list.sortItems(filtered, {
       name: (item) => item.name,
-      order: (item) => item.order,
-      xp: (item) => item.xpAwarded ?? 0,
+      description: (item) => item.description,
       status: (item) => Number(item.active),
     }),
   );
@@ -103,22 +102,7 @@ export default function TagsPage() {
                       onClick={() => list.toggleSort("name")}
                     />
                   </TableHead>
-                  <TableHead>
-                    <AdminSortButton
-                      label="Ordem"
-                      active={list.sort === "order"}
-                      direction={list.direction}
-                      onClick={() => list.toggleSort("order")}
-                    />
-                  </TableHead>
-                  <TableHead>
-                    <AdminSortButton
-                      label="XP"
-                      active={list.sort === "xp"}
-                      direction={list.direction}
-                      onClick={() => list.toggleSort("xp")}
-                    />
-                  </TableHead>
+                  <TableHead>Descrição</TableHead>
                   <TableHead>
                     <AdminSortButton
                       label="Status"
@@ -143,8 +127,9 @@ export default function TagsPage() {
                       />
                     </TableCell>
                     <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell>{item.order}</TableCell>
-                    <TableCell>{item.xpAwarded ?? "—"}</TableCell>
+                    <TableCell className="max-w-md whitespace-normal">
+                      {item.description}
+                    </TableCell>
                     <TableCell>
                       <button
                         onClick={() =>
