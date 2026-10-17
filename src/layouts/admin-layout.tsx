@@ -10,14 +10,14 @@ import {
 import { AppSidebar } from "@/components/admin/app-sidebar";
 import { Button } from "@/assets/components/ui/button";
 import { getAdminBreadcrumbs } from "@/components/admin/admin-navigation";
-import { adminNavigationItems } from "@/components/admin/admin-navigation";
+import { getAdminNavigationItems } from "@/components/admin/admin-navigation";
 import { IconLoader2 } from "@tabler/icons-react";
 import Link from "next/link";
 import { ChevronDown, ChevronRight, LogOut, Plus, Search } from "lucide-react";
 import { AdminRouteProgress } from "@/components/admin/admin-route-progress";
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { user, isAdmin, logout, loading } = useAuth();
+  const { user, isAdmin, pushEnabled, logout, loading } = useAuth();
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
   const [adminSearch, setAdminSearch] = useState("");
@@ -55,7 +55,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
   const handleAdminSearch = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const term = adminSearch.trim().toLocaleLowerCase("pt-BR");
-    const destination = adminNavigationItems.find((item) =>
+    const destination = getAdminNavigationItems(pushEnabled).find((item) =>
       item.title.toLocaleLowerCase("pt-BR").includes(term),
     );
     if (destination) {

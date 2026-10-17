@@ -18,6 +18,7 @@ import { auth } from "@/utils/firebaseClient";
 interface AuthContextType {
   user: User | null;
   isAdmin: boolean;
+  pushEnabled: boolean;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -26,20 +27,27 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-async function fetchAdminRole(currentUser: User, forceTokenRefresh = false) {
+async function fetchAdminSession(currentUser: User, forceTokenRefresh = false) {
   const token = await currentUser.getIdToken(forceTokenRefresh);
   const response = await fetch("/api/auth/session/", {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-  if (!response.ok) return false;
-  const session = (await response.json()) as { isAdmin?: boolean };
-  return session.isAdmin === true;
+  if (!response.ok) return { isAdmin: false, pushEnabled: false };
+  const session = (await response.json()) as {
+    isAdmin?: boolean;
+    pushEnabled?: boolean;
+  };
+  return {
+    isAdmin: session.isAdmin === true,
+    pushEnabled: session.isAdmin === true && session.pushEnabled === true,
+  };
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [pushEnabled, setPushEnabled] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -51,16 +59,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (!currentUser) {
             setUser(null);
             setIsAdmin(false);
+            setPushEnabled(false);
             setLoading(false);
             return;
           }
 
           try {
             setUser(currentUser);
-            setIsAdmin(await fetchAdminRole(currentUser));
+            const session = await fetchAdminSession(currentUser);
+            setIsAdmin(session.isAdmin);
+            setPushEnabled(session.pushEnabled);
           } catch {
             setUser(null);
             setIsAdmin(false);
+            setPushEnabled(false);
           } finally {
             setLoading(false);
           }
@@ -69,6 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .catch(() => {
         setUser(null);
         setIsAdmin(false);
+        setPushEnabled(false);
         setLoading(false);
       });
 
@@ -94,9 +107,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(true);
     try {
       const currentUser = auth.currentUser;
-      const isCurrentUserAdmin = await fetchAdminRole(currentUser, true);
+      const session = await fetchAdminSession(currentUser, true);
       setUser(currentUser);
-      setIsAdmin(isCurrentUserAdmin);
+      setIsAdmin(session.isAdmin);
+      setPushEnabled(session.pushEnabled);
     } finally {
       setLoading(false);
     }
@@ -104,7 +118,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, isAdmin, loading, login, logout, refreshAdminRole }}
+      value={{
+        user,
+        isAdmin,
+        pushEnabled,
+        loading,
+        login,
+        logout,
+        refreshAdminRole,
+      }}
     >
       {children}
     </AuthContext.Provider>

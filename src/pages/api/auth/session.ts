@@ -1,3 +1,4 @@
+import { isPushEnabled } from "@/back-features/push-config";
 import { getProfileAccessRoles } from "@/back-features/admin-authorization";
 import { requireAuth } from "@/utils/api/require-auth";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -6,6 +7,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  res.setHeader("Cache-Control", "no-store");
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Método não permitido" });
   }
@@ -18,5 +20,6 @@ export default async function handler(
     user: { uid: user.uid, email: user.email ?? null },
     accessRoles,
     isAdmin: accessRoles.includes("admin"),
+    pushEnabled: accessRoles.includes("admin") && isPushEnabled(),
   });
 }

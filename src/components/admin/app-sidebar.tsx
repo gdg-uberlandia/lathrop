@@ -16,13 +16,13 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import {
-  adminNavigationItems,
+  getAdminNavigationItems,
   isAdminNavigationItemActive,
 } from "./admin-navigation";
 
 export function AppSidebar() {
   const router = useRouter();
-  const { logout } = useAuth();
+  const { logout, pushEnabled } = useAuth();
 
   return (
     <Sidebar className="admin-sidebar">
@@ -33,7 +33,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent className="px-2 py-3">
             <SidebarMenu className="gap-1.5">
-              {adminNavigationItems.map((item) => (
+              {getAdminNavigationItems(pushEnabled).map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
