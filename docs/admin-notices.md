@@ -3,11 +3,11 @@
 A seção `/admin/notices` reúne publicação e histórico. O formulário recebe título,
 mensagem, caminho interno opcional e a opção de enviar push. Uma prévia em modal
 exige confirmação antes da publicação. Somente contas autorizadas por
-`requireAdmin` podem consultar ou publicar pela API `GET/POST /api/v1/notices`.
+`requireAdmin` podem consultar ou publicar pela API `GET/POST /api/v1/notices` e `DELETE /api/v1/notices/{id}`.
 
 O aviso é salvo primeiro em `notices/{uuid}` com o evento atual, horário e UID do
 autor. A Pokedex consulta essa mesma coleção para manter o conteúdo acessível,
-mesmo quando o push é dispensado. Não há edição, exclusão ou agendamento nesta
+mesmo quando o push é dispensado. Não há edição ou agendamento nesta
 versão. Um UUID estável impede novo disparo ao repetir uma publicação; o UUID
 permanece no formulário até a resposta de sucesso. Se a resposta se perder,
 consulte a lista antes de iniciar outra publicação.
@@ -75,3 +75,33 @@ mesmo depois da desativação.
 A sessão administrativa informa `pushEnabled`, derivado do ambiente do servidor,
 para controlar a navegação sem expor variáveis ou segredos no cliente. Após
 alterar a variável, reinicie o servidor e recarregue o painel.
+
+## Exclusão
+
+Cada aviso publicado oferece Excluir, com um modal de confirmação. A operação
+`DELETE /api/v1/notices/{id}` recebe o UUID na URL, sem corpo e exige a mesma
+autorização administrativa e o mesmo controle `PUSH_ENABLED` da publicação.
+O evento é conferido em transação antes de gravar `deletedAt` e `deletedBy`.
+Repetir a operação não altera a auditoria original nem inicia novo envio.
+
+O registro é preservado para auditoria, mas fica oculto no painel e na Pokedex.
+O cache local é atualizado somente após sucesso. Falhas mantêm o modal aberto
+com opção de tentar novamente. O aviso removido não pode ser republicado com
+o mesmo UUID e não há restauração pelo painel.
+
+O push já enviado não pode ser recolhido, e envios em andamento podem terminar.
+Na Pokedex atualizada, o link de um aviso removido mostra uma mensagem de
+indisponibilidade. É necessário atualizar os dois projetos para aplicar esse
+comportamento. O estado de telas já abertas é atualizado ao recarregar.
+
+## Listagem
+
+Os avisos publicados usam a tabela padrão do painel, com título, mensagem,
+destino, data de publicação, resultado do push e ação de exclusão. Busca e
+paginação permanecem disponíveis; em telas estreitas, a tabela permite rolagem
+horizontal dentro do contêiner compartilhado das listagens administrativas.
+
+A exclusão usa o mesmo contrato das demais entidades do painel: ID na URL e
+requisição DELETE sem corpo. A rota responde JSON com 400 para ID inválido, 404
+para aviso inexistente ou de outro evento e 500 para falha inesperada de
+persistência. O modal mantém a mensagem retornada e permite tentar novamente.

@@ -1,3 +1,4 @@
+import { shouldDeleteNotice } from "@/back-features/notice-deletion";
 import { isPushEnabled } from "@/back-features/push-config";
 import { deliverNotice } from "@/back-features/notice-delivery";
 import { Timestamp } from "firebase-admin/firestore";
@@ -6,6 +7,7 @@ import { db } from "@/utils/db";
 import { getFirestoreCollectionName } from "@/utils/db/collection-name";
 import { CURRENT_EVENT_ID } from "@/helpers/event";
 import {
+  noticeIdSchema,
   noticeInputSchema,
   noticeSchema,
   pushSubscriptionSchema,
@@ -54,6 +56,7 @@ export async function getNotices(): Promise<PublishedNotice[]> {
     .where("eventId", "==", CURRENT_EVENT_ID)
     .get();
   return snapshot.docs
+    .filter((doc) => doc.data().deletedAt == null)
     .map((doc) => parse(doc.id, doc.data()))
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
@@ -72,6 +75,8 @@ export async function publishNotice(
     const existing = await transaction.get(reference);
     if (existing.exists) {
       const data = existing.data()!;
+      if (data.deletedAt != null)
+        throw new Error("Aviso já excluído. Publique um novo aviso.");
       if (
         data.eventId !== CURRENT_EVENT_ID ||
         data.createdBy !== adminId ||
@@ -188,4 +193,23 @@ export async function publishNotice(
     });
   }
   return parse(value.id, (await reference.get()).data()!);
+}
+
+export async function deleteNotice(
+  input: unknown,
+  adminId: string,
+): Promise<string> {
+  if (!isPushEnabled()) throw new Error("Recurso indisponível");
+  const id = noticeIdSchema.parse(input);
+  const reference = notices().doc(id);
+  await db.runTransaction(async (transaction) => {
+    const snapshot = await transaction.get(reference);
+    if (shouldDeleteNotice(snapshot.data(), CURRENT_EVENT_ID)) {
+      transaction.update(reference, {
+        deletedAt: Timestamp.now(),
+        deletedBy: adminId,
+      });
+    }
+  });
+  return id;
 }
