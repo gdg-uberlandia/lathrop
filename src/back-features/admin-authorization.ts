@@ -69,10 +69,9 @@ export async function getProfileAccessRoles(
     if (
       profile.exists &&
       currentRoles.success &&
-      currentRoles.data.length === 1 &&
-      currentRoles.data[0] === "admin"
+      currentRoles.data.includes("admin")
     ) {
-      return ["admin"];
+      return currentRoles.data;
     }
 
     const now = Timestamp.now();
