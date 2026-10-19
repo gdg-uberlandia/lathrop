@@ -300,3 +300,10 @@ A implementação atual pode ser descartada.
 Cada item deve ser implementado, validado e revisado antes do próximo. Mudanças
 de contrato que afetem a Pokedex devem ser discutidas antes de qualquer alteração
 no outro repositório.
+
+### Trilhas e keynotes
+
+- A trilha `COMUNIDADE` mantém seu identificador e passa a se chamar Arena Comunidade 1.
+- `COMUNIDADE_2` (Arena Comunidade 2) e `LOUNGE_SENIOR` (Lounge Senior) completam as sete trilhas, incluindo Minas, Curado, Canastra e Trança.
+- Blocos completos exigem sete palestras distintas. Keynotes usam palestras ativas com formato Keynote, sem trilha; ao trocar o tipo de atividade, o formulário remove o campo incompatível anterior.
+- A prévia e a programação pública exibem as palestras na ordem fixa das trilhas, com etiquetas e bordas nas cores amarelo, vermelho, rosa, azul, verde, turquesa e violeta, respectivamente.

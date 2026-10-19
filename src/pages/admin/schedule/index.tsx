@@ -76,6 +76,11 @@ const trackBorderStyles: Record<ScheduleTrack, string> = {
   CANASTRA: "!border-pink-200 hover:!border-pink-300",
   TRANCA: "!border-blue-200 hover:!border-blue-300",
   COMUNIDADE: "!border-emerald-200 hover:!border-emerald-300",
+  COMUNIDADE_2: "!border-teal-200 hover:!border-teal-300",
+  LOUNGE_SENIOR: "!border-violet-200 hover:!border-violet-300",
+};
+const scheduleGridStyle = {
+  gridTemplateColumns: `120px repeat(${SCHEDULE_TRACKS.length}, minmax(220px, 1fr))`,
 };
 const trackLabels = new Map(
   SCHEDULE_TRACKS.map((track) => [track.value, track.label]),
@@ -557,10 +562,13 @@ export default function Schedules() {
             }
           />
         ) : (
-          <section className="admin-surface mt-4 overflow-hidden rounded-xl">
+          <section className="admin-surface mt-4 min-w-0 max-w-full overflow-hidden rounded-xl">
             <div className="hidden overflow-x-auto lg:block">
-              <div className="min-w-[1100px]">
-                <header className="grid grid-cols-[120px_repeat(5,minmax(0,1fr))] border-b !border-slate-200 bg-slate-50">
+              <div style={{ minWidth: 120 + SCHEDULE_TRACKS.length * 220 }}>
+                <header
+                  style={scheduleGridStyle}
+                  className="grid border-b !border-slate-200 bg-slate-50"
+                >
                   <div className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
                     Horário
                   </div>
@@ -581,7 +589,8 @@ export default function Schedules() {
                   return (
                     <div
                       key={`${start}-${end}`}
-                      className="grid grid-cols-[120px_repeat(5,minmax(0,1fr))] border-b !border-slate-200 last:border-b-0"
+                      style={scheduleGridStyle}
+                      className="grid border-b !border-slate-200 last:border-b-0"
                     >
                       <div className="bg-slate-50/60 px-4 py-4">
                         <p className="font-semibold text-slate-900">{start}</p>
@@ -600,7 +609,10 @@ export default function Schedules() {
                         )}
                       </div>
                       {general ? (
-                        <div className="col-span-5 border-l !border-slate-200 p-3">
+                        <div
+                          style={{ gridColumn: "2 / -1" }}
+                          className="border-l !border-slate-200 p-3"
+                        >
                           {card(general)}
                         </div>
                       ) : (

@@ -155,6 +155,10 @@ export function ScheduleForm({
       { shouldDirty: true, shouldValidate: true },
     );
   const handleTypeChange = (value: ScheduleActivityType) => {
+    // Remove fields registered by the previous activity before replacing it.
+    form.unregister(
+      isLinkedActivity(value) ? "activity.title" : "activity.talkId",
+    );
     setSelectedType(value);
     changeType(value);
     form.setValue("track", value === "talk" ? "MINAS" : null, {
@@ -197,6 +201,7 @@ export function ScheduleForm({
         </FormItem>
         {isLinkedActivity(selectedType) ? (
           <FormField
+            key="linked-activity"
             name="activity.talkId"
             control={form.control}
             render={({ field }) => (
@@ -220,12 +225,20 @@ export function ScheduleForm({
                     ))}
                   </SelectContent>
                 </Select>
+                {availableTalks.length === 0 && (
+                  <p className="text-sm text-amber-700">
+                    {selectedType === "talk"
+                      ? "Cadastre uma palestra ativa para selecionar."
+                      : "Cadastre uma palestra ativa com formato Keynote para selecionar."}
+                  </p>
+                )}
                 <FormMessage />
               </FormItem>
             )}
           />
         ) : (
           <FormField
+            key="named-activity"
             name="activity.title"
             control={form.control}
             render={({ field }) => (

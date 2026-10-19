@@ -139,7 +139,15 @@ describe("entradas administrativas", () => {
   it("mantém a ordem fixa das trilhas", () => {
     assert.deepEqual(
       SCHEDULE_TRACKS.map((track) => track.value),
-      ["MINAS", "CURADO", "CANASTRA", "TRANCA", "COMUNIDADE"],
+      [
+        "MINAS",
+        "CURADO",
+        "CANASTRA",
+        "TRANCA",
+        "COMUNIDADE",
+        "COMUNIDADE_2",
+        "LOUNGE_SENIOR",
+      ],
     );
     assert.equal(getScheduleTrackOrder("MINAS"), 0);
     assert.equal(getScheduleTrackOrder("COMUNIDADE"), 4);
@@ -155,6 +163,8 @@ describe("entradas administrativas", () => {
         CANASTRA: "talk-canastra",
         TRANCA: "talk-tranca",
         COMUNIDADE: "talk-comunidade",
+        COMUNIDADE_2: "talk-comunidade-2",
+        LOUNGE_SENIOR: "talk-lounge-senior",
       },
       active: true,
     };

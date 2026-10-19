@@ -6,6 +6,8 @@ export const scheduleTrackSchema = z.enum([
   "CANASTRA",
   "TRANCA",
   "COMUNIDADE",
+  "COMUNIDADE_2",
+  "LOUNGE_SENIOR",
 ]);
 
 export const SCHEDULE_TRACKS = [
@@ -13,14 +15,20 @@ export const SCHEDULE_TRACKS = [
   { value: "CURADO", label: "Curado", order: 1 },
   { value: "CANASTRA", label: "Canastra", order: 2 },
   { value: "TRANCA", label: "Trança", order: 3 },
-  { value: "COMUNIDADE", label: "Comunidade", order: 4 },
+  { value: "COMUNIDADE", label: "Arena Comunidade 1", order: 4 },
+  { value: "COMUNIDADE_2", label: "Arena Comunidade 2", order: 5 },
+  { value: "LOUNGE_SENIOR", label: "Lounge Sênior", order: 6 },
 ] as const;
 
 export const scheduleActivitySchema = z.discriminatedUnion("type", [
   z
     .object({
       type: z.enum(["talk", "opening_keynote", "closing_keynote"]),
-      talkId: z.string().trim().min(1).max(128),
+      talkId: z
+        .string()
+        .trim()
+        .min(1, "Selecione uma palestra para esta atividade.")
+        .max(128),
     })
     .strict(),
   z
@@ -59,6 +67,8 @@ export const scheduleBlockInputSchema = z
         CANASTRA: talkIdSchema,
         TRANCA: talkIdSchema,
         COMUNIDADE: talkIdSchema,
+        COMUNIDADE_2: talkIdSchema,
+        LOUNGE_SENIOR: talkIdSchema,
       })
       .strict(),
     active: z.boolean(),

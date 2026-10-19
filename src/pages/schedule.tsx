@@ -1,3 +1,7 @@
+import {
+  SCHEDULE_TRACK_STYLES,
+  sortScheduleTracks,
+} from "@/lib/schedule-presentation";
 import { getSchedule } from "@/back-features/schedule";
 import { getSchedulePublication } from "@/back-features/schedule-publication";
 import { getSpeakersByIds } from "@/back-features/speakers";
@@ -109,13 +113,15 @@ export default function SchedulePage({
                     {content(general)}
                   </article>
                 ) : (
-                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-                    {items.map((item) => (
+                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                    {sortScheduleTracks(items).map((item) => (
                       <article
                         key={item.id}
-                        className="rounded-2xl border border-white/10 bg-white/5 p-5"
+                        className={`rounded-2xl border bg-white/5 p-5 ${item.track ? SCHEDULE_TRACK_STYLES[item.track].card : "border-white/10"}`}
                       >
-                        <span className="mb-4 inline-flex rounded-full border border-white/10 px-3 py-1 text-xs text-white/70">
+                        <span
+                          className={`mb-4 inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase ${item.track ? SCHEDULE_TRACK_STYLES[item.track].badge : "text-white/70"}`}
+                        >
                           {item.track ? trackNames.get(item.track) : "Geral"}
                         </span>
                         {content(item)}

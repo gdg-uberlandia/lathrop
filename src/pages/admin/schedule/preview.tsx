@@ -1,3 +1,7 @@
+import {
+  SCHEDULE_TRACK_STYLES,
+  sortScheduleTracks,
+} from "@/lib/schedule-presentation";
 import { Button } from "@/assets/components/ui/button";
 import { AdminPageHeader } from "@/components/admin/admin-page";
 import { ArrowLeft, ExternalLink, Monitor } from "lucide-react";
@@ -93,10 +97,10 @@ export default function SchedulePreviewPage() {
                     className={
                       items.some((item) => item.track === null)
                         ? "grid"
-                        : "grid gap-3 md:grid-cols-2 xl:grid-cols-5"
+                        : "grid gap-3 md:grid-cols-2 xl:grid-cols-4"
                     }
                   >
-                    {items.map((item) => {
+                    {sortScheduleTracks(items).map((item) => {
                       const talk =
                         "title" in item.activity
                           ? null
@@ -108,9 +112,11 @@ export default function SchedulePreviewPage() {
                       return (
                         <article
                           key={item.id}
-                          className="rounded-2xl border !border-white/10 bg-white/5 p-5 !text-white"
+                          className={`rounded-2xl border bg-white/5 p-5 !text-white ${item.track ? SCHEDULE_TRACK_STYLES[item.track].card : "!border-white/10"}`}
                         >
-                          <span className="text-xs !text-slate-300">
+                          <span
+                            className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase ${item.track ? SCHEDULE_TRACK_STYLES[item.track].badge : "!text-slate-300"}`}
+                          >
                             {item.track
                               ? SCHEDULE_TRACKS.find(
                                   (track) => track.value === item.track,

@@ -50,6 +50,8 @@ export function ScheduleBlockForm({
         CANASTRA: "",
         TRANCA: "",
         COMUNIDADE: "",
+        COMUNIDADE_2: "",
+        LOUNGE_SENIOR: "",
       },
       active: true,
     },
@@ -66,7 +68,8 @@ export function ScheduleBlockForm({
         <div className="md:col-span-2">
           <h2 className="font-semibold text-slate-900">Bloco de palestras</h2>
           <p className="mt-1 text-sm text-slate-500">
-            Cadastre o mesmo intervalo nas cinco trilhas em uma única ação.
+            Cadastre o mesmo intervalo nas {SCHEDULE_TRACKS.length} trilhas em
+            uma única ação.
           </p>
         </div>
 
@@ -134,8 +137,8 @@ export function ScheduleBlockForm({
           ))}
           {availableTalks.length < SCHEDULE_TRACKS.length && (
             <p className="text-sm text-amber-700 md:col-span-2">
-              São necessárias pelo menos cinco palestras ativas para preencher
-              um bloco completo.
+              São necessárias pelo menos {SCHEDULE_TRACKS.length} palestras
+              ativas para preencher um bloco completo.
             </p>
           )}
           <FormMessage>
