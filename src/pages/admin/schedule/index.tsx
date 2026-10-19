@@ -300,6 +300,17 @@ export default function Schedules() {
         .filter((item) => item.active)
         .map((item) => ({
           time: `${formatTime(item.startAt)}–${formatTime(item.endAt)}`,
+          startAt: item.startAt.toISOString(),
+          endAt: item.endAt.toISOString(),
+          trackId: item.track,
+          description:
+            "talkId" in item.activity
+              ? (talks.find(
+                  (talk) =>
+                    "talkId" in item.activity &&
+                    talk.id === item.activity.talkId,
+                )?.description ?? "")
+              : "",
           track: item.track
             ? (SCHEDULE_TRACKS.find((track) => track.value === item.track)
                 ?.label ?? item.track)
@@ -308,7 +319,7 @@ export default function Schedules() {
           title: name(item),
           speakers: speakersFor(item).join(", "),
         })),
-    [name, schedule, speakersFor],
+    [name, schedule, speakersFor, talks],
   );
   const addHref = (start: string, end: string, track?: ScheduleTrack) => ({
     pathname: "/admin/schedule/add-schedule",

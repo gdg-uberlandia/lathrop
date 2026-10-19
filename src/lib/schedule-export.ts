@@ -1,10 +1,14 @@
-export type ScheduleExportRow = {
-  time: string;
-  track: string;
-  type: string;
-  title: string;
-  speakers: string;
-};
+import { SCHEDULE_TRACK_STYLES } from "./schedule-presentation";
+import {
+  buildScheduleExportPages,
+  EXPORT_FONTS,
+  EXPORT_HEIGHT,
+  EXPORT_LINE_HEIGHT,
+  EXPORT_WIDTH,
+  type ExportPage,
+  type ScheduleExportRow,
+} from "./schedule-export-layout";
+export type { ScheduleExportRow } from "./schedule-export-layout";
 
 const filename = (extension: string) => `programacao-devfest.${extension}`;
 const download = (blob: Blob, name: string) => {
@@ -36,54 +40,148 @@ export function exportScheduleCsv(rows: ScheduleExportRow[]) {
   );
 }
 
+function roundedBox(
+  context: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number,
+) {
+  context.beginPath();
+  context.roundRect(x, y, width, height, radius);
+}
+
+function renderPage(
+  page: ExportPage,
+  number: number,
+  total: number,
+): HTMLCanvasElement {
+  const canvas = document.createElement("canvas");
+  canvas.width = EXPORT_WIDTH;
+  canvas.height = EXPORT_HEIGHT;
+  const context = canvas.getContext("2d");
+  if (!context)
+    throw new Error("Não foi possível gerar a imagem da programação.");
+  context.fillStyle = "#020617";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = "#ffffff";
+  context.font = "bold 40px Arial";
+  context.fillText("Programação do evento", 56, 74);
+  context.font = "20px Arial";
+  context.fillStyle = "#94a3b8";
+  context.fillText(
+    "Confira os horários, trilhas e conteúdos do DevFest Triângulo.",
+    56,
+    112,
+  );
+  for (const slot of page.slots) {
+    context.font = "bold 24px Arial";
+    context.fillStyle = "#e2e8f0";
+    context.fillText(slot.time, 56, slot.y + 24);
+    context.font = "18px Arial";
+    context.fillStyle = "#94a3b8";
+    context.fillText(slot.date, 280, slot.y + 24);
+  }
+  for (const card of page.cards) {
+    const color = card.row.trackId
+      ? SCHEDULE_TRACK_STYLES[card.row.trackId].color
+      : "#cbd5e1";
+    roundedBox(context, card.x, card.y, card.width, card.height, 22);
+    context.fillStyle = "#ffffff0d";
+    context.fill();
+    context.strokeStyle = card.row.trackId ? `${color}80` : "#ffffff26";
+    context.lineWidth = 1.5;
+    context.stroke();
+    const label = (
+      card.row.trackId ? card.row.track : card.row.type
+    ).toLocaleUpperCase("pt-BR");
+    context.font = "bold 16px Arial";
+    const badgeWidth = Math.min(
+      card.width - 40,
+      context.measureText(label).width + 28,
+    );
+    roundedBox(context, card.x + 20, card.y + 20, badgeWidth, 32, 16);
+    context.fillStyle = `${color}26`;
+    context.fill();
+    context.fillStyle = color;
+    context.fillText(label, card.x + 34, card.y + 42, badgeWidth - 28);
+    if (card.continued) {
+      context.font = "14px Arial";
+      context.fillStyle = "#94a3b8";
+      context.fillText("continuação", card.x + 20, card.y + 70);
+    }
+    let y = card.y + 91;
+    for (const line of card.lines) {
+      context.font = EXPORT_FONTS[line.kind];
+      context.fillStyle =
+        line.kind === "title"
+          ? "#ffffff"
+          : line.kind === "body"
+            ? "#94a3b8"
+            : "#e2e8f0";
+      context.fillText(line.text, card.x + 20, y);
+      y += EXPORT_LINE_HEIGHT;
+    }
+  }
+  context.font = "16px Arial";
+  context.fillStyle = "#64748b";
+  context.fillText("DevFest Triângulo", 56, EXPORT_HEIGHT - 24);
+  context.textAlign = "right";
+  context.fillText(
+    `${number} / ${total}`,
+    EXPORT_WIDTH - 56,
+    EXPORT_HEIGHT - 24,
+  );
+  return canvas;
+}
+
+function exportPages(rows: ScheduleExportRow[]) {
+  const context = document.createElement("canvas").getContext("2d");
+  if (!context) throw new Error("Não foi possível preparar a exportação.");
+  return buildScheduleExportPages(rows, (text, kind) => {
+    context.font = EXPORT_FONTS[kind];
+    return context.measureText(text).width;
+  });
+}
+
 export async function exportSchedulePdf(rows: ScheduleExportRow[]) {
   const { jsPDF } = await import("jspdf");
-  const pdf = new jsPDF({ unit: "mm", format: "a4" });
-  pdf.setFontSize(18);
-  pdf.text("Programação DevFest Triângulo", 14, 18);
-  pdf.setFontSize(9);
-  let y = 28;
-  for (const row of rows) {
-    const lines = pdf.splitTextToSize(
-      `${row.time} | ${row.track} | ${row.title}${row.speakers ? ` — ${row.speakers}` : ""}`,
-      180,
-    );
-    if (y + lines.length * 5 > 285) {
-      pdf.addPage();
-      y = 18;
-    }
-    pdf.text(lines, 14, y);
-    y += lines.length * 5 + 2;
-  }
+  const pages = exportPages(rows);
+  const pdf = new jsPDF({ unit: "mm", format: "a4", orientation: "landscape" });
+  pages.forEach((page, index) => {
+    if (index) pdf.addPage();
+    const canvas = renderPage(page, index + 1, pages.length);
+    pdf.addImage(canvas, "PNG", 0, 0, 297, 210);
+    canvas.width = canvas.height = 0;
+  });
   pdf.save(filename("pdf"));
 }
 
 export function exportSchedulePng(rows: ScheduleExportRow[]) {
-  const width = 1600;
-  const rowHeight = 58;
-  const canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = Math.max(300, 130 + rows.length * rowHeight);
-  const context = canvas.getContext("2d");
-  if (!context) return;
-  context.fillStyle = "#ffffff";
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  context.fillStyle = "#0f172a";
-  context.font = "bold 32px sans-serif";
-  context.fillText("Programação DevFest Triângulo", 48, 58);
-  context.font = "18px sans-serif";
-  rows.forEach((row, index) => {
-    const y = 110 + index * rowHeight;
-    context.fillStyle = index % 2 ? "#f8fafc" : "#ffffff";
-    context.fillRect(32, y - 28, width - 64, rowHeight);
-    context.fillStyle = "#334155";
-    context.fillText(`${row.time}  ·  ${row.track}`, 48, y);
-    context.fillStyle = "#0f172a";
-    context.fillText(
-      `${row.title}${row.speakers ? ` — ${row.speakers}` : ""}`.slice(0, 105),
-      400,
-      y,
-    );
-  });
-  canvas.toBlob((blob) => blob && download(blob, filename("png")), "image/png");
+  const pages = exportPages(rows);
+  // Keep very large schedules within browser canvas limits, using numbered images if needed.
+  const pagesPerImage = Math.max(1, Math.floor(16000 / EXPORT_HEIGHT));
+  for (let offset = 0; offset < pages.length; offset += pagesPerImage) {
+    const batch = pages.slice(offset, offset + pagesPerImage);
+    const canvas = document.createElement("canvas");
+    canvas.width = EXPORT_WIDTH;
+    canvas.height = EXPORT_HEIGHT * batch.length;
+    const context = canvas.getContext("2d");
+    if (!context)
+      throw new Error("Não foi possível gerar a imagem da programação.");
+    batch.forEach((page, index) => {
+      const rendered = renderPage(page, offset + index + 1, pages.length);
+      context.drawImage(rendered, 0, index * EXPORT_HEIGHT);
+      rendered.width = rendered.height = 0;
+    });
+    const name =
+      pages.length > pagesPerImage
+        ? `programacao-devfest-${Math.floor(offset / pagesPerImage) + 1}.png`
+        : filename("png");
+    canvas.toBlob((blob) => {
+      if (blob) download(blob, name);
+      canvas.width = canvas.height = 0;
+    }, "image/png");
+  }
 }
