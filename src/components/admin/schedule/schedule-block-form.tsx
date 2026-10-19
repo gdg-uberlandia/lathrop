@@ -68,8 +68,8 @@ export function ScheduleBlockForm({
         <div className="md:col-span-2">
           <h2 className="font-semibold text-slate-900">Bloco de palestras</h2>
           <p className="mt-1 text-sm text-slate-500">
-            Cadastre o mesmo intervalo nas {SCHEDULE_TRACKS.length} trilhas em
-            uma única ação.
+            Selecione as palestras deste intervalo. As trilhas em branco não
+            serão cadastradas.
           </p>
         </div>
 
@@ -104,13 +104,19 @@ export function ScheduleBlockForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Trilha {track.label}</FormLabel>
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select
+                    value={field.value || "__empty__"}
+                    onValueChange={(value) =>
+                      field.onChange(value === "__empty__" ? "" : value)
+                    }
+                  >
                     <FormControl>
                       <SelectTrigger className="bg-white">
                         <SelectValue placeholder="Selecione uma palestra" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
+                      <SelectItem value="__empty__">Sem palestra</SelectItem>
                       {availableTalks.map((talk) => {
                         const selectedElsewhere = Object.entries(
                           selectedTalks ?? {},
@@ -135,14 +141,14 @@ export function ScheduleBlockForm({
               )}
             />
           ))}
-          {availableTalks.length < SCHEDULE_TRACKS.length && (
+          {availableTalks.length === 0 && (
             <p className="text-sm text-amber-700 md:col-span-2">
-              São necessárias pelo menos {SCHEDULE_TRACKS.length} palestras
-              ativas para preencher um bloco completo.
+              Cadastre pelo menos uma palestra ativa para criar um bloco.
             </p>
           )}
           <FormMessage>
-            {form.formState.errors.talks?.root?.message}
+            {form.formState.errors.talks?.root?.message ??
+              form.formState.errors.talks?.message}
           </FormMessage>
         </div>
 
@@ -179,11 +185,11 @@ export function ScheduleBlockForm({
             disabled={
               loading ||
               form.formState.isSubmitting ||
-              availableTalks.length < SCHEDULE_TRACKS.length
+              availableTalks.length === 0
             }
             className="admin-primary-action !bg-blue-600"
           >
-            Cadastrar bloco completo
+            Cadastrar bloco
           </Button>
         </div>
       </form>

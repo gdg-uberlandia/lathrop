@@ -54,7 +54,7 @@ export const scheduleTimeSchema = z
     `Escolha um horário entre ${SCHEDULE_START_TIME} e ${SCHEDULE_END_TIME}.`,
   );
 
-const talkIdSchema = z.string().trim().min(1).max(128);
+const talkIdSchema = z.string().trim().max(128).default("");
 
 export const scheduleBlockInputSchema = z
   .object({
@@ -78,9 +78,15 @@ export const scheduleBlockInputSchema = z
     path: ["endTime"],
     message: "O término deve ser posterior ao início.",
   })
+  .refine((value) => Object.values(value.talks).some(Boolean), {
+    path: ["talks"],
+    message: "Selecione pelo menos uma palestra para o bloco.",
+  })
   .refine(
-    (value) =>
-      new Set(Object.values(value.talks)).size === SCHEDULE_TRACKS.length,
+    (value) => {
+      const selected = Object.values(value.talks).filter(Boolean);
+      return new Set(selected).size === selected.length;
+    },
     {
       path: ["talks"],
       message: "Selecione uma palestra diferente para cada trilha.",
@@ -156,4 +162,8 @@ export type ScheduleVisibilityInput = z.infer<
 
 export function getScheduleTrackOrder(track: ScheduleTrack) {
   return SCHEDULE_TRACKS.find((item) => item.value === track)!.order;
+}
+
+export function getSelectedScheduleBlockTracks(input: ScheduleBlockInput) {
+  return SCHEDULE_TRACKS.filter((track) => Boolean(input.talks[track.value]));
 }

@@ -19,6 +19,7 @@ import { tagFieldsSchema, tagInputSchema } from "./tag";
 import {
   SCHEDULE_TRACKS,
   getScheduleTrackOrder,
+  getSelectedScheduleBlockTracks,
   scheduleBlockInputSchema,
   scheduleInputSchema,
   scheduleVisibilityInputSchema,
@@ -174,6 +175,43 @@ describe("entradas administrativas", () => {
       scheduleBlockInputSchema.safeParse({
         ...block,
         talks: { ...block.talks, COMUNIDADE: "talk-minas" },
+      }).success,
+      false,
+    );
+  });
+
+  it("aceita blocos parciais e ignora trilhas vazias ou omitidas", () => {
+    const parsed = scheduleBlockInputSchema.parse({
+      startTime: "09:00",
+      endTime: "10:00",
+      active: true,
+      talks: { COMUNIDADE_2: "talk-arena-2", LOUNGE_SENIOR: "  " },
+    });
+    assert.equal(parsed.talks.MINAS, "");
+    assert.equal(parsed.talks.LOUNGE_SENIOR, "");
+    assert.deepEqual(
+      getSelectedScheduleBlockTracks(parsed).map((track) => track.value),
+      ["COMUNIDADE_2"],
+    );
+  });
+
+  it("rejeita blocos vazios e palestras repetidas em blocos parciais", () => {
+    const base = { startTime: "09:00", endTime: "10:00", active: true };
+    assert.equal(
+      scheduleBlockInputSchema.safeParse({ ...base, talks: {} }).success,
+      false,
+    );
+    assert.equal(
+      scheduleBlockInputSchema.safeParse({
+        ...base,
+        talks: { MINAS: " ", CURADO: "" },
+      }).success,
+      false,
+    );
+    assert.equal(
+      scheduleBlockInputSchema.safeParse({
+        ...base,
+        talks: { CURADO: "talk-1", LOUNGE_SENIOR: "talk-1" },
       }).success,
       false,
     );

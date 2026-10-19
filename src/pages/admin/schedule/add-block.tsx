@@ -18,8 +18,8 @@ export default function AddScheduleBlockPage() {
 
   return (
     <AdminFormPage
-      title="Cadastrar bloco completo"
-      description="Preencha todas as trilhas de um intervalo de uma só vez."
+      title="Cadastrar bloco"
+      description="Preencha as trilhas desejadas para cadastrar um intervalo de uma só vez."
       backHref="/admin/schedule"
       backLabel="Voltar para programação"
     >

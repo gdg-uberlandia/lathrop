@@ -5,6 +5,7 @@ import {
   ScheduleBlockInput,
   SCHEDULE_TRACKS,
   getScheduleTrackOrder,
+  getSelectedScheduleBlockTracks,
   scheduleFieldsSchema,
   scheduleInputSchema,
   scheduleBlockInputSchema,
@@ -279,7 +280,8 @@ export async function createScheduleBlock(
   input: ScheduleBlockInput,
 ): Promise<ScheduleEntry[]> {
   const data = scheduleBlockInputSchema.parse(input);
-  const entries: ScheduleInput[] = SCHEDULE_TRACKS.map((track) => ({
+  const selectedTracks = getSelectedScheduleBlockTracks(data);
+  const entries: ScheduleInput[] = selectedTracks.map((track) => ({
     id: db.collection(COLLECTION).doc().id,
     startTime: data.startTime,
     endTime: data.endTime,
@@ -303,10 +305,10 @@ export async function createScheduleBlock(
       if (previousTrack) {
         const speaker = await getSpeakerById(speakerId).catch(() => null);
         throw new Error(
-          `${speaker ? `O palestrante “${speaker.name}”` : "Um palestrante"} foi selecionado nas trilhas ${previousTrack} e ${SCHEDULE_TRACKS[index].label} neste bloco. Escolha palestras com participantes diferentes.`,
+          `${speaker ? `O palestrante “${speaker.name}”` : "Um palestrante"} foi selecionado nas trilhas ${previousTrack} e ${selectedTracks[index].label} neste bloco. Escolha palestras com participantes diferentes.`,
         );
       }
-      speakerTracks.set(speakerId, SCHEDULE_TRACKS[index].label);
+      speakerTracks.set(speakerId, selectedTracks[index].label);
     }
   }
   await Promise.all(

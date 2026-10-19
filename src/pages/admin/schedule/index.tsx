@@ -94,7 +94,7 @@ const scheduleActions = [
   },
   {
     href: "/admin/schedule/add-block",
-    label: "Cadastrar bloco completo",
+    label: "Cadastrar bloco",
     variant: "secondary",
   },
   {
