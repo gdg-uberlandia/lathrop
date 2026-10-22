@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { useCompanies } from "@/hooks/useCompanies";
+import type { Company } from "@/contracts/company";
 import { shouldBypassImageOptimization } from "@/helpers/image";
 import {
   AlertDialog,
@@ -51,22 +53,35 @@ function RoleEditor({
   participant,
   save,
   pending,
+  companies,
 }: {
   participant: Participant;
+  companies: Company[];
   save: (value: ParticipantUpdate) => Promise<unknown>;
   pending: boolean;
 }) {
   const [role, setRole] = useState<AccessRole | "">(
     participant.accessRoles.length === 1 ? participant.accessRoles[0] : "",
   );
+  const [companyId, setCompanyId] = useState(
+    participant.sponsorCompanyId ?? "",
+  );
+  const validCompany =
+    role !== "sponsor" ||
+    companies.some((company) => company.id === companyId && company.active);
   const [saved, setSaved] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const dirty =
-    participant.accessRoles.length !== 1 || role !== participant.accessRoles[0];
+    participant.accessRoles.length !== 1 ||
+    role !== participant.accessRoles[0] ||
+    (role === "sponsor" && companyId !== participant.sponsorCompanyId);
   return (
     <>
-      <fieldset disabled={pending} className="flex items-center gap-3">
+      <fieldset
+        disabled={pending}
+        className="flex flex-wrap items-center gap-3"
+      >
         <legend className="sr-only">Papel de {participant.name}</legend>
         <select
           aria-label={`Papel de ${participant.name}`}
@@ -86,10 +101,41 @@ function RoleEditor({
             </option>
           ))}
         </select>
+        {role === "sponsor" && (
+          <select
+            aria-label={`Empresa de ${participant.name}`}
+            value={companyId}
+            onChange={(event) => {
+              setCompanyId(event.target.value);
+              setSaved(false);
+            }}
+            className="h-10 rounded-lg border px-3 text-sm"
+          >
+            <option value="">Selecione a empresa</option>
+            {companyId &&
+              !companies.some((company) => company.id === companyId) && (
+                <option value={companyId} disabled>
+                  Empresa indisponível
+                </option>
+              )}
+            {companies
+              .filter((company) => company.active || company.id === companyId)
+              .map((company) => (
+                <option
+                  key={company.id}
+                  value={company.id}
+                  disabled={!company.active}
+                >
+                  {company.name}
+                  {company.active ? "" : " (inativa)"}
+                </option>
+              ))}
+          </select>
+        )}
         <div className="flex items-center gap-3">
           <Button
             size="sm"
-            disabled={pending || !dirty || !role}
+            disabled={pending || !dirty || !role || !validCompany}
             onClick={() => {
               setSaveError(null);
               setConfirmOpen(true);
@@ -116,7 +162,9 @@ function RoleEditor({
             <AlertDialogDescription>
               O papel de {participant.name} ({participant.email}) será alterado
               de {participant.accessRoles.join(", ")} para {role}. O papel
-              anterior será substituído.
+              anterior será substituído.{" "}
+              {role === "sponsor" &&
+                `O funcionário poderá validar somente as missões presenciais de ${companies.find((company) => company.id === companyId)?.name ?? "sua empresa"}.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           {saveError && (
@@ -127,12 +175,16 @@ function RoleEditor({
           <AlertDialogFooter>
             <AlertDialogCancel disabled={pending}>Cancelar</AlertDialogCancel>
             <Button
-              disabled={pending || !role}
+              disabled={pending || !role || !validCompany}
               onClick={async () => {
-                if (!role) return;
+                if (!role || !validCompany) return;
                 setSaveError(null);
                 try {
-                  await save({ id: participant.id, accessRoles: [role] });
+                  await save({
+                    id: participant.id,
+                    accessRoles: [role],
+                    sponsorCompanyId: role === "sponsor" ? companyId : null,
+                  });
                   setSaved(true);
                   setConfirmOpen(false);
                 } catch (error) {
@@ -154,6 +206,7 @@ function RoleEditor({
 export default function ParticipantsPage() {
   const { isAdmin } = useAuth();
   const client = useQueryClient();
+  const { companies, error: companiesError, fetchCompanies } = useCompanies();
   const list = useAdminListState();
   const query = useQuery({
     queryKey: key,
@@ -180,7 +233,7 @@ export default function ParticipantsPage() {
     ),
   );
   const pagination = list.paginate(filtered);
-  const error = query.error || mutation.error;
+  const error = query.error || mutation.error || companiesError;
   return (
     <main className="p-4 sm:p-6">
       <AdminPageHeader
@@ -191,8 +244,9 @@ export default function ParticipantsPage() {
       />
       <p className="mt-4 text-sm text-slate-600">
         Cada perfil terá um único papel. Escolha participant para participar da
-        jornada, receber XP e aparecer no ranking. O papel admin na Pokedex não
-        provisiona acesso ao painel do site.
+        atividades, receber XP e aparecer no ranking. O papel admin na Pokedex
+        não provisiona acesso ao painel do site. Para sponsor, selecione a
+        empresa responsável pelo acesso.
       </p>
       <AdminListToolbar search={list.search} onSearchChange={list.setSearch} />
       {error && (
@@ -204,6 +258,7 @@ export default function ParticipantsPage() {
           onRetry={() => {
             mutation.reset();
             void query.refetch();
+            void fetchCompanies();
           }}
         />
       )}
@@ -255,7 +310,8 @@ export default function ParticipantsPage() {
                   </TableCell>
                   <TableCell>
                     <RoleEditor
-                      key={item.id}
+                      key={`${item.id}:${item.accessRoles[0]}:${item.sponsorCompanyId ?? ""}`}
+                      companies={companies}
                       participant={item}
                       save={mutation.mutateAsync}
                       pending={mutation.isPending}

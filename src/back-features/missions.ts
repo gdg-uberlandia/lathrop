@@ -10,7 +10,6 @@ import {
 import { db } from "@/utils/db";
 import { getFirestoreCollectionName } from "@/utils/db/collection-name";
 import { validateMissionDependencies } from "@/lib/missions/dependencies";
-import { getAllCompanies } from "@/back-features/companies";
 
 const MISSIONS_COLLECTION = getFirestoreCollectionName("missions");
 
@@ -44,28 +43,55 @@ export async function getAllMissions(): Promise<Mission[]> {
     );
 }
 
-export async function createMission(input: MissionInput): Promise<Mission> {
+async function saveMission(
+  input: MissionInput,
+  editing: boolean,
+): Promise<Mission> {
   const data = missionInputSchema.parse(input);
-  validateMissionDependencies(
-    data,
-    await getAllMissions(),
-    (await getAllCompanies()).map((item) => item.id),
-  );
   const reference = db.collection(MISSIONS_COLLECTION).doc(data.id);
-
-  if ((await reference.get()).exists) {
-    throw new Error(`Missão com id ${data.id} já existe.`);
-  }
-
-  const now = new Date();
-  const mission = missionFieldsSchema.parse({
-    ...data,
-    eventId: CURRENT_EVENT_ID,
-    createdAt: now,
-    updatedAt: now,
+  return db.runTransaction(async (transaction) => {
+    const [snapshot, missions, companies] = await Promise.all([
+      transaction.get(reference),
+      transaction.get(
+        db
+          .collection(MISSIONS_COLLECTION)
+          .where("eventId", "==", CURRENT_EVENT_ID),
+      ),
+      transaction.get(
+        db
+          .collection(getFirestoreCollectionName("companies"))
+          .where("eventId", "==", CURRENT_EVENT_ID),
+      ),
+    ]);
+    if (
+      editing &&
+      (!snapshot.exists || snapshot.data()?.eventId !== CURRENT_EVENT_ID)
+    )
+      throw new Error(`Missão com id ${data.id} não encontrada.`);
+    if (!editing && snapshot.exists)
+      throw new Error(`Missão com id ${data.id} já existe.`);
+    validateMissionDependencies(
+      data,
+      missions.docs.map((doc) => parseMission(doc.id, doc.data())),
+      companies.docs.map((doc) => doc.id),
+    );
+    const now = new Date();
+    const mission = missionFieldsSchema.parse({
+      ...data,
+      eventId: CURRENT_EVENT_ID,
+      createdAt: editing
+        ? parseMission(snapshot.id, snapshot.data()!).createdAt
+        : now,
+      updatedAt: now,
+    });
+    if (editing) transaction.set(reference, mission);
+    else transaction.create(reference, mission);
+    return mission;
   });
-  await reference.create(mission);
-  return mission;
+}
+
+export async function createMission(input: MissionInput): Promise<Mission> {
+  return saveMission(input, false);
 }
 
 export async function getMissionById(missionId: string): Promise<Mission> {
@@ -86,22 +112,7 @@ export async function getMissionById(missionId: string): Promise<Mission> {
 }
 
 export async function updateMission(input: MissionInput): Promise<Mission> {
-  const data = missionInputSchema.parse(input);
-  validateMissionDependencies(
-    data,
-    await getAllMissions(),
-    (await getAllCompanies()).map((item) => item.id),
-  );
-  const current = await getMissionById(data.id);
-  const mission = missionFieldsSchema.parse({
-    ...data,
-    eventId: CURRENT_EVENT_ID,
-    createdAt: current.createdAt,
-    updatedAt: new Date(),
-  });
-
-  await db.collection(MISSIONS_COLLECTION).doc(data.id).set(mission);
-  return mission;
+  return saveMission(input, true);
 }
 
 export async function deleteMission(missionId: string): Promise<string> {

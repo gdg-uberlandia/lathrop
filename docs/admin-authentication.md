@@ -78,16 +78,20 @@ A seção `/admin/participants` lista os perfis do evento atual, com busca por n
 ou e-mail (ignorando acentos e maiúsculas) e paginação local. A API administrativa
 `GET /api/v1/participants` consulta somente a coleção do ambiente e o evento atual.
 `PATCH /api/v1/participants` recebe `id` e `accessRoles`, valida exatamente um papel
-entre `participant`, `staff`, `reviewer`, `editor` e `admin`, e altera somente
-`accessRoles` e `updatedAt` em transação, conferindo novamente o evento.
+entre `participant`, `staff`, `reviewer`, `sponsor`, `editor` e `admin`, e altera somente
+`accessRoles`, `sponsorCompanyId` e `updatedAt` em transação, conferindo novamente o evento.
 Ambas as operações exigem autorização administrativa e não permitem cache HTTP.
 A listagem é carregada inteira, como as demais listas de conteúdo do painel.
 
-Perfis administrativos que já incluem `admin` preservam seus demais papéis nas
-próximas verificações de autorização. O provisionamento por `adminUsers` continua
+Perfis administrativos usam exclusivamente `admin`, sem acumular outros papéis. O provisionamento por `adminUsers` continua
 concedendo `admin` quando necessário; para revogar acesso ao painel, desative
 `adminUsers` conforme descrito acima. A edição de papéis não altera esse cadastro.
 
 A edição usa um select de papel único e exige confirmação em modal antes da
-persistência. Perfis existentes com múltiplos papéis exigem uma seleção explícita;
-a gravação substitui todos os papéis anteriores pelo papel selecionado.
+persistência. A gravação substitui o papel anterior pelo papel selecionado.
+
+## Acesso de funcionários de empresas
+
+O papel `sponsor` exige uma empresa vinculada e permite somente a validação
+de missões presenciais dessa empresa na Pokédex. Consulte
+[Funcionários de empresas](./sponsor-missions.md) para configuração e publicação.

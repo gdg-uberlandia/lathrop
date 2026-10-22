@@ -69,31 +69,55 @@ export async function createCompany(input: CompanyInput): Promise<Company> {
 
 export async function updateCompany(input: CompanyInput): Promise<Company> {
   const data = companyInputSchema.parse(input);
-  const current = await getCompanyById(data.id);
-  const company = companyFieldsSchema.parse({
-    ...data,
-    eventId: CURRENT_EVENT_ID,
-    createdAt: current.createdAt,
-    updatedAt: new Date(),
+  const reference = db.collection(COMPANIES_COLLECTION).doc(data.id);
+  return db.runTransaction(async (transaction) => {
+    const snapshot = await transaction.get(reference);
+    if (!snapshot.exists || snapshot.data()?.eventId !== CURRENT_EVENT_ID)
+      throw new Error(`Empresa com id ${data.id} não encontrada.`);
+    const current = parseCompany(snapshot.id, snapshot.data()!);
+    const company = companyFieldsSchema.parse({
+      ...data,
+      eventId: CURRENT_EVENT_ID,
+      createdAt: current.createdAt,
+      updatedAt: new Date(),
+    });
+    transaction.set(reference, company);
+    return company;
   });
-  await db.collection(COMPANIES_COLLECTION).doc(data.id).set(company);
-  return company;
 }
 
 export async function deleteCompany(companyId: string): Promise<string> {
-  await getCompanyById(companyId);
-  const missions = await db
-    .collection(MISSIONS_COLLECTION)
-    .where("eventId", "==", CURRENT_EVENT_ID)
-    .get();
-  const used = isCompanyReferenced(
-    missions.docs.map((doc) => doc.data()),
-    companyId,
-  );
-  if (used)
-    throw new Error(
-      "Esta empresa é pré-requisito de uma missão e não pode ser excluída.",
-    );
-  await db.collection(COMPANIES_COLLECTION).doc(companyId).delete();
-  return companyId;
+  const reference = db.collection(COMPANIES_COLLECTION).doc(companyId);
+  return db.runTransaction(async (transaction) => {
+    const [company, missions, sponsors] = await Promise.all([
+      transaction.get(reference),
+      transaction.get(
+        db
+          .collection(MISSIONS_COLLECTION)
+          .where("eventId", "==", CURRENT_EVENT_ID),
+      ),
+      transaction.get(
+        db
+          .collection(getFirestoreCollectionName("profiles"))
+          .where("sponsorCompanyId", "==", companyId),
+      ),
+    ]);
+    if (!company.exists || company.data()?.eventId !== CURRENT_EVENT_ID)
+      throw new Error(`Empresa com id ${companyId} não encontrada.`);
+    if (
+      isCompanyReferenced(
+        missions.docs.map((doc) => doc.data()),
+        companyId,
+      )
+    )
+      throw new Error(
+        "Esta empresa está vinculada a uma missão e não pode ser excluída.",
+      );
+    if (sponsors.docs.some((doc) => doc.data().eventId === CURRENT_EVENT_ID))
+      throw new Error(
+        "Esta empresa possui funcionários vinculados e não pode ser excluída.",
+      );
+    transaction.delete(reference);
+    return companyId;
+  });
 }

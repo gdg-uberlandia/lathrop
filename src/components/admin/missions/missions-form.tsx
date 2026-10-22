@@ -44,6 +44,7 @@ interface MissionFormProps {
 function defaults(mission?: Mission): MissionFormType {
   return {
     id: mission?.id ?? uuidv4(),
+    companyId: mission?.companyId ?? null,
     title: mission?.title ?? "",
     description: mission?.description ?? "",
     imageUrl: mission?.imageUrl ?? null,
@@ -199,6 +200,45 @@ export function MissionsForm({
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            name="companyId"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className="md:col-span-8">
+                <FormLabel>Empresa responsável</FormLabel>
+                <Select
+                  value={field.value ?? "__organization__"}
+                  onValueChange={(value) =>
+                    field.onChange(value === "__organization__" ? null : value)
+                  }
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="__organization__">
+                      Organização do evento
+                    </SelectItem>
+                    {companies.map((company) => (
+                      <SelectItem key={company.id} value={company.id}>
+                        {company.name}
+                        {company.active ? "" : " (inativa)"}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  Funcionários com acesso sponsor só podem confirmar missões
+                  presenciais da empresa selecionada. Este vínculo não exige uma
+                  visita prévia.
+                </p>
                 <FormMessage />
               </FormItem>
             )}

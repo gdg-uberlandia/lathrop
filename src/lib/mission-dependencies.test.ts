@@ -5,6 +5,7 @@ import { validateMissionDependencies } from "./missions/dependencies";
 
 const mission = (id: string, dependencies: string[] = []): MissionInput => ({
   id,
+  companyId: null,
   title: `Missão ${id}`,
   description: "Descrição válida",
   imageUrl: null,
@@ -58,4 +59,15 @@ describe("dependências entre missões", () => {
       /Company.*não encontrada/,
     );
   });
+});
+
+it("valida a empresa responsável separadamente dos pré-requisitos", () => {
+  const candidate = { ...mission("activation"), companyId: "company-a" };
+  assert.throws(
+    () => validateMissionDependencies(candidate, [], ["company-b"]),
+    /Empresa responsável/,
+  );
+  assert.doesNotThrow(() =>
+    validateMissionDependencies(candidate, [], ["company-a"]),
+  );
 });

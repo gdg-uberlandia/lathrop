@@ -5,6 +5,7 @@ import { db } from "@/utils/db";
 import { getFirestoreCollectionName } from "@/utils/db/collection-name";
 import {
   participantRolesSchema,
+  sponsorCompanyIdSchema,
   participantUpdateSchema,
   type Participant,
 } from "@/contracts/participant";
@@ -16,6 +17,7 @@ function parse(id: string, data: FirebaseFirestore.DocumentData): Participant {
     name: typeof data.displayName === "string" ? data.displayName : "Sem nome",
     avatarUrl: toAdminProfile(id, data)?.photoURL?.trim() || null,
     email: typeof data.email === "string" ? data.email : "",
+    sponsorCompanyId: sponsorCompanyIdSchema.parse(data.sponsorCompanyId),
     accessRoles: participantRolesSchema.parse(
       data.accessRoles ?? ["participant"],
     ),
@@ -40,10 +42,28 @@ export async function updateParticipantRoles(
     const data = snapshot.data();
     if (!data || data.eventId !== CURRENT_EVENT_ID)
       throw new Error("Participante não encontrado neste evento");
+    if (value.sponsorCompanyId) {
+      const company = await transaction.get(
+        db
+          .collection(getFirestoreCollectionName("companies"))
+          .doc(value.sponsorCompanyId),
+      );
+      if (
+        !company.exists ||
+        company.data()?.eventId !== CURRENT_EVENT_ID ||
+        company.data()?.active !== true
+      )
+        throw new Error("Selecione uma empresa ativa deste evento");
+    }
     transaction.update(reference, {
       accessRoles: value.accessRoles,
+      sponsorCompanyId: value.sponsorCompanyId,
       updatedAt: Timestamp.now(),
     });
-    return parse(snapshot.id, { ...data, accessRoles: value.accessRoles });
+    return parse(snapshot.id, {
+      ...data,
+      accessRoles: value.accessRoles,
+      sponsorCompanyId: value.sponsorCompanyId,
+    });
   });
 }
