@@ -22,3 +22,11 @@ describe("referências de companies", () => {
     );
   });
 });
+
+it("identifica a empresa responsável mesmo sem pré-requisitos", () => {
+  assert.equal(
+    isCompanyReferenced([{ companyId: "acme", prerequisites: [] }], "acme"),
+    true,
+  );
+  assert.equal(isCompanyReferenced([{ companyId: "other" }], "acme"), false);
+});

@@ -24,6 +24,7 @@ export const companyFixture = {
 } satisfies Company;
 
 export const missionFixture = {
+  companyId: null,
   id: "visite-google",
   eventId: "devfest-triangulo-2026",
   qrId: "5ec7f497-ed9e-48cf-bf7f-65427b066fb1",

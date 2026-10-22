@@ -56,6 +56,14 @@ const missionBaseSchema = z
   .object({
     id: z.string().trim().min(1).max(128),
     eventId: z.string().trim().min(1).max(128),
+    companyId: z
+      .string()
+      .trim()
+      .min(1)
+      .max(128)
+      .regex(/^[^/]+$/)
+      .nullable()
+      .default(null),
     qrId: z.string().uuid().nullable(),
     title: z.string().trim().min(2).max(120),
     description: z.string().trim().min(1).max(1_000),

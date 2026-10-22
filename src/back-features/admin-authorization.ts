@@ -12,9 +12,11 @@ import { getFirestoreCollectionName } from "@/utils/db/collection-name";
 
 const PROFILES_COLLECTION = getFirestoreCollectionName("profiles");
 const ADMIN_USERS_COLLECTION = getFirestoreCollectionName("adminUsers");
-const accessRolesSchema = z.array(
-  z.enum(["participant", "staff", "reviewer", "editor", "admin"]),
-);
+const accessRolesSchema = z
+  .array(
+    z.enum(["participant", "staff", "reviewer", "sponsor", "editor", "admin"]),
+  )
+  .length(1);
 type AccessRole = z.infer<typeof accessRolesSchema>[number];
 const adminUserAuthorizationSchema = z.object({
   isActive: z.literal(true),
@@ -79,6 +81,7 @@ export async function getProfileAccessRoles(
     if (profile.exists) {
       transaction.update(profileRef, {
         accessRoles: ["admin"],
+        sponsorCompanyId: null,
         updatedAt: now,
       });
     } else {

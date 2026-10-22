@@ -19,6 +19,8 @@ export function validateMissionDependencies(
   graph.set(candidate.id, dependencies);
   const availableCompanies = companyIds ? new Set(companyIds) : null;
   if (availableCompanies) {
+    if (candidate.companyId && !availableCompanies.has(candidate.companyId))
+      throw new Error("Empresa responsável não encontrada neste evento.");
     for (const prerequisite of candidate.prerequisites) {
       if (
         prerequisite.type === "company" &&

@@ -228,6 +228,7 @@ export default function Missions() {
                         onClick={() =>
                           void updateMission({
                             id: mission.id,
+                            companyId: mission.companyId,
                             qrId: mission.qrId,
                             title: mission.title,
                             description: mission.description,
