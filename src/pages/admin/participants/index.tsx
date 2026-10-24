@@ -44,6 +44,9 @@ import { adminApiRequest } from "@/lib/admin-api/client";
 import { getAdminApiErrorMessage } from "@/lib/admin-api/errors";
 
 const key = ["admin", "participants"];
+const editableRoles = ACCESS_ROLES.filter(
+  (role) => role !== "staff" && role !== "editor",
+);
 const normalize = (value: string) =>
   value
     .normalize("NFD")
@@ -61,7 +64,10 @@ function RoleEditor({
   pending: boolean;
 }) {
   const [role, setRole] = useState<AccessRole | "">(
-    participant.accessRoles.length === 1 ? participant.accessRoles[0] : "",
+    participant.accessRoles.length === 1 &&
+      editableRoles.includes(participant.accessRoles[0])
+      ? participant.accessRoles[0]
+      : "",
   );
   const [companyId, setCompanyId] = useState(
     participant.sponsorCompanyId ?? "",
@@ -78,76 +84,77 @@ function RoleEditor({
     (role === "sponsor" && companyId !== participant.sponsorCompanyId);
   return (
     <>
-      <fieldset
-        disabled={pending}
-        className="flex flex-wrap items-center gap-3"
-      >
+      <fieldset disabled={pending} className="min-w-0">
         <legend className="sr-only">Papel de {participant.name}</legend>
-        <select
-          aria-label={`Papel de ${participant.name}`}
-          value={role}
-          onChange={(event) => {
-            setRole(event.target.value as AccessRole);
-            setSaved(false);
-          }}
-          className="h-10 rounded-lg border px-3 text-sm"
-        >
-          <option value="" disabled>
-            Selecione um papel
-          </option>
-          {ACCESS_ROLES.map((value) => (
-            <option key={value} value={value}>
-              {value}
-            </option>
-          ))}
-        </select>
-        {role === "sponsor" && (
+        <div className="inline-flex flex-nowrap items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 p-2">
           <select
-            aria-label={`Empresa de ${participant.name}`}
-            value={companyId}
+            aria-label={`Papel de ${participant.name}`}
+            value={role}
             onChange={(event) => {
-              setCompanyId(event.target.value);
+              setRole(event.target.value as AccessRole);
               setSaved(false);
             }}
-            className="h-10 rounded-lg border px-3 text-sm"
+            className="h-9 w-40 shrink-0 rounded-md border border-slate-200 bg-white px-2 text-sm text-slate-700 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-50"
           >
-            <option value="">Selecione a empresa</option>
-            {companyId &&
-              !companies.some((company) => company.id === companyId) && (
-                <option value={companyId} disabled>
-                  Empresa indisponível
-                </option>
-              )}
-            {companies
-              .filter((company) => company.active || company.id === companyId)
-              .map((company) => (
-                <option
-                  key={company.id}
-                  value={company.id}
-                  disabled={!company.active}
-                >
-                  {company.name}
-                  {company.active ? "" : " (inativa)"}
-                </option>
-              ))}
+            <option value="" disabled>
+              Selecione um papel
+            </option>
+            {editableRoles.map((value) => (
+              <option key={value} value={value}>
+                {value}
+              </option>
+            ))}
           </select>
-        )}
-        <div className="flex items-center gap-3">
-          <Button
-            size="sm"
-            disabled={pending || !dirty || !role || !validCompany}
-            onClick={() => {
-              setSaveError(null);
-              setConfirmOpen(true);
-            }}
-          >
-            Salvar papel
-          </Button>
-          {saved && (
-            <span role="status" className="text-sm text-green-700">
-              Papel salvo
-            </span>
+          {role === "sponsor" && (
+            <select
+              aria-label={`Empresa de ${participant.name}`}
+              value={companyId}
+              onChange={(event) => {
+                setCompanyId(event.target.value);
+                setSaved(false);
+              }}
+              className="h-9 w-52 shrink-0 truncate rounded-md border border-slate-200 bg-white px-2 text-sm text-slate-700 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-50"
+            >
+              <option value="">Selecione a empresa</option>
+              {companyId &&
+                !companies.some((company) => company.id === companyId) && (
+                  <option value={companyId} disabled>
+                    Empresa indisponível
+                  </option>
+                )}
+              {companies
+                .filter((company) => company.active || company.id === companyId)
+                .map((company) => (
+                  <option
+                    key={company.id}
+                    value={company.id}
+                    disabled={!company.active}
+                  >
+                    {company.name}
+                    {company.active ? "" : " (inativa)"}
+                  </option>
+                ))}
+            </select>
           )}
+          <div className="flex shrink-0 items-center gap-2 whitespace-nowrap">
+            <Button
+              size="sm"
+              className="h-9 rounded-md px-3"
+              aria-label={`Salvar papel de ${participant.name}`}
+              disabled={pending || !dirty || !role || !validCompany}
+              onClick={() => {
+                setSaveError(null);
+                setConfirmOpen(true);
+              }}
+            >
+              Salvar
+            </Button>
+            {saved && (
+              <span role="status" className="text-sm text-green-700">
+                Papel salvo
+              </span>
+            )}
+          </div>
         </div>
       </fieldset>
       <AlertDialog
