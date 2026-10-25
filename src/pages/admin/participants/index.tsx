@@ -44,7 +44,7 @@ import { adminApiRequest } from "@/lib/admin-api/client";
 import { getAdminApiErrorMessage } from "@/lib/admin-api/errors";
 
 const key = ["admin", "participants"];
-const editableRoles = ACCESS_ROLES.filter(
+const editableRoles: readonly AccessRole[] = ACCESS_ROLES.filter(
   (role) => role !== "staff" && role !== "editor",
 );
 const normalize = (value: string) =>
