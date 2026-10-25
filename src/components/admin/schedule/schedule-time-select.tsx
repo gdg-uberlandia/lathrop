@@ -5,8 +5,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/assets/components/ui/select";
-const START_MINUTES = 8 * 60;
-const END_MINUTES = 21 * 60;
+import { SCHEDULE_START_TIME, SCHEDULE_END_TIME } from "@/contracts/schedule";
+
+const toMinutes = (time: string) => {
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
+};
+const START_MINUTES = toMinutes(SCHEDULE_START_TIME);
+const END_MINUTES = toMinutes(SCHEDULE_END_TIME);
 const TIME_OPTIONS = Array.from(
   { length: (END_MINUTES - START_MINUTES) / 10 + 1 },
   (_, index) => {

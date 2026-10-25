@@ -1,6 +1,11 @@
 import { z } from "zod";
 
-export const talkFormatSchema = z.enum(["talk", "panel", "keynote"]);
+export const talkFormatSchema = z.enum([
+  "talk",
+  "panel",
+  "keynote",
+  "workshop",
+]);
 
 export function normalizeStoredTalkFormat(value: unknown) {
   return value === "opening_keynote" || value === "closing_keynote"
@@ -12,6 +17,7 @@ export const TALK_FORMAT_LABELS = {
   talk: "Palestra",
   panel: "Painel",
   keynote: "Keynote",
+  workshop: "Workshop",
 } as const satisfies Record<z.infer<typeof talkFormatSchema>, string>;
 export const talkEvaluationStatusSchema = z.enum(["locked", "open", "closed"]);
 

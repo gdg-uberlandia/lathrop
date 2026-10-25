@@ -40,7 +40,7 @@ export const scheduleActivitySchema = z.discriminatedUnion("type", [
 ]);
 
 export const SCHEDULE_START_TIME = "08:00";
-export const SCHEDULE_END_TIME = "21:00";
+export const SCHEDULE_END_TIME = "22:00";
 
 export const scheduleTimeSchema = z
   .string()

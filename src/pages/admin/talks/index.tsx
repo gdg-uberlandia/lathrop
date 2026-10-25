@@ -112,9 +112,11 @@ export default function TalksPage() {
             className="h-10 rounded-lg border border-white/10 bg-background px-3 text-sm"
           >
             <option value="all">Todos os formatos</option>
-            <option value="talk">Palestra</option>
-            <option value="panel">Painel</option>
-            <option value="keynote">Keynote</option>
+            {Object.entries(TALK_FORMAT_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
           </select>
           <select
             aria-label="Filtrar por avaliação"

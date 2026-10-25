@@ -1,3 +1,4 @@
+import { TALK_FORMAT_LABELS } from "@/contracts/talk";
 import { PublicSpeaker } from "@/contracts/speaker";
 import { PublicTalk } from "@/contracts/talk";
 import { shouldBypassImageOptimization } from "@/helpers/image";
@@ -157,13 +158,7 @@ const SpeakerModal: React.FC<ModalProps> = ({
             {talks.map((talk) => (
               <div key={talk.id}>
                 <Tag>
-                  <>
-                    {talk.format === "keynote"
-                      ? "Keynote"
-                      : talk.format === "panel"
-                        ? "Painel"
-                        : "Palestra"}
-                  </>
+                  <>{TALK_FORMAT_LABELS[talk.format]}</>
                 </Tag>
                 <h3 className="mt-2">{talk.title}</h3>
                 <p>{talk.description}</p>

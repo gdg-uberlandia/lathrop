@@ -18,7 +18,7 @@ import { Textarea } from "@/assets/components/ui/textarea";
 import { Checkbox } from "@/assets/components/ui/checkbox";
 import { AdminVisibilityControl } from "@/components/admin/admin-visibility-control";
 import { Speaker } from "@/contracts/speaker";
-import { Talk, TalkInput } from "@/contracts/talk";
+import { Talk, TalkInput, TALK_FORMAT_LABELS } from "@/contracts/talk";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -122,9 +122,11 @@ export function TalksForm({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="talk">Palestra</SelectItem>
-                  <SelectItem value="panel">Painel</SelectItem>
-                  <SelectItem value="keynote">Keynote</SelectItem>
+                  {Object.entries(TALK_FORMAT_LABELS).map(([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </FormItem>
