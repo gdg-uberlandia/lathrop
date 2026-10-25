@@ -1,3 +1,4 @@
+import { formatScheduleDescription } from "@/lib/schedule-description";
 import {
   SCHEDULE_TRACK_STYLES,
   sortScheduleTracks,
@@ -80,7 +81,9 @@ export default function SchedulePage({
           <h2 className="text-lg font-semibold">{title}</h2>
         </div>
         {talk?.description && (
-          <p className="mt-2 text-sm text-white/60">{talk.description}</p>
+          <p className="mt-2 text-sm text-white/60">
+            {formatScheduleDescription(talk.description)}
+          </p>
         )}
         {names.length > 0 && (
           <p className="mt-3 text-sm text-white/80">{names.join(" · ")}</p>

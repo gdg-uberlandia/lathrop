@@ -1,5 +1,7 @@
+import { formatScheduleDescription } from "./schedule-description";
 import {
   getScheduleTrackOrder,
+  SCHEDULE_TRACKS,
   type ScheduleTrack,
 } from "@/contracts/schedule";
 
@@ -28,8 +30,9 @@ export type ExportPage = {
   slots: { time: string; date: string; y: number }[];
   cards: ExportCard[];
 };
-export const EXPORT_WIDTH = 1600;
-export const EXPORT_HEIGHT = 1132;
+// Eight pixels per millimetre, with the exact A4 landscape aspect ratio.
+export const EXPORT_WIDTH = 297 * 8;
+export const EXPORT_HEIGHT = 210 * 8;
 export const EXPORT_FONTS = {
   title: "bold 23px Arial",
   body: "18px Arial",
@@ -37,7 +40,7 @@ export const EXPORT_FONTS = {
 };
 export const EXPORT_LINE_HEIGHT = 29;
 const MARGIN = 56;
-const GAP = 20;
+const GAP = 16;
 const CONTENT_TOP = 172;
 const CONTENT_BOTTOM = EXPORT_HEIGHT - 58;
 const MAX_LINES = 23;
@@ -101,20 +104,24 @@ export function buildScheduleExportPages(
     slots.set(key, [...(slots.get(key) ?? []), row]);
   }
   for (const items of slots.values()) {
-    // General activities span the entire row; talks use the site's four-column desktop layout.
+    // General activities span the page; each track keeps its own fixed column.
     for (let index = 0; index < items.length; ) {
       const general = items[index].trackId === null;
       const batch = general
         ? [items[index++]]
-        : items.slice(index, (index += Math.min(4, items.length - index)));
+        : items.slice(
+            index,
+            (index += Math.min(SCHEDULE_TRACKS.length, items.length - index)),
+          );
       const width = general
         ? EXPORT_WIDTH - MARGIN * 2
-        : (EXPORT_WIDTH - MARGIN * 2 - GAP * 3) / 4;
+        : (EXPORT_WIDTH - MARGIN * 2 - GAP * (SCHEDULE_TRACKS.length - 1)) /
+          SCHEDULE_TRACKS.length;
       const cards = batch.map((row) => {
         const lines = (
           [
             [row.title, "title"],
-            [row.description, "body"],
+            [formatScheduleDescription(row.description), "body"],
             [row.speakers, "speakers"],
           ] as const
         ).flatMap(([text, kind]) =>
@@ -146,7 +153,9 @@ export function buildScheduleExportPages(
           y,
         });
         y += 46;
-        cards.forEach(({ row, chunks }, column) => {
+        cards.forEach(({ row, chunks }) => {
+          const column =
+            row.trackId === null ? 0 : getScheduleTrackOrder(row.trackId);
           if (!chunks[fragment]) return;
           page!.cards.push({
             row,

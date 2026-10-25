@@ -160,28 +160,16 @@ export async function exportSchedulePdf(rows: ScheduleExportRow[]) {
 
 export function exportSchedulePng(rows: ScheduleExportRow[]) {
   const pages = exportPages(rows);
-  // Keep very large schedules within browser canvas limits, using numbered images if needed.
-  const pagesPerImage = Math.max(1, Math.floor(16000 / EXPORT_HEIGHT));
-  for (let offset = 0; offset < pages.length; offset += pagesPerImage) {
-    const batch = pages.slice(offset, offset + pagesPerImage);
-    const canvas = document.createElement("canvas");
-    canvas.width = EXPORT_WIDTH;
-    canvas.height = EXPORT_HEIGHT * batch.length;
-    const context = canvas.getContext("2d");
-    if (!context)
-      throw new Error("Não foi possível gerar a imagem da programação.");
-    batch.forEach((page, index) => {
-      const rendered = renderPage(page, offset + index + 1, pages.length);
-      context.drawImage(rendered, 0, index * EXPORT_HEIGHT);
-      rendered.width = rendered.height = 0;
-    });
+  // Each image has the same A4 landscape dimensions as one PDF page.
+  pages.forEach((page, index) => {
+    const canvas = renderPage(page, index + 1, pages.length);
     const name =
-      pages.length > pagesPerImage
-        ? `programacao-devfest-${Math.floor(offset / pagesPerImage) + 1}.png`
+      pages.length > 1
+        ? `programacao-devfest-${index + 1}.png`
         : filename("png");
     canvas.toBlob((blob) => {
       if (blob) download(blob, name);
       canvas.width = canvas.height = 0;
     }, "image/png");
-  }
+  });
 }

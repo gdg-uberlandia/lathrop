@@ -1,3 +1,4 @@
+import { formatScheduleDescription } from "@/lib/schedule-description";
 import {
   SCHEDULE_TRACK_STYLES,
   sortScheduleTracks,
@@ -128,6 +129,11 @@ export default function SchedulePreviewPage() {
                               ? item.activity.title
                               : (talk?.title ?? "Palestra removida")}
                           </h4>
+                          {talk?.description && (
+                            <p className="mt-2 text-sm !text-slate-300">
+                              {formatScheduleDescription(talk.description)}
+                            </p>
+                          )}
                           {names && (
                             <p className="mt-2 text-sm !text-slate-200">
                               {names}
