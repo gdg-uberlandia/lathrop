@@ -3,6 +3,7 @@ export const IMAGE_UPLOAD_TARGETS = {
   missions: ["image"],
   companies: ["logo", "stamp"],
   tags: ["image"],
+  rewards: ["image"],
   raffles: ["image"],
   sponsors: ["logo"],
 } as const;

@@ -17,3 +17,33 @@ export const rewardFieldsSchema = z.object({
 });
 
 export type Reward = z.infer<typeof rewardFieldsSchema>;
+
+export const rewardInputSchema = rewardFieldsSchema
+  .pick({
+    id: true,
+    name: true,
+    description: true,
+    imageUrl: true,
+    ticketCost: true,
+    stock: true,
+    redemptionLimit: true,
+    active: true,
+    order: true,
+  })
+  .extend({
+    id: z
+      .string()
+      .trim()
+      .min(1)
+      .max(128)
+      .regex(/^[^/]+$/)
+      .refine((value) => value !== "." && value !== ".."),
+  })
+  .strict();
+export const rewardUpdateSchema = rewardInputSchema
+  .extend({
+    expectedUpdatedAt: z.string().datetime(),
+  })
+  .strict();
+export type RewardInput = z.infer<typeof rewardInputSchema>;
+export type RewardUpdate = z.infer<typeof rewardUpdateSchema>;

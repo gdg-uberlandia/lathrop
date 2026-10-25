@@ -67,6 +67,7 @@ export const adminQueryKeys = {
   dashboard: ["admin", "dashboard"] as const,
   companies: ["admin", "companies"] as const,
   missions: ["admin", "missions"] as const,
+  rewards: ["admin", "rewards"] as const,
   raffles: ["admin", "raffles"] as const,
   profiles: ["admin", "profiles"] as const,
   schedule: ["admin", "schedule"] as const,

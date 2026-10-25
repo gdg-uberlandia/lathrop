@@ -10,6 +10,7 @@ import {
   Trophy,
   Tags,
   Gift,
+  Package,
   type LucideIcon,
 } from "lucide-react";
 
@@ -30,6 +31,7 @@ export const adminNavigationItems: AdminNavigationItem[] = [
   { title: "Participantes", url: "/admin/participants", icon: Users },
   { title: "Patrocinadores", url: "/admin/sponsors", icon: DollarSign },
   { title: "Programação", url: "/admin/schedule", icon: Calendar },
+  { title: "Brindes da Pokédex", url: "/admin/rewards", icon: Package },
   { title: "Prêmios", url: "/admin/raffles", icon: Gift },
   { title: "Tags", url: "/admin/tags", icon: Tags },
 ];

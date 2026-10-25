@@ -1,6 +1,8 @@
+import { previewScheduleMove } from "@/lib/schedule-optimistic-move";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import {
+  moveScheduleAPI,
   createScheduleAPI,
   createScheduleBlockAPI,
   deleteScheduleAPI,
@@ -67,6 +69,39 @@ export function useSchedule() {
       void refreshWorkspace();
     },
   });
+  const move = useMutation({
+    mutationFn: moveScheduleAPI,
+    onMutate: async (input) => {
+      await client.cancelQueries({ queryKey: adminQueryKeys.schedule });
+      const previous = client.getQueryData<ScheduleEntry[]>(
+        adminQueryKeys.schedule,
+      );
+      if (previous) {
+        client.setQueryData(
+          adminQueryKeys.schedule,
+          previewScheduleMove(previous, input),
+        );
+      }
+      return { previous };
+    },
+    onError: (_error, _input, context) => {
+      if (context?.previous) {
+        client.setQueryData(adminQueryKeys.schedule, context.previous);
+      }
+    },
+    onSuccess: (items) => {
+      const saved = items.map((item) => scheduleFieldsSchema.parse(item));
+      client.setQueryData<ScheduleEntry[]>(adminQueryKeys.schedule, (current) =>
+        [
+          ...(current ?? []).filter(
+            (item) => !saved.some((change) => change.id === item.id),
+          ),
+          ...saved,
+        ].sort((a, b) => a.startAt.getTime() - b.startAt.getTime()),
+      );
+      void refreshWorkspace();
+    },
+  });
   const updateVisibility = useMutation({
     mutationFn: ({ id, active }: { id: string; active: boolean }) =>
       updateScheduleVisibilityAPI(id, active),
@@ -90,6 +125,8 @@ export function useSchedule() {
     remove.error;
   return {
     schedule: query.data ?? [],
+    moveSchedule: move.mutateAsync,
+    moving: move.isPending,
     loading:
       query.isFetching ||
       create.isPending ||

@@ -1,3 +1,4 @@
+import { ScheduleMoveInput } from "@/contracts/schedule-move";
 import {
   ScheduleBlockInput,
   ScheduleEntry,
@@ -23,3 +24,6 @@ export const deleteScheduleAPI = async (id: string) =>
     .id;
 export const createScheduleBlockAPI = (body: ScheduleBlockInput) =>
   adminApiRequest<ScheduleEntry[]>(`${PATH}/block`, { method: "POST", body });
+
+export const moveScheduleAPI = (body: ScheduleMoveInput) =>
+  adminApiRequest<ScheduleEntry[]>(`${PATH}/move`, { method: "POST", body });

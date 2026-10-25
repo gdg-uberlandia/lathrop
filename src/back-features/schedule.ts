@@ -1,3 +1,7 @@
+import {
+  scheduleMoveSchema,
+  planScheduleMove,
+} from "@/contracts/schedule-move";
 import { Timestamp } from "firebase-admin/firestore";
 import {
   ScheduleEntry,
@@ -331,4 +335,45 @@ export async function createScheduleBlock(
   );
   await batch.commit();
   return documents;
+}
+
+// Validate the complete proposed state before writing either side of a swap.
+export async function moveSchedule(input: unknown) {
+  const data = scheduleMoveSchema.parse(input);
+  return db.runTransaction(async (transaction) => {
+    const snapshot = await transaction.get(
+      db.collection(COLLECTION).where("eventId", "==", CURRENT_EVENT_ID),
+    );
+    const existing = snapshot.docs.map((document) =>
+      parse(document.id, document.data()),
+    );
+    const changes = planScheduleMove(existing, data);
+    const now = new Date();
+    const documents = changes.map((change) =>
+      scheduleFieldsSchema.parse({
+        ...existing.find((item) => item.id === change.id)!,
+        ...toStoredFields(change),
+        updatedAt: now,
+      }),
+    );
+    const finalSchedule = [
+      ...existing.filter(
+        (item) => !documents.some((change) => change.id === item.id),
+      ),
+      ...documents,
+    ];
+    const talks = new Map<string, Promise<Talk>>();
+    for (const change of changes) {
+      const talk = await validateTalk(change);
+      if (talk) talks.set(talk.id, Promise.resolve(talk));
+      await validateConflict(change, talk, {
+        existing: finalSchedule.filter((item) => item.id !== change.id),
+        talks,
+      });
+    }
+    documents.forEach((document) =>
+      transaction.set(db.collection(COLLECTION).doc(document.id), document),
+    );
+    return documents;
+  });
 }
