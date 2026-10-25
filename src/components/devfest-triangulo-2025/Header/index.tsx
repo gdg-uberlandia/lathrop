@@ -8,7 +8,8 @@ import LogoMenu from "@/assets/images/LogoMenu";
 
 const NAV_ITEMS = [
   { name: "O que é o Devfest?", ref: "#about" },
-  { name: "Palestrantes", ref: "#speakers " },
+  { name: "Palestrantes", ref: "#speakers" },
+  { name: "Programação", ref: "/schedule" },
   { name: "Patrocinadores", ref: "#sponsors" },
 ];
 
@@ -18,7 +19,8 @@ export const Header = ({ isRoot = true }: { isRoot?: boolean }) => {
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
 
-  const generateRef = (ref: string) => (isRoot ? ref : `/${ref}`);
+  const generateRef = (ref: string) =>
+    !isRoot && ref.startsWith("#") ? `/${ref}` : ref;
 
   useEffect(() => {
     const handleScroll = () => {
