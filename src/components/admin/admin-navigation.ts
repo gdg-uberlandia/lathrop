@@ -1,5 +1,6 @@
 import {
   Bell,
+  Printer,
   Users,
   Calendar,
   Building2,
@@ -33,6 +34,7 @@ export const adminNavigationItems: AdminNavigationItem[] = [
   { title: "Programação", url: "/admin/schedule", icon: Calendar },
   { title: "Brindes da Pokédex", url: "/admin/rewards", icon: Package },
   { title: "Prêmios", url: "/admin/raffles", icon: Gift },
+  { title: "QR codes imprimíveis", url: "/admin/qr-print", icon: Printer },
   { title: "Tags", url: "/admin/tags", icon: Tags },
 ];
 
