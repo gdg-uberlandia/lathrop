@@ -71,6 +71,7 @@ export default function Missions() {
       description: (item) => item.description,
       qr: (item) => item.qrId ?? "",
       order: (item) => item.order,
+      xp: (item) => item.xpAwarded ?? -1,
       status: (item) => Number(item.active),
     }),
   );
@@ -169,6 +170,14 @@ export default function Missions() {
                   </TableHead>
                   <TableHead className="p-3">
                     <AdminSortButton
+                      label="XP"
+                      active={sort === "xp"}
+                      direction={direction}
+                      onClick={() => toggleSort("xp")}
+                    />
+                  </TableHead>
+                  <TableHead className="p-3">
+                    <AdminSortButton
                       label="QR Code"
                       active={sort === "qr"}
                       direction={direction}
@@ -215,6 +224,11 @@ export default function Missions() {
                     <TableCell className="p-3 text-white/80 ">
                       <span>{mission.description}</span>
                     </TableCell>
+                    <TableCell className="p-3 whitespace-nowrap text-white/80">
+                      {mission.xpAwarded === null
+                        ? "Padrão"
+                        : `${mission.xpAwarded} XP`}
+                    </TableCell>
                     <TableCell className="p-3 text-white/80 text-center">
                       {mission.validationType === "qr" && (
                         <QrCode className="inline-block text-devBlue-dark" />
@@ -233,6 +247,7 @@ export default function Missions() {
                             title: mission.title,
                             description: mission.description,
                             imageUrl: mission.imageUrl,
+                            externalUrl: mission.externalUrl ?? null,
                             validationType: mission.validationType,
                             keywordConfig: mission.keywordConfig,
                             quizConfig: mission.quizConfig,

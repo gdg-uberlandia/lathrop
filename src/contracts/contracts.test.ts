@@ -521,3 +521,53 @@ it("accepts all companies and all tags as automatic mission targets", () => {
     assert.equal(result.success, true);
   }
 });
+
+describe("links de missões com aprovação por revisor", () => {
+  const reviewer = {
+    ...missionFixture,
+    validationType: "reviewer",
+    qrId: null,
+  };
+
+  it("mantém compatibilidade e preserva o link no cadastro e leitura", () => {
+    assert.equal(missionFieldsSchema.parse(reviewer).externalUrl, undefined);
+    assert.equal(
+      missionFieldsSchema.parse({ ...reviewer, externalUrl: null }).externalUrl,
+      null,
+    );
+    const parsed = missionFieldsSchema.parse({
+      ...reviewer,
+      externalUrl: "example.com/activity",
+    });
+    assert.equal(parsed.externalUrl, "https://example.com/activity");
+    const { createdAt, updatedAt, eventId, ...input } = parsed;
+    assert.equal(
+      missionInputSchema.parse(input).externalUrl,
+      parsed.externalUrl,
+    );
+  });
+
+  it("rejeita protocolos não HTTP e links inválidos", () => {
+    for (const externalUrl of [
+      "javascript://example.com",
+      "data://example.com",
+      "ftp://example.com/file",
+      "https://",
+    ]) {
+      assert.equal(
+        missionFieldsSchema.safeParse({ ...reviewer, externalUrl }).success,
+        false,
+      );
+    }
+  });
+
+  it("restringe o link a missões com aprovação por revisor", () => {
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...missionFixture,
+        externalUrl: "https://example.com/activity",
+      }).success,
+      false,
+    );
+  });
+});

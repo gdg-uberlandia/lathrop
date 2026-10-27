@@ -68,6 +68,12 @@ const missionBaseSchema = z
     title: z.string().trim().min(2).max(120),
     description: z.string().trim().min(1).max(1_000),
     imageUrl: urlSchema().nullable(),
+    externalUrl: urlSchema("Informe um link HTTP ou HTTPS válido")
+      .refine((value) => /^https?:\/\//i.test(value), {
+        message: "Use um link HTTP ou HTTPS",
+      })
+      .nullable()
+      .optional(),
     validationType: missionValidationTypeSchema,
     quizConfig: missionQuizConfigSchema.nullable().default(null),
     keywordConfig: z
@@ -95,6 +101,7 @@ const missionBaseSchema = z
 
 type MissionRules = {
   validationType: "qr" | "reviewer" | "automatic" | "keyword" | "quiz";
+  externalUrl?: string | null;
   quizConfig?: unknown;
   keywordConfig?: unknown;
   qrId: string | null;
@@ -103,6 +110,13 @@ type MissionRules = {
 };
 
 function validateMissionRules(mission: MissionRules, context: z.RefinementCtx) {
+  if (mission.externalUrl && mission.validationType !== "reviewer")
+    context.addIssue({
+      code: "custom",
+      path: ["externalUrl"],
+      message:
+        "O link está disponível apenas para missões com aprovação por revisor",
+    });
   if ((mission.validationType === "quiz") !== Boolean(mission.quizConfig))
     context.addIssue({
       code: "custom",

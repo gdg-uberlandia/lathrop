@@ -48,6 +48,7 @@ function defaults(mission?: Mission): MissionFormType {
     title: mission?.title ?? "",
     description: mission?.description ?? "",
     imageUrl: mission?.imageUrl ?? null,
+    externalUrl: mission?.externalUrl ?? null,
     validationType: mission?.validationType ?? "reviewer",
     qrId: mission?.qrId ?? null,
     keywordConfig: mission?.keywordConfig ?? null,
@@ -87,6 +88,7 @@ export function MissionsForm({
   }, [form, mission]);
 
   useEffect(() => {
+    if (validationType !== "reviewer") form.setValue("externalUrl", null);
     if (validationType === "quiz") {
       if (!form.getValues("quizConfig"))
         form.setValue("quizConfig", {
@@ -343,6 +345,35 @@ export function MissionsForm({
               </FormItem>
             )}
           />
+
+          {validationType === "reviewer" && (
+            <FormField
+              name="externalUrl"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className="md:col-span-8">
+                  <FormLabel>Link da atividade (opcional)</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="text"
+                      inputMode="url"
+                      placeholder="https://exemplo.com/atividade"
+                      value={field.value ?? ""}
+                      onChange={(event) =>
+                        field.onChange(event.target.value || null)
+                      }
+                    />
+                  </FormControl>
+                  <p className="text-sm text-slate-500">
+                    Aparece como um botão nos detalhes da missão na Pokédex. A
+                    conclusão continua dependendo da aprovação por revisor.
+                  </p>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
 
           {validationType === "qr" && (
             <FormField
