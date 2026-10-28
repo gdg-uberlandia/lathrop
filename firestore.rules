@@ -9,6 +9,11 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    match /test_raffleLiveSignals/{eventId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     // Site e Pokedex usam Firebase Admin SDK depois de validar sessão,
     // autorização e contrato. O Client SDK não acessa os demais documentos.
     match /{document=**} {

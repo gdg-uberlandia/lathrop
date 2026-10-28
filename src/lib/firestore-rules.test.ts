@@ -16,4 +16,10 @@ describe("regras do Firestore", () => {
     assert.match(rules, /allow read: if true/);
     assert.match(rules, /allow write: if false/);
   });
+  it("permite ler o sinal de teste sem liberar gravações do cliente", () => {
+    assert.match(
+      rules,
+      /match \/test_raffleLiveSignals\/\{eventId\}\s*\{\s*allow read: if true;\s*allow write: if false;\s*\}/,
+    );
+  });
 });
