@@ -1,0 +1,52 @@
+{
+  "generator": "built-in image_gen",
+  "background": "transparent",
+  "assets": [
+    {
+      "id": "doces",
+      "filename": "doces.png",
+      "prompt": "Use case: stylized-concept. Asset type: individual reward catalog icon for a Pokédex event shop. Create ONE isolated minimalist pixel art item icon. Strict cohesive 32x32 logical pixel sprite enlarged with nearest-neighbor into a square 1024x1024 PNG; big crisp visibly square pixels, no antialiasing, no smooth curves, no gradients. Retro handheld RPG inventory aesthetic, restrained palette of charcoal navy outlines (#17253c), cream highlights, teal, blue, yellow and coral accents. Consistent two-logical-pixel dark outline, simple 2-tone shading, top-left highlight, front view with subtle depth. Center the entire item with generous transparent padding, occupied bounding box about 65% of the square. Background genuinely transparent, no shadow outside sprite, no checkerboard, no decorative sparkles, no text, no letters, no labels, no logos, no framing, no extra objects. Subject: a single wrapped candy with short twisted wrapper ends, mint green wrapper with one small yellow square highlight"
+    },
+    {
+      "id": "caneta",
+      "filename": "caneta.png",
+      "prompt": "Use case: stylized-concept. Asset type: individual reward catalog icon for a Pokédex event shop. Create ONE isolated minimalist pixel art item icon. Strict cohesive 32x32 logical pixel sprite enlarged with nearest-neighbor into a square 1024x1024 PNG; big crisp visibly square pixels, no antialiasing, no smooth curves, no gradients. Retro handheld RPG inventory aesthetic, restrained palette of charcoal navy outlines (#17253c), cream highlights, teal, blue, yellow and coral accents. Consistent two-logical-pixel dark outline, simple 2-tone shading, top-left highlight, front view with subtle depth. Center the entire item with generous transparent padding, occupied bounding box about 65% of the square. Background genuinely transparent, no shadow outside sprite, no checkerboard, no decorative sparkles, no text, no letters, no labels, no logos, no framing, no extra objects. Subject: a single capped blue ballpoint pen, diagonally oriented, simple recognizable nib"
+    },
+    {
+      "id": "bloco-de-notas",
+      "filename": "bloco-de-notas.png",
+      "prompt": "Use case: stylized-concept. Asset type: individual reward catalog icon for a Pokédex event shop. Create ONE isolated minimalist pixel art item icon. Strict cohesive 32x32 logical pixel sprite enlarged with nearest-neighbor into a square 1024x1024 PNG; big crisp visibly square pixels, no antialiasing, no smooth curves, no gradients. Retro handheld RPG inventory aesthetic, restrained palette of charcoal navy outlines (#17253c), cream highlights, teal, blue, yellow and coral accents. Consistent two-logical-pixel dark outline, simple 2-tone shading, top-left highlight, front view with subtle depth. Center the entire item with generous transparent padding, occupied bounding box about 65% of the square. Background genuinely transparent, no shadow outside sprite, no checkerboard, no decorative sparkles, no text, no letters, no labels, no logos, no framing, no extra objects. Subject: a small top-bound notepad with visible binding rings, pale cream paper and teal backing, three short blue marks on the page"
+    },
+    {
+      "id": "chaveiro",
+      "filename": "chaveiro.png",
+      "prompt": "Use case: stylized-concept. Asset type: individual reward catalog icon for a Pokédex event shop. Create ONE isolated minimalist pixel art item icon. Strict cohesive 32x32 logical pixel sprite enlarged with nearest-neighbor into a square 1024x1024 PNG; big crisp visibly square pixels, no antialiasing, no smooth curves, no gradients. Retro handheld RPG inventory aesthetic, restrained palette of charcoal navy outlines (#17253c), cream highlights, teal, blue, yellow and coral accents. Consistent two-logical-pixel dark outline, simple 2-tone shading, top-left highlight, front view with subtle depth. Center the entire item with generous transparent padding, occupied bounding box about 65% of the square. Background genuinely transparent, no shadow outside sprite, no checkerboard, no decorative sparkles, no text, no letters, no labels, no logos, no framing, no extra objects. Subject: a cheese wedge keychain, golden yellow cheese with three dark holes and a small silver key ring attached above"
+    },
+    {
+      "id": "copos",
+      "filename": "copos.png",
+      "prompt": "Use case: stylized-concept. Asset type: individual reward catalog icon for a Pokédex event shop. Create ONE isolated minimalist pixel art item icon. Strict cohesive 32x32 logical pixel sprite enlarged with nearest-neighbor into a square 1024x1024 PNG; big crisp visibly square pixels, no antialiasing, no smooth curves, no gradients. Retro handheld RPG inventory aesthetic, restrained palette of charcoal navy outlines (#17253c), cream highlights, teal, blue, yellow and coral accents. Consistent two-logical-pixel dark outline, simple 2-tone shading, top-left highlight, front view with subtle depth. Center the entire item with generous transparent padding, occupied bounding box about 65% of the square. Background genuinely transparent, no shadow outside sprite, no checkerboard, no decorative sparkles, no text, no letters, no labels, no logos, no framing, no extra objects. Subject: a reusable open drinking tumbler cup without handle, short straight sides slightly tapered at the bottom, bright coral red with a cream rim"
+    },
+    {
+      "id": "caderno",
+      "filename": "caderno.png",
+      "prompt": "Use case: stylized-concept. Asset type: individual reward catalog icon for a Pokédex event shop. Create ONE isolated minimalist pixel art item icon. Strict cohesive 32x32 logical pixel sprite enlarged with nearest-neighbor into a square 1024x1024 PNG; big crisp visibly square pixels, no antialiasing, no smooth curves, no gradients. Retro handheld RPG inventory aesthetic, restrained palette of charcoal navy outlines (#17253c), cream highlights, teal, blue, yellow and coral accents. Consistent two-logical-pixel dark outline, simple 2-tone shading, top-left highlight, front view with subtle depth. Center the entire item with generous transparent padding, occupied bounding box about 65% of the square. Background genuinely transparent, no shadow outside sprite, no checkerboard, no decorative sparkles, no text, no letters, no labels, no logos, no framing, no extra objects. Subject: a closed hardcover notebook, blue cover with cream page edges and a small yellow ribbon bookmark; clearly different from a top-bound notepad",
+      "editPrompt": "Remove the circular red-and-white emblem entirely from the front cover. Leave a plain blue front cover. Preserve cream border, yellow ribbon bookmark, page edges, dark outline, pixel art style and transparency."
+    },
+    {
+      "id": "garrafinhas",
+      "filename": "garrafinhas.png",
+      "prompt": "Use case: stylized-concept. Asset type: individual reward catalog icon for a Pokédex event shop. Create ONE isolated minimalist pixel art item icon. Strict cohesive 32x32 logical pixel sprite enlarged with nearest-neighbor into a square 1024x1024 PNG; big crisp visibly square pixels, no antialiasing, no smooth curves, no gradients. Retro handheld RPG inventory aesthetic, restrained palette of charcoal navy outlines (#17253c), cream highlights, teal, blue, yellow and coral accents. Consistent two-logical-pixel dark outline, simple 2-tone shading, top-left highlight, front view with subtle depth. Center the entire item with generous transparent padding, occupied bounding box about 65% of the square. Background genuinely transparent, no shadow outside sprite, no checkerboard, no decorative sparkles, no text, no letters, no labels, no logos, no framing, no extra objects. Subject: a reusable water bottle with screw cap and narrow neck, teal body, pale cyan highlight"
+    },
+    {
+      "id": "kit-bloco-caneta",
+      "filename": "kit-bloco-caneta.png",
+      "prompt": "Create a minimalist pixel art inventory icon: a small cream top-spiral notepad with teal backing and a simple blue ballpoint pen beside it. The pair is one reward kit. Dark navy chunky pixel outlines, crisp square pixels, restrained blue teal cream yellow palette, simple flat two-tone shading. Centered on a transparent square background with generous padding. No text, no logos, no other objects."
+    },
+    {
+      "id": "camiseta",
+      "filename": "camiseta.png",
+      "prompt": "Create a minimalist pixel art inventory icon: a plain golden yellow short sleeved T-shirt. Dark navy chunky pixel outlines, crisp square pixels, simple flat two-tone shading with cream highlights. Front view, whole shirt centered with generous padding on a transparent square background. Plain fabric, no text, no logos, no decoration, no other objects."
+    }
+  ]
+}
