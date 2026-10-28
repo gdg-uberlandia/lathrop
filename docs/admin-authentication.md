@@ -79,13 +79,24 @@ ou e-mail (ignorando acentos e maiúsculas) e paginação local. A API administr
 `GET /api/v1/participants` consulta somente a coleção do ambiente e o evento atual.
 `PATCH /api/v1/participants` recebe `id` e `accessRoles`, valida exatamente um papel
 entre `participant`, `staff`, `reviewer`, `sponsor`, `editor` e `admin`, e altera somente
-`accessRoles`, `sponsorCompanyId` e `updatedAt` em transação, conferindo novamente o evento.
+`accessRoles`, `sponsorCompanyId` e `updatedAt` no perfil, conferindo novamente o evento.
+Quando o papel selecionado é `admin` ou o papel anterior era `admin`, a mesma
+transação sincroniza a autorização em `adminUsers`.
 Ambas as operações exigem autorização administrativa e não permitem cache HTTP.
 A listagem é carregada inteira, como as demais listas de conteúdo do painel.
 
-Perfis administrativos usam exclusivamente `admin`, sem acumular outros papéis. O provisionamento por `adminUsers` continua
-concedendo `admin` quando necessário; para revogar acesso ao painel, desative
-`adminUsers` conforme descrito acima. A edição de papéis não altera esse cadastro.
+Perfis administrativos usam exclusivamente `admin`, sem acumular outros papéis.
+Ao selecionar `admin`, o backend busca a conta no Firebase Authentication pelo
+e-mail normalizado do perfil e cria ou reativa `adminUsers/{firebaseUid}` com
+`isActive: true`. O UID da conta pode ser diferente do ID do perfil da Pokédex.
+Ao substituir `admin` por outro papel, o registro existente é desativado com
+`isActive: false`. A reativação preserva os dados e a data de criação existentes.
+As alterações do perfil e da autorização são confirmadas na mesma transação,
+respeitando o prefixo `test_` quando `DEV_MODE=true`.
+
+A conta precisa existir no Firebase Authentication. Se a busca da conta falhar,
+a alteração não é salva parcialmente. O painel continua exigindo login por
+Email/Password; a mudança de papel não cria contas nem altera senhas ou provedores.
 
 A edição usa um select de papel único e exige confirmação em modal antes da
 persistência. A gravação substitui o papel anterior pelo papel selecionado.

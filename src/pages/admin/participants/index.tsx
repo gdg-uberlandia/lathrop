@@ -170,6 +170,11 @@ function RoleEditor({
               O papel de {participant.name} ({participant.email}) será alterado
               de {participant.accessRoles.join(", ")} para {role}. O papel
               anterior será substituído.{" "}
+              {role === "admin"
+                ? "A autorização de acesso ao painel também será ativada. "
+                : participant.accessRoles.includes("admin")
+                  ? "A autorização de acesso administrativo ao painel será desativada. "
+                  : ""}
               {role === "sponsor" &&
                 `O funcionário poderá validar somente as missões presenciais de ${companies.find((company) => company.id === companyId)?.name ?? "sua empresa"}.`}
             </AlertDialogDescription>

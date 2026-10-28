@@ -72,3 +72,101 @@ test("sponsor assignment validates the company in the same transaction as the ro
     db.runTransaction = originalRunTransaction;
   }
 });
+
+test("admin role changes synchronize authorization by Auth UID in the profile transaction", async () => {
+  if (!admin.apps.length)
+    admin.initializeApp({ projectId: "demo-admin-role-tests" });
+  const { db, auth } = await import("@/utils/db");
+  const { updateParticipantRoles } = await import("./participants");
+  const documents = new Map<string, Record<string, unknown>>();
+  const profilePath = `${getFirestoreCollectionName("profiles")}/google-profile-id`;
+  const authorizationPath = `${getFirestoreCollectionName("adminUsers")}/password-auth-uid`;
+  documents.set(profilePath, {
+    eventId: CURRENT_EVENT_ID,
+    displayName: "Pessoa",
+    email: "Person@Example.com",
+    accessRoles: ["participant"],
+  });
+  const transaction = {
+    get: async (reference: DocumentReference) => ({
+      id: reference.id,
+      exists: documents.has(reference.path),
+      data: () => documents.get(reference.path),
+    }),
+    set: (reference: DocumentReference, value: Record<string, unknown>) =>
+      documents.set(reference.path, {
+        ...documents.get(reference.path),
+        ...value,
+      }),
+    update: (reference: DocumentReference, value: Record<string, unknown>) => {
+      assert.ok(documents.has(reference.path));
+      documents.set(reference.path, {
+        ...documents.get(reference.path),
+        ...value,
+      });
+    },
+  } as unknown as Transaction;
+  const originalTransaction = db.runTransaction;
+  const originalGetUser = auth.getUserByEmail;
+  db.runTransaction = async <T>(
+    operation: (transaction: Transaction) => Promise<T>,
+  ) => operation(transaction);
+  auth.getUserByEmail = async (email: string) => {
+    assert.equal(email, "person@example.com");
+    return { uid: "password-auth-uid" } as admin.auth.UserRecord;
+  };
+  try {
+    const promote = { id: "google-profile-id", accessRoles: ["admin"] };
+    const promoted = await updateParticipantRoles(promote);
+    assert.deepEqual(promoted.accessRoles, ["admin"]);
+    assert.equal(documents.get(authorizationPath)?.isActive, true);
+    assert.equal(documents.get(authorizationPath)?.email, "person@example.com");
+    assert.equal(
+      documents.has(
+        `${getFirestoreCollectionName("adminUsers")}/google-profile-id`,
+      ),
+      false,
+    );
+    const createdAt = documents.get(authorizationPath)?.createdAt;
+    documents.set(`${getFirestoreCollectionName("companies")}/active-company`, {
+      eventId: CURRENT_EVENT_ID,
+      active: true,
+    });
+    for (const role of [
+      "reviewer",
+      "participant",
+      "staff",
+      "editor",
+      "sponsor",
+    ]) {
+      const demoted = await updateParticipantRoles({
+        id: "google-profile-id",
+        accessRoles: [role],
+        ...(role === "sponsor" ? { sponsorCompanyId: "active-company" } : {}),
+      });
+      assert.deepEqual(demoted.accessRoles, [role]);
+      assert.equal(documents.get(authorizationPath)?.isActive, false);
+      await updateParticipantRoles(promote);
+      assert.equal(documents.get(authorizationPath)?.isActive, true);
+      assert.equal(documents.get(authorizationPath)?.createdAt, createdAt);
+    }
+    const before = { ...documents.get(profilePath) };
+    auth.getUserByEmail = async () => {
+      throw Object.assign(new Error("missing"), {
+        code: "auth/user-not-found",
+      });
+    };
+    await assert.rejects(
+      updateParticipantRoles({
+        id: "google-profile-id",
+        accessRoles: ["reviewer"],
+      }),
+      /Firebase Authentication/,
+    );
+    assert.deepEqual(documents.get(profilePath), before);
+    assert.equal(documents.get(authorizationPath)?.isActive, true);
+  } finally {
+    db.runTransaction = originalTransaction;
+    auth.getUserByEmail = originalGetUser;
+  }
+});
