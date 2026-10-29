@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { test } from "node:test";
+import { test as runTest } from "node:test";
 import { buildQrPrintSheets, QR_SAMPLE, fitQrPrintText } from "./qr-print";
 
 const measure = (value: string, size: number) =>
@@ -67,3 +67,16 @@ test("última placa ímpar fica centralizada sozinha sem divisor", () => {
   assert.equal(sheets[1].dividerX, null);
   assert.deepEqual(buildQrPrintSheets([]), []);
 });
+
+function test(name: string, run: () => void) {
+  runTest(name, () => {
+    const previous = process.env.NEXT_PUBLIC_APP_URL;
+    process.env.NEXT_PUBLIC_APP_URL = "https://pokedex.example.com";
+    try {
+      run();
+    } finally {
+      if (previous === undefined) delete process.env.NEXT_PUBLIC_APP_URL;
+      else process.env.NEXT_PUBLIC_APP_URL = previous;
+    }
+  });
+}

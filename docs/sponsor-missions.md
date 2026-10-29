@@ -33,3 +33,14 @@ Publicar primeiro a Pokédex que reconhece `sponsor`, `sponsorCompanyId` e
 sem os campos novos são interpretados com vínculo nulo. Não alterar as Firestore
 Rules para liberar escrita pelo cliente: as operações continuam nas APIs
 administrativas autenticadas.
+
+## Links adicionais
+
+Qualquer tipo de missão permite até três links opcionais, cada um com texto do
+botão (até 60 caracteres) e URL HTTP/HTTPS. O formulário permite adicionar e
+remover links sem depender do tipo de validação. Na Pokédex, os botões aparecem
+em uma linha com três colunas e abrem em nova aba, sem alterar a conclusão.
+
+O campo `externalLinks` armazena objetos `{ label, url }`. O link antigo em
+`externalUrl` é carregado como “Acessar atividade” durante a edição. Ao salvar,
+a lista passa a ser usada; uma lista vazia remove os botões.

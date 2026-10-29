@@ -52,6 +52,18 @@ export const missionPrerequisiteSchema = z.discriminatedUnion("type", [
     .strict(),
 ]);
 
+export const missionLinkSchema = z
+  .object({
+    label: z.string().trim().min(1, "Informe o texto do botão").max(60),
+    url: urlSchema("Informe um link HTTP ou HTTPS válido").refine(
+      (value) => /^https?:\/\//i.test(value),
+      {
+        message: "Use um link HTTP ou HTTPS",
+      },
+    ),
+  })
+  .strict();
+
 const missionBaseSchema = z
   .object({
     id: z.string().trim().min(1).max(128),
@@ -73,6 +85,10 @@ const missionBaseSchema = z
         message: "Use um link HTTP ou HTTPS",
       })
       .nullable()
+      .optional(),
+    externalLinks: z
+      .array(missionLinkSchema)
+      .max(3, "Adicione no máximo três links")
       .optional(),
     validationType: missionValidationTypeSchema,
     quizConfig: missionQuizConfigSchema.nullable().default(null),
@@ -110,13 +126,6 @@ type MissionRules = {
 };
 
 function validateMissionRules(mission: MissionRules, context: z.RefinementCtx) {
-  if (mission.externalUrl && mission.validationType !== "reviewer")
-    context.addIssue({
-      code: "custom",
-      path: ["externalUrl"],
-      message:
-        "O link está disponível apenas para missões com aprovação por revisor",
-    });
   if ((mission.validationType === "quiz") !== Boolean(mission.quizConfig))
     context.addIssue({
       code: "custom",

@@ -248,6 +248,16 @@ export default function Missions() {
                             description: mission.description,
                             imageUrl: mission.imageUrl,
                             externalUrl: mission.externalUrl ?? null,
+                            externalLinks:
+                              mission.externalLinks ??
+                              (mission.externalUrl
+                                ? [
+                                    {
+                                      label: "Acessar atividade",
+                                      url: mission.externalUrl,
+                                    },
+                                  ]
+                                : []),
                             validationType: mission.validationType,
                             keywordConfig: mission.keywordConfig,
                             quizConfig: mission.quizConfig,

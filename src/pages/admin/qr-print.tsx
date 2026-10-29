@@ -1,3 +1,4 @@
+import { buildStaticQrUrl } from "@/lib/static-qr-url";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { Printer } from "lucide-react";
@@ -75,7 +76,7 @@ export default function QrPrintPage() {
           key: `tag-${t.id}`,
           kind: "Tag" as const,
           title: t.name,
-          value: t.qrId,
+          value: buildStaticQrUrl("tag", t.qrId),
           active: t.active,
         })),
         ...missions.missions
@@ -84,14 +85,14 @@ export default function QrPrintPage() {
             key: `mission-${m.id}`,
             kind: "Missão" as const,
             title: m.title,
-            value: m.qrId!,
+            value: buildStaticQrUrl("mission", m.qrId!),
             active: m.active,
           })),
         ...companies.companies.map((c) => ({
           key: `company-${c.id}`,
           kind: "Empresa" as const,
           title: c.name,
-          value: c.qrId,
+          value: buildStaticQrUrl("company", c.qrId),
           active: c.active,
         })),
       ].sort((a, b) => a.title.localeCompare(b.title, "pt-BR")),

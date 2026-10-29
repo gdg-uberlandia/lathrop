@@ -1,3 +1,4 @@
+import { buildStaticQrUrl } from "@/lib/static-qr-url";
 import { Button } from "@/assets/components/ui/button";
 import { Download, QrCode } from "lucide-react";
 import Image from "next/image";
@@ -5,34 +6,37 @@ import { useEffect, useState } from "react";
 
 type AdminQrCodeCardProps = {
   value: string | null | undefined;
+  type: "company" | "tag" | "mission";
   downloadName: string;
   entityLabel: string;
 };
 
 export function AdminQrCodeCard({
   value,
+  type,
   downloadName,
   entityLabel,
 }: AdminQrCodeCardProps) {
   const [preview, setPreview] = useState("");
+  const url = value ? buildStaticQrUrl(type, value) : null;
 
   useEffect(() => {
-    if (!value) {
+    if (!url) {
       setPreview("");
       return;
     }
     let mounted = true;
     void import("qrcode").then(({ default: QRCode }) =>
-      QRCode.toDataURL(value, { width: 320, margin: 2 }).then((result) => {
+      QRCode.toDataURL(url, { width: 320, margin: 2 }).then((result) => {
         if (mounted) setPreview(result);
       }),
     );
     return () => {
       mounted = false;
     };
-  }, [value]);
+  }, [url]);
 
-  if (!value) return null;
+  if (!url) return null;
 
   return (
     <section className="overflow-hidden rounded-2xl border !border-slate-200 bg-slate-50/70">
@@ -65,10 +69,10 @@ export function AdminQrCodeCard({
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
-            Identificador
+            Link do QR Code
           </p>
           <code className="mt-1 block break-all rounded-lg bg-white px-3 py-2 text-xs text-slate-600">
-            {value}
+            {url}
           </code>
           {preview && (
             <Button

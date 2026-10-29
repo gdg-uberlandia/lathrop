@@ -183,6 +183,7 @@ export function TagForm({
         />
         <div className="md:col-span-8">
           <AdminQrCodeCard
+            type="tag"
             value={form.watch("qrId")}
             downloadName={`tag-${form.watch("id")}`}
             entityLabel="esta tag"

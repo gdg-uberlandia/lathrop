@@ -561,13 +561,80 @@ describe("links de missões com aprovação por revisor", () => {
     }
   });
 
-  it("restringe o link a missões com aprovação por revisor", () => {
+  it("aceita o link legado em outros tipos de missão", () => {
     assert.equal(
       missionFieldsSchema.safeParse({
         ...missionFixture,
         externalUrl: "https://example.com/activity",
       }).success,
-      false,
+      true,
     );
+  });
+});
+
+describe("links adicionais de missões", () => {
+  const links = [1, 2, 3].map((n) => ({
+    label: `Botão ${n}`,
+    url: `https://example.com/${n}`,
+  }));
+  const configs = [
+    { validationType: "reviewer", qrId: null },
+    { validationType: "qr", qrId: missionFixture.qrId },
+    {
+      validationType: "automatic",
+      qrId: null,
+      progressRequirement: { type: "connections", target: 2 },
+    },
+    {
+      validationType: "keyword",
+      qrId: null,
+      keywordConfig: { acceptedAnswers: ["answer"], maxAttempts: 3 },
+    },
+    {
+      validationType: "quiz",
+      qrId: null,
+      quizConfig: {
+        questions: [
+          {
+            id: "q1",
+            prompt: "Question",
+            options: ["A", "B"],
+            correctOptionIndex: 0,
+          },
+        ],
+        minCorrectAnswers: 1,
+        maxAttempts: 3,
+      },
+    },
+  ];
+  for (const config of configs)
+    it(`preserva três links em missões ${config.validationType}`, () => {
+      const parsed = missionFieldsSchema.parse({
+        ...missionFixture,
+        ...config,
+        prerequisites: [],
+        externalLinks: links,
+      });
+      const { eventId, createdAt, updatedAt, ...input } = parsed;
+      assert.deepEqual(missionInputSchema.parse(input).externalLinks, links);
+    });
+  it("rejeita excesso de links, texto vazio e protocolos inseguros", () => {
+    for (const externalLinks of [
+      [...links, links[0]],
+      [{ label: "", url: "https://example.com" }],
+      [{ label: "Label", url: "javascript://example.com" }],
+      [{ label: "Label", url: "" }],
+    ]) {
+      const { eventId, createdAt, updatedAt, ...input } = missionFixture;
+      assert.equal(
+        missionInputSchema.safeParse({ ...input, externalLinks }).success,
+        false,
+      );
+      assert.equal(
+        missionFieldsSchema.safeParse({ ...missionFixture, externalLinks })
+          .success,
+        false,
+      );
+    }
   });
 });

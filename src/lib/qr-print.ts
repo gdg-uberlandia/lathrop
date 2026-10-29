@@ -1,3 +1,5 @@
+import { buildStaticQrUrl } from "./static-qr-url";
+
 export type PrintableQr = {
   key: string;
   kind: "Tag" | "Missão" | "Empresa";
@@ -35,7 +37,9 @@ export const QR_SAMPLE: PrintableQr = {
   key: "sample",
   kind: "Missão",
   title: "Explore a Pokédex",
-  value: "13be3fb8-79ca-40c5-9d8b-ea323b215e91",
+  get value() {
+    return buildStaticQrUrl("mission", "13be3fb8-79ca-40c5-9d8b-ea323b215e91");
+  },
   active: true,
 };
 
@@ -206,7 +210,7 @@ export async function renderQrPrint(
     560,
     2,
   );
-  // Generate the same raw qrId already used by the participant scanner.
+  // The value is the short URL accepted by the participant scanner.
   const qr = await QRCode.toCanvas(item.value, {
     width: 900,
     margin: 4,

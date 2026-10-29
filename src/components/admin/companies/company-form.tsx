@@ -163,6 +163,7 @@ export function CompanyForm({
         ))}
         <div className="md:col-span-8">
           <AdminQrCodeCard
+            type="company"
             value={form.watch("qrId")}
             downloadName={`empresa-${form.watch("id")}`}
             entityLabel="esta empresa"

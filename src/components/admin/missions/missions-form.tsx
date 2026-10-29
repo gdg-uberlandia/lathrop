@@ -48,7 +48,12 @@ function defaults(mission?: Mission): MissionFormType {
     title: mission?.title ?? "",
     description: mission?.description ?? "",
     imageUrl: mission?.imageUrl ?? null,
-    externalUrl: mission?.externalUrl ?? null,
+    externalUrl: null,
+    externalLinks:
+      mission?.externalLinks ??
+      (mission?.externalUrl
+        ? [{ label: "Acessar atividade", url: mission.externalUrl }]
+        : []),
     validationType: mission?.validationType ?? "reviewer",
     qrId: mission?.qrId ?? null,
     keywordConfig: mission?.keywordConfig ?? null,
@@ -79,6 +84,10 @@ export function MissionsForm({
     control: form.control,
     name: "prerequisites",
   });
+  const externalLinks = useFieldArray({
+    control: form.control,
+    name: "externalLinks",
+  });
   const validationType = form.watch("validationType");
   const progressType = form.watch("progressRequirement.type");
   const currentId = form.watch("id");
@@ -88,7 +97,6 @@ export function MissionsForm({
   }, [form, mission]);
 
   useEffect(() => {
-    if (validationType !== "reviewer") form.setValue("externalUrl", null);
     if (validationType === "quiz") {
       if (!form.getValues("quizConfig"))
         form.setValue("quizConfig", {
@@ -346,34 +354,75 @@ export function MissionsForm({
             )}
           />
 
-          {validationType === "reviewer" && (
-            <FormField
-              name="externalUrl"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem className="md:col-span-8">
-                  <FormLabel>Link da atividade (opcional)</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="text"
-                      inputMode="url"
-                      placeholder="https://exemplo.com/atividade"
-                      value={field.value ?? ""}
-                      onChange={(event) =>
-                        field.onChange(event.target.value || null)
-                      }
-                    />
-                  </FormControl>
-                  <p className="text-sm text-slate-500">
-                    Aparece como um botão nos detalhes da missão na Pokédex. A
-                    conclusão continua dependendo da aprovação por revisor.
-                  </p>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
+          <div className="space-y-4 md:col-span-8">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h3 className="font-medium">Links adicionais (opcionais)</h3>
+                <p className="text-sm text-slate-500">
+                  Até três botões nos detalhes da missão na Pokédex.
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={externalLinks.fields.length >= 3}
+                onClick={() => externalLinks.append({ label: "", url: "" })}
+              >
+                <Plus className="mr-2 h-4 w-4" /> Adicionar link
+              </Button>
+            </div>
+            {externalLinks.fields.map((link, index) => (
+              <div
+                key={link.id}
+                className="grid items-start gap-3 rounded-md border p-3 md:grid-cols-[1fr_2fr_auto]"
+              >
+                <FormField
+                  control={form.control}
+                  name={`externalLinks.${index}.label`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Texto do botão {index + 1}</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          maxLength={60}
+                          placeholder="Ex.: Instruções"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`externalLinks.${index}.url`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>URL {index + 1}</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="text"
+                          inputMode="url"
+                          placeholder="https://exemplo.com/atividade"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="md:mt-8"
+                  aria-label={`Remover link ${index + 1}`}
+                  onClick={() => externalLinks.remove(index)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
 
           {validationType === "qr" && (
             <FormField
@@ -397,6 +446,7 @@ export function MissionsForm({
                   <FormMessage />
                   <div className="mt-4">
                     <AdminQrCodeCard
+                      type="mission"
                       value={field.value}
                       downloadName={`missao-${currentId || "qr"}`}
                       entityLabel="esta missão"
