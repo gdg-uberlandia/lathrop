@@ -1,6 +1,7 @@
 .EventLocation {
   max-width: calc(var(--lg) + 2rem);
   width: 100%;
+  margin-inline: auto;
 }
 
 .LocationContainer {
@@ -82,6 +83,39 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 400;
+}
+
+@media (max-width: 639px) {
+  .EventLocation {
+    margin-top: 6rem;
+  }
+
+  .LocationContainer {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding-inline: 1rem;
+  }
+
+  .LocationInfoContainer,
+  .Map {
+    flex: none;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .Map {
+    padding: 1rem;
+  }
+
+  .LocationInfo {
+    width: 100%;
+  }
+
+  .LocationInfoText {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
 }
 
 @media (min-width: 640px) {
