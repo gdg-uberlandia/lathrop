@@ -170,7 +170,7 @@ const Home = ({
           id="sponsors"
         />
 
-        {/* <EventLocation className={styles.Section} id="place" /> */}
+        <EventLocation className={styles.Section} id="place" />
 
         <Faq className={styles.Section} id="faq" />
       </ErrorBoundary>
