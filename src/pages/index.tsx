@@ -34,6 +34,7 @@ import {
   deferredHomepageSectionClassName,
   homepageSectionClassName,
 } from "@/components/devfest-triangulo-2025/ui/section-styles";
+import { EventLocation } from "@/components/devfest-triangulo-2025/EventLocation";
 
 const PastEvent = dynamic(() =>
   import("@/components/devfest-triangulo-2025/PastEvent").then(
@@ -217,7 +218,7 @@ const Home = ({
             id="sponsors"
           />
 
-          {/* <EventLocation className={styles.Section} id="place" /> */}
+          <EventLocation className={styles.Section} id="place" />
 
           <Faq className={deferredHomepageSectionClassName} id="faq" />
         </main>

@@ -64,7 +64,10 @@ export const EventLocation = ({ className, ...props }: EventLocationProps) => {
             </div>
 
             <div className={styles.LocationInfoText}>
-              <p>{configValues.formattedDate} de 2025</p>
+              <p>
+                {configValues.formattedDate} de{" "}
+                {new Date(configValues.eventDate).getFullYear()}
+              </p>
             </div>
           </div>
 

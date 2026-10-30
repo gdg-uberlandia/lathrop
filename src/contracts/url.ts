@@ -7,7 +7,7 @@ export function normalizeUrl(value: string) {
 }
 
 export const urlSchema = (message = "URL inválida") =>
-  z.string().trim().transform(normalizeUrl).pipe(z.url(message));
+  z.string().trim().transform(normalizeUrl).pipe(z.string().url(message));
 
 export const optionalFormUrlSchema = (message = "URL inválida") =>
   z.union([z.literal(""), urlSchema(message)]);
