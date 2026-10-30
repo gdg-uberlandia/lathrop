@@ -1,24 +1,5 @@
 import { Profile } from "@/models/profile";
-import axios from "axios";
-import { getAuth } from "firebase/auth";
-import { server } from "helpers/config";
+import { adminApiRequest } from "@/lib/admin-api/client";
 
-const getToken = async (): Promise<string | undefined> => {
-  const auth = getAuth();
-  return auth.currentUser?.getIdToken();
-};
-
-export const getProfilesAPI = async (): Promise<Profile[]> => {
-  const token = await getToken();
-  try {
-    const res = await axios.get(`${server}/api/v1/profiles`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return res.data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const getProfilesAPI = (signal?: AbortSignal) =>
+  adminApiRequest<Profile[]>("/api/v1/profiles", { signal });

@@ -4,6 +4,10 @@ module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
+      backgroundImage: {
+        "devfest-gradient":
+          "linear-gradient(270deg, #4285f4 0%, #af50bb 32.21%, #d93a53 65.38%, #f2c438 100%)",
+      },
       colors: {
         devGreen: {
           light: "#CCF6C5",

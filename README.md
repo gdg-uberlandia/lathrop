@@ -112,3 +112,7 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 ## Obs
 
 Para funcionar a busca de revisores, e necessario adicionar indices para os campos `profiles.user.email` e `profiles.user.name` no Firestore.
+
+O provisionamento de contas do painel e a integração de perfis com a Pokedex
+estão documentados em
+[docs/admin-authentication.md](docs/admin-authentication.md).

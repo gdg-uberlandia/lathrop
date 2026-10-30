@@ -1,6 +1,6 @@
-import { useState } from "react";
-import styles from "./styles.module.css";
+import { useId, useState } from "react";
 import clsx from "clsx";
+import { Minus, Plus } from "lucide-react";
 
 interface FaqItemProps {
   title: string;
@@ -9,66 +9,44 @@ interface FaqItemProps {
 
 export const FaqItem = ({ title, content }: FaqItemProps) => {
   const [expanded, setExpanded] = useState(false);
+  const contentId = useId();
 
   return (
     <article
-      className={clsx(styles.FaqItem, expanded && styles.FaqItemExpanded)}
+      className={clsx(
+        "rounded-2xl border p-6 transition-colors duration-200 sm:px-16 motion-reduce:transition-none",
+        expanded ? "!border-devBlue-dark" : "!border-devGray",
+      )}
     >
-      <div className={styles.FaqItemTitle}>
-        <p>{title}</p>
+      <div className="flex items-center justify-between gap-4 text-devWhite-ice">
+        <p className="mb-0 text-left font-medium">{title}</p>
 
         <button
-          className={styles.FaqItemButton}
-          aria-label={
-            expanded
-              ? "Icone de menos na cor branco"
-              : "Icone de mais na cor branco"
-          }
+          type="button"
+          className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-1 text-devWhite-ice transition-colors duration-200 hover:bg-devBlue-dark/10 hover:text-devBlue-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-devBlue-dark motion-reduce:transition-none"
+          aria-label={expanded ? "Recolher resposta" : "Expandir resposta"}
+          aria-expanded={expanded}
+          aria-controls={contentId}
           onClick={() => {
             setExpanded((prev) => !prev);
           }}
         >
           {expanded ? (
-            <svg
-              width="24"
-              height="25"
-              viewBox="0 0 24 25"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <mask
-                id="mask0_8386_124585"
-                maskUnits="userSpaceOnUse"
-                x="0"
-                y="0"
-                width="24"
-                height="25"
-              >
-                <rect y="0.82959" width="24" height="24" fill="#D9D9D9" />
-              </mask>
-              <g mask="url(#mask0_8386_124585)">
-                <path d="M6 13.8296V11.8296H18V13.8296H6Z" fill="#F0F0F0" />
-              </g>
-            </svg>
+            <Minus className="size-6" />
           ) : (
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M11 13.8296H5V11.8296H11V5.82959H13V11.8296H19V13.8296H13V19.8296H11V13.8296Z" />
-            </svg>
+            <Plus className="size-6" />
           )}
         </button>
       </div>
       <div
-        className={
-          expanded ? styles.FaqItemContentShow : styles.FaqItemContentHidden
-        }
+        id={contentId}
+        aria-hidden={!expanded}
+        className={clsx(
+          "grid transition-[grid-template-rows] duration-200 ease-in-out motion-reduce:transition-none",
+          expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+        )}
       >
-        <div className={styles.FaqItemContentInner}>
+        <div className="overflow-hidden text-left text-white/60 [&_a]:text-devBlue-dark [&_a]:underline [&_li]:ml-5 [&_li]:list-disc [&_p]:mb-0 [&_p]:mt-6">
           {typeof content === "string" ? <p>{content}</p> : content}
         </div>
       </div>

@@ -1,31 +1,69 @@
 import { Button } from "@/assets/components/ui/button";
+import { AdminQrCodeCard } from "@/components/admin/admin-qr-code-card";
+import { AdminVisibilityControl } from "@/components/admin/admin-visibility-control";
+import { AdminImageUpload } from "@/components/admin/admin-image-upload";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/assets/components/ui/form";
 import { Input } from "@/assets/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/assets/components/ui/select";
 import { Textarea } from "@/assets/components/ui/textarea";
-import { Checkbox } from "@/assets/components/ui/checkbox";
-import Loading from "@/components/admin/loading-overlay";
 import { useImageUpload } from "@/hooks/useImageUpload";
-import { Mission } from "@/models/mission";
-import { Profile } from "@/models/profile";
+import { useMissions } from "@/hooks/useMissions";
+import { useCompanies } from "@/hooks/useCompanies";
+import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
+import { Mission, MissionInput } from "@/models/mission";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { X } from "lucide-react";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Plus, Trash2 } from "lucide-react";
+import { useEffect } from "react";
+import { Resolver, useFieldArray, useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
+
+import { MissionQuizFields } from "./mission-quiz-fields";
+
 import { MissionFormType, missionSchema } from "./missions-schema";
 
-export interface MissionFormProps {
+interface MissionFormProps {
   editing?: boolean;
   loading?: boolean;
-  onSubmit: (data: Mission) => void;
+  onSubmit: (data: MissionInput) => Promise<Mission | null> | Mission | null;
   mission?: Mission;
+}
+
+function defaults(mission?: Mission): MissionFormType {
+  return {
+    id: mission?.id ?? uuidv4(),
+    companyId: mission?.companyId ?? null,
+    title: mission?.title ?? "",
+    description: mission?.description ?? "",
+    imageUrl: mission?.imageUrl ?? null,
+    externalUrl: null,
+    externalLinks:
+      mission?.externalLinks ??
+      (mission?.externalUrl
+        ? [{ label: "Acessar atividade", url: mission.externalUrl }]
+        : []),
+    validationType: mission?.validationType ?? "reviewer",
+    qrId: mission?.qrId ?? null,
+    keywordConfig: mission?.keywordConfig ?? null,
+    quizConfig: mission?.quizConfig ?? null,
+    progressRequirement: mission?.progressRequirement ?? null,
+    prerequisites: mission?.prerequisites ?? [],
+    active: mission?.active ?? true,
+    order: mission?.order ?? 0,
+    xpAwarded: mission?.xpAwarded ?? null,
+  };
 }
 
 export function MissionsForm({
@@ -34,159 +72,184 @@ export function MissionsForm({
   onSubmit,
   mission,
 }: MissionFormProps) {
-  const { uploadImage, loadingImage } = useImageUpload();
-  const [reviewerDropdownOpen, setReviewerDropdownOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<Profile[]>([]);
-  const [searching, setSearching] = useState(false);
-  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(
-    null,
-  );
-
+  const { uploadImage, loadingImage, error: uploadError } = useImageUpload();
+  const { missions } = useMissions();
+  const { companies } = useCompanies();
   const form = useForm<MissionFormType>({
-    resolver: zodResolver(missionSchema),
-    defaultValues: {
-      id: editing && mission?.id ? mission.id : uuidv4(),
-      name: mission?.name ?? "",
-      description: mission?.description ?? "",
-      details: mission?.details ?? "",
-      qrMission: mission?.qrMission ?? false,
-      reviewers: mission?.reviewers ?? [],
-      image: mission?.image ?? "",
-    },
+    resolver: zodResolver(missionSchema) as Resolver<MissionFormType>,
+    defaultValues: defaults(mission),
   });
+  useUnsavedChanges(form.formState.isDirty && !form.formState.isSubmitting);
+  const prerequisites = useFieldArray({
+    control: form.control,
+    name: "prerequisites",
+  });
+  const externalLinks = useFieldArray({
+    control: form.control,
+    name: "externalLinks",
+  });
+  const validationType = form.watch("validationType");
+  const progressType = form.watch("progressRequirement.type");
+  const currentId = form.watch("id");
 
   useEffect(() => {
-    if (editing && mission) {
-      Object.entries(mission).forEach(([key, value]) => {
-        if (key !== "id") form.setValue(key as keyof MissionFormType, value);
-      });
+    form.reset(defaults(mission));
+  }, [form, mission]);
+
+  useEffect(() => {
+    if (validationType === "quiz") {
+      if (!form.getValues("quizConfig"))
+        form.setValue("quizConfig", {
+          questions: [
+            {
+              id: uuidv4(),
+              prompt: "",
+              options: ["", "", ""],
+              correctOptionIndex: 0,
+            },
+          ],
+          minCorrectAnswers: 1,
+          maxAttempts: 3,
+        });
     } else {
-      form.reset({
-        id: uuidv4(),
-        name: "",
-        description: "",
-        details: "",
-        qrMission: false,
-        reviewers: [],
-        image: "",
-      });
+      form.setValue("quizConfig", null);
     }
-  }, [editing, mission, form]);
-
-  // Cleanup do timer quando o componente for desmontado
-  useEffect(() => {
-    return () => {
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
-      }
-    };
-  }, [debounceTimer]);
-
-  const submitHandler = (data: MissionFormType) => {
-    onSubmit(data as Mission);
-    if (!editing) {
-      form.reset({
-        id: uuidv4(),
-        name: "",
-        description: "",
-        details: "",
-        qrMission: false,
-        reviewers: [],
-        image: "",
-      });
+    if (validationType === "keyword") {
+      if (!form.getValues("keywordConfig"))
+        form.setValue("keywordConfig", {
+          acceptedAnswers: [""],
+          maxAttempts: 3,
+        });
+    } else {
+      form.setValue("keywordConfig", null);
     }
-  };
-
-  const handleImageFileChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      const url = await uploadImage(file, "missions");
-      form.setValue("image", url, { shouldValidate: true });
-    } catch (err) {
-      console.error("Erro ao enviar imagem", err);
-    }
-  };
-
-  const handleSearchProfiles = async (query: string) => {
-    if (query.length < 2) {
-      setSearchResults([]);
+    if (validationType === "qr") {
+      if (!form.getValues("qrId")) form.setValue("qrId", uuidv4());
+      form.setValue("progressRequirement", null);
       return;
     }
 
-    setSearching(true);
-    try {
-      const token = await (await import("firebase/auth"))
-        .getAuth()
-        .currentUser?.getIdToken();
-
-      const response = await fetch(
-        `/api/v1/profiles?search=${encodeURIComponent(query)}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      const data = await response.json();
-
-      // Garantir que data é um array
-      if (Array.isArray(data)) {
-        setSearchResults(data);
-      } else {
-        console.error("Resposta da API não é um array:", data);
-        setSearchResults([]);
+    form.setValue("qrId", null);
+    if (validationType === "automatic") {
+      form.setValue("prerequisites", []);
+      if (!form.getValues("progressRequirement")) {
+        form.setValue("progressRequirement", {
+          type: "connections",
+          target: 1,
+        });
       }
-    } catch (error) {
-      console.error("Erro ao buscar profiles:", error);
-      setSearchResults([]);
-    } finally {
-      setSearching(false);
-    }
-  };
-
-  const handleSearchWithDebounce = (query: string) => {
-    // Limpar timer anterior
-    if (debounceTimer) {
-      clearTimeout(debounceTimer);
-    }
-
-    // Se query for muito curta, limpar resultados imediatamente
-    if (query.length < 2) {
-      setSearchResults([]);
-      setReviewerDropdownOpen(false);
       return;
     }
 
-    // Criar novo timer de 350ms
-    const timer = setTimeout(() => {
-      handleSearchProfiles(query);
-    }, 350);
+    form.setValue("progressRequirement", null);
+  }, [form, validationType]);
 
-    setDebounceTimer(timer);
+  const submitHandler = async (data: MissionFormType) => {
+    const result = await onSubmit(data);
+    if (!editing && result) form.reset(defaults());
+  };
+
+  const handleImageFileChange = async (file: File) => {
+    try {
+      const url = await uploadImage(file, {
+        folder: "missions",
+        entityId: form.getValues("id"),
+        variant: "image",
+      });
+      form.setValue("imageUrl", url, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+    } catch {
+      // A mensagem do hook é exibida no componente.
+    }
   };
 
   return (
     <>
-      {loadingImage && <Loading />}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(submitHandler)}
-          className="grid grid-cols-1 md:grid-cols-8 gap-6 p-4"
+          className="grid grid-cols-1 gap-6 rounded-2xl border border-white/10 bg-devGray-dark/20 p-4 md:grid-cols-8 md:p-6"
         >
+          <div className="md:col-span-8">
+            <h2 className="font-semibold text-slate-900">
+              Informações principais
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Identificação e conteúdo apresentado ao participante.
+            </p>
+          </div>
           <FormField
-            name="name"
+            name="id"
             control={form.control}
-            render={({ field, fieldState }) => (
-              <FormItem className="col-span-8">
-                <FormLabel>Nome</FormLabel>
+            render={({ field }) => (
+              <FormItem className="md:col-span-4">
+                <FormLabel>Identificador</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    disabled={editing}
+                    placeholder="ex.: encontre-o-qr-secreto"
+                  />
+                </FormControl>
+                <p className="text-xs text-muted-foreground">
+                  Use um identificador estável, sem espaços.
+                </p>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            name="title"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className="md:col-span-4">
+                <FormLabel>Título</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
-                {fieldState.error && <span>{fieldState.error.message}</span>}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            name="companyId"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className="md:col-span-8">
+                <FormLabel>Empresa responsável</FormLabel>
+                <Select
+                  value={field.value ?? "__organization__"}
+                  onValueChange={(value) =>
+                    field.onChange(value === "__organization__" ? null : value)
+                  }
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="__organization__">
+                      Organização do evento
+                    </SelectItem>
+                    {companies.map((company) => (
+                      <SelectItem key={company.id} value={company.id}>
+                        {company.name}
+                        {company.active ? "" : " (inativa)"}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  Funcionários com acesso sponsor só podem confirmar missões
+                  presenciais da empresa selecionada. Este vínculo não exige uma
+                  visita prévia.
+                </p>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -194,200 +257,541 @@ export function MissionsForm({
           <FormField
             name="description"
             control={form.control}
-            render={({ field, fieldState }) => (
-              <FormItem className="col-span-8">
+            render={({ field }) => (
+              <FormItem className="md:col-span-8">
                 <FormLabel>Descrição</FormLabel>
-                <FormControl>
-                  <Textarea {...field} rows={3} />
-                </FormControl>
-                {fieldState.error && <span>{fieldState.error.message}</span>}
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            name="details"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <FormItem className="col-span-8">
-                <FormLabel>Detalhes</FormLabel>
                 <FormControl>
                   <Textarea {...field} rows={4} />
                 </FormControl>
-                {fieldState.error && <span>{fieldState.error.message}</span>}
+                <p className="text-right text-xs text-slate-400">
+                  {field.value.length}/1000
+                </p>
+                <FormMessage />
               </FormItem>
             )}
           />
 
+          <div className="border-t !border-slate-200 pt-5 md:col-span-8">
+            <h2 className="font-semibold text-slate-900">
+              Validação e recompensa
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Regras necessárias para concluir a missão.
+            </p>
+          </div>
           <FormField
-            name="image"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <FormItem className="col-span-8">
-                <FormLabel>Imagem da Missão</FormLabel>
-                <FormControl>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      id="mission-image"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageFileChange}
-                    />
-
-                    {field.value && (
-                      <Image
-                        src={field.value}
-                        alt="Preview"
-                        width={32}
-                        height={32}
-                        style={{
-                          maxWidth: 32,
-                          maxHeight: 32,
-                          objectFit: "cover",
-                          borderRadius: "4px",
-                        }}
-                      />
-                    )}
-                  </div>
-                </FormControl>
-                {fieldState.error && <span>{fieldState.error.message}</span>}
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            name="reviewers"
+            name="validationType"
             control={form.control}
             render={({ field }) => (
-              <FormItem className="col-span-8">
-                <FormLabel>Revisores (Emails)</FormLabel>
-                <FormControl>
-                  <div className="space-y-2">
-                    <div className="relative">
-                      <Input
-                        type="text"
-                        placeholder="Digite para buscar por email ou nome..."
-                        value={searchQuery}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          setSearchQuery(value);
-                          handleSearchWithDebounce(value);
-                          if (value.length >= 2) {
-                            setReviewerDropdownOpen(true);
-                          }
-                        }}
-                        onFocus={() => {
-                          if (searchQuery.length >= 2) {
-                            setReviewerDropdownOpen(true);
-                          }
-                        }}
-                        className="w-full"
-                      />
-                      {reviewerDropdownOpen && searchQuery.length >= 2 && (
-                        <div className="absolute z-50 mt-1 w-full rounded-md border bg-popover p-2 shadow-md max-h-60 overflow-y-auto">
-                          {searching ? (
-                            <div className="p-2 text-sm text-muted-foreground">
-                              Buscando...
-                            </div>
-                          ) : searchResults.length === 0 ? (
-                            <div className="p-2 text-sm text-muted-foreground">
-                              Nenhum perfil encontrado
-                            </div>
-                          ) : (
-                            searchResults.map((profile) => (
-                              <div
-                                key={profile.id}
-                                className="flex items-center space-x-2 p-2 hover:bg-accent rounded-sm cursor-pointer"
-                                onClick={() => {
-                                  const currentValue = field.value || [];
-                                  if (!currentValue.includes(profile.email)) {
-                                    field.onChange([
-                                      ...currentValue,
-                                      profile.email,
-                                    ]);
-                                    setSearchQuery("");
-                                    setSearchResults([]);
-                                    setReviewerDropdownOpen(false);
-                                  }
-                                }}
-                              >
-                                <Checkbox
-                                  checked={
-                                    field.value?.includes(profile.email) ||
-                                    false
-                                  }
-                                  onCheckedChange={() => {}}
-                                />
-                                <span className="text-sm">
-                                  {profile.email}
-                                  {profile.name && ` (${profile.name})`}
-                                </span>
-                              </div>
-                            ))
-                          )}
-                        </div>
-                      )}
-                    </div>
-                    {field.value.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {field.value.map((email) => (
-                          <div
-                            key={email}
-                            className="flex items-center gap-1 bg-devBlue-dark/20 text-white px-2 py-1 rounded-md text-sm"
-                          >
-                            <span>{email}</span>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const newValue = field.value.filter(
-                                  (e) => e !== email,
-                                );
-                                field.onChange(newValue);
-                              }}
-                              className="hover:text-devRed-dark"
-                            >
-                              <X className="w-3 h-3" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </FormControl>
+              <FormItem className="md:col-span-4">
+                <FormLabel>Tipo de validação</FormLabel>
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="reviewer">
+                      Aprovação por revisor
+                    </SelectItem>
+                    <SelectItem value="quiz">Quiz relâmpago</SelectItem>
+                    <SelectItem value="keyword">Palavra-chave</SelectItem>
+                    <SelectItem value="qr">Leitura de QR Code</SelectItem>
+                    <SelectItem value="automatic">
+                      Progresso automático
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
               </FormItem>
             )}
           />
 
           <FormField
-            name="qrMission"
+            name="order"
             control={form.control}
-            render={({ field, fieldState }) => (
-              <FormItem className="col-span-8 flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+            render={({ field }) => (
+              <FormItem className="md:col-span-2">
+                <FormLabel>Ordem</FormLabel>
                 <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
+                  <Input
+                    type="number"
+                    min={0}
+                    {...field}
+                    onChange={(event) =>
+                      field.onChange(event.target.valueAsNumber)
+                    }
                   />
                 </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Missão QR Code</FormLabel>
-                  <p className="text-sm text-muted-foreground">
-                    Marque se esta missão requer leitura de QR Code
-                  </p>
-                </div>
-                {fieldState.error && <span>{fieldState.error.message}</span>}
+                <FormMessage />
               </FormItem>
             )}
           />
 
-          <div className="col-span-8 md:col-span-8 flex gap-4 mt-4 justify-center">
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full text-white !bg-devBlue-dark rounded-xl border-1 border-devBlue-dark hover:border-white h-11"
-            >
-              {editing ? "Salvar alterações" : "Cadastrar"}
-            </Button>
+          <FormField
+            name="xpAwarded"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className="md:col-span-2">
+                <FormLabel>XP concedido</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={1}
+                    value={field.value ?? ""}
+                    onChange={(event) =>
+                      field.onChange(
+                        event.target.value === ""
+                          ? null
+                          : event.target.valueAsNumber,
+                      )
+                    }
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div className="space-y-4 md:col-span-8">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h3 className="font-medium">Links adicionais (opcionais)</h3>
+                <p className="text-sm text-slate-500">
+                  Até três botões nos detalhes da missão na Pokédex.
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={externalLinks.fields.length >= 3}
+                onClick={() => externalLinks.append({ label: "", url: "" })}
+              >
+                <Plus className="mr-2 h-4 w-4" /> Adicionar link
+              </Button>
+            </div>
+            {externalLinks.fields.map((link, index) => (
+              <div
+                key={link.id}
+                className="grid items-start gap-3 rounded-md border p-3 md:grid-cols-[1fr_2fr_auto]"
+              >
+                <FormField
+                  control={form.control}
+                  name={`externalLinks.${index}.label`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Texto do botão {index + 1}</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          maxLength={60}
+                          placeholder="Ex.: Instruções"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`externalLinks.${index}.url`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>URL {index + 1}</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="text"
+                          inputMode="url"
+                          placeholder="https://exemplo.com/atividade"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="md:mt-8"
+                  aria-label={`Remover link ${index + 1}`}
+                  onClick={() => externalLinks.remove(index)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+
+          {validationType === "qr" && (
+            <FormField
+              name="qrId"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className="md:col-span-8">
+                  <FormLabel>Identificador público do QR Code</FormLabel>
+                  <div className="flex gap-2">
+                    <FormControl>
+                      <Input {...field} value={field.value ?? ""} readOnly />
+                    </FormControl>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() => field.onChange(uuidv4())}
+                    >
+                      Gerar outro
+                    </Button>
+                  </div>
+                  <FormMessage />
+                  <div className="mt-4">
+                    <AdminQrCodeCard
+                      type="mission"
+                      value={field.value}
+                      downloadName={`missao-${currentId || "qr"}`}
+                      entityLabel="esta missão"
+                    />
+                  </div>
+                </FormItem>
+              )}
+            />
+          )}
+
+          {validationType === "quiz" && <MissionQuizFields form={form} />}
+
+          {validationType === "keyword" && (
+            <div className="grid grid-cols-1 gap-4 rounded-xl border p-4 md:col-span-8 md:grid-cols-2">
+              <FormField
+                name="keywordConfig.acceptedAnswers"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Respostas aceitas</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        value={(field.value ?? []).join("\n")}
+                        onChange={(event) =>
+                          field.onChange(event.target.value.split("\n"))
+                        }
+                        placeholder={"Conexão\nNetworking"}
+                        rows={4}
+                      />
+                    </FormControl>
+                    <p className="text-xs text-muted-foreground">
+                      Uma resposta por linha, até 20 respostas de 120
+                      caracteres. Maiúsculas e acentos são ignorados.
+                    </p>
+                    <FormMessage />
+                    {form.formState.errors.keywordConfig?.acceptedAnswers && (
+                      <p role="alert" className="text-sm text-destructive">
+                        Informe de 1 a 20 respostas não vazias, com até 120
+                        caracteres cada.
+                      </p>
+                    )}
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="keywordConfig.maxAttempts"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Limite de tentativas</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min={1}
+                        max={100}
+                        value={field.value ?? ""}
+                        onChange={(event) =>
+                          field.onChange(event.target.valueAsNumber)
+                        }
+                      />
+                    </FormControl>
+                    <p className="text-xs text-muted-foreground">
+                      De 1 a 100 por participante. Editar as respostas não
+                      reinicia as tentativas já utilizadas.
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
+
+          {validationType === "automatic" && (
+            <div className="grid grid-cols-1 gap-4 rounded-xl border p-4 md:col-span-8 md:grid-cols-2">
+              <FormField
+                name="progressRequirement.type"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Progresso acompanhado</FormLabel>
+                    <Select
+                      value={field.value}
+                      onValueChange={(
+                        value:
+                          | "connections"
+                          | "companies"
+                          | "tags"
+                          | "shared-interests",
+                      ) => {
+                        field.onChange(value);
+                        form.setValue("progressRequirement.target", 1);
+                      }}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="connections">Conexões</SelectItem>
+                        <SelectItem value="shared-interests">
+                          Networking por interesse
+                        </SelectItem>
+                        <SelectItem value="tags">Tags coletadas</SelectItem>
+                        <SelectItem value="companies">
+                          Empresas visitadas
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {progressType === "shared-interests" && (
+                <p className="text-sm text-muted-foreground md:col-span-2">
+                  Conta pessoas distintas com pelo menos um interesse em comum
+                  registrado na criação da conexão. Conexões anteriores sem esse
+                  registro não contam.
+                </p>
+              )}
+              <FormField
+                name="progressRequirement.target"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Meta</FormLabel>
+                    {(progressType === "companies" ||
+                      progressType === "tags") && (
+                      <Select
+                        value={field.value === "all" ? "all" : "quantity"}
+                        onValueChange={(value) =>
+                          field.onChange(value === "all" ? "all" : 1)
+                        }
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="quantity">
+                            Quantidade específica
+                          </SelectItem>
+                          <SelectItem value="all">
+                            {progressType === "tags"
+                              ? "Todas as tags"
+                              : "Todas as empresas"}
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                    {field.value !== "all" && (
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min={1}
+                          step={1}
+                          value={field.value ?? ""}
+                          placeholder="Quantidade"
+                          onChange={(event) =>
+                            field.onChange(
+                              event.target.value === ""
+                                ? undefined
+                                : event.target.valueAsNumber,
+                            )
+                          }
+                        />
+                      </FormControl>
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
+
+          {validationType !== "automatic" && (
+            <div className="space-y-3 rounded-xl border p-4 md:col-span-8">
+              <div className="flex items-center justify-between">
+                <div>
+                  <FormLabel>Pré-requisitos</FormLabel>
+                  <p className="text-xs text-muted-foreground">
+                    Missões ou empresas que precisam ser concluídas antes.
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={() =>
+                    prerequisites.append({ type: "mission", activityId: "" })
+                  }
+                >
+                  <Plus className="mr-2 size-4" />
+                  Adicionar
+                </Button>
+              </div>
+              {prerequisites.fields.map((item, index) => (
+                <div
+                  key={item.id}
+                  className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_2fr_auto]"
+                >
+                  <FormField
+                    name={`prerequisites.${index}.type`}
+                    control={form.control}
+                    render={({ field }) => (
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="mission">Missão</SelectItem>
+                          <SelectItem value="company">Empresa</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  <FormField
+                    name={`prerequisites.${index}.activityId`}
+                    control={form.control}
+                    render={({ field }) =>
+                      form.watch(`prerequisites.${index}.type`) ===
+                      "mission" ? (
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione uma missão" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {missions
+                              .filter((option) => option.id !== currentId)
+                              .map((option) => (
+                                <SelectItem key={option.id} value={option.id}>
+                                  {option.title}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione uma empresa" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {companies
+                              .filter((company) => company.active)
+                              .map((company) => (
+                                <SelectItem key={company.id} value={company.id}>
+                                  {company.name}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      )
+                    }
+                  />
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="icon"
+                    aria-label="Remover pré-requisito"
+                    onClick={() => prerequisites.remove(index)}
+                  >
+                    <Trash2 className="size-4" />
+                  </Button>
+                </div>
+              ))}
+              <FormMessage>
+                {form.formState.errors.prerequisites?.message}
+              </FormMessage>
+            </div>
+          )}
+
+          <div className="border-t !border-slate-200 pt-5 md:col-span-8">
+            <h2 className="font-semibold text-slate-900">
+              Apresentação e publicação
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Imagem e disponibilidade para participantes.
+            </p>
+          </div>
+          <FormField
+            name="imageUrl"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className="md:col-span-8">
+                <FormLabel>Imagem da missão</FormLabel>
+                <AdminImageUpload
+                  value={field.value}
+                  label="Imagem da missão"
+                  loading={loadingImage}
+                  error={uploadError}
+                  previewFit="cover"
+                  onFileSelect={handleImageFileChange}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            name="active"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className="md:col-span-8">
+                <FormControl>
+                  <AdminVisibilityControl
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    label="Disponibilidade da missão"
+                    description="Missões ativas aparecem para os participantes e podem receber progresso."
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          <div className="sticky bottom-3 z-10 mt-4 flex justify-center p-3 md:col-span-8">
+            <div className="flex w-full flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                className="h-11 !border-slate-300 !bg-white !text-slate-700 hover:!bg-slate-50 hover:!text-slate-900"
+                onClick={() => window.history.back()}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                disabled={
+                  loading || loadingImage || form.formState.isSubmitting
+                }
+                className="admin-primary-action h-11 rounded-lg !bg-blue-600 sm:min-w-48"
+              >
+                {editing ? "Salvar alterações" : "Cadastrar"}
+              </Button>
+            </div>
           </div>
         </form>
       </Form>

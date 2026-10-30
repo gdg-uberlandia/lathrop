@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import configValues from "helpers/config";
+import configValues from "@/helpers/config";
 import Image from "next/image";
 
 import AndroidCheese from "@/public/devfest-2025/android-cheese.png";
@@ -20,7 +20,7 @@ export const Hero = () => {
             <Image
               alt="Imagem do DevFest triângulo de 2024"
               src={SidePhoto}
-              priority={true}
+              loading="eager"
               style={{
                 objectFit: "contain",
                 maxWidth: "100%",

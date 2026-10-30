@@ -1,0 +1,640 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
+
+import { companyFieldsSchema } from "./company";
+import {
+  companyFixture,
+  missionFixture,
+  raffleFixture,
+  rewardFixture,
+  speakerFixture,
+  tagFixture,
+  talkFixture,
+} from "./fixtures";
+import { missionFieldsSchema, missionInputSchema } from "./mission";
+import { raffleFieldsSchema, raffleInputSchema } from "./raffle";
+import { rewardFieldsSchema } from "./reward";
+import { speakerFieldsSchema } from "./speaker";
+import { tagFieldsSchema, tagInputSchema } from "./tag";
+import {
+  SCHEDULE_TRACKS,
+  getScheduleTrackOrder,
+  getSelectedScheduleBlockTracks,
+  scheduleBlockInputSchema,
+  scheduleInputSchema,
+  scheduleVisibilityInputSchema,
+} from "./schedule";
+import { talkFieldsSchema } from "./talk";
+
+describe("contratos compartilhados", () => {
+  const fixtures = [
+    ["company", companyFieldsSchema, companyFixture],
+    ["mission", missionFieldsSchema, missionFixture],
+    ["raffle", raffleFieldsSchema, raffleFixture],
+    ["reward", rewardFieldsSchema, rewardFixture],
+    ["speaker", speakerFieldsSchema, speakerFixture],
+    ["tag", tagFieldsSchema, tagFixture],
+    ["talk", talkFieldsSchema, talkFixture],
+  ] as const;
+
+  for (const [entity, schema, fixture] of fixtures) {
+    it(`aceita a fixture de ${entity}`, () => {
+      assert.equal(schema.safeParse(fixture).success, true);
+    });
+  }
+
+  it("rejeita campos desconhecidos em documentos estritos", () => {
+    const result = speakerFieldsSchema.safeParse({
+      ...speakerFixture,
+      legacyField: true,
+    });
+
+    assert.equal(result.success, false);
+  });
+});
+
+describe("entradas administrativas", () => {
+  it("não permite alterar campos operacionais de sorteio", () => {
+    assert.equal(raffleInputSchema.safeParse(raffleFixture).success, true);
+    const parsed = raffleInputSchema.parse(raffleFixture);
+    assert.equal("winnerId" in parsed, false);
+    assert.equal("status" in parsed, false);
+  });
+
+  it("aceita prêmios antigos e permite associar ou remover um patrocinador", () => {
+    const { sponsorId: _sponsorId, ...legacy } = raffleFixture;
+    assert.equal(raffleFieldsSchema.safeParse(legacy).success, true);
+    for (const sponsorId of [null, "sponsor-1"]) {
+      const input = raffleInputSchema.parse({ ...raffleFixture, sponsorId });
+      assert.equal(input.sponsorId, sponsorId);
+      assert.equal(
+        raffleFieldsSchema.parse({ ...raffleFixture, sponsorId }).sponsorId,
+        sponsorId,
+      );
+    }
+    for (const sponsorId of ["", "   ", "a".repeat(129), 123]) {
+      assert.equal(
+        raffleInputSchema.safeParse({ ...raffleFixture, sponsorId }).success,
+        false,
+      );
+    }
+  });
+
+  it("permite vários prêmios associados ao mesmo patrocinador", () => {
+    const prizes = ["premio-1", "premio-2"].map((id) =>
+      raffleInputSchema.parse({ ...raffleFixture, id, sponsorId: "sponsor-1" }),
+    );
+    assert.equal(prizes[0].sponsorId, prizes[1].sponsorId);
+  });
+
+  it("exige os campos públicos da tag", () => {
+    const {
+      eventId: _eventId,
+      createdAt: _createdAt,
+      updatedAt: _updatedAt,
+      ...input
+    } = tagFixture;
+    assert.equal(tagInputSchema.safeParse(input).success, true);
+    assert.equal(
+      tagInputSchema.safeParse({ ...input, qrId: "inválido" }).success,
+      false,
+    );
+  });
+
+  it("valida horários e atividades da programação", () => {
+    assert.equal(
+      scheduleInputSchema.safeParse({
+        id: "agenda-1",
+        startTime: "09:00",
+        endTime: "10:00",
+        track: "MINAS",
+        activity: { type: "talk", talkId: talkFixture.id },
+        active: true,
+      }).success,
+      true,
+    );
+    assert.equal(
+      scheduleInputSchema.safeParse({
+        id: "agenda-1",
+        startTime: "09:00",
+        endTime: "09:00",
+        track: "CURADO",
+        activity: { type: "break", title: "Intervalo" },
+        active: true,
+      }).success,
+      false,
+    );
+    assert.equal(
+      scheduleInputSchema.safeParse({
+        id: "agenda-minuto-invalido",
+        startTime: "09:05",
+        endTime: "10:00",
+        track: "MINAS",
+        activity: { type: "talk", talkId: talkFixture.id },
+        active: true,
+      }).success,
+      false,
+    );
+  });
+
+  it("mantém a ordem fixa das trilhas", () => {
+    assert.deepEqual(
+      SCHEDULE_TRACKS.map((track) => track.value),
+      [
+        "MINAS",
+        "CURADO",
+        "CANASTRA",
+        "TRANCA",
+        "COMUNIDADE",
+        "COMUNIDADE_2",
+        "LOUNGE_SENIOR",
+      ],
+    );
+    assert.equal(getScheduleTrackOrder("MINAS"), 0);
+    assert.equal(getScheduleTrackOrder("COMUNIDADE"), 4);
+  });
+
+  it("valida um bloco completo com uma palestra por trilha", () => {
+    const block = {
+      startTime: "09:00",
+      endTime: "10:00",
+      talks: {
+        MINAS: "talk-minas",
+        CURADO: "talk-curado",
+        CANASTRA: "talk-canastra",
+        TRANCA: "talk-tranca",
+        COMUNIDADE: "talk-comunidade",
+        COMUNIDADE_2: "talk-comunidade-2",
+        LOUNGE_SENIOR: "talk-lounge-senior",
+      },
+      active: true,
+    };
+
+    assert.equal(scheduleBlockInputSchema.safeParse(block).success, true);
+    assert.equal(
+      scheduleBlockInputSchema.safeParse({
+        ...block,
+        talks: { ...block.talks, COMUNIDADE: "talk-minas" },
+      }).success,
+      false,
+    );
+  });
+
+  it("aceita blocos parciais e ignora trilhas vazias ou omitidas", () => {
+    const parsed = scheduleBlockInputSchema.parse({
+      startTime: "09:00",
+      endTime: "10:00",
+      active: true,
+      talks: { COMUNIDADE_2: "talk-arena-2", LOUNGE_SENIOR: "  " },
+    });
+    assert.equal(parsed.talks.MINAS, "");
+    assert.equal(parsed.talks.LOUNGE_SENIOR, "");
+    assert.deepEqual(
+      getSelectedScheduleBlockTracks(parsed).map((track) => track.value),
+      ["COMUNIDADE_2"],
+    );
+  });
+
+  it("rejeita blocos vazios e palestras repetidas em blocos parciais", () => {
+    const base = { startTime: "09:00", endTime: "10:00", active: true };
+    assert.equal(
+      scheduleBlockInputSchema.safeParse({ ...base, talks: {} }).success,
+      false,
+    );
+    assert.equal(
+      scheduleBlockInputSchema.safeParse({
+        ...base,
+        talks: { MINAS: " ", CURADO: "" },
+      }).success,
+      false,
+    );
+    assert.equal(
+      scheduleBlockInputSchema.safeParse({
+        ...base,
+        talks: { CURADO: "talk-1", LOUNGE_SENIOR: "talk-1" },
+      }).success,
+      false,
+    );
+  });
+
+  it("aceita apenas o estado de visibilidade na ação rápida", () => {
+    assert.equal(
+      scheduleVisibilityInputSchema.safeParse({ active: false }).success,
+      true,
+    );
+    assert.equal(
+      scheduleVisibilityInputSchema.safeParse({ active: true, track: "MINAS" })
+        .success,
+      false,
+    );
+  });
+
+  it("separa palestras por trilha de atividades gerais", () => {
+    const base = {
+      id: "agenda-geral",
+      startTime: "08:00",
+      endTime: "09:00",
+      active: true,
+    };
+    assert.equal(
+      scheduleInputSchema.safeParse({
+        ...base,
+        track: null,
+        activity: { type: "opening", title: "Abertura" },
+      }).success,
+      true,
+    );
+    assert.equal(
+      scheduleInputSchema.safeParse({
+        ...base,
+        track: null,
+        activity: { type: "talk", talkId: talkFixture.id },
+      }).success,
+      false,
+    );
+    assert.equal(
+      scheduleInputSchema.safeParse({
+        ...base,
+        track: "MINAS",
+        activity: { type: "break", title: "Coffee-break" },
+      }).success,
+      false,
+    );
+  });
+});
+
+describe("regras relacionais de missões", () => {
+  it("exige qrId para missão QR", () => {
+    assert.equal(
+      missionFieldsSchema.safeParse({ ...missionFixture, qrId: null }).success,
+      false,
+    );
+  });
+
+  it("exige progresso e proíbe pré-requisitos em missão automática", () => {
+    const automaticMission = {
+      ...missionFixture,
+      validationType: "automatic",
+      qrId: null,
+      progressRequirement: { type: "connections", target: 5 },
+      prerequisites: [],
+    };
+
+    assert.equal(missionFieldsSchema.safeParse(automaticMission).success, true);
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...automaticMission,
+        prerequisites: [{ type: "mission", activityId: "outra-missao" }],
+      }).success,
+      false,
+    );
+  });
+});
+
+describe("regras relacionais de palestras", () => {
+  it("exige ao menos um palestrante", () => {
+    assert.equal(
+      talkFieldsSchema.safeParse({ ...talkFixture, speakerIds: [] }).success,
+      false,
+    );
+  });
+
+  it("rejeita palestrantes duplicados", () => {
+    assert.equal(
+      talkFieldsSchema.safeParse({
+        ...talkFixture,
+        speakerIds: [speakerFixture.id, speakerFixture.id],
+      }).success,
+      false,
+    );
+  });
+});
+
+describe("missões por palavra-chave", () => {
+  const keywordMission = {
+    ...missionFixture,
+    validationType: "keyword",
+    qrId: null,
+    keywordConfig: {
+      acceptedAnswers: ["Conexão", "Networking"],
+      maxAttempts: 3,
+    },
+  };
+  it("aceita o contrato de criação e edição compatível com a Pokedex", () => {
+    const parsed = missionFieldsSchema.parse(keywordMission);
+    const { eventId, createdAt, updatedAt, ...input } = parsed;
+    assert.deepEqual(
+      missionInputSchema.parse(input).keywordConfig,
+      keywordMission.keywordConfig,
+    );
+  });
+  it("mantém cadastros antigos sem configuração de palavra-chave", () => {
+    const { keywordConfig, ...legacy } = missionFixture;
+    assert.equal(missionFieldsSchema.parse(legacy).keywordConfig, null);
+  });
+  it("exige respostas válidas e limite de tentativas", () => {
+    for (const keywordConfig of [
+      null,
+      { acceptedAnswers: [], maxAttempts: 3 },
+      { acceptedAnswers: [" "], maxAttempts: 3 },
+      { acceptedAnswers: ["a".repeat(121)], maxAttempts: 3 },
+      { acceptedAnswers: Array(21).fill("ok"), maxAttempts: 3 },
+      { acceptedAnswers: ["ok"], maxAttempts: 0 },
+      { acceptedAnswers: ["ok"], maxAttempts: 101 },
+    ]) {
+      assert.equal(
+        missionFieldsSchema.safeParse({ ...keywordMission, keywordConfig })
+          .success,
+        false,
+      );
+    }
+  });
+  it("rejeita QR, progresso automático e configuração em outros tipos", () => {
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...keywordMission,
+        qrId: missionFixture.qrId,
+      }).success,
+      false,
+    );
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...keywordMission,
+        progressRequirement: { type: "connections", target: 1 },
+      }).success,
+      false,
+    );
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...keywordMission,
+        validationType: "reviewer",
+      }).success,
+      false,
+    );
+  });
+});
+
+describe("missão de networking por interesse", () => {
+  const mission = {
+    ...missionFixture,
+    qrId: null,
+    validationType: "automatic",
+    prerequisites: [],
+    progressRequirement: { type: "shared-interests", target: 3 },
+  };
+  it("aceita a meta de pessoas com interesses em comum", () => {
+    assert.equal(missionFieldsSchema.safeParse(mission).success, true);
+    const { eventId, createdAt, updatedAt, ...input } =
+      missionFieldsSchema.parse(mission);
+    assert.deepEqual(missionInputSchema.parse(input).progressRequirement, {
+      type: "shared-interests",
+      target: 3,
+    });
+  });
+  it("exige uma meta numérica positiva", () => {
+    for (const target of [0, -1, "all", 1.5])
+      assert.equal(
+        missionFieldsSchema.safeParse({
+          ...mission,
+          progressRequirement: { type: "shared-interests", target },
+        }).success,
+        false,
+      );
+  });
+});
+
+describe("missão de quiz relâmpago", () => {
+  const quizConfig = {
+    questions: [
+      {
+        id: "q1",
+        prompt: "Qual a resposta?",
+        options: ["A", "B"],
+        correctOptionIndex: 1,
+      },
+    ],
+    minCorrectAnswers: 1,
+    maxAttempts: 3,
+  };
+  const mission = {
+    ...missionFixture,
+    qrId: null,
+    prerequisites: [],
+    validationType: "quiz",
+    quizConfig,
+  };
+  it("aceita criação e edição com gabarito no contrato administrativo", () => {
+    const { eventId, createdAt, updatedAt, ...input } =
+      missionFieldsSchema.parse(mission);
+    assert.deepEqual(missionInputSchema.parse(input).quizConfig, quizConfig);
+  });
+  it("mantém missões antigas compatíveis", () => {
+    const { quizConfig: omitted, ...legacy } = missionFixture;
+    assert.equal(missionFieldsSchema.parse(legacy).quizConfig, null);
+  });
+  it("rejeita configuração incompleta ou impossível", () => {
+    for (const config of [
+      null,
+      { ...quizConfig, questions: [] },
+      { ...quizConfig, minCorrectAnswers: 2 },
+      { ...quizConfig, maxAttempts: 0 },
+      { ...quizConfig, maxAttempts: 101 },
+      {
+        ...quizConfig,
+        questions: [{ ...quizConfig.questions[0], correctOptionIndex: 2 }],
+      },
+      {
+        ...quizConfig,
+        questions: [{ ...quizConfig.questions[0], options: ["A", "A"] }],
+      },
+      {
+        ...quizConfig,
+        questions: [quizConfig.questions[0], quizConfig.questions[0]],
+      },
+    ])
+      assert.equal(
+        missionFieldsSchema.safeParse({ ...mission, quizConfig: config })
+          .success,
+        false,
+      );
+  });
+  it("limita cada pergunta a três alternativas", () => {
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...mission,
+        quizConfig: {
+          ...quizConfig,
+          questions: [
+            { ...quizConfig.questions[0], options: ["A", "B", "C", "D"] },
+          ],
+        },
+      }).success,
+      false,
+    );
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...mission,
+        quizConfig: {
+          ...quizConfig,
+          questions: [{ ...quizConfig.questions[0], options: ["A", "B", "C"] }],
+        },
+      }).success,
+      true,
+    );
+  });
+  it("proíbe QR e campos de quiz nos outros tipos", () => {
+    assert.equal(
+      missionFieldsSchema.safeParse({ ...mission, qrId: missionFixture.qrId })
+        .success,
+      false,
+    );
+    assert.equal(
+      missionFieldsSchema.safeParse({ ...mission, validationType: "reviewer" })
+        .success,
+      false,
+    );
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...mission,
+        progressRequirement: { type: "connections", target: 1 },
+      }).success,
+      false,
+    );
+  });
+});
+
+it("accepts all companies and all tags as automatic mission targets", () => {
+  for (const type of ["companies", "tags"]) {
+    const result = missionInputSchema.safeParse({
+      id: "all-items",
+      title: "Colete todos",
+      description: "Complete o catálogo",
+      qrId: null,
+      imageUrl: null,
+      validationType: "automatic",
+      progressRequirement: { type, target: "all" },
+      prerequisites: [],
+      active: true,
+      order: 0,
+      xpAwarded: 50,
+    });
+    assert.equal(result.success, true);
+  }
+});
+
+describe("links de missões com aprovação por revisor", () => {
+  const reviewer = {
+    ...missionFixture,
+    validationType: "reviewer",
+    qrId: null,
+  };
+
+  it("mantém compatibilidade e preserva o link no cadastro e leitura", () => {
+    assert.equal(missionFieldsSchema.parse(reviewer).externalUrl, undefined);
+    assert.equal(
+      missionFieldsSchema.parse({ ...reviewer, externalUrl: null }).externalUrl,
+      null,
+    );
+    const parsed = missionFieldsSchema.parse({
+      ...reviewer,
+      externalUrl: "example.com/activity",
+    });
+    assert.equal(parsed.externalUrl, "https://example.com/activity");
+    const { createdAt, updatedAt, eventId, ...input } = parsed;
+    assert.equal(
+      missionInputSchema.parse(input).externalUrl,
+      parsed.externalUrl,
+    );
+  });
+
+  it("rejeita protocolos não HTTP e links inválidos", () => {
+    for (const externalUrl of [
+      "javascript://example.com",
+      "data://example.com",
+      "ftp://example.com/file",
+      "https://",
+    ]) {
+      assert.equal(
+        missionFieldsSchema.safeParse({ ...reviewer, externalUrl }).success,
+        false,
+      );
+    }
+  });
+
+  it("aceita o link legado em outros tipos de missão", () => {
+    assert.equal(
+      missionFieldsSchema.safeParse({
+        ...missionFixture,
+        externalUrl: "https://example.com/activity",
+      }).success,
+      true,
+    );
+  });
+});
+
+describe("links adicionais de missões", () => {
+  const links = [1, 2, 3].map((n) => ({
+    label: `Botão ${n}`,
+    url: `https://example.com/${n}`,
+  }));
+  const configs = [
+    { validationType: "reviewer", qrId: null },
+    { validationType: "qr", qrId: missionFixture.qrId },
+    {
+      validationType: "automatic",
+      qrId: null,
+      progressRequirement: { type: "connections", target: 2 },
+    },
+    {
+      validationType: "keyword",
+      qrId: null,
+      keywordConfig: { acceptedAnswers: ["answer"], maxAttempts: 3 },
+    },
+    {
+      validationType: "quiz",
+      qrId: null,
+      quizConfig: {
+        questions: [
+          {
+            id: "q1",
+            prompt: "Question",
+            options: ["A", "B"],
+            correctOptionIndex: 0,
+          },
+        ],
+        minCorrectAnswers: 1,
+        maxAttempts: 3,
+      },
+    },
+  ];
+  for (const config of configs)
+    it(`preserva três links em missões ${config.validationType}`, () => {
+      const parsed = missionFieldsSchema.parse({
+        ...missionFixture,
+        ...config,
+        prerequisites: [],
+        externalLinks: links,
+      });
+      const { eventId, createdAt, updatedAt, ...input } = parsed;
+      assert.deepEqual(missionInputSchema.parse(input).externalLinks, links);
+    });
+  it("rejeita excesso de links, texto vazio e protocolos inseguros", () => {
+    for (const externalLinks of [
+      [...links, links[0]],
+      [{ label: "", url: "https://example.com" }],
+      [{ label: "Label", url: "javascript://example.com" }],
+      [{ label: "Label", url: "" }],
+    ]) {
+      const { eventId, createdAt, updatedAt, ...input } = missionFixture;
+      assert.equal(
+        missionInputSchema.safeParse({ ...input, externalLinks }).success,
+        false,
+      );
+      assert.equal(
+        missionFieldsSchema.safeParse({ ...missionFixture, externalLinks })
+          .success,
+        false,
+      );
+    }
+  });
+});

@@ -1,4 +1,4 @@
-import configValues from "helpers/config";
+import configValues from "@/helpers/config";
 import Head from "next/head";
 import React, { ReactNode } from "react";
 

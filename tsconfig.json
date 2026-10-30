@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "target": "ES2020",
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -9,23 +9,27 @@
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": "./src",
     "paths": {
-      "@/assets/*": ["./assets/*"],
-      "@/back-features/*": ["./back-features/*"],
-      "@/components/*": ["./components/*"],
-      "@/front-features/*": ["./front-features/*"],
-      "@/helpers/*": ["./helpers/*"],
-      "@/hooks/*": ["./hooks/*"],
-      "@/models/*": ["./models/*"],
-      "@/public/*": ["../public/*"],
-      "@/utils/*": ["./utils/*"]
+      "@/assets/*": ["./src/assets/*"],
+      "@/back-features/*": ["./src/back-features/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/contracts/*": ["./src/contracts/*"],
+      "@/front-features/*": ["./src/front-features/*"],
+      "@/helpers/*": ["./src/helpers/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/models/*": ["./src/models/*"],
+      "@/public/*": ["./public/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/context/*": ["./src/context/*"],
+      "@/layouts/*": ["./src/layouts/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/styles/*": ["./src/styles/*"]
     },
     "plugins": [
       {

@@ -1,12 +1,12 @@
 /*eslint-disable*/
-import { TicketBatch } from "models/ticket-batch";
+import { TicketBatch } from "@/models/ticket-batch";
 import { Container, Row } from "reactstrap";
 
 import styles from "../../styles/Tickets.module.css";
 import TicketCard from "./ticket-card";
 
 import ticketList from "@/hooks/ticketBatches";
-import configValues from "helpers/config";
+import configValues from "@/helpers/config";
 
 const TicketsSection: React.FC = ({}) => {
   const mapTicketsBatch = (ticket: TicketBatch) => {

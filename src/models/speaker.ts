@@ -1,17 +1,14 @@
-export interface Speaker {
-  canBeEvaluated?: boolean;
-  company?: string;
-  content: string;
-  id: string;
-  miniBio?: string;
-  name: string;
+import type { Speaker } from "@/contracts/speaker";
+
+export * from "@/contracts/speaker";
+
+/** Compatibility type used only by archived event components. */
+export type LegacySpeaker = Speaker & {
+  content?: string;
   photo?: string;
-  socialMedia?: SpeakerSocialMedia;
   tech?: string;
-  title?: string;
-  topic: string;
-  showSpeaker?: boolean;
-}
+  topic?: string;
+};
 
 export enum SpeakerTech {
   Career = "Carreira",
@@ -19,12 +16,4 @@ export enum SpeakerTech {
   MachineLearning = "Machine Learning",
   UI_UX = "UI/UX",
   Web = "Web",
-}
-
-export interface SpeakerSocialMedia {
-  github?: string;
-  instagram?: string;
-  linkedIn?: string;
-  twitter?: string;
-  website?: string;
 }

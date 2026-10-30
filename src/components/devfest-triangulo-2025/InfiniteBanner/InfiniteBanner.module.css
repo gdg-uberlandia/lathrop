@@ -18,7 +18,7 @@
   content: "";
   position: absolute;
   top: 0;
-  width: 170px;
+  width: clamp(64px, 12vw, 170px);
   height: 100%;
   z-index: 10;
   pointer-events: none;
@@ -26,17 +26,45 @@
 
 .InfiniteBannerWrapper::before {
   left: 0;
-  background: linear-gradient(to right, var(--black) 0%, transparent 100%);
+  background: linear-gradient(
+    to right,
+    #000 0%,
+    rgb(0 0 0 / 92%) 24%,
+    rgb(0 0 0 / 58%) 54%,
+    transparent 100%
+  );
 }
 
 .InfiniteBannerWrapper::after {
   right: 0;
-  background: linear-gradient(to left, var(--black) 0%, transparent 100%);
+  background: linear-gradient(
+    to left,
+    #000 0%,
+    rgb(0 0 0 / 92%) 24%,
+    rgb(0 0 0 / 58%) 54%,
+    transparent 100%
+  );
 }
 
 .InfiniteBannerTrack {
-  display: inline-flex;
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.LeftToRight {
+  animation: marquee-left-to-right var(--marquee-duration) linear infinite;
+}
+
+.RightToLeft {
+  animation: marquee-right-to-left var(--marquee-duration) linear infinite;
+}
+
+.InfiniteBannerGroup {
+  display: flex;
+  flex-shrink: 0;
   gap: 2rem;
+  padding-right: 2rem;
 }
 
 .InfiniteBannerItem {
@@ -50,6 +78,12 @@
   border-radius: 1rem;
 }
 
+.InfiniteBannerImage {
+  position: relative;
+  width: 300px;
+  height: 200px;
+}
+
 .InfiniteBannerItemSpan {
   display: flex;
   justify-content: center;
@@ -60,4 +94,29 @@
   background-image: url("/devfest-2025/ticket.svg");
   background-repeat: no-repeat;
   background-size: contain;
+}
+
+@keyframes marquee-left-to-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes marquee-right-to-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .InfiniteBannerTrack {
+    animation: none;
+    transform: none;
+  }
 }

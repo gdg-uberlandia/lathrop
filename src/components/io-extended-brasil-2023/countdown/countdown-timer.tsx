@@ -1,9 +1,9 @@
 import styles from "./CountdownTimer.module.css";
 
 import React, { useState, useEffect } from "react";
-import { changeTimeZone, calcDateDistance } from "helpers/date";
+import { changeTimeZone, calcDateDistance } from "@/helpers/date";
 
-import configValues from "helpers/config";
+import configValues from "@/helpers/config";
 
 const DATE_DISTANCE_LABELS: Record<string, string> = {
   days: "dias",

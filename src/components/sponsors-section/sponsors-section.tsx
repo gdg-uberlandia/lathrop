@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import { Sponsor, SponsorLevel } from "models/sponsor";
+import { Sponsor, SponsorLevel } from "@/models/sponsor";
 import { Container, Row, Col } from "reactstrap";
 import _supports from "@/hooks/userSupports";
 import SponsorCard from "./sponsor-card";
@@ -17,6 +17,7 @@ const SPONSORS_LIST: string[] = [
   "silver",
   "bronze",
   "iron",
+  "first-time",
   "ruby",
   "ametista",
   "support",

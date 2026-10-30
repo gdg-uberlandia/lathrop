@@ -2,17 +2,15 @@ import {
   deleteSpeaker,
   getSpeakerById,
   updateSpeaker,
-} from "back-features/speakers";
+} from "@/back-features/speakers";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { requireAdmin } from "@/utils/api/require-admin";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith("Bearer ")) {
-    return res.status(401).json({ error: "Token não informado." });
-  }
+  if (!(await requireAdmin(req, res))) return;
 
   const { speakerId } = req.query;
   if (typeof speakerId !== "string" || !speakerId) {
@@ -31,13 +29,12 @@ export default async function handler(
   }
 
   if (req.method === "PUT") {
-    const speaker = req.body;
     try {
-      const updated = await updateSpeaker(speaker);
+      const updated = await updateSpeaker({ ...req.body, id: speakerId });
       return res.status(200).json(updated);
     } catch (error: any) {
       return res
-        .status(500)
+        .status(400)
         .json({ error: error?.message || "Erro ao atualizar speaker." });
     }
   }

@@ -1,4 +1,4 @@
-import { TicketBatch } from "models/ticket-batch";
+import { TicketBatch } from "@/models/ticket-batch";
 
 const ticketBatches: Array<TicketBatch> = [
   new TicketBatch({

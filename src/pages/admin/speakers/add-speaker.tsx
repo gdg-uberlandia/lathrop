@@ -1,35 +1,78 @@
-import Loading from "@/components/admin/loading-overlay";
+import { Button } from "@/assets/components/ui/button";
+import { Speaker } from "@/contracts/speaker";
+import Link from "next/link";
+import { useState } from "react";
+import { AdminErrorState, AdminFormPage } from "@/components/admin/admin-page";
 import { SpeakersForm } from "@/components/admin/speakers/speakers-form";
 import { useSpeakers } from "@/hooks/useSpeakers";
-import AdminLayout from "layouts/admin-layout";
-import { ChevronLeft } from "lucide-react";
-import Link from "next/link";
+import { resolveAdminReturnTo } from "@/lib/admin-return-path";
+import { useRouter } from "next/router";
 
-export default function AddEditSpeakersPage() {
-  const { addSpeaker, loading } = useSpeakers();
-
+export default function AddSpeakerPage() {
+  const router = useRouter();
+  const returnTo = resolveAdminReturnTo(
+    router.query.returnTo,
+    "/admin/speakers",
+  );
+  const { addSpeaker, loading, error } = useSpeakers();
+  const [createdSpeaker, setCreatedSpeaker] = useState<Speaker | null>(null);
   return (
-    <AdminLayout>
-      {loading && <Loading />}
-      <div className="p-4">
-        <div className="flex w-full items-center gap-2 justify-between">
-          <Link
-            href="/admin/speakers"
-            className="text-white size-12 bg-devGray-light/40 flex items-center justify-center bg-devBlue-dark border-1 border-white/5 hover:border-1 hover:border-devBlue-dark hover:!text-devBlue-dark rounded-full"
+    <AdminFormPage
+      title="Cadastrar palestrante"
+      description="Adicione as informações públicas, profissionais e de contato."
+      backHref={returnTo}
+      backLabel="Voltar para palestrantes"
+    >
+      {createdSpeaker ? (
+        <section
+          className="rounded-xl border bg-white p-6"
+          aria-labelledby="speaker-created-title"
+        >
+          <h2
+            id="speaker-created-title"
+            tabIndex={-1}
+            ref={(element) => element?.focus()}
+            className="text-lg font-semibold text-slate-900"
           >
-            <ChevronLeft />
-          </Link>
-          <div className="grow">
-            <h1 className="text-xl text-white/80">Cadastro de Palestrante</h1>
+            Palestrante cadastrado com sucesso
+          </h2>
+          <p className="mt-2 text-sm text-slate-600">
+            {createdSpeaker.name} foi cadastrado. O que deseja fazer agora?
+          </p>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Button asChild className="admin-primary-action !bg-blue-600">
+              <Link
+                href={{
+                  pathname: "/admin/talks/add-talk",
+                  query: { speakerId: createdSpeaker.id },
+                }}
+              >
+                Cadastrar palestra para este palestrante
+              </Link>
+            </Button>
+            <Button variant="outline" onClick={() => setCreatedSpeaker(null)}>
+              Cadastrar novo palestrante
+            </Button>
+            <Button asChild variant="outline">
+              <Link href="/admin/speakers">
+                Voltar para a listagem de palestrantes
+              </Link>
+            </Button>
           </div>
-        </div>
-
-        <div className="mt-12 flex flex-col lg:flex-row lg:justify-center lg:items-start gap-8">
-          <div className="w-full max-w-[900px] mx-auto">
-            <SpeakersForm onSubmit={addSpeaker} loading={loading} />
-          </div>
-        </div>
-      </div>
-    </AdminLayout>
+        </section>
+      ) : (
+        <>
+          {error && <AdminErrorState message={error} />}
+          <SpeakersForm
+            loading={loading}
+            onSubmit={async (data) => {
+              const speaker = await addSpeaker(data);
+              if (speaker) setCreatedSpeaker(speaker);
+              return speaker;
+            }}
+          />
+        </>
+      )}
+    </AdminFormPage>
   );
 }

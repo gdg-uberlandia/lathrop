@@ -1,0 +1,52 @@
+.page {
+  min-height: 100dvh;
+  flex: 1;
+  color-scheme: dark;
+  background: #1e1e1e;
+  color: #ffffff;
+}
+
+.link {
+  color: #79abff;
+}
+
+.link:hover {
+  color: #e3eeff;
+}
+
+.pdf {
+  border-color: #373737;
+  background: #242424;
+}
+
+.callout {
+  border: 1px solid #373737;
+  background: #242424;
+}
+
+.mission {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid #79abff;
+  border-radius: 0.5rem;
+  background: #79abff;
+  color: #16171a;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: center;
+  transition: background-color 150ms;
+}
+
+.mission:hover {
+  background: #e3eeff;
+}
+
+.link:focus-visible,
+.mission:focus-visible {
+  outline: 2px solid #79abff;
+  outline-offset: 4px;
+}

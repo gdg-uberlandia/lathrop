@@ -1,173 +1,256 @@
 import { Button } from "@/assets/components/ui/button";
-import { Switch } from "@/assets/components/ui/switch";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/assets/components/ui/table";
 import DeleteDialog from "@/components/admin/delete-dialog";
-import Loading from "@/components/admin/loading-overlay";
+import {
+  AdminEmptyState,
+  AdminErrorState,
+  AdminListToolbar,
+  AdminLoadingState,
+  AdminPageHeader,
+  AdminPagination,
+  AdminStatusBadge,
+  AdminSortButton,
+  AdminTableContainer,
+} from "@/components/admin/admin-page";
 import { useSpeakers } from "@/hooks/useSpeakers";
-import { Speaker } from "@/models/speaker";
-import AdminLayout from "layouts/admin-layout";
-import { Megaphone, Pencil, Trash2, UserRoundPlus } from "lucide-react";
+import { useAdminListState } from "@/hooks/useAdminListState";
+import { Speaker } from "@/contracts/speaker";
+import { shouldBypassImageOptimization } from "@/helpers/image";
+import { Megaphone, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import {
+  adminDestinationWithReturnTo,
+  adminPathWithReturnTo,
+} from "@/lib/admin-return-path";
+import { useMemo, useState } from "react";
 
 export default function Speakers() {
   const router = useRouter();
-  const { speakers, removeSpeaker, updateSpeaker, error, loading } =
-    useSpeakers();
-
-  const [speaker, setSpeaker] = useState<Speaker | null>();
-  const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false);
-
-  const handleUpdateEvaluable = (speaker: Speaker) => {
-    if (!speaker) return;
-    speaker.canBeEvaluated = !speaker.canBeEvaluated;
-    updateSpeaker(speaker);
-  };
-
-  const handleUpdateVisible = (speaker: Speaker) => {
-    if (!speaker) return;
-    speaker.showSpeaker = !speaker.showSpeaker;
-    updateSpeaker(speaker);
-  };
-
-  const handleOpenDialogDelete = (value: Speaker) => {
-    if (!value) return;
-    setSpeaker(value);
-    setDialogDeleteOpen(true);
-  };
-
-  const handleDelete = () => {
-    if (!speaker) return;
-    removeSpeaker(speaker.id);
-    setSpeaker(null);
-    setDialogDeleteOpen(false);
-  };
+  const {
+    speakers,
+    removeSpeaker,
+    updateSpeaker,
+    loading,
+    error,
+    fetchSpeakers,
+  } = useSpeakers();
+  const [speaker, setSpeaker] = useState<Speaker | null>(null);
+  const {
+    search,
+    setSearch,
+    setPage,
+    paginate,
+    sort,
+    direction,
+    toggleSort,
+    sortItems,
+  } = useAdminListState();
+  const [visibility, setVisibility] = useState("all");
+  const filteredSpeakers = useMemo(() => {
+    const term = search.trim().toLocaleLowerCase("pt-BR");
+    return speakers.filter((item) => {
+      const matchesStatus =
+        visibility === "all" || String(item.isVisible) === visibility;
+      const matchesSearch =
+        !term ||
+        [item.name, item.company, item.title]
+          .filter(Boolean)
+          .some((value) => value!.toLocaleLowerCase("pt-BR").includes(term));
+      return matchesStatus && matchesSearch;
+    });
+  }, [search, speakers, visibility]);
+  const pagination = paginate(
+    sortItems(filteredSpeakers, {
+      name: (item) => item.name,
+      company: (item) => item.company ?? "",
+      status: (item) => Number(item.isVisible),
+    }),
+  );
 
   return (
-    <AdminLayout>
-      {loading && <Loading />}
-      <div className="p-4">
-        <div className="flex w-full items-center gap-2 justify-between">
-          <div className="size-12 rounded-full bg-devGray-light/40 flex items-center justify-center">
-            <Megaphone />
-          </div>
-          <div className="grow">
-            <h1 className="text-xl text-white/80">Palestrantes</h1>
-          </div>
-          <Link
-            href="/admin/speakers/add-speaker"
-            className="text-white bg-devBlue-dark border-1 border-devBlue-dark hover:border-1 hover:border-white/60 size-12 flex items-center justify-center rounded-full"
+    <>
+      <div className="p-4 sm:p-6">
+        <AdminPageHeader
+          title="Palestrantes"
+          description="Gerencie quem participa da programação."
+          count={speakers.length}
+          icon={Megaphone}
+          action={{
+            href: adminPathWithReturnTo(
+              "/admin/speakers/add-speaker",
+              router.asPath,
+            ),
+            label: "Cadastrar palestrante",
+          }}
+        />
+        <AdminListToolbar search={search} onSearchChange={setSearch}>
+          <select
+            aria-label="Filtrar por visibilidade"
+            value={visibility}
+            onChange={(event) => setVisibility(event.target.value)}
+            className="h-10 rounded-lg border border-white/10 bg-background px-3 text-sm"
           >
-            <UserRoundPlus />
-          </Link>
-        </div>
-
-        <div className="mt-12">
-          <Table className="rounded-xl overflow-hidden border-collapse">
-            <TableCaption />
-            <TableHeader className="bg-devGray-dark text-white">
-              <TableRow>
-                <TableHead className="p-3 text-white "></TableHead>
-                <TableHead className="p-3 text-white ">Nome</TableHead>
-                <TableHead className="p-3 text-white ">Palestra</TableHead>
-                <TableHead className="p-3 text-white text-center">
-                  Avaliável
-                </TableHead>
-                <TableHead className="p-3 text-white text-center">
-                  Visível
-                </TableHead>
-                <TableHead className="p-3 text-white text-center"></TableHead>
-                <TableHead className="p-3 text-white text-center"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {speakers.map((speaker) => (
-                <TableRow key={speaker.id}>
-                  <TableCell className="p-3 text-white/80 font-medium">
-                    <Image
-                      src={speaker.photo ?? "/default-speaker.png"}
-                      width={40}
-                      height={40}
-                      alt={
-                        speaker.name
-                          ? `Foto de ${speaker.name}`
-                          : "Foto do palestrante"
-                      }
-                      className="rounded-full object-cover outline outline-offset-2 outline-1 outline-devGray-light"
+            <option value="all">Todos</option>
+            <option value="true">Visíveis</option>
+            <option value="false">Ocultos</option>
+          </select>
+        </AdminListToolbar>
+        {error && (
+          <AdminErrorState
+            message={error}
+            onRetry={() => void fetchSpeakers()}
+          />
+        )}
+        {loading && speakers.length === 0 ? (
+          <AdminLoadingState />
+        ) : filteredSpeakers.length === 0 ? (
+          <AdminEmptyState
+            title={
+              search ? "Nenhum resultado" : "Nenhum palestrante cadastrado"
+            }
+            description={
+              search
+                ? "Tente buscar por outro nome, cargo ou empresa."
+                : "Cadastre a primeira pessoa palestrante do evento."
+            }
+            action={
+              !search
+                ? {
+                    href: "/admin/speakers/add-speaker",
+                    label: "Cadastrar palestrante",
+                  }
+                : undefined
+            }
+          />
+        ) : (
+          <AdminTableContainer>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead />
+                  <TableHead>
+                    <AdminSortButton
+                      label="Nome"
+                      active={sort === "name"}
+                      direction={direction}
+                      onClick={() => toggleSort("name")}
                     />
-                  </TableCell>
-                  <TableCell className="p-3 text-white/80 font-medium">
-                    {speaker.name}
-                  </TableCell>
-                  <TableCell className="p-3 text-white/80 ">
-                    {speaker.topic.length > 54
-                      ? `${speaker.topic.slice(0, 51)}...`
-                      : speaker.topic}
-                  </TableCell>
-                  <TableCell className=" text-white/80 text-center">
-                    <Switch
-                      id={`speaker-${speaker.id}-evaluable`}
-                      disabled={loading}
-                      checked={speaker.canBeEvaluated}
-                      onCheckedChange={() => handleUpdateEvaluable(speaker)}
-                      className="data-[state=checked]:bg-devBlue-dark disabled:!pointer-events-none"
+                  </TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Cargo / empresa"
+                      active={sort === "company"}
+                      direction={direction}
+                      onClick={() => toggleSort("company")}
                     />
-                  </TableCell>
-                  <TableCell className=" text-white/80 text-center">
-                    <Switch
-                      id={`speaker-${speaker.id}-visible`}
-                      disabled={loading}
-                      checked={speaker.showSpeaker}
-                      onCheckedChange={() => handleUpdateVisible(speaker)}
-                      className="data-[state=checked]:bg-devBlue-dark disabled:!pointer-events-none"
+                  </TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Visível"
+                      active={sort === "status"}
+                      direction={direction}
+                      onClick={() => toggleSort("status")}
                     />
-                  </TableCell>
-                  <TableCell className="px-3 text-white/80 text-right">
-                    <Button
-                      disabled={loading}
-                      variant="secondary"
-                      size="icon"
-                      className="size-8 text-devGreen-dark hover:text-devGreen bg-transparent p-0"
-                      onClick={() =>
-                        router.push(`/admin/speakers/edit/${speaker.id}`)
-                      }
-                    >
-                      <Pencil />
-                    </Button>
-                  </TableCell>
-                  <TableCell className="px-3 text-white/80 text-right">
-                    <Button
-                      variant="secondary"
-                      size="icon"
-                      disabled={loading}
-                      className="size-8 text-devRed-dark hover:text-devRed bg-transparent p-0"
-                      onClick={() => handleOpenDialogDelete(speaker)}
-                    >
-                      <Trash2 />
-                    </Button>
-                  </TableCell>
+                  </TableHead>
+                  <TableHead className="text-right">Ações</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {pagination.items.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      <Image
+                        src={item.photoUrl ?? "/default-speaker.png"}
+                        unoptimized={shouldBypassImageOptimization(
+                          item.photoUrl,
+                        )}
+                        width={40}
+                        height={40}
+                        alt={`Foto de ${item.name}`}
+                        className="size-10 rounded-full object-cover"
+                      />
+                    </TableCell>
+                    <TableCell className="text-white/80">{item.name}</TableCell>
+                    <TableCell className="text-white/80">
+                      {[item.title, item.company].filter(Boolean).join(" · ") ||
+                        "—"}
+                    </TableCell>
+                    <TableCell className="text-white/80">
+                      <button
+                        type="button"
+                        disabled={loading}
+                        title="Alterar visibilidade"
+                        onClick={() =>
+                          void updateSpeaker({
+                            id: item.id,
+                            name: item.name,
+                            company: item.company,
+                            title: item.title,
+                            miniBio: item.miniBio,
+                            photoUrl: item.photoUrl,
+                            socialMedia: item.socialMedia,
+                            isVisible: !item.isVisible,
+                          })
+                        }
+                      >
+                        <AdminStatusBadge
+                          active={item.isVisible}
+                          activeLabel="Visível"
+                          inactiveLabel="Oculto"
+                        />
+                      </button>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          onClick={() =>
+                            router.push(
+                              adminDestinationWithReturnTo(
+                                `/admin/speakers/edit/${item.id}`,
+                                router.asPath,
+                              ),
+                            )
+                          }
+                          aria-label={`Editar ${item.name}`}
+                        >
+                          <Pencil />
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          onClick={() => setSpeaker(item)}
+                          aria-label={`Excluir ${item.name}`}
+                        >
+                          <Trash2 />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <AdminPagination {...pagination} onPageChange={setPage} />
+          </AdminTableContainer>
+        )}
       </div>
-
       <DeleteDialog
-        open={dialogDeleteOpen}
-        onClose={() => setDialogDeleteOpen(false)}
-        onConfirm={handleDelete}
+        open={Boolean(speaker)}
+        onClose={() => setSpeaker(null)}
+        onConfirm={async () => {
+          if (speaker) await removeSpeaker(speaker.id);
+          setSpeaker(null);
+        }}
       />
-    </AdminLayout>
+    </>
   );
 }

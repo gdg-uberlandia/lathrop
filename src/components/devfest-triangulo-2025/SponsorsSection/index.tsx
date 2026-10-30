@@ -2,10 +2,52 @@ import { Presentation } from "../Presentation";
 import Image from "next/image";
 import MiniCheese from "@/public/devfest-2025/mini-cheese.svg";
 import { Tag } from "../Tag";
-import styles from "./SponsorsSection.module.css";
 import { SponsorCategory, type SponsorLevel } from "@/models/sponsor";
 import configValues from "@/helpers/config";
-import clsx from "clsx";
+
+const sponsorLevelOrder = [
+  "superior",
+  "diamond",
+  "golden",
+  "silver",
+  "bronze",
+  "iron",
+  "first-time",
+  "ruby",
+  "ametista",
+  "support",
+  "staff",
+];
+
+const getSponsorLevelOrder = ({ items }: SponsorLevel) => {
+  const level = items[0]?.level;
+  const index = sponsorLevelOrder.indexOf(
+    level === SponsorCategory.GOLD ? "golden" : level,
+  );
+
+  return index === -1 ? sponsorLevelOrder.length : index;
+};
+
+const sponsorSizeClasses: Record<string, string> = {
+  "superior:horizontal": "h-[170px] w-[440px]",
+  "superior:vertical": "size-[210px]",
+  "diamond:horizontal": "h-[122.4px] w-[319.6px]",
+  "diamond:vertical": "size-[156.4px]",
+  "gold:horizontal": "h-[105.4px] w-[265.2px]",
+  "gold:vertical": "size-[139.4px]",
+  "silver:horizontal": "h-[88.4px] w-[224.4px]",
+  "silver:vertical": "size-[122.4px]",
+  "bronze:horizontal": "h-[53px] w-[136px]",
+  "bronze:vertical": "size-[75px]",
+  "iron:horizontal": "h-[64.6px] w-[166.6px]",
+  "iron:vertical": "size-[91.8px]",
+  "ruby:horizontal": "h-[82px] w-[224px]",
+  "first-time:horizontal": "h-[82px] w-[224px]",
+  "first-time:vertical": "size-[122px]",
+  "ruby:vertical": "size-[122px]",
+  "support:horizontal": "h-[54.4px] w-[149.6px]",
+  "support:vertical": "size-[81.6px]",
+};
 
 interface SponsorsSectionsProps extends React.HTMLAttributes<HTMLDivElement> {
   sponsors: Array<SponsorLevel>;
@@ -28,7 +70,7 @@ export const SponsorsSection = ({
         items[0]?.level !== SponsorCategory.CARAVANS &&
         items[0]?.level !== SponsorCategory.STAFF,
     )
-    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    .sort((a, b) => getSponsorLevelOrder(a) - getSponsorLevelOrder(b));
 
   return (
     <Presentation
@@ -48,20 +90,22 @@ export const SponsorsSection = ({
         </>
       }
       button={{
-        text: "Quero apoiar o DevFest",
+        text: "Patrocine o DevFest Triângulo",
         href: configValues.eventLinkSponsorshipUrl,
       }}
       className={className}
       id="sponsors"
     >
       {!!sponsors.length && (
-        <div className="flex flex-col gap-4 mt-5 max-w-full ">
-          <span className="flex align-items-center justify-content-center gap-3 mb-2">
+        <div className="mt-5 flex max-w-full flex-col gap-4">
+          <span className="mb-2 flex items-center justify-center gap-3">
             <Image
               src={MiniCheese}
               alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
             />
-            <p>Patrocinadores</p>
+            <h2 className="text-3xl font-bold text-devWhite-ice">
+              Patrocinadores
+            </h2>
           </span>
 
           {payingSponsors.map((sponsorLevel) => (
@@ -69,27 +113,34 @@ export const SponsorsSection = ({
           ))}
 
           {!!staffSponsor && (
-            <article className="my-5 flex flex-column gap-3 ">
-              <span className="flex align-items-center justify-content-center gap-3 mb-4">
+            <article className="my-5 flex flex-col gap-3">
+              <span className="mb-4 flex items-center justify-center gap-3">
                 <Image
                   src={MiniCheese}
                   alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
                 />
-                <p>
+                <h2 className="text-xl font-bold text-devWhite-ice">
                   Empresas que investem em seus{" "}
-                  <span className={styles.TextBlue}>colaboradores</span>
-                </p>
+                  <span className="text-devBlue-dark">colaboradores</span>
+                </h2>
               </span>
 
-              <div className="flex gap-12 flex-wrap justify-center">
+              <div className="flex flex-wrap justify-center gap-12">
                 {staffSponsor.items.map((item) => (
-                  <a href={item.url} target="_blank" key={item.logo}>
-                    <div className="max-h-[80px] size-28 relative ">
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    key={item.logo}
+                    className="transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-devBlue-dark motion-reduce:transition-none"
+                  >
+                    <div className="relative h-20 w-[120px]">
                       <Image
-                        className={clsx(styles.SponsorImage)}
+                        className="object-contain"
                         src={item.logo}
                         alt={item.name}
                         fill
+                        sizes="120px"
                         // style={{ filter: "grayscale(1)" }}
                       />
                     </div>
@@ -100,33 +151,35 @@ export const SponsorsSection = ({
           )}
 
           {!!caravans && (
-            <article className="my-5 flex flex-column gap-3 ">
-              <span className="flex align-items-center justify-content-center gap-3 mb-4">
+            <article className="my-5 flex flex-col gap-3">
+              <span className="mb-4 flex items-center justify-center gap-3">
                 <Image
                   src={MiniCheese}
                   alt="Ilustração de um pedaço de queijo amarelo com buracos, em estilo simples e colorido, sobre um fundo preto."
                 />
-                <p>
+                <h2 className="text-xl font-bold text-devWhite-ice">
                   Release
-                  <span className={styles.TextBlue}>Trains</span>
-                </p>
+                  <span className="text-devBlue-dark">Trains</span>
+                </h2>
               </span>
               <p>Caravanas confirmadas para o DevFest Triângulo</p>
 
-              <div className="d-flex gap-5 flex-wrap justify-center">
+              <div className="flex flex-wrap justify-center gap-5">
                 {caravans.items.map((item) => (
                   <a
                     href={item.url}
                     target="_blank"
+                    rel="noreferrer"
                     key={item.logo}
-                    className="mx-auto"
+                    className="mx-auto transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-devBlue-dark motion-reduce:transition-none"
                   >
-                    <div className={styles.StaffImageWrapper}>
+                    <div className="relative h-20 w-[120px]">
                       <Image
-                        className={styles.SponsorImage}
+                        className="object-contain"
                         src={item.logo}
                         alt={item.name}
                         fill
+                        sizes="120px"
                       />
                     </div>
                   </a>
@@ -146,21 +199,32 @@ interface SponsorLevelProps {
 
 const SponsorLevel = ({ sponsorLevel: { name, items } }: SponsorLevelProps) => {
   return (
-    <div className="my-3 flex">
+    <div className="my-3 flex w-full">
       {items.length > 0 && (
-        <section className="flex flex-col items-center w-full">
+        <section className="flex w-full flex-col items-center">
           <Tag>{name}</Tag>
-          <div className="flex flex-row flex-wrap gap-x-16 gap-y-5 items-center justify-center w-full mt-4">
+          <div className="mt-4 flex w-full flex-row flex-wrap items-center justify-center gap-x-16 gap-y-5">
             {items.map((item) => (
-              <a href={item.url} target="_blank" key={item.name}>
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noreferrer"
+                key={item.name}
+                className="transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-devBlue-dark motion-reduce:transition-none"
+              >
                 <div
-                  className={`relative ${styles[item.level]} ${styles[item.format]}`}
+                  className={`relative max-w-[90vw] ${sponsorSizeClasses[`${item.level}:${item.format}`] ?? (item.level === SponsorCategory.SUPERIOR ? sponsorSizeClasses["superior:horizontal"] : "h-[88.4px] w-[224.4px]")}`}
                 >
                   <Image
-                    className={clsx(styles.SponsorImage)}
+                    className="object-contain"
                     src={item.logo}
                     alt={item.name}
                     fill
+                    sizes={
+                      item.level === SponsorCategory.SUPERIOR
+                        ? "(max-width: 489px) 90vw, 440px"
+                        : "320px"
+                    }
                     // style={{ filter: "grayscale(1)" }}
                   />
                 </div>
