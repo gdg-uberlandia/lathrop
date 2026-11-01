@@ -1,3 +1,4 @@
+import { DataTable } from "@/components/admin/admin-data-table";
 import {
   AdminErrorState,
   AdminLoadingState,
@@ -333,48 +334,36 @@ export default function AdminIndex() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[620px] text-left text-xs">
-                <thead className="bg-slate-50 text-slate-500">
-                  <tr>
-                    <th className="px-4 py-2.5 font-medium">Horário</th>
-                    <th className="px-4 py-2.5 font-medium">Atividade</th>
-                    <th className="px-4 py-2.5 font-medium">Trilha</th>
-                    <th className="px-4 py-2.5 font-medium">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {schedule.slice(0, 7).map((slot) => {
-                    const activity = slot.activity;
-                    const activityName =
-                      "title" in activity
-                        ? activity.title
-                        : talks.find((talk) => talk.id === activity.talkId)
-                            ?.title || "Palestra removida";
-                    return (
-                      <tr key={slot.id} className="hover:bg-slate-50">
-                        <td className="whitespace-nowrap px-4 py-3 font-medium text-slate-700">
-                          {new Intl.DateTimeFormat("pt-BR", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          }).format(slot.startAt)}
-                        </td>
-                        <td className="max-w-56 truncate px-4 py-3 text-slate-700">
-                          {activityName}
-                        </td>
-                        <td className="px-4 py-3 text-slate-500">
-                          {slot.track || "Geral"}
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className="inline-flex items-center gap-1.5 text-emerald-700">
-                            <span className="size-1.5 rounded-full bg-emerald-500" />
-                            Confirmado
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+              <DataTable
+                headers={["Horário", "Atividade", "Trilha", "Status"]}
+                rows={schedule.map((slot) => {
+                  const activity = slot.activity;
+                  const name =
+                    "title" in activity
+                      ? activity.title
+                      : talks.find((t) => t.id === activity.talkId)?.title ||
+                        "Palestra removida";
+                  return {
+                    key: slot.id,
+                    sortValues: [
+                      getTimestamp(slot.startAt),
+                      name,
+                      slot.track || "Geral",
+                      "Confirmado",
+                    ],
+                    cells: [
+                      new Intl.DateTimeFormat("pt-BR", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        timeZone: "America/Sao_Paulo",
+                      }).format(slot.startAt),
+                      name,
+                      slot.track || "Geral",
+                      "Confirmado",
+                    ],
+                  };
+                })}
+              />
             </div>
           )}
         </Panel>
@@ -386,35 +375,24 @@ export default function AdminIndex() {
           action={{ label: "Ver cadastros", href: "/admin/talks" }}
         >
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[600px] text-left text-xs">
-              <thead className="bg-slate-50 text-slate-500">
-                <tr>
-                  <th className="px-4 py-2.5 font-medium">Entidade</th>
-                  <th className="px-4 py-2.5 font-medium">Item</th>
-                  <th className="px-4 py-2.5 font-medium">Situação</th>
-                  <th className="px-4 py-2.5" />
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {recentItems.map((item) => (
-                  <tr key={`${item.entity}-${item.item}`}>
-                    <td className="px-4 py-3 text-slate-500">{item.entity}</td>
-                    <td className="max-w-72 truncate px-4 py-3 font-medium text-slate-800">
-                      {item.item}
-                    </td>
-                    <td className="px-4 py-3 text-slate-500">{item.detail}</td>
-                    <td className="px-4 py-3 text-right">
-                      <Link
-                        href={item.href}
-                        className="text-blue-600 hover:text-blue-800"
-                      >
-                        Abrir
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <DataTable
+              headers={["Entidade", "Item", "Situação", "Ações"]}
+              rows={recentItems.map((item) => ({
+                key: item.href,
+                cells: [
+                  item.entity,
+                  item.item,
+                  item.detail,
+                  <Link
+                    key="open"
+                    href={item.href}
+                    className="text-blue-700 hover:underline"
+                  >
+                    Abrir
+                  </Link>,
+                ],
+              }))}
+            />
           </div>
         </Panel>
 

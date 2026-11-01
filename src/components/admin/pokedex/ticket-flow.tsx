@@ -1,3 +1,4 @@
+import { DataTable } from "./dashboard-ui";
 import { useState } from "react";
 import { ArrowRight, ArrowDown, CheckCircle2 } from "lucide-react";
 import type { TicketFlowData } from "@/lib/ticket-flow";
@@ -216,32 +217,18 @@ export function TicketFlow({ data }: { data: TicketFlowData }) {
                 Ver valores do gráfico
               </summary>
               <div className="mt-2 overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead>
-                    <tr>
-                      <th scope="col" className="p-2">
-                        Dia
-                      </th>
-                      <th scope="col" className="p-2">
-                        Variação diária
-                      </th>
-                      <th scope="col" className="p-2">
-                        Acumulado no período
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {series.map((d) => (
-                      <tr key={d.date}>
-                        <td className="p-2">
-                          {d.date.split("-").reverse().join("/")}
-                        </td>
-                        <td className="p-2">{signed(d.delta)}</td>
-                        <td className="p-2">{signed(d.net)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <DataTable
+                  headers={["Dia", "Variação diária", "Acumulado no período"]}
+                  rows={series.map((d) => ({
+                    key: d.date,
+                    sortValues: [d.date, d.delta, d.net],
+                    cells: [
+                      d.date.split("-").reverse().join("/"),
+                      signed(d.delta),
+                      signed(d.net),
+                    ],
+                  }))}
+                />
               </div>
             </details>
           </>

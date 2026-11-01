@@ -1,8 +1,6 @@
-import { useEffect, useState, type ReactNode } from "react";
-import { AdminPagination } from "@/components/admin/admin-page";
+import type { ReactNode } from "react";
+export { DataTable } from "../admin-data-table";
 const number = (n: number) => n.toLocaleString("pt-BR");
-const inputClass =
-  "h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500";
 export function Panel({
   title,
   description,
@@ -63,86 +61,5 @@ export function Bars({ items }: { items: { label: string; value: number }[] }) {
         </p>
       )}
     </div>
-  );
-}
-export function DataTable({
-  headers,
-  rows,
-  searchable = false,
-}: {
-  headers: string[];
-  rows: { key: string; search?: string; cells: ReactNode[] }[];
-  searchable?: boolean;
-}) {
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const normalized = (s: string) =>
-    s
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLocaleLowerCase("pt-BR");
-  const filtered = rows.filter(
-    (r) => !search || normalized(r.search ?? "").includes(normalized(search)),
-  );
-  const pageCount = Math.max(1, Math.ceil(filtered.length / 15));
-  const safePage = Math.min(page, pageCount);
-  useEffect(() => setPage(1), [search]);
-  return (
-    <>
-      {searchable && (
-        <label className="mb-4 block">
-          <span className="sr-only">Buscar na tabela</span>
-          <input
-            className={`${inputClass} w-full sm:max-w-md`}
-            type="search"
-            placeholder="Buscar por nome, prêmio ou e-mail…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </label>
-      )}
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm">
-          <thead>
-            <tr>
-              {headers.map((h) => (
-                <th
-                  key={h}
-                  scope="col"
-                  className="whitespace-nowrap border-b border-slate-200 px-3 py-3 font-medium text-slate-500"
-                >
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.slice((safePage - 1) * 15, safePage * 15).map((r) => (
-              <tr
-                key={r.key}
-                className="border-b border-slate-100 last:border-0 hover:bg-slate-50"
-              >
-                {r.cells.map((c, i) => (
-                  <td key={i} className="px-3 py-3 text-slate-800">
-                    {c}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {!filtered.length && (
-          <p className="py-8 text-center text-sm text-slate-500">
-            Nenhum registro encontrado para os filtros selecionados.
-          </p>
-        )}
-      </div>
-      <AdminPagination
-        page={safePage}
-        pageCount={pageCount}
-        total={filtered.length}
-        onPageChange={setPage}
-      />
-    </>
   );
 }

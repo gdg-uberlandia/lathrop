@@ -45,66 +45,40 @@ export function InterestAffinity({ data }: { data: Affinity }) {
             className="ml-3 w-20 rounded border p-2"
           />
         </label>
-        <div className="mt-4 max-h-[480px] overflow-auto">
-          <table className="w-full min-w-[650px] text-sm">
-            <caption className="sr-only">
-              Percentual das pessoas de cada interesse que fizeram cada ação.
-            </caption>
-            <thead className="sticky top-0 bg-white">
-              <tr>
-                <th scope="col" className="p-3 text-left">
-                  Interesse
-                </th>
-                <th scope="col" className="p-3">
-                  Pessoas
-                </th>
-                {Object.values(labels).map((label) => (
-                  <th
-                    scope="col"
-                    key={label}
-                    className="p-3 text-xs text-slate-500"
-                  >
-                    {label}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {visible.map((i) => (
-                <tr
-                  key={i.id}
-                  className={current?.id === i.id ? "bg-blue-50" : ""}
+        <div className="mt-4">
+          <DataTable
+            headers={["Interesse", "Pessoas", ...Object.values(labels)]}
+            rows={visible.map((i) => ({
+              key: i.id,
+              sortValues: [i.label, i.people, ...i.actions.map((a) => a.rate)],
+              cells: [
+                <button
+                  key="interest"
+                  type="button"
+                  className="font-medium text-blue-700 hover:underline"
+                  onClick={() => setSelected(i.id)}
                 >
-                  <th scope="row" className="p-2 text-left font-normal">
-                    <button
-                      type="button"
-                      onClick={() => setSelected(i.id)}
-                      className="font-medium text-blue-700 hover:underline"
-                    >
-                      {i.label}
-                    </button>
-                  </th>
-                  <td className="p-2 text-center">{i.people}</td>
-                  {i.actions.map((a) => (
-                    <td key={a.kind} className="p-1">
-                      <button
-                        type="button"
-                        onClick={() => setSelected(i.id)}
-                        title={`${a.engaged}/${i.people} pessoas · Comparação ${a.comparison}/${i.comparisonPeople} · ${pp(a.difference)}`}
-                        className="w-full rounded p-2 text-xs"
-                        style={{
-                          background: `rgba(37,99,235,${0.05 + (a.rate / 100) * 0.8})`,
-                          color: a.rate > 60 ? "white" : "#334155",
-                        }}
-                      >
-                        {pct(a.rate)}
-                      </button>
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  {i.label}
+                </button>,
+                i.people,
+                ...i.actions.map((a) => (
+                  <button
+                    key={a.kind}
+                    type="button"
+                    onClick={() => setSelected(i.id)}
+                    title={`${a.engaged}/${i.people} pessoas; comparação ${a.comparison}/${i.comparisonPeople}`}
+                    className="rounded p-2 text-xs"
+                    style={{
+                      background: `rgba(37,99,235,${0.05 + (a.rate / 100) * 0.8})`,
+                      color: a.rate > 60 ? "white" : "#334155",
+                    }}
+                  >
+                    {pct(a.rate)}
+                  </button>
+                )),
+              ],
+            }))}
+          />
         </div>
         {!visible.length && (
           <p className="py-4 text-sm text-slate-500">

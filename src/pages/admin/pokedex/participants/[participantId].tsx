@@ -1,3 +1,4 @@
+import { DataTable, Panel } from "@/components/admin/pokedex/dashboard-ui";
 import { resolveAdminReturnTo } from "@/lib/admin-return-path";
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
@@ -9,7 +10,6 @@ import {
   AdminPageHeader,
   AdminErrorState,
   AdminLoadingState,
-  AdminPagination,
 } from "@/components/admin/admin-page";
 import { useAuth } from "@/context/AuthContext";
 import { adminApiRequest } from "@/lib/admin-api/client";
@@ -45,67 +45,19 @@ function History({
   headers: string[];
   rows: { id: string; cells: ReactNode[] }[];
 }) {
-  const [page, setPage] = useState(1);
-  const pageCount = Math.max(1, Math.ceil(rows.length / 15)),
-    safePage = Math.min(page, pageCount);
   return (
-    <section className="admin-surface min-w-0 overflow-hidden rounded-xl">
-      <header className="border-b border-slate-200 p-4">
-        <h2 className="font-semibold text-slate-900">
-          {title}{" "}
-          <span className="text-sm font-normal text-slate-500">
-            ({number(rows.length)})
-          </span>
-        </h2>
-        {description && (
-          <p className="mt-1 text-sm text-slate-500">{description}</p>
-        )}
-      </header>
-      {!rows.length ? (
-        <p className="p-5 text-sm text-slate-500">
-          Nenhum registro neste evento.
-        </p>
-      ) : (
-        <>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50">
-                <tr>
-                  {headers.map((h) => (
-                    <th
-                      scope="col"
-                      key={h}
-                      className="whitespace-nowrap px-4 py-3 font-medium text-slate-500"
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {rows.slice((safePage - 1) * 15, safePage * 15).map((r) => (
-                  <tr key={r.id} className="border-t border-slate-100">
-                    {r.cells.map((cell, i) => (
-                      <td key={i} className="px-4 py-3 text-slate-800">
-                        {cell}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <AdminPagination
-            page={safePage}
-            pageCount={pageCount}
-            total={rows.length}
-            onPageChange={setPage}
-          />
-        </>
-      )}
-    </section>
+    <Panel
+      title={`${title} (${rows.length.toLocaleString("pt-BR")})`}
+      description={description}
+    >
+      <DataTable
+        headers={headers}
+        rows={rows.map((r) => ({ key: r.id, cells: r.cells }))}
+      />
+    </Panel>
   );
 }
+
 export default function ParticipantStatisticsPage() {
   const router = useRouter(),
     { isAdmin } = useAuth();
