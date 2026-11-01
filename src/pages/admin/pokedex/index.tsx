@@ -1,3 +1,4 @@
+import { DashboardReports } from "@/components/admin/pokedex/dashboard-reports";
 import { RatingAnalysis } from "@/components/admin/pokedex/rating-analysis";
 import { ParticipationJourney } from "@/components/admin/pokedex/participation-journey";
 import { DashboardExplorerProvider } from "@/components/admin/pokedex/dashboard-explorer";
@@ -36,6 +37,7 @@ const tabs = [
   "Brindes e tickets",
   "Avaliações",
   "Ganhadores",
+  "Relatórios",
 ] as const;
 const number = (n: number) => n.toLocaleString("pt-BR");
 const score = (n: number | null) =>
@@ -571,6 +573,7 @@ export default function PokedexDashboardPage() {
                 </Panel>
               </>
             )}
+            {tab === "Relatórios" && <DashboardReports data={data} />}
             {tab === "Ganhadores" && (
               <Panel
                 title="Ganhadores dos sorteios"
