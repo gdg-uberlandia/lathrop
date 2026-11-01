@@ -9,4 +9,3 @@
 - Antes de gravar dados, configure explicitamente o modo solicitado e confira o projeto Firebase, o evento e a coleção resolvida por `getFirestoreCollectionName`. Não exponha credenciais.
 - Depois de gravar, releia os registros no mesmo ambiente e confira as quantidades. Não replique, mova ou apague dados entre ambientes sem verificar onde estão e sem autorização correspondente.
 - A Pokédex usa a variável `DEVMODE` (sem sublinhado); o site usa `DEV_MODE`. O significado de `false` e `true` é o mesmo.
-- Estoque oficial de brindes do DevFest Triângulo 2026: 300 doces, 17 canetas avulsas, 91 blocos, 35 chaveiros, 274 copos, 163 cadernos, 58 garrafas, 53 kits de bloco + caneta e 33 camisetas. Total: 1.024 brindes, contando cada kit como um item.
