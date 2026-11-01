@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
 import { BarChart3, Download, RefreshCw } from "lucide-react";
@@ -685,6 +686,7 @@ export default function PokedexDashboardPage() {
                   "Ganhador",
                   "E-mail",
                   "Confirmação (Brasília)",
+                  "Estatísticas",
                 ]}
                 rows={data.winners.map((w) => ({
                   key: w.id,
@@ -705,6 +707,14 @@ export default function PokedexDashboardPage() {
                       </span>
                     ),
                     dateTime(w.confirmedAt),
+                    <Link
+                      key="statistics"
+                      href={`/admin/pokedex/participants/${encodeURIComponent(w.participantId)}`}
+                      className="whitespace-nowrap font-medium text-blue-700 hover:underline"
+                      aria-label={`Ver estatísticas de ${w.name}`}
+                    >
+                      Ver estatísticas
+                    </Link>,
                   ],
                 }))}
               />
