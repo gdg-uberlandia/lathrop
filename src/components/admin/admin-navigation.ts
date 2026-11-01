@@ -1,4 +1,5 @@
 import {
+  BarChart3,
   Bell,
   Printer,
   Users,
@@ -24,6 +25,7 @@ export type AdminNavigationItem = {
 
 export const adminNavigationItems: AdminNavigationItem[] = [
   { title: "Painel", url: "/admin", icon: Home, exact: true },
+  { title: "Dashboard Pokédex", url: "/admin/pokedex", icon: BarChart3 },
   { title: "Avisos", url: "/admin/notices", icon: Bell },
   { title: "Empresas", url: "/admin/companies", icon: Building2 },
   { title: "Missões", url: "/admin/missions", icon: Trophy },

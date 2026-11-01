@@ -23,7 +23,7 @@ import { Raffle } from "@/contracts/raffle";
 import { useAdminListState } from "@/hooks/useAdminListState";
 import { useRaffles } from "@/hooks/useRaffles";
 import { shouldBypassImageOptimization } from "@/helpers/image";
-import { Gift, ImageOff, Pencil, Trash2 } from "lucide-react";
+import { Gift, ImageOff, Pencil, Trash2, Trophy } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import {
@@ -70,13 +70,21 @@ export default function RafflesPage() {
           description="Cadastre o catálogo; a execução do sorteio acontece na Pokedex."
           count={raffles.length}
           icon={Gift}
-          action={{
-            href: adminPathWithReturnTo(
-              "/admin/raffles/add-raffle",
-              router.asPath,
-            ),
-            label: "Cadastrar prêmio",
-          }}
+          action={[
+            {
+              href: "/admin/pokedex?section=Ganhadores",
+              label: "Ver ganhadores",
+              variant: "secondary",
+              icon: Trophy,
+            },
+            {
+              href: adminPathWithReturnTo(
+                "/admin/raffles/add-raffle",
+                router.asPath,
+              ),
+              label: "Cadastrar prêmio",
+            },
+          ]}
         />
         <AdminListToolbar search={list.search} onSearchChange={list.setSearch}>
           <select
