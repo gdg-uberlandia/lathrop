@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Link from "next/link";
+import { ParticipantAnalyticsLink } from "./participant-link";
 import { useQuery } from "@tanstack/react-query";
 import { adminApiRequest } from "@/lib/admin-api/client";
 import { getAdminApiErrorMessage } from "@/lib/admin-api/errors";
@@ -202,13 +202,9 @@ export function ConnectionNetwork({
               >
                 Explorar rede
               </button>,
-              <Link
-                key="profile"
-                className="text-blue-700 hover:underline"
-                href={`/admin/pokedex/participants/${encodeURIComponent(p.id)}`}
-              >
+              <ParticipantAnalyticsLink key="profile" id={p.id}>
                 Ver estatísticas
-              </Link>,
+              </ParticipantAnalyticsLink>,
             ],
           }))}
         />

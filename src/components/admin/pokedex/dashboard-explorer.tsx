@@ -6,7 +6,7 @@ import {
   useEffect,
 } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import Link from "next/link";
+import { ParticipantAnalyticsLink } from "./participant-link";
 import { useQuery } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { adminApiRequest } from "@/lib/admin-api/client";
@@ -128,12 +128,9 @@ export function DashboardExplorerProvider({
                         {p.actions} participações no período
                       </p>
                     </div>
-                    <Link
-                      href={`/admin/pokedex/participants/${encodeURIComponent(p.id)}`}
-                      className="shrink-0 text-sm font-medium text-blue-700 hover:underline"
-                    >
+                    <ParticipantAnalyticsLink id={p.id}>
                       Ver estatísticas
-                    </Link>
+                    </ParticipantAnalyticsLink>
                   </li>
                 ))}
               </ul>

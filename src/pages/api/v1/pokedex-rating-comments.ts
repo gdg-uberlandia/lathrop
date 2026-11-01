@@ -64,14 +64,13 @@ export default async function handler(
       .sort((a, b) => b.at.localeCompare(a.at));
     const pageCount = Math.max(1, Math.ceil(rows.length / 20)),
       safePage = Math.min(page, pageCount);
-    return res
-      .status(200)
-      .json({
-        items: rows.slice((safePage - 1) * 20, safePage * 20),
-        total: rows.length,
-        page: safePage,
-        pageCount,
-      });
+    const response = {
+      items: rows.slice((safePage - 1) * 20, safePage * 20),
+      total: rows.length,
+      page: safePage,
+      pageCount,
+    };
+    return res.status(200).json(response);
   } catch (error) {
     console.error("[pokedex-rating-comments]", error);
     return res

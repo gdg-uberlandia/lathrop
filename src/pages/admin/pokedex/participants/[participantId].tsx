@@ -1,3 +1,4 @@
+import { resolveAdminReturnTo } from "@/lib/admin-return-path";
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -122,15 +123,19 @@ export default function ParticipantStatisticsPage() {
       ),
   });
   const data = query.data;
+  const returnTo = resolveAdminReturnTo(
+    router.query.returnTo,
+    "/admin/pokedex?section=Ganhadores",
+  );
   const [ticketCategory, setTicketCategory] = useState("all");
   return (
     <main className="space-y-6 p-4 sm:p-6 lg:p-7">
       <Link
-        href="/admin/pokedex?section=Ganhadores"
+        href={returnTo}
         className="inline-flex items-center gap-2 text-sm font-medium text-blue-700 hover:underline"
       >
         <ArrowLeft className="size-4" />
-        Voltar aos ganhadores
+        Voltar ao dashboard
       </Link>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <AdminPageHeader

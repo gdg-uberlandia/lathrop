@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
+import { ParticipantAnalyticsLink } from "./participant-link";
 import type { RatingAnalysis as Analysis } from "@/lib/rating-analysis";
 import { ratingDimensions } from "@/lib/rating-analysis";
 import type { DashboardFilters } from "@/lib/pokedex-dashboard";
@@ -254,12 +254,9 @@ export function RatingAnalysis({
                     {r.comment}
                   </p>
                   <p className="mt-2 text-xs text-slate-500">
-                    <Link
-                      href={`/admin/pokedex/participants/${encodeURIComponent(r.participantId)}`}
-                      className="text-blue-700 hover:underline"
-                    >
+                    <ParticipantAnalyticsLink id={r.participantId}>
                       {r.name}
-                    </Link>{" "}
+                    </ParticipantAnalyticsLink>{" "}
                     ·{" "}
                     {new Date(r.at).toLocaleString("pt-BR", {
                       timeZone: "America/Sao_Paulo",

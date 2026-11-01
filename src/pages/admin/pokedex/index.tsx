@@ -1,3 +1,4 @@
+import { dashboardFiltersSchema } from "@/lib/dashboard-filter-schema";
 import { ResultSummary } from "@/components/admin/pokedex/result-summary";
 import { DataQuality } from "@/components/admin/pokedex/data-quality";
 import { InterestAffinity } from "@/components/admin/pokedex/interest-affinity";
@@ -108,6 +109,37 @@ export default function PokedexDashboardPage() {
   const [to, setTo] = useState("");
   const [role, setRole] = useState("all");
   const [filters, setFilters] = useState({ from: "", to: "", role: "all" });
+  useEffect(() => {
+    if (!router.isReady) return;
+    const parsed = dashboardFiltersSchema.safeParse({
+      from: router.query.from,
+      to: router.query.to,
+      role: router.query.role,
+    });
+    if (!parsed.success) return;
+    const next = {
+      from: parsed.data.from ?? "",
+      to: parsed.data.to ?? "",
+      role: parsed.data.role,
+    };
+    setFrom(next.from);
+    setTo(next.to);
+    setRole(next.role);
+    setFilters(next);
+  }, [router.isReady, router.query.from, router.query.to, router.query.role]);
+  function persistFilters(next: { from: string; to: string; role: string }) {
+    const query = { ...router.query };
+    delete query.from;
+    delete query.to;
+    delete query.role;
+    if (next.from) query.from = next.from;
+    if (next.to) query.to = next.to;
+    if (next.role !== "all") query.role = next.role;
+    void router.replace({ pathname: router.pathname, query }, undefined, {
+      shallow: true,
+      scroll: false,
+    });
+  }
   const invalid = Boolean(from && to && from > to);
   const query = useQuery({
     queryKey: ["admin", "pokedex-dashboard", filters],
@@ -135,7 +167,11 @@ export default function PokedexDashboardPage() {
           className="admin-surface flex flex-wrap items-end gap-3 rounded-xl p-4"
           onSubmit={(e) => {
             e.preventDefault();
-            if (!invalid) setFilters({ from, to, role });
+            if (!invalid) {
+              const next = { from, to, role };
+              setFilters(next);
+              persistFilters(next);
+            }
           }}
         >
           <label className="space-y-1 text-sm text-slate-600">
@@ -192,6 +228,7 @@ export default function PokedexDashboardPage() {
               setTo("");
               setRole("all");
               setFilters({ from: "", to: "", role: "all" });
+              persistFilters({ from: "", to: "", role: "all" });
             }}
           >
             Todo o evento

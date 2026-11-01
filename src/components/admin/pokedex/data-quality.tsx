@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { ParticipantAnalyticsLink } from "./participant-link";
 import type { DataQuality as Quality } from "@/lib/data-quality";
 import { Panel, Cards } from "./dashboard-ui";
 export function DataQuality({ data }: { data: Quality }) {
@@ -63,12 +63,9 @@ export function DataQuality({ data }: { data: Quality }) {
                     <p className="break-all font-mono">{e.id}</p>
                     <p className="mt-1">{e.detail}</p>
                     {e.participantId && (
-                      <Link
-                        href={`/admin/pokedex/participants/${encodeURIComponent(e.participantId)}`}
-                        className="mt-2 inline-block text-blue-700 hover:underline"
-                      >
+                      <ParticipantAnalyticsLink id={e.participantId}>
                         Ver participante
-                      </Link>
+                      </ParticipantAnalyticsLink>
                     )}
                   </li>
                 ))}

@@ -29,19 +29,18 @@ export function buildInterestAffinity(c: DashboardContext) {
   for (const r of c.transactions)
     if (r.type === "reward_redemption")
       people.redemption.add(analyticsText(r.participantId));
-  const companies = c
-    .rows("companies")
-    .map((company) => ({
-      id: company.id,
-      name: analyticsText(company.name) || company.id,
-      people: new Set(
-        c.completions
-          .filter(
-            (r) => r.activityType === "company" && r.activityId === company.id,
-          )
-          .map((r) => analyticsText(r.participantId)),
-      ),
-    }));
+  const companyCatalog = c.rows("companies");
+  const companies = companyCatalog.map((company) => ({
+    id: company.id,
+    name: analyticsText(company.name) || company.id,
+    people: new Set(
+      c.completions
+        .filter(
+          (r) => r.activityType === "company" && r.activityId === company.id,
+        )
+        .map((r) => analyticsText(r.participantId)),
+    ),
+  }));
   const interests = allInterests
     .map((id) => {
       const members = declared
