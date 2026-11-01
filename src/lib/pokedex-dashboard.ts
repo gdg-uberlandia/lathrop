@@ -1,3 +1,4 @@
+import { buildParticipationJourney } from "./participation-journey";
 import { selectDashboardContext } from "./dashboard-context";
 import { isEventStatisticsTime, timestamp } from "./event-statistics-time";
 export { timestamp } from "./event-statistics-time";
@@ -219,6 +220,7 @@ export function buildPokedexDashboard(
   });
   return {
     filters,
+    journey: buildParticipationJourney(context),
     ticketFlow: buildTicketFlow(
       transactions.map(flowTransaction),
       rows("ticketTransactions")

@@ -1,3 +1,4 @@
+import { ParticipationJourney } from "@/components/admin/pokedex/participation-journey";
 import { DashboardExplorerProvider } from "@/components/admin/pokedex/dashboard-explorer";
 import {
   Panel,
@@ -29,6 +30,7 @@ import { dashboardCsv } from "@/lib/dashboard-csv";
 const tabs = [
   "Visão geral",
   "Engajamento",
+  "Jornada",
   "Empresas",
   "Brindes e tickets",
   "Avaliações",
@@ -426,6 +428,7 @@ export default function PokedexDashboardPage() {
                 </Panel>
               </>
             )}
+            {tab === "Jornada" && <ParticipationJourney data={data.journey} />}
             {tab === "Empresas" && (
               <>
                 <Panel
