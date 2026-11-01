@@ -1,3 +1,4 @@
+import { buildRatingAnalysis } from "./rating-analysis";
 import { buildParticipationJourney } from "./participation-journey";
 import { selectDashboardContext } from "./dashboard-context";
 import { isEventStatisticsTime, timestamp } from "./event-statistics-time";
@@ -221,6 +222,7 @@ export function buildPokedexDashboard(
   return {
     filters,
     journey: buildParticipationJourney(context),
+    ratingAnalysis: buildRatingAnalysis(context),
     ticketFlow: buildTicketFlow(
       transactions.map(flowTransaction),
       rows("ticketTransactions")

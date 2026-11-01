@@ -1,3 +1,4 @@
+import { RatingAnalysis } from "@/components/admin/pokedex/rating-analysis";
 import { ParticipationJourney } from "@/components/admin/pokedex/participation-journey";
 import { DashboardExplorerProvider } from "@/components/admin/pokedex/dashboard-explorer";
 import {
@@ -539,6 +540,7 @@ export default function PokedexDashboardPage() {
                     ],
                   ]}
                 />
+                <RatingAnalysis data={data.ratingAnalysis} filters={filters} />
                 <Panel
                   title="Avaliações por palestra"
                   description="Notas de 1 a 5. Considere o número de avaliadores ao comparar as médias. Um traço indica ausência de avaliações."
