@@ -9,6 +9,44 @@ const number = (v: unknown) =>
 const iso = (v: unknown) =>
   timestamp(v) ? new Date(timestamp(v)).toISOString() : null;
 
+export function describeTicketMovement(
+  type: string,
+  referenceType: string,
+  delta: number,
+) {
+  if (type === "onboarding_grant")
+    return { category: "credit", label: "Bônus de cadastro" };
+  if (type === "xp_conversion")
+    return {
+      category: "credit",
+      label:
+        referenceType === "raffle_closure"
+          ? "Conversão automática de XP para o sorteio"
+          : "Conversão de XP em tickets",
+    };
+  if (type === "reward_redemption")
+    return { category: "reward", label: "Resgate de brinde" };
+  if (type === "adjustment" && referenceType === "raffle_winner")
+    return {
+      category: "raffle",
+      label:
+        delta < 0
+          ? "Consumo por prêmio de sorteio"
+          : delta > 0
+            ? "Devolução de tickets de sorteio"
+            : "Movimentação de sorteio sem alteração de saldo",
+    };
+  return {
+    category: "correction",
+    label:
+      delta < 0
+        ? "Correção de saldo — débito"
+        : delta > 0
+          ? "Correção de saldo — crédito"
+          : "Registro sem alteração de saldo",
+  };
+}
+
 export function buildParticipantStatistics(
   profile: DashboardRow,
   source: DashboardSource,
@@ -75,6 +113,25 @@ export function buildParticipantStatistics(
     .map((r) => ({
       id: r.id,
       type: text(r.type),
+      ...describeTicketMovement(
+        text(r.type),
+        text(r.referenceType),
+        number(r.ticketDelta),
+      ),
+      direction:
+        number(r.ticketDelta) > 0
+          ? "Entrada"
+          : number(r.ticketDelta) < 0
+            ? "Saída"
+            : "Sem alteração",
+      detail:
+        r.referenceType === "raffle_winner"
+          ? (raffles.get(text(r.referenceId)) ?? "Prêmio indisponível")
+          : r.type === "reward_redemption"
+            ? (rewards.get(text(r.referenceId)) ?? "Brinde indisponível")
+            : r.type === "adjustment"
+              ? "Motivo adicional não informado no registro"
+              : null,
       delta: number(r.ticketDelta),
       convertedXp: number(r.convertedXp),
       createdAt: iso(r.createdAt),

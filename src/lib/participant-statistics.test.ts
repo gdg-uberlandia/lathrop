@@ -133,3 +133,66 @@ test("não retorna perfil de outro evento nem campos técnicos do perfil", () =>
   assert.equal(serialized.includes("private-qr"), false);
   assert.equal(serialized.includes("p@example.com"), true);
 });
+
+test("movimentações distinguem brindes, prêmios, devoluções e conversões automáticas", () => {
+  const movements = [
+    {
+      id: "prize",
+      type: "adjustment",
+      referenceType: "raffle_winner",
+      referenceId: "won",
+      ticketDelta: -11,
+    },
+    {
+      id: "refund",
+      type: "adjustment",
+      referenceType: "raffle_winner",
+      referenceId: "won",
+      ticketDelta: 9,
+    },
+    {
+      id: "gift",
+      type: "reward_redemption",
+      referenceType: "reward",
+      referenceId: "gift",
+      ticketDelta: -5,
+    },
+    {
+      id: "conversion",
+      type: "xp_conversion",
+      referenceType: "raffle_closure",
+      ticketDelta: 10,
+    },
+    { id: "unknown", type: "adjustment", ticketDelta: -2 },
+  ];
+  const result = buildParticipantStatistics(
+    profile,
+    {
+      ...source,
+      rewards: [{ id: "gift", eventId: "event", name: "Caderno" }],
+      ticketTransactions: movements.map((r) => ({
+        ...r,
+        eventId: "event",
+        participantId: profile.id,
+      })),
+    },
+    "event",
+  )!;
+  const byId = new Map(result.tickets.map((r) => [r.id, r]));
+  assert.equal(byId.get("prize")?.label, "Consumo por prêmio de sorteio");
+  assert.equal(byId.get("prize")?.detail, "Prêmio confirmado");
+  assert.equal(byId.get("prize")?.direction, "Saída");
+  assert.equal(byId.get("refund")?.label, "Devolução de tickets de sorteio");
+  assert.equal(byId.get("refund")?.direction, "Entrada");
+  assert.equal(byId.get("gift")?.category, "reward");
+  assert.equal(byId.get("gift")?.detail, "Caderno");
+  assert.equal(
+    byId.get("conversion")?.label,
+    "Conversão automática de XP para o sorteio",
+  );
+  assert.equal(byId.get("unknown")?.category, "correction");
+  assert.equal(
+    byId.get("unknown")?.detail,
+    "Motivo adicional não informado no registro",
+  );
+});

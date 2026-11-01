@@ -43,6 +43,8 @@ export async function getParticipantStatistics(participantId: string) {
       "eventId",
       "type",
       "ticketDelta",
+      "referenceType",
+      "referenceId",
       "convertedXp",
       "createdAt",
     ],

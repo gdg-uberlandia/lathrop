@@ -29,7 +29,6 @@ const labels: Record<string, string> = {
   onboarding_grant: "Bônus de onboarding",
   xp_conversion: "Conversão de XP",
   reward_redemption: "Resgate de brinde",
-  adjustment: "Ajuste",
   completed: "Concluído",
   failed: "Reprovado",
   "in-progress": "Em andamento",
@@ -123,6 +122,7 @@ export default function ParticipantStatisticsPage() {
       ),
   });
   const data = query.data;
+  const [ticketCategory, setTicketCategory] = useState("all");
   return (
     <main className="space-y-6 p-4 sm:p-6 lg:p-7">
       <Link
@@ -279,18 +279,50 @@ export default function ParticipantStatisticsPage() {
               ],
             }))}
           />
+          <label className="block text-sm text-slate-600">
+            <span className="mb-2 block">Filtrar movimentações de tickets</span>
+            <select
+              className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-slate-800"
+              value={ticketCategory}
+              onChange={(event) => setTicketCategory(event.target.value)}
+            >
+              <option value="all">Todas as movimentações</option>
+              <option value="credit">Bônus e conversões de XP</option>
+              <option value="reward">Resgates de brindes</option>
+              <option value="raffle">Prêmios de sorteios</option>
+              <option value="correction">
+                Correções de saldo e outros registros
+              </option>
+            </select>
+          </label>
           <History
+            key={ticketCategory}
             title="Movimentações de tickets"
-            headers={["Tipo", "Variação de tickets", "XP convertido", "Data"]}
-            rows={data.tickets.map((r) => ({
-              id: r.id,
-              cells: [
-                labels[r.type] ?? r.type,
-                `${r.delta > 0 ? "+" : ""}${number(r.delta)}`,
-                number(r.convertedXp),
-                date(r.createdAt),
-              ],
-            }))}
+            description="Entradas aumentam o saldo; saídas consomem tickets. Brindes e prêmios de sorteios são operações distintas."
+            headers={[
+              "Movimentação",
+              "Entrada / saída",
+              "Detalhe",
+              "Tickets",
+              "XP convertido",
+              "Data",
+            ]}
+            rows={data.tickets
+              .filter(
+                (r) =>
+                  ticketCategory === "all" || r.category === ticketCategory,
+              )
+              .map((r) => ({
+                id: r.id,
+                cells: [
+                  r.label,
+                  r.direction,
+                  r.detail ?? "—",
+                  `${r.delta > 0 ? "+" : ""}${number(r.delta)}`,
+                  number(r.convertedXp),
+                  date(r.createdAt),
+                ],
+              }))}
           />
           <History
             title="Avaliações de palestras"
