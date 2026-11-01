@@ -1,3 +1,4 @@
+import { CompanyReach } from "@/components/admin/pokedex/company-reach";
 import { EngagementDistribution } from "@/components/admin/pokedex/engagement-distribution";
 import { ActivityHeatmap } from "@/components/admin/pokedex/activity-heatmap";
 import { useEffect, useState, type ReactNode } from "react";
@@ -558,25 +559,38 @@ export default function PokedexDashboardPage() {
             </>
           )}
           {tab === "Empresas" && (
-            <Panel
-              title="Alcance dos estandes"
-              description="Visitantes únicos no período. Alcance calculado sobre a base do papel selecionado."
-            >
-              <DataTable
-                searchable
-                headers={["Empresa", "Visitantes únicos", "Visitas", "Alcance"]}
-                rows={data.companies.map((c) => ({
-                  key: c.id,
-                  search: c.name,
-                  cells: [
-                    c.name,
-                    number(c.visitors),
-                    number(c.visits),
-                    `${c.reach.toFixed(1)}%`,
-                  ],
-                }))}
-              />
-            </Panel>
+            <>
+              <Panel
+                title="Presença nos estandes"
+                description="Alcance, horários de visita e circulação entre empresas no período selecionado."
+              >
+                <CompanyReach data={data.companyReach} />
+              </Panel>
+              <Panel
+                title="Alcance dos estandes"
+                description="Visitantes únicos no período. Alcance calculado sobre a base do papel selecionado."
+              >
+                <DataTable
+                  searchable
+                  headers={[
+                    "Empresa",
+                    "Visitantes únicos",
+                    "Visitas",
+                    "Alcance",
+                  ]}
+                  rows={data.companies.map((c) => ({
+                    key: c.id,
+                    search: c.name,
+                    cells: [
+                      c.name,
+                      number(c.visitors),
+                      number(c.visits),
+                      `${c.reach.toFixed(1)}%`,
+                    ],
+                  }))}
+                />
+              </Panel>
+            </>
           )}
           {tab === "Brindes e tickets" && (
             <>

@@ -1,3 +1,4 @@
+import { buildCompanyReach } from "./company-reach";
 import { buildEngagementDistribution } from "./engagement-distribution";
 import {
   buildActivityHeatmap,
@@ -267,6 +268,19 @@ export function buildPokedexDashboard(
       })),
     heatmap: buildActivityHeatmap(activityEvents),
     engagement: buildEngagementDistribution([...allowed], activityEvents),
+    companyReach: buildCompanyReach(
+      [...allowed],
+      rows("companies").map((c) => ({ id: c.id, name: text(c.name) || c.id })),
+      completions
+        .filter((r) => r.activityType === "company")
+        .map((r) => ({
+          companyId: text(r.activityId),
+          personId: text(r.participantId),
+          hour: new Date(timestamp(r.completedAt) - 3 * 3600000)
+            .toISOString()
+            .slice(0, 13),
+        })),
+    ),
     activityTypes,
     companies,
     activities,
