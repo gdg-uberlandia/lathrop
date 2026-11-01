@@ -1,3 +1,4 @@
+import { EventClosureControl } from "@/components/admin/pokedex/event-closure-control";
 import { DASHBOARD_REPORT_TABS } from "@/lib/dashboard-report";
 import { ResultSummary } from "@/components/admin/pokedex/result-summary";
 import { RewardDemand } from "@/components/admin/pokedex/reward-demand";
@@ -109,6 +110,7 @@ export default function PokedexDashboardPage() {
           description="Adesão, engajamento e resultados do evento."
           icon={BarChart3}
         />
+        <EventClosureControl />
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-slate-500">
             Dados dos participantes a partir da abertura oficial do evento.

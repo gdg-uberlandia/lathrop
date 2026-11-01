@@ -38,3 +38,17 @@ arquivado não pode ser reutilizado por criação nem reativado por edição.
 
 A pontuação e os níveis do participante são definidos no repositório da Pokédex,
 em `config/scores.ts`, `config/levels.ts` e `modules/progression`.
+
+## Encerramento do evento
+
+No dashboard, “Encerrar evento” exige confirmação e autenticação de administrador.
+`GET /api/v1/event-status` consulta o estado; `POST` com `{ "action": "close" }`
+encerra o evento configurado no servidor. Não aceita evento ou operador fornecidos
+pelo cliente. O documento `eventOperations/{CURRENT_EVENT_ID}` recebe
+`eventClosed`, `eventClosedAt` e `eventClosedBy` por merge transacional; uma segunda
+chamada preserva a data e o operador originais. O registro é relido após gravar.
+
+A Pokédex consulta esse estado nas transações de missões, tags, avaliações e
+conexões. Nenhum histórico, XP ou ticket é removido. Sorteios e resgates mantêm
+seus controles próprios. Não há reabertura neste painel. Publicar também os
+bloqueios no servidor da Pokédex antes de utilizar o controle em produção.
