@@ -256,7 +256,7 @@ export function TicketFlow({ data }: { data: TicketFlowData }) {
           {data.reconciliation.difference === 0 && (
             <CheckCircle2 className="size-4 text-emerald-600" />
           )}
-          Conferência do histórico completo disponível
+          Conferência dos tickets do evento
         </h3>
         <dl className="mt-3 grid gap-4 text-sm sm:grid-cols-3">
           {[
@@ -279,10 +279,13 @@ export function TicketFlow({ data }: { data: TicketFlowData }) {
           ))}
         </dl>
         <p className="mt-3 text-xs text-slate-500">
-          Esta conferência usa todas as{" "}
-          {n(data.reconciliation.historyTransactions)} transações disponíveis
-          dos perfis selecionados, independentemente do período. O saldo atual
-          não é um saldo histórico na data final do filtro.
+          A conferência soma o saldo inicial na abertura (
+          {n(data.reconciliation.openingBalance)} tickets) às{" "}
+          {n(data.reconciliation.historyTransactions)} transações do evento
+          disponíveis para os perfis selecionados, independentemente do período.
+          Créditos anteriores à abertura compõem apenas o saldo inicial, sem
+          entrar nos gráficos ou nos indicadores de movimentos do evento. O
+          saldo atual não é um saldo histórico na data final do filtro.
           {data.reconciliation.undatedTransactions > 0
             ? ` Há ${n(data.reconciliation.undatedTransactions)} transações sem data que entram na conferência, mas não nos gráficos por período.`
             : ""}

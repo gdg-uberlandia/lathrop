@@ -22,6 +22,7 @@ const source: DashboardSource = {
       activityType: "mission",
       activityId: "mission",
       xpAwarded: 100,
+      completedAt: "2026-10-31T11:00:00Z",
     },
     {
       id: "other-person",
@@ -43,12 +44,14 @@ const source: DashboardSource = {
       eventId: "event",
       participantIds: ["person", "other"],
       status: "accepted",
+      acceptedAt: "2026-10-31T11:00:00Z",
     },
     {
       id: "pending",
       eventId: "event",
       participantIds: ["other", "person"],
       status: "pending",
+      lastRequestedAt: "2026-10-31T11:00:00Z",
     },
     {
       id: "removed",
@@ -61,14 +64,25 @@ const source: DashboardSource = {
       eventId: "event",
       participantIds: ["a", "b"],
       status: "accepted",
+      acceptedAt: "2026-10-31T11:00:00Z",
     },
     {
       id: "elsewhere",
       eventId: "other",
       participantIds: ["person", "b"],
       status: "accepted",
+      acceptedAt: "2026-10-31T11:00:00Z",
     },
   ],
+  ticketTransactions: [3, 2, 2].map((cost, i) => ({
+    id: `redemption-${i}`,
+    eventId: "event",
+    participantId: "person",
+    type: "reward_redemption",
+    referenceId: "removed-reward",
+    ticketDelta: -cost,
+    createdAt: "2026-10-31T11:00:00Z",
+  })),
   rewardRedemptions: [
     {
       id: "redemption",
@@ -86,6 +100,7 @@ const source: DashboardSource = {
       winnerId: "person",
       status: "drawn",
       prizeName: "Prêmio confirmado",
+      drawnAt: "2026-10-31T11:00:00Z",
     },
     {
       id: "pending",
@@ -103,6 +118,7 @@ const source: DashboardSource = {
       participantId: "person",
       raffleId: "absent",
       status: "absent",
+      selectedAt: "2026-10-31T11:00:00Z",
     },
   ],
 };
@@ -174,6 +190,7 @@ test("movimentações distinguem brindes, prêmios, devoluções e conversões a
         ...r,
         eventId: "event",
         participantId: profile.id,
+        createdAt: "2026-10-31T11:00:00Z",
       })),
     },
     "event",
@@ -195,4 +212,100 @@ test("movimentações distinguem brindes, prêmios, devoluções e conversões a
     byId.get("unknown")?.detail,
     "Motivo adicional não informado no registro",
   );
+});
+
+test("estatísticas individuais descartam ações antes das 08h e dividem resgates pela transação", () => {
+  const before = "2026-10-31T07:59:59-03:00",
+    opening = "2026-10-31T08:00:00-03:00";
+  const d = buildParticipantStatistics(
+    profile,
+    {
+      activityCompletions: [
+        {
+          id: "early",
+          eventId: "event",
+          participantId: profile.id,
+          activityType: "mission",
+          completedAt: before,
+          xpAwarded: 500,
+        },
+        {
+          id: "valid",
+          eventId: "event",
+          participantId: profile.id,
+          activityType: "tag",
+          completedAt: opening,
+          xpAwarded: 25,
+        },
+      ],
+      connections: [
+        {
+          id: "early",
+          eventId: "event",
+          participantIds: [profile.id, "other"],
+          status: "accepted",
+          acceptedAt: before,
+        },
+      ],
+      rewardRedemptions: [
+        {
+          id: "receipt",
+          eventId: "event",
+          participantId: profile.id,
+          rewardId: "gift",
+          quantity: 2,
+          ticketsSpent: 8,
+          firstRedeemedAt: before,
+          lastRedeemedAt: opening,
+        },
+      ],
+      ticketTransactions: [
+        {
+          id: "early",
+          eventId: "event",
+          participantId: profile.id,
+          type: "reward_redemption",
+          referenceId: "gift",
+          ticketDelta: -4,
+          createdAt: before,
+        },
+        {
+          id: "valid",
+          eventId: "event",
+          participantId: profile.id,
+          type: "reward_redemption",
+          referenceId: "receipt",
+          ticketDelta: -4,
+          createdAt: opening,
+        },
+      ],
+      raffleAttempts: [
+        {
+          id: "early",
+          eventId: "event",
+          participantId: profile.id,
+          selectedAt: before,
+          status: "absent",
+        },
+      ],
+      raffles: [
+        {
+          id: "early",
+          eventId: "event",
+          winnerId: profile.id,
+          status: "drawn",
+          drawnAt: before,
+        },
+      ],
+    },
+    "event",
+  )!;
+  assert.equal(d.metrics.activities, 1);
+  assert.equal(d.metrics.eventXp, 25);
+  assert.equal(d.metrics.connections, 0);
+  assert.equal(d.metrics.redeemed, 1);
+  assert.equal(d.metrics.ticketsSpent, 4);
+  assert.equal(d.tickets.length, 1);
+  assert.equal(d.metrics.wins, 0);
+  assert.equal(d.attempts.length, 0);
 });

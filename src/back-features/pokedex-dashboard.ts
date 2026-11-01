@@ -22,9 +22,15 @@ const fields: Record<string, string[]> = {
     "participantId",
     "activityId",
     "activityType",
+    "xpAwarded",
     "completedAt",
   ],
-  connections: ["participantIds", "status", "acceptedAt"],
+  connections: [
+    "participantIds",
+    "status",
+    "acceptedAt",
+    "xpAwardedPerParticipant",
+  ],
   "talk-ratings": [
     "participantId",
     "talkId",
@@ -32,6 +38,7 @@ const fields: Record<string, string[]> = {
     "speakerRating",
     "contentRating",
     "comprehensionRating",
+    "xpAwarded",
   ],
   ticketTransactions: [
     "participantId",

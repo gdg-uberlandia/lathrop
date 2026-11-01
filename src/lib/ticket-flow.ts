@@ -43,6 +43,7 @@ export function buildTicketFlow(
   period: TicketFlowTransaction[],
   history: TicketFlowTransaction[],
   currentBalance: number,
+  openingBalance = 0,
 ) {
   const buckets = new Map<
     string,
@@ -77,7 +78,7 @@ export function buildTicketFlow(
     .sort((a, b) => b.amount - a.amount);
   const incoming = period.reduce((s, t) => s + Math.max(0, t.delta), 0),
     outgoing = period.reduce((s, t) => s + Math.max(0, -t.delta), 0),
-    recordedBalance = history.reduce((s, t) => s + t.delta, 0);
+    recordedBalance = openingBalance + history.reduce((s, t) => s + t.delta, 0);
   return {
     incoming,
     outgoing,
@@ -86,6 +87,7 @@ export function buildTicketFlow(
     movements,
     daily: dailySeries(period),
     reconciliation: {
+      openingBalance,
       currentBalance,
       recordedBalance,
       difference: currentBalance - recordedBalance,

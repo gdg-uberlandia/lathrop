@@ -194,3 +194,122 @@ test("CSV preserva aspas e neutraliza fórmulas de planilha", () => {
     '\uFEFF"\'=HYPERLINK(""a"")";"Ana; Silva";"a\nb"',
   );
 });
+
+test("abertura às 08h exclui ações anteriores, resgates acumulados e XP anterior em todos os gráficos", () => {
+  const before = "2026-10-31T07:59:59.999-03:00",
+    opening = "2026-10-31T08:00:00-03:00";
+  const data: DashboardSource = {
+    profiles: [{ id: "a", createdAt: before, xp: 999, ticketBalance: 6 }],
+    activityCompletions: [
+      {
+        id: "early",
+        participantId: "a",
+        activityType: "company",
+        activityId: "company",
+        completedAt: before,
+        xpAwarded: 1000,
+      },
+      {
+        id: "valid",
+        participantId: "a",
+        activityType: "mission",
+        activityId: "mission",
+        completedAt: opening,
+        xpAwarded: 20,
+      },
+    ],
+    connections: [
+      {
+        id: "early",
+        participantIds: ["a", "outside"],
+        status: "accepted",
+        acceptedAt: before,
+        xpAwardedPerParticipant: 50,
+      },
+    ],
+    "talk-ratings": [
+      {
+        id: "early",
+        participantId: "a",
+        talkId: "talk",
+        completedAt: before,
+        xpAwarded: 50,
+      },
+    ],
+    ticketTransactions: [
+      {
+        id: "early-bonus",
+        participantId: "a",
+        type: "onboarding_grant",
+        ticketDelta: 10,
+        createdAt: before,
+      },
+      {
+        id: "early-gift",
+        participantId: "a",
+        type: "reward_redemption",
+        referenceId: "gift",
+        ticketDelta: -2,
+        createdAt: before,
+      },
+      {
+        id: "bonus",
+        participantId: "a",
+        type: "onboarding_grant",
+        ticketDelta: 1,
+        createdAt: opening,
+      },
+      {
+        id: "gift",
+        participantId: "a",
+        type: "reward_redemption",
+        referenceId: "gift",
+        ticketDelta: -3,
+        createdAt: opening,
+      },
+    ],
+    rewardRedemptions: [
+      {
+        id: "redemption",
+        participantId: "a",
+        rewardId: "gift",
+        quantity: 2,
+        ticketsSpent: 5,
+      },
+    ],
+    rewards: [{ id: "gift", name: "Brinde", stock: 10 }],
+    companies: [{ id: "company", name: "Empresa" }],
+    talks: [{ id: "talk", title: "Palestra" }],
+    raffles: [{ id: "early", status: "drawn", winnerId: "a", drawnAt: before }],
+    missionAttempts: [
+      {
+        id: "early",
+        participantId: "a",
+        updatedAt: before,
+        outcome: "completed",
+      },
+    ],
+  };
+  const d = buildPokedexDashboard(data, { from: "2026-10-30" });
+  assert.equal(d.metrics.activities, 1);
+  assert.equal(d.metrics.connections, 0);
+  assert.equal(d.metrics.ratings, 0);
+  assert.equal(d.metrics.redeemed, 1);
+  assert.equal(d.rewards[0].ticketsSpent, 3);
+  assert.equal(d.metrics.winners, 0);
+  assert.equal(d.outcomes.length, 0);
+  assert.equal(d.base.newProfiles, 0);
+  assert.equal(d.base.eventXp, 20);
+  assert.equal(d.xpBands[1].count, 1);
+  assert.equal(d.companyReach.reached, 0);
+  assert.equal(d.heatmap[0].hours[0], 8);
+  assert.equal(d.timeline[0].hour, "2026-10-31T08");
+  assert.equal(d.engagement.totalParticipations, 2);
+  assert.equal(d.ticketFlow.incoming, 1);
+  assert.equal(d.ticketFlow.outgoing, 3);
+  assert.equal(d.ticketFlow.reconciliation.openingBalance, 8);
+  assert.equal(d.ticketFlow.reconciliation.difference, 0);
+  const earlier = buildPokedexDashboard(data, { to: "2026-10-30" });
+  assert.equal(earlier.metrics.activities, 0);
+  assert.equal(earlier.timeline.length, 0);
+});

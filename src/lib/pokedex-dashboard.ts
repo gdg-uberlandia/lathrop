@@ -1,3 +1,9 @@
+import {
+  EVENT_STATISTICS_START_MS,
+  isEventStatisticsTime,
+  timestamp,
+} from "./event-statistics-time";
+export { timestamp } from "./event-statistics-time";
 import { buildTicketFlow, type TicketFlowTransaction } from "./ticket-flow";
 import { buildCompanyReach } from "./company-reach";
 import { buildEngagementDistribution } from "./engagement-distribution";
@@ -10,23 +16,6 @@ export type DashboardRow = { id: string; [key: string]: unknown };
 export type DashboardSource = Record<string, DashboardRow[]>;
 export type DashboardFilters = { from?: string; to?: string; role?: string };
 
-export function timestamp(value: unknown): number {
-  if (value instanceof Date) return value.getTime();
-  if (typeof value === "string" || typeof value === "number") {
-    const n = new Date(value).getTime();
-    return Number.isFinite(n) ? n : 0;
-  }
-  if (value && typeof value === "object") {
-    const v = value as {
-      toMillis?: () => number;
-      seconds?: number;
-      _seconds?: number;
-    };
-    if (v.toMillis) return v.toMillis();
-    return (v.seconds ?? v._seconds ?? 0) * 1000;
-  }
-  return 0;
-}
 const num = (v: unknown) =>
   typeof v === "number" && Number.isFinite(v) ? v : 0;
 const text = (v: unknown) => (typeof v === "string" ? v : "");
@@ -44,9 +33,12 @@ export function buildPokedexDashboard(
   filters: DashboardFilters = {},
 ) {
   const rows = (name: string) => source[name] ?? [];
-  const start = filters.from
-    ? Date.parse(`${filters.from}T00:00:00-03:00`)
-    : -Infinity;
+  const start = Math.max(
+    EVENT_STATISTICS_START_MS,
+    filters.from
+      ? Date.parse(`${filters.from}T00:00:00-03:00`)
+      : EVENT_STATISTICS_START_MS,
+  );
   const end = filters.to
     ? Date.parse(`${filters.to}T23:59:59.999-03:00`)
     : Infinity;
@@ -166,17 +158,14 @@ export function buildPokedexDashboard(
     const periodExchanges = redemptionTransactions.filter(
       (t) => t.referenceId === r.id || historyIds.has(text(t.referenceId)),
     );
-    const filtered = Boolean(filters.from || filters.to);
     return {
       id: r.id,
       name: text(r.name) || r.id,
       stock: num(r.stock),
       active: r.active === true,
-      redeemed: filtered ? periodExchanges.length : sum(history, "quantity"),
-      redeemers: filtered ? unique(periodExchanges) : unique(history),
-      ticketsSpent: filtered
-        ? -sum(periodExchanges, "ticketDelta")
-        : sum(history, "ticketsSpent"),
+      redeemed: periodExchanges.length,
+      redeemers: unique(periodExchanges),
+      ticketsSpent: -sum(periodExchanges, "ticketDelta"),
     };
   });
   const talkRatings = rows("talks")
@@ -230,6 +219,18 @@ export function buildPokedexDashboard(
       return out;
     }, {}),
   ).map(([outcome, count]) => ({ outcome, count }));
+  const periodXp = new Map(profiles.map((p) => [p.id, 0]));
+  for (const r of [...completions, ...ratings]) {
+    const id = text(r.participantId);
+    periodXp.set(id, (periodXp.get(id) ?? 0) + num(r.xpAwarded));
+  }
+  for (const r of connections)
+    for (const id of ids(r.participantIds))
+      if (allowed.has(id))
+        periodXp.set(
+          id,
+          (periodXp.get(id) ?? 0) + num(r.xpAwardedPerParticipant),
+        );
   const xpBands = [
     { label: "0 XP", min: 0, max: 0 },
     { label: "1–499 XP", min: 1, max: 499 },
@@ -238,7 +239,7 @@ export function buildPokedexDashboard(
     { label: "5.000+ XP", min: 5000, max: Infinity },
   ].map((b) => ({
     label: b.label,
-    count: profiles.filter((p) => num(p.xp) >= b.min && num(p.xp) <= b.max)
+    count: [...periodXp.values()].filter((xp) => xp >= b.min && xp <= b.max)
       .length,
   }));
   const flowTransaction = (r: DashboardRow): TicketFlowTransaction => ({
@@ -252,14 +253,23 @@ export function buildPokedexDashboard(
     filters,
     ticketFlow: buildTicketFlow(
       transactions.map(flowTransaction),
-      rows("ticketTransactions").filter(eligible).map(flowTransaction),
+      rows("ticketTransactions")
+        .filter((r) => eligible(r) && isEventStatisticsTime(r.createdAt))
+        .map(flowTransaction),
       sum(profiles, "ticketBalance"),
+      sum(
+        rows("ticketTransactions").filter(
+          (r) => eligible(r) && !isEventStatisticsTime(r.createdAt),
+        ),
+        "ticketDelta",
+      ),
     ),
     base: {
       profiles: profiles.length,
       onboarded: profiles.filter((p) => p.onboardingCompleted).length,
       newProfiles: profiles.filter((p) => inPeriod(p.createdAt)).length,
       xp: sum(profiles, "xp"),
+      eventXp: [...periodXp.values()].reduce((s, xp) => s + xp, 0),
       ticketBalance: sum(profiles, "ticketBalance"),
     },
     metrics: {

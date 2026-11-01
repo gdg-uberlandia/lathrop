@@ -1,3 +1,7 @@
+import {
+  eventStatisticsHours,
+  isEventStatisticsHour,
+} from "./event-statistics-time";
 export const activityKinds = [
   "mission",
   "company",
@@ -13,6 +17,7 @@ export type ActivityEvent = {
   people: string[];
 };
 export function buildActivityHeatmap(events: ActivityEvent[]) {
+  events = events.filter((e) => isEventStatisticsHour(e.hour));
   const days = [...new Set(events.map((e) => e.hour.slice(0, 10)))].sort();
   const buckets = new Map<string, { actions: number; people: Set<string> }>();
   for (const event of events) {
@@ -27,8 +32,9 @@ export function buildActivityHeatmap(events: ActivityEvent[]) {
   }
   return days.map((day) => ({
     day,
+    hours: eventStatisticsHours(day),
     cells: activityKinds.flatMap((kind) =>
-      Array.from({ length: 24 }, (_, hour) => {
+      eventStatisticsHours(day).map((hour) => {
         const bucket = buckets.get(
           `${day}T${String(hour).padStart(2, "0")}:${kind}`,
         );

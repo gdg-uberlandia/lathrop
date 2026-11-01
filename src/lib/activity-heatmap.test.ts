@@ -7,7 +7,8 @@ test("mapa inclui horas vazias e deduplica pessoas por célula e dia", () => {
     { hour: "2026-10-31T09", kind: "mission", people: ["a"] },
     { hour: "2026-10-31T10", kind: "connection", people: ["a", "b"] },
   ]);
-  assert.equal(day.cells.length, 144);
+  assert.equal(day.cells.length, 96);
+  assert.equal(day.hours[0], 8);
   assert.equal(day.actions, 3);
   assert.equal(day.people, 2);
   assert.equal(
@@ -19,8 +20,8 @@ test("mapa inclui horas vazias e deduplica pessoas por célula e dia", () => {
     1,
   );
   assert.equal(
-    day.cells.find((c) => c.kind === "mission" && c.hour === 0)?.actions,
-    0,
+    day.cells.find((c) => c.kind === "mission" && c.hour === 0),
+    undefined,
   );
 });
 test("mapa separa os dias e aceita período vazio", () => {

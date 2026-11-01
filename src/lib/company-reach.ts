@@ -1,3 +1,4 @@
+import { isEventStatisticsHour } from "./event-statistics-time";
 export type CompanyVisit = {
   companyId: string;
   personId: string;
@@ -9,7 +10,9 @@ export function buildCompanyReach(
   visits: CompanyVisit[],
 ) {
   const allowed = new Set(profileIds),
-    filtered = visits.filter((v) => allowed.has(v.personId));
+    filtered = visits.filter(
+      (v) => allowed.has(v.personId) && isEventStatisticsHour(v.hour),
+    );
   const names = new Map(catalog.map((c) => [c.id, c.name]));
   for (const visit of filtered)
     if (!names.has(visit.companyId))

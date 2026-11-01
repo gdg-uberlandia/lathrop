@@ -36,6 +36,7 @@ export async function getParticipantStatistics(participantId: string) {
       "speakerRating",
       "contentRating",
       "comprehensionRating",
+      "xpAwarded",
       "completedAt",
     ],
     ticketTransactions: [
@@ -94,7 +95,15 @@ export async function getParticipantStatistics(participantId: string) {
     (async () => {
       const snapshot = await collection("connections")
         .where("participantIds", "array-contains", participantId)
-        .select("eventId", "participantIds", "status")
+        .select(
+          "eventId",
+          "participantIds",
+          "status",
+          "acceptedAt",
+          "lastRequestedAt",
+          "createdAt",
+          "xpAwardedPerParticipant",
+        )
         .get();
       source.connections = snapshot.docs
         .filter((d) => d.data().eventId === CURRENT_EVENT_ID)

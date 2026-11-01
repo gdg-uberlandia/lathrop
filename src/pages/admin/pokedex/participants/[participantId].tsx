@@ -135,7 +135,7 @@ export default function ParticipantStatisticsPage() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <AdminPageHeader
           title={data?.profile.name ?? "Estatísticas do participante"}
-          description="Participação individual em todo o evento."
+          description="Participação individual a partir de 31/10/2026 às 08h (Brasília)."
           icon={UserRound}
         />
         <Button
@@ -198,7 +198,7 @@ export default function ParticipantStatisticsPage() {
             className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
           >
             {[
-              ["XP registrado", data.metrics.xp],
+              ["XP recebido no evento", data.metrics.eventXp],
               ["XP já convertido", data.metrics.convertedXp],
               ["Saldo atual de tickets", data.metrics.ticketBalance],
               ["Conexões aceitas", data.metrics.connections],
@@ -220,9 +220,11 @@ export default function ParticipantStatisticsPage() {
             ))}
           </section>
           <p className="text-sm text-slate-600">
-            Os dados abrangem todo o evento. XP e tickets mostram os valores
-            atuais do perfil; as contagens de atividades são calculadas a partir
-            dos registros de conclusão.
+            As ações e movimentações são contadas a partir de 31/10/2026 às 08h,
+            no horário de Brasília. Tickets e XP convertido mostram os valores
+            atuais do perfil; o XP recebido considera apenas as ações após a
+            abertura. Cadastros prévios permanecem como identificação do
+            participante.
           </p>
           <History
             title="Prêmios ganhos"

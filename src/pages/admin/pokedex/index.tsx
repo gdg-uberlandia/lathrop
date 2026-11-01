@@ -266,6 +266,7 @@ export default function PokedexDashboardPage() {
             type="date"
             value={from}
             onChange={(e) => setFrom(e.target.value)}
+            min="2026-10-31"
             max={to || undefined}
           />
         </label>
@@ -276,7 +277,7 @@ export default function PokedexDashboardPage() {
             type="date"
             value={to}
             onChange={(e) => setTo(e.target.value)}
-            min={from || undefined}
+            min={from && from > "2026-10-31" ? from : "2026-10-31"}
           />
         </label>
         <label className="space-y-1 text-sm text-slate-600">
@@ -337,7 +338,8 @@ export default function PokedexDashboardPage() {
         <p className="text-xs text-slate-500">
           {data.environment} · {data.eventId} · Dados consultados em{" "}
           {dateTime(data.updatedAt)} · Cache de até 5 minutos · Horários de
-          Brasília.
+          Brasília. Participação e movimentos contados a partir de 31/10/2026 às
+          08h.
         </p>
       )}
       <nav
@@ -492,9 +494,9 @@ export default function PokedexDashboardPage() {
                     "Criados no período selecionado",
                   ],
                   [
-                    "XP atual da base",
-                    data.base.xp,
-                    "Saldo atual; não representa XP ganho no período",
+                    "XP recebido no período",
+                    data.base.eventXp,
+                    "XP registrado em atividades, avaliações e conexões aceitas",
                   ],
                   [
                     "Tickets atuais da base",
@@ -523,7 +525,7 @@ export default function PokedexDashboardPage() {
                     }))}
                   />
                 </Panel>
-                <Panel title="Distribuição atual de XP">
+                <Panel title="Distribuição de XP recebido no período">
                   <Bars
                     items={data.xpBands.map((x) => ({
                       label: x.label,
@@ -622,7 +624,7 @@ export default function PokedexDashboardPage() {
               </Panel>
               <Panel
                 title="Brindes"
-                description="Estoque e disponibilidade são atuais, conforme o CRUD de brindes. Resgates e tickets seguem os filtros; sem datas, exibem o histórico acumulado."
+                description="Estoque e disponibilidade são atuais, conforme o CRUD de brindes. Resgates e tickets consideram os movimentos a partir da abertura do evento e os filtros selecionados."
               >
                 <DataTable
                   headers={[

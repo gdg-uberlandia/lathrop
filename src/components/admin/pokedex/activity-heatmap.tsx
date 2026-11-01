@@ -87,7 +87,7 @@ export function ActivityHeatmap({ data }: { data: ActivityHeatmapData }) {
               <th scope="col" className="text-left font-medium text-slate-500">
                 Atividade
               </th>
-              {Array.from({ length: 24 }, (_, hour) => (
+              {current.hours.map((hour) => (
                 <th
                   scope="col"
                   key={hour}

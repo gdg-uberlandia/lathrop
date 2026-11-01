@@ -1,3 +1,5 @@
+import { isEventStatisticsTime } from "./event-statistics-time";
+import { eventRewardRedemptions } from "./event-reward-redemptions";
 import {
   timestamp,
   type DashboardRow,
@@ -53,9 +55,12 @@ export function buildParticipantStatistics(
   eventId: string,
 ) {
   if (profile.eventId !== eventId) return null;
-  const owned = (name: string) =>
+  const owned = (name: string, dateField?: string) =>
     (source[name] ?? []).filter(
-      (r) => r.eventId === eventId && r.participantId === profile.id,
+      (r) =>
+        r.eventId === eventId &&
+        r.participantId === profile.id &&
+        (!dateField || isEventStatisticsTime(r[dateField])),
     );
   const catalog = (name: string) =>
     new Map(
@@ -72,7 +77,7 @@ export function buildParticipantStatistics(
     talks = catalog("talks"),
     rewards = catalog("rewards"),
     raffles = catalog("raffles");
-  const activities = owned("activityCompletions")
+  const activities = owned("activityCompletions", "completedAt")
     .map((r) => ({
       id: r.id,
       type: text(r.activityType),
@@ -91,17 +96,21 @@ export function buildParticipantStatistics(
     (r) =>
       r.eventId === eventId &&
       Array.isArray(r.participantIds) &&
-      r.participantIds.includes(profile.id),
+      r.participantIds.includes(profile.id) &&
+      isEventStatisticsTime(
+        r.status === "accepted"
+          ? r.acceptedAt
+          : (r.lastRequestedAt ?? r.createdAt),
+      ),
   );
-  const redemptions = owned("rewardRedemptions").map((r) => ({
-    id: r.id,
-    name: rewards.get(text(r.rewardId)) ?? text(r.rewardId),
-    quantity: number(r.quantity),
-    ticketsSpent: number(r.ticketsSpent),
-    firstRedeemedAt: iso(r.firstRedeemedAt),
-    lastRedeemedAt: iso(r.lastRedeemedAt),
+  const redemptions = eventRewardRedemptions(
+    owned("rewardRedemptions"),
+    owned("ticketTransactions", "createdAt"),
+  ).map((r) => ({
+    ...r,
+    name: rewards.get(r.rewardId) ?? r.rewardId,
   }));
-  const ratings = owned("talk-ratings").map((r) => ({
+  const ratings = owned("talk-ratings", "completedAt").map((r) => ({
     id: r.id,
     title: talks.get(text(r.talkId)) ?? text(r.talkId),
     speaker: number(r.speakerRating),
@@ -109,7 +118,7 @@ export function buildParticipantStatistics(
     comprehension: number(r.comprehensionRating),
     completedAt: iso(r.completedAt),
   }));
-  const tickets = owned("ticketTransactions")
+  const tickets = owned("ticketTransactions", "createdAt")
     .map((r) => ({
       id: r.id,
       type: text(r.type),
@@ -137,7 +146,7 @@ export function buildParticipantStatistics(
       createdAt: iso(r.createdAt),
     }))
     .sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""));
-  const attempts = owned("raffleAttempts").map((r) => ({
+  const attempts = owned("raffleAttempts", "selectedAt").map((r) => ({
     id: r.id,
     prizeName: raffles.get(text(r.raffleId)) ?? text(r.raffleId),
     status: text(r.status),
@@ -149,14 +158,15 @@ export function buildParticipantStatistics(
       (r) =>
         r.eventId === eventId &&
         r.winnerId === profile.id &&
-        r.status === "drawn",
+        r.status === "drawn" &&
+        isEventStatisticsTime(r.drawnAt),
     )
     .map((r) => ({
       id: r.id,
       prizeName: text(r.prizeName),
       confirmedAt: iso(r.drawnAt),
     }));
-  const quizAttempts = owned("missionAttempts").map((r) => ({
+  const quizAttempts = owned("missionAttempts", "updatedAt").map((r) => ({
     id: r.id,
     name: missions.get(text(r.missionId)) ?? text(r.missionId),
     attempts: number(r.attempts),
@@ -182,6 +192,14 @@ export function buildParticipantStatistics(
     },
     metrics: {
       xp: number(profile.xp),
+      eventXp:
+        [
+          ...owned("activityCompletions", "completedAt"),
+          ...owned("talk-ratings", "completedAt"),
+        ].reduce((s, r) => s + number(r.xpAwarded), 0) +
+        connections
+          .filter((r) => r.status === "accepted")
+          .reduce((s, r) => s + number(r.xpAwardedPerParticipant), 0),
       convertedXp: number(profile.convertedXp),
       ticketBalance: number(profile.ticketBalance),
       activities: activities.length,

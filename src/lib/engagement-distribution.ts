@@ -1,8 +1,10 @@
+import { isEventStatisticsHour } from "./event-statistics-time";
 import type { ActivityEvent } from "./activity-heatmap";
 export function buildEngagementDistribution(
   profileIds: string[],
   events: ActivityEvent[],
 ) {
+  events = events.filter((e) => isEventStatisticsHour(e.hour));
   const counts = new Map(profileIds.map((id) => [id, 0]));
   for (const event of events)
     for (const person of new Set(event.people))
