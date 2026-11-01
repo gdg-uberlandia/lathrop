@@ -1,3 +1,4 @@
+import { buildDataQuality } from "./data-quality";
 import { buildInterestAffinity } from "./interest-affinity";
 import { buildConnectionNetwork } from "./connection-network";
 import { buildRewardDemand } from "./reward-demand";
@@ -224,6 +225,7 @@ export function buildPokedexDashboard(
   });
   return {
     filters,
+    quality: buildDataQuality(context),
     affinity: buildInterestAffinity(context),
     network: buildConnectionNetwork(context),
     rewardDemand: buildRewardDemand(context),

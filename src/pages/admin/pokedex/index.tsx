@@ -1,3 +1,4 @@
+import { DataQuality } from "@/components/admin/pokedex/data-quality";
 import { InterestAffinity } from "@/components/admin/pokedex/interest-affinity";
 import { ConnectionNetwork } from "@/components/admin/pokedex/connection-network";
 import { RewardDemand } from "@/components/admin/pokedex/reward-demand";
@@ -38,6 +39,7 @@ const tabs = [
   "Jornada",
   "Rede de conexões",
   "Afinidade",
+  "Qualidade dos dados",
   "Empresas",
   "Brindes e tickets",
   "Demanda por brindes",
@@ -436,6 +438,9 @@ export default function PokedexDashboardPage() {
                   />
                 </Panel>
               </>
+            )}
+            {tab === "Qualidade dos dados" && (
+              <DataQuality data={data.quality} />
             )}
             {tab === "Afinidade" && <InterestAffinity data={data.affinity} />}
             {tab === "Rede de conexões" && (

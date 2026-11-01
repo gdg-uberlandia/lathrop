@@ -57,6 +57,13 @@ const fields: Record<string, string[]> = {
   tags: ["name"],
   talks: ["title"],
   raffles: ["prizeName", "status", "winnerId", "winnerName", "drawnAt"],
+  participantSummaries: [
+    "participantId",
+    "connectionsCount",
+    "companiesVisitedCount",
+    "tagsDiscoveredCount",
+    "missionsCompletedCount",
+  ],
   missionAttempts: ["participantId", "outcome", "updatedAt"],
 };
 let cached:
