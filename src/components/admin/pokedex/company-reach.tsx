@@ -1,8 +1,10 @@
+import { useDashboardExplorer } from "./dashboard-explorer";
 import { useState } from "react";
 import type { CompanyReachData } from "@/lib/company-reach";
 const n = (v: number) =>
   v.toLocaleString("pt-BR", { maximumFractionDigits: 1 });
 export function CompanyReach({ data }: { data: CompanyReachData }) {
+  const explore = useDashboardExplorer();
   const [selected, setSelected] = useState("");
   const [search, setSearch] = useState("");
   const [hour, setHour] = useState("");
@@ -100,6 +102,19 @@ export function CompanyReach({ data }: { data: CompanyReachData }) {
         <div className="rounded-xl border border-slate-200 p-4">
           {current ? (
             <>
+              <button
+                type="button"
+                className="mb-3 text-sm font-medium text-blue-700 hover:underline"
+                onClick={() =>
+                  explore({
+                    segment: "company",
+                    value: current.id,
+                    title: `Visitantes de ${current.name}`,
+                  })
+                }
+              >
+                Ver participantes
+              </button>
               <h3 className="font-semibold text-slate-900">{current.name}</h3>
               <p className="mt-1 text-sm text-slate-500">
                 {n(current.visitors)} visitantes únicos · {n(current.reach)}% da

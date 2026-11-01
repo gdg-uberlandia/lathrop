@@ -1,3 +1,4 @@
+import { useDashboardExplorer } from "./dashboard-explorer";
 import { useState } from "react";
 import type { ActivityHeatmapData } from "@/lib/activity-heatmap";
 import { activityKinds } from "@/lib/activity-heatmap";
@@ -10,6 +11,7 @@ const labels = {
   redemption: "Brindes",
 };
 export function ActivityHeatmap({ data }: { data: ActivityHeatmapData }) {
+  const explore = useDashboardExplorer();
   const [selectedDay, setSelectedDay] = useState("");
   const [metric, setMetric] = useState<"actions" | "people">("actions");
   const [selected, setSelected] = useState<{
@@ -116,7 +118,14 @@ export function ActivityHeatmap({ data }: { data: ActivityHeatmapData }) {
                       <td key={cell.hour}>
                         <button
                           type="button"
-                          onClick={() => setSelected({ kind, hour: cell.hour })}
+                          onClick={() => {
+                            setSelected({ kind, hour: cell.hour });
+                            explore({
+                              segment: "hour",
+                              value: `${current.day}T${String(cell.hour).padStart(2, "0")}|${kind}`,
+                              title: `${labels[kind]} · ${current.day} às ${cell.hour}h`,
+                            });
+                          }}
                           onFocus={() => setSelected({ kind, hour: cell.hour })}
                           aria-pressed={active}
                           aria-label={`${labels[kind]}, ${cell.hour}h: ${cell.actions} ações, ${cell.people} pessoas únicas`}

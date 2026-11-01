@@ -1,3 +1,4 @@
+import { useDashboardExplorer } from "./dashboard-explorer";
 import { useState } from "react";
 import type { EngagementDistributionData } from "@/lib/engagement-distribution";
 const number = (n: number) =>
@@ -7,6 +8,7 @@ export function EngagementDistribution({
 }: {
   data: EngagementDistributionData;
 }) {
+  const explore = useDashboardExplorer();
   const [selected, setSelected] = useState("Nenhuma ação");
   const band = data.bands.find((b) => b.label === selected) ?? data.bands[0];
   const colors = ["#cbd5e1", "#93c5fd", "#3b82f6", "#2563eb", "#1e3a8a"];
@@ -66,7 +68,14 @@ export function EngagementDistribution({
               <button
                 type="button"
                 key={b.label}
-                onClick={() => setSelected(b.label)}
+                onClick={() => {
+                  setSelected(b.label);
+                  explore({
+                    segment: "band",
+                    value: ["0", "1-5", "6-20", "21-50", "51+"][i],
+                    title: b.label,
+                  });
+                }}
                 aria-pressed={selected === b.label}
                 className={`flex w-full items-center gap-3 rounded-lg p-3 text-left text-sm transition focus:outline-none focus:ring-2 focus:ring-blue-500 ${selected === b.label ? "bg-blue-50 ring-1 ring-blue-200" : "hover:bg-slate-50"}`}
               >

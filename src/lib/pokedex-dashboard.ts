@@ -1,8 +1,5 @@
-import {
-  EVENT_STATISTICS_START_MS,
-  isEventStatisticsTime,
-  timestamp,
-} from "./event-statistics-time";
+import { selectDashboardContext } from "./dashboard-context";
+import { isEventStatisticsTime, timestamp } from "./event-statistics-time";
 export { timestamp } from "./event-statistics-time";
 import { buildTicketFlow, type TicketFlowTransaction } from "./ticket-flow";
 import { buildCompanyReach } from "./company-reach";
@@ -32,48 +29,19 @@ export function buildPokedexDashboard(
   source: DashboardSource,
   filters: DashboardFilters = {},
 ) {
-  const rows = (name: string) => source[name] ?? [];
-  const start = Math.max(
-    EVENT_STATISTICS_START_MS,
-    filters.from
-      ? Date.parse(`${filters.from}T00:00:00-03:00`)
-      : EVENT_STATISTICS_START_MS,
-  );
-  const end = filters.to
-    ? Date.parse(`${filters.to}T23:59:59.999-03:00`)
-    : Infinity;
-  const inPeriod = (v: unknown) => {
-    const t = timestamp(v);
-    return t > 0 && t >= start && t <= end;
-  };
-  const allProfiles = new Map(rows("profiles").map((p) => [p.id, p]));
-  const profiles = rows("profiles").filter(
-    (p) =>
-      (!filters.role ||
-        filters.role === "all" ||
-        (ids(p.accessRoles).length
-          ? ids(p.accessRoles)
-          : ["participant"]
-        ).includes(filters.role)) &&
-      (!timestamp(p.createdAt) || timestamp(p.createdAt) <= end),
-  );
-  const allowed = new Set(profiles.map((p) => p.id));
-  const eligible = (r: DashboardRow) => allowed.has(text(r.participantId));
-  const completions = rows("activityCompletions").filter(
-    (r) => eligible(r) && inPeriod(r.completedAt),
-  );
-  const connections = rows("connections").filter(
-    (r) =>
-      r.status === "accepted" &&
-      inPeriod(r.acceptedAt) &&
-      ids(r.participantIds).some((id) => allowed.has(id)),
-  );
-  const ratings = rows("talk-ratings").filter(
-    (r) => eligible(r) && inPeriod(r.completedAt),
-  );
-  const transactions = rows("ticketTransactions").filter(
-    (r) => eligible(r) && inPeriod(r.createdAt),
-  );
+  const context = selectDashboardContext(source, filters);
+  const {
+    rows,
+    profiles,
+    allowed,
+    eligible,
+    completions,
+    connections,
+    ratings,
+    transactions,
+    inPeriod,
+    allProfiles,
+  } = context;
   const redemptionTransactions = transactions.filter(
     (r) => r.type === "reward_redemption",
   );

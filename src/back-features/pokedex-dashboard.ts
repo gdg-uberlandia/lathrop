@@ -63,7 +63,7 @@ let cached:
 let pending:
   | { key: string; promise: Promise<NonNullable<typeof cached>> }
   | undefined;
-export async function getPokedexDashboard(filters: DashboardFilters) {
+export async function getPokedexDashboardSource() {
   const key = `${admin.app().options.projectId ?? "default"}:${CURRENT_EVENT_ID}:${getFirestoreCollectionName("profiles")}`;
   if (!cached || cached.key !== key || cached.expires <= Date.now()) {
     if (!pending || pending.key !== key) {
@@ -97,6 +97,10 @@ export async function getPokedexDashboard(filters: DashboardFilters) {
       if (pending === request) pending = undefined;
     }
   }
+  return cached;
+}
+export async function getPokedexDashboard(filters: DashboardFilters) {
+  const cached = await getPokedexDashboardSource();
   return {
     ...buildPokedexDashboard(cached.source, filters),
     updatedAt: cached.updatedAt,
