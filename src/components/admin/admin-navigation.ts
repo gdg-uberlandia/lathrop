@@ -21,23 +21,49 @@ export type AdminNavigationItem = {
   url: string;
   icon: LucideIcon;
   exact?: boolean;
+  group?: "Site" | "Pokédex";
 };
 
 export const adminNavigationItems: AdminNavigationItem[] = [
   { title: "Painel", url: "/admin", icon: Home, exact: true },
-  { title: "Dashboard Pokédex", url: "/admin/pokedex", icon: BarChart3 },
+  {
+    title: "Dashboard Pokédex",
+    url: "/admin/pokedex",
+    icon: BarChart3,
+    group: "Pokédex",
+  },
   { title: "Avisos", url: "/admin/notices", icon: Bell },
-  { title: "Empresas", url: "/admin/companies", icon: Building2 },
-  { title: "Missões", url: "/admin/missions", icon: Trophy },
+  {
+    title: "Empresas",
+    url: "/admin/companies",
+    icon: Building2,
+    group: "Pokédex",
+  },
+  { title: "Missões", url: "/admin/missions", icon: Trophy, group: "Pokédex" },
   { title: "Palestrantes", url: "/admin/speakers", icon: Megaphone },
   { title: "Palestras", url: "/admin/talks", icon: Presentation },
-  { title: "Participantes", url: "/admin/participants", icon: Users },
+  {
+    title: "Participantes",
+    url: "/admin/participants",
+    icon: Users,
+    group: "Pokédex",
+  },
   { title: "Patrocinadores", url: "/admin/sponsors", icon: DollarSign },
   { title: "Programação", url: "/admin/schedule", icon: Calendar },
-  { title: "Brindes da Pokédex", url: "/admin/rewards", icon: Package },
-  { title: "Prêmios", url: "/admin/raffles", icon: Gift },
-  { title: "QR codes imprimíveis", url: "/admin/qr-print", icon: Printer },
-  { title: "Tags", url: "/admin/tags", icon: Tags },
+  {
+    title: "Brindes da Pokédex",
+    url: "/admin/rewards",
+    icon: Package,
+    group: "Pokédex",
+  },
+  { title: "Prêmios", url: "/admin/raffles", icon: Gift, group: "Pokédex" },
+  {
+    title: "QR codes imprimíveis",
+    url: "/admin/qr-print",
+    icon: Printer,
+    group: "Pokédex",
+  },
+  { title: "Tags", url: "/admin/tags", icon: Tags, group: "Pokédex" },
 ];
 
 export function getAdminNavigationItems(pushEnabled: boolean) {
@@ -73,4 +99,12 @@ export function getAdminBreadcrumbs(pathname: string) {
   }
 
   return breadcrumbs;
+}
+
+export function getAdminNavigationGroups(pushEnabled: boolean) {
+  const items = getAdminNavigationItems(pushEnabled);
+  return ["Site", "Pokédex"].map((title) => ({
+    title,
+    items: items.filter((item) => (item.group ?? "Site") === title),
+  }));
 }

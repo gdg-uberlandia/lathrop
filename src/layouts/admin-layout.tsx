@@ -13,7 +13,7 @@ import { getAdminBreadcrumbs } from "@/components/admin/admin-navigation";
 import { getAdminNavigationItems } from "@/components/admin/admin-navigation";
 import { IconLoader2 } from "@tabler/icons-react";
 import Link from "next/link";
-import { ChevronDown, ChevronRight, LogOut, Plus, Search } from "lucide-react";
+import { ChevronDown, ChevronRight, LogOut, Search } from "lucide-react";
 import { AdminRouteProgress } from "@/components/admin/admin-route-progress";
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -116,35 +116,6 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
                   />
                 </label>
               </form>
-              <details className="group relative hidden sm:block">
-                <summary className="admin-primary-action flex h-9 cursor-pointer list-none items-center gap-2 rounded-lg bg-blue-600 px-3 text-sm font-medium shadow-sm hover:bg-blue-700">
-                  <Plus className="size-4" />
-                  Novo cadastro
-                  <ChevronDown className="size-3.5 transition group-open:rotate-180" />
-                </summary>
-                <div className="admin-surface absolute right-0 top-11 z-50 w-52 rounded-lg p-1.5 shadow-xl">
-                  {[
-                    ["Palestrante", "/admin/speakers/add-speaker"],
-                    ["Palestra", "/admin/talks/add-talk"],
-                    ["Patrocinador", "/admin/sponsors/add-sponsor"],
-                    ["Empresa", "/admin/companies/add-company"],
-                    ["Missão", "/admin/missions/add-mission"],
-                    ["Horário", "/admin/schedule/add-schedule"],
-                  ].map(([label, href]) => (
-                    <Link
-                      key={href}
-                      href={href}
-                      onClick={(event) => {
-                        const menu = event.currentTarget.closest("details");
-                        if (menu) menu.open = false;
-                      }}
-                      className="block rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-950"
-                    >
-                      {label}
-                    </Link>
-                  ))}
-                </div>
-              </details>
               <div className="hidden min-w-0 items-center gap-3 border-l border-slate-200 pl-3 sm:flex">
                 <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-blue-50 text-xs font-semibold text-blue-700">
                   {user?.email?.slice(0, 2).toUpperCase() ?? "AD"}
