@@ -1,3 +1,4 @@
+import { analyticsInterests } from "./analytics-interests";
 import {
   selectDashboardContext,
   participantActions,
@@ -86,7 +87,7 @@ export function exploreDashboardParticipants(
   }
   if (segment === "interest")
     for (const p of c.profiles)
-      if (analyticsIds(p.interests).includes(value)) add(p.id);
+      if (analyticsInterests(p).includes(value)) add(p.id);
   if (segment === "reward") {
     const legacy = new Set(
       c

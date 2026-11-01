@@ -1,3 +1,4 @@
+import { buildInterestAffinity } from "./interest-affinity";
 import { buildConnectionNetwork } from "./connection-network";
 import { buildRewardDemand } from "./reward-demand";
 import { buildRatingAnalysis } from "./rating-analysis";
@@ -223,6 +224,7 @@ export function buildPokedexDashboard(
   });
   return {
     filters,
+    affinity: buildInterestAffinity(context),
     network: buildConnectionNetwork(context),
     rewardDemand: buildRewardDemand(context),
     journey: buildParticipationJourney(context),

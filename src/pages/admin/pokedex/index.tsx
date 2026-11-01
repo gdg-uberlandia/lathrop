@@ -1,3 +1,4 @@
+import { InterestAffinity } from "@/components/admin/pokedex/interest-affinity";
 import { ConnectionNetwork } from "@/components/admin/pokedex/connection-network";
 import { RewardDemand } from "@/components/admin/pokedex/reward-demand";
 import { DashboardReports } from "@/components/admin/pokedex/dashboard-reports";
@@ -36,6 +37,7 @@ const tabs = [
   "Engajamento",
   "Jornada",
   "Rede de conexões",
+  "Afinidade",
   "Empresas",
   "Brindes e tickets",
   "Demanda por brindes",
@@ -435,6 +437,7 @@ export default function PokedexDashboardPage() {
                 </Panel>
               </>
             )}
+            {tab === "Afinidade" && <InterestAffinity data={data.affinity} />}
             {tab === "Rede de conexões" && (
               <ConnectionNetwork data={data.network} filters={filters} />
             )}
