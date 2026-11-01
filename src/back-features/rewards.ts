@@ -1,6 +1,7 @@
 import { Timestamp } from "firebase-admin/firestore";
 import {
   rewardFieldsSchema,
+  rewardDeleteSchema,
   rewardInputSchema,
   rewardUpdateSchema,
   Reward,
@@ -30,6 +31,7 @@ export async function getRewards() {
     .where("eventId", "==", CURRENT_EVENT_ID)
     .get();
   return snapshot.docs
+    .filter((doc) => !doc.data().deletedAt)
     .map((doc) => parse(doc.id, doc.data()))
     .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name, "pt-BR"));
 }
@@ -38,7 +40,11 @@ export async function getReward(id: string) {
     .collection(collection)
     .doc(idSchema.parse(id))
     .get();
-  if (!snapshot.exists || snapshot.data()?.eventId !== CURRENT_EVENT_ID)
+  if (
+    !snapshot.exists ||
+    snapshot.data()?.eventId !== CURRENT_EVENT_ID ||
+    snapshot.data()?.deletedAt
+  )
     throw new Error("Brinde não encontrado neste evento.");
   return parse(snapshot.id, snapshot.data()!);
 }
@@ -62,7 +68,11 @@ export async function updateReward(input: unknown) {
   const ref = db.collection(collection).doc(id);
   return db.runTransaction(async (transaction) => {
     const snapshot = await transaction.get(ref);
-    if (!snapshot.exists || snapshot.data()?.eventId !== CURRENT_EVENT_ID)
+    if (
+      !snapshot.exists ||
+      snapshot.data()?.eventId !== CURRENT_EVENT_ID ||
+      snapshot.data()?.deletedAt
+    )
       throw new Error("Brinde não encontrado neste evento.");
     const current = parse(snapshot.id, snapshot.data()!);
     if (current.updatedAt.toISOString() !== expectedUpdatedAt)
@@ -72,5 +82,31 @@ export async function updateReward(input: unknown) {
     const updatedAt = Timestamp.now();
     transaction.update(ref, { ...fields, updatedAt });
     return parse(id, { ...snapshot.data(), ...fields, updatedAt });
+  });
+}
+
+/** Remove from the catalog while keeping names and redemption references auditable. */
+export async function deleteReward(input: unknown, operatorId: string) {
+  const { id, expectedUpdatedAt } = rewardDeleteSchema.parse(input);
+  const ref = db.collection(collection).doc(id);
+  return db.runTransaction(async (transaction) => {
+    const snapshot = await transaction.get(ref);
+    if (!snapshot.exists || snapshot.data()?.eventId !== CURRENT_EVENT_ID)
+      throw new Error("Brinde não encontrado neste evento.");
+    const data = snapshot.data()!;
+    if (data.deletedAt) return id;
+    const current = parse(snapshot.id, data);
+    if (current.updatedAt.toISOString() !== expectedUpdatedAt)
+      throw new Error(
+        "Este brinde foi alterado ou resgatado. Recarregue a lista antes de excluir.",
+      );
+    const now = Timestamp.now();
+    transaction.update(ref, {
+      active: false,
+      deletedAt: now,
+      deletedBy: operatorId,
+      updatedAt: now,
+    });
+    return id;
   });
 }

@@ -47,3 +47,10 @@ export const rewardUpdateSchema = rewardInputSchema
   .strict();
 export type RewardInput = z.infer<typeof rewardInputSchema>;
 export type RewardUpdate = z.infer<typeof rewardUpdateSchema>;
+export const rewardDeleteSchema = z
+  .object({
+    id: rewardInputSchema.shape.id,
+    expectedUpdatedAt: z.string().datetime(),
+  })
+  .strict();
+export type RewardDelete = z.infer<typeof rewardDeleteSchema>;

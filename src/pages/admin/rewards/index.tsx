@@ -1,3 +1,5 @@
+import DeleteDialog from "@/components/admin/delete-dialog";
+import type { Reward } from "@/contracts/reward";
 import { Button } from "@/assets/components/ui/button";
 import {
   Table,
@@ -21,7 +23,7 @@ import {
 import { useAdminListState } from "@/hooks/useAdminListState";
 import { useRewards } from "@/hooks/useRewards";
 import { shouldBypassImageOptimization } from "@/helpers/image";
-import { Package, Pencil } from "lucide-react";
+import { Package, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import {
@@ -32,7 +34,9 @@ import { useMemo, useState } from "react";
 
 export default function RewardsPage() {
   const router = useRouter();
-  const { rewards, loading, error, fetchRewards, updateReward } = useRewards();
+  const { rewards, loading, error, fetchRewards, updateReward, removeReward } =
+    useRewards();
+  const [selected, setSelected] = useState<Reward | null>(null);
   const [status, setStatus] = useState("all");
   const list = useAdminListState();
   const filtered = useMemo(
@@ -53,10 +57,27 @@ export default function RewardsPage() {
       order: (item) => item.order,
       tickets: (item) => item.ticketCost,
       stock: (item) => item.stock,
+      limit: (item) => item.redemptionLimit ?? Number.MAX_SAFE_INTEGER,
+      active: (item) => Number(item.active),
     }),
   );
   return (
     <main className="min-w-0 p-4 sm:p-6">
+      <DeleteDialog
+        open={Boolean(selected)}
+        title={`Excluir ${selected?.name ?? "brinde"}?`}
+        description="O item será retirado do catálogo e ficará indisponível para novos resgates. O histórico de resgates e tickets será preservado."
+        onClose={() => setSelected(null)}
+        onConfirm={() => {
+          if (selected)
+            void removeReward({
+              id: selected.id,
+              expectedUpdatedAt: selected.updatedAt.toISOString(),
+            }).then((result) => {
+              if (result) setSelected(null);
+            });
+        }}
+      />
       <AdminPageHeader
         title="Brindes da Pokédex"
         description="Gerencie os brindes disponíveis para troca por tickets na lojinha."
@@ -119,8 +140,22 @@ export default function RewardsPage() {
                     />
                   </TableHead>
                 ))}
-                <TableHead>Limite por participante</TableHead>
-                <TableHead>Disponibilidade</TableHead>
+                <TableHead>
+                  <AdminSortButton
+                    label="Limite por participante"
+                    active={list.sort === "limit"}
+                    direction={list.direction}
+                    onClick={() => list.toggleSort("limit")}
+                  />
+                </TableHead>
+                <TableHead>
+                  <AdminSortButton
+                    label="Disponibilidade"
+                    active={list.sort === "active"}
+                    direction={list.direction}
+                    onClick={() => list.toggleSort("active")}
+                  />
+                </TableHead>
                 <TableHead>Ações</TableHead>
               </TableRow>
             </TableHeader>
@@ -177,6 +212,15 @@ export default function RewardsPage() {
                     </button>
                   </TableCell>
                   <TableCell>
+                    <Button
+                      size="icon"
+                      variant="destructive"
+                      disabled={loading}
+                      aria-label={`Excluir ${item.name}`}
+                      onClick={() => setSelected(item)}
+                    >
+                      <Trash2 />
+                    </Button>
                     <Button
                       size="icon"
                       variant="secondary"
