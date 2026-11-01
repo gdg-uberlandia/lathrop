@@ -1,3 +1,4 @@
+import { buildEngagementDistribution } from "./engagement-distribution";
 import {
   buildActivityHeatmap,
   type ActivityEvent,
@@ -265,6 +266,7 @@ export function buildPokedexDashboard(
         active: b.active.size,
       })),
     heatmap: buildActivityHeatmap(activityEvents),
+    engagement: buildEngagementDistribution([...allowed], activityEvents),
     activityTypes,
     companies,
     activities,

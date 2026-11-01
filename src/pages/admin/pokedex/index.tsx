@@ -1,3 +1,4 @@
+import { EngagementDistribution } from "@/components/admin/pokedex/engagement-distribution";
 import { ActivityHeatmap } from "@/components/admin/pokedex/activity-heatmap";
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
@@ -500,6 +501,12 @@ export default function PokedexDashboardPage() {
                   ],
                 ]}
               />
+              <Panel
+                title="Distribuição do engajamento"
+                description="Veja a amplitude da participação e a concentração das ações no período."
+              >
+                <EngagementDistribution data={data.engagement} />
+              </Panel>
               <div className="grid gap-5 lg:grid-cols-2">
                 <Panel title="Participação por atividade">
                   <DataTable
