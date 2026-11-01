@@ -25,6 +25,7 @@ import {
 } from "@/assets/components/ui/table";
 import {
   AdminPageHeader,
+  AdminSortButton,
   AdminListToolbar,
   AdminLoadingState,
   AdminErrorState,
@@ -244,7 +245,12 @@ export default function ParticipantsPage() {
       normalize(list.search.trim()),
     ),
   );
-  const pagination = list.paginate(filtered);
+  const pagination = list.paginate(
+    list.sortItems(filtered, {
+      name: (item) => item.name,
+      role: (item) => item.accessRoles.join(","),
+    }),
+  );
   const error = query.error || mutation.error || companiesError;
   return (
     <main className="p-4 sm:p-6">
@@ -287,8 +293,22 @@ export default function ParticipantsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Foto</TableHead>
-                <TableHead>Participante</TableHead>
-                <TableHead>Papel na Pokedex</TableHead>
+                <TableHead>
+                  <AdminSortButton
+                    label="Participante"
+                    active={list.sort === "name"}
+                    direction={list.direction}
+                    onClick={() => list.toggleSort("name")}
+                  />
+                </TableHead>
+                <TableHead>
+                  <AdminSortButton
+                    label="Papel na Pokedex"
+                    active={list.sort === "role"}
+                    direction={list.direction}
+                    onClick={() => list.toggleSort("role")}
+                  />
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

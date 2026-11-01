@@ -4,6 +4,7 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -16,7 +17,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import {
-  getAdminNavigationItems,
+  getAdminNavigationGroups,
   isAdminNavigationItemActive,
 } from "./admin-navigation";
 
@@ -30,38 +31,43 @@ export function AppSidebar() {
         <LogoGDG inverted width={180} />
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent className="px-2 py-3">
-            <SidebarMenu className="gap-1.5">
-              {getAdminNavigationItems(pushEnabled).map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isAdminNavigationItemActive(
-                      router.pathname,
-                      item,
-                    )}
-                    className="h-11 rounded-lg text-slate-300 hover:bg-white/10 hover:text-white data-[active=true]:bg-blue-600 data-[active=true]:font-medium data-[active=true]:text-white"
-                  >
-                    <Link
-                      href={item.url}
-                      prefetch={false}
-                      className="h-11 rounded-lg px-3"
-                      aria-current={
-                        isAdminNavigationItemActive(router.pathname, item)
-                          ? "page"
-                          : undefined
-                      }
+        {getAdminNavigationGroups(pushEnabled).map((group) => (
+          <SidebarGroup key={group.title}>
+            <SidebarGroupLabel className="px-5 text-xs font-semibold uppercase tracking-wider text-slate-400">
+              {group.title}
+            </SidebarGroupLabel>
+            <SidebarGroupContent className="px-2 py-3">
+              <SidebarMenu className="gap-1.5">
+                {group.items.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isAdminNavigationItemActive(
+                        router.pathname,
+                        item,
+                      )}
+                      className="h-11 rounded-lg text-slate-300 hover:bg-white/10 hover:text-white data-[active=true]:bg-blue-600 data-[active=true]:font-medium data-[active=true]:text-white"
                     >
-                      <item.icon className="mr-1 !size-[18px]" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+                      <Link
+                        href={item.url}
+                        prefetch={false}
+                        className="h-11 rounded-lg px-3"
+                        aria-current={
+                          isAdminNavigationItemActive(router.pathname, item)
+                            ? "page"
+                            : undefined
+                        }
+                      >
+                        <item.icon className="mr-1 !size-[18px]" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
       <SidebarFooter className="border-t border-white/10 p-3">
         <SidebarMenu>

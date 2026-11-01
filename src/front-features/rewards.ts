@@ -29,3 +29,14 @@ export const updateRewardAPI = async (body: RewardUpdate) =>
       body,
     }),
   );
+
+const deleteResponseSchema = z.object({ id: z.string() });
+export const deleteRewardAPI = async (
+  body: import("@/contracts/reward").RewardDelete,
+) => {
+  const response = await adminApiRequest<unknown>(`${PATH}/${body.id}`, {
+    method: "DELETE",
+    body: { expectedUpdatedAt: body.expectedUpdatedAt },
+  });
+  return deleteResponseSchema.parse(response);
+};

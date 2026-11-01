@@ -1,3 +1,4 @@
+import { compareTableValues } from "@/lib/table-sort";
 import { buildStaticQrUrl } from "@/lib/static-qr-url";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
@@ -60,6 +61,10 @@ function PrintPreview({
 }
 
 export default function QrPrintPage() {
+  const [tableSort, setTableSort] = useState<{
+    column: "kind" | "title" | "active";
+    direction: "asc" | "desc";
+  }>({ column: "title", direction: "asc" });
   const tags = useTags();
   const missions = useMissions();
   const companies = useCompanies();
@@ -98,13 +103,25 @@ export default function QrPrintPage() {
       ].sort((a, b) => a.title.localeCompare(b.title, "pt-BR")),
     [tags.tags, missions.missions, companies.companies],
   );
-  const visible = items.filter(
-    (i) =>
-      (kind === "all" || kind === i.kind) &&
-      i.title
-        .toLocaleLowerCase("pt-BR")
-        .includes(search.toLocaleLowerCase("pt-BR")),
-  );
+  const visible = items
+    .filter(
+      (i) =>
+        (kind === "all" || kind === i.kind) &&
+        i.title
+          .toLocaleLowerCase("pt-BR")
+          .includes(search.toLocaleLowerCase("pt-BR")),
+    )
+    .sort((a, b) =>
+      compareTableValues(
+        typeof a[tableSort.column] === "boolean"
+          ? Number(a[tableSort.column])
+          : String(a[tableSort.column]),
+        typeof b[tableSort.column] === "boolean"
+          ? Number(b[tableSort.column])
+          : String(b[tableSort.column]),
+        tableSort.direction,
+      ),
+    );
   const chosen = items.filter((i) => selected.includes(i.key));
   const loading = tags.loading || missions.loading || companies.loading;
   const loadError = tags.error || missions.error || companies.error;
@@ -245,14 +262,83 @@ export default function QrPrintPage() {
                     }
                   />
                 </th>
-                <th scope="col" className="p-3">
-                  Tipo
+                <th
+                  scope="col"
+                  className="p-3"
+                  aria-sort={
+                    tableSort.column === "kind"
+                      ? tableSort.direction === "asc"
+                        ? "ascending"
+                        : "descending"
+                      : "none"
+                  }
+                >
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setTableSort((s) => ({
+                        column: "kind",
+                        direction:
+                          s.column === "kind" && s.direction === "asc"
+                            ? "desc"
+                            : "asc",
+                      }))
+                    }
+                  >
+                    Tipo ↕
+                  </button>
                 </th>
-                <th scope="col" className="p-3">
-                  Título
+                <th
+                  scope="col"
+                  className="p-3"
+                  aria-sort={
+                    tableSort.column === "title"
+                      ? tableSort.direction === "asc"
+                        ? "ascending"
+                        : "descending"
+                      : "none"
+                  }
+                >
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setTableSort((s) => ({
+                        column: "title",
+                        direction:
+                          s.column === "title" && s.direction === "asc"
+                            ? "desc"
+                            : "asc",
+                      }))
+                    }
+                  >
+                    Título ↕
+                  </button>
                 </th>
-                <th scope="col" className="p-3">
-                  Status
+                <th
+                  scope="col"
+                  className="p-3"
+                  aria-sort={
+                    tableSort.column === "active"
+                      ? tableSort.direction === "asc"
+                        ? "ascending"
+                        : "descending"
+                      : "none"
+                  }
+                >
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setTableSort((s) => ({
+                        column: "active",
+                        direction:
+                          s.column === "active" && s.direction === "asc"
+                            ? "desc"
+                            : "asc",
+                      }))
+                    }
+                  >
+                    Status ↕
+                  </button>
                 </th>
               </tr>
             </thead>

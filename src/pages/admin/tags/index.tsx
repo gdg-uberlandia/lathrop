@@ -102,7 +102,14 @@ export default function TagsPage() {
                       onClick={() => list.toggleSort("name")}
                     />
                   </TableHead>
-                  <TableHead>Descrição</TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Descrição"
+                      active={list.sort === "description"}
+                      direction={list.direction}
+                      onClick={() => list.toggleSort("description")}
+                    />
+                  </TableHead>
                   <TableHead>
                     <AdminSortButton
                       label="Status"

@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import {
   createRewardAPI,
+  deleteRewardAPI,
   getRewardsAPI,
   readRewardAPI,
   updateRewardAPI,
@@ -35,7 +36,22 @@ export function useRewards() {
     mutationFn: updateRewardAPI,
     onSuccess: updateCache,
   });
-  const error = query.error || create.error || update.error;
+  const remove = useMutation({
+    mutationFn: deleteRewardAPI,
+    onSuccess: ({ id }) => {
+      client.setQueryData<Reward[]>(adminQueryKeys.rewards, (items) =>
+        items?.filter((item) => item.id !== id),
+      );
+      client.removeQueries({
+        queryKey: [...adminQueryKeys.rewards, id],
+        exact: true,
+      });
+      void client.invalidateQueries({
+        queryKey: ["admin", "pokedex-dashboard"],
+      });
+    },
+  });
+  const error = query.error || create.error || update.error || remove.error;
   const fetchReward = useCallback(
     (id: string) =>
       resolveAdminAction(() =>
@@ -49,7 +65,11 @@ export function useRewards() {
   );
   return {
     rewards: query.data ?? [],
-    loading: query.isFetching || create.isPending || update.isPending,
+    loading:
+      query.isFetching ||
+      create.isPending ||
+      update.isPending ||
+      remove.isPending,
     error: error
       ? getAdminApiErrorMessage(error, "Erro ao processar brindes")
       : null,
@@ -57,6 +77,8 @@ export function useRewards() {
     fetchReward,
     addReward: (value: RewardInput) =>
       resolveAdminAction(() => create.mutateAsync(value)),
+    removeReward: (value: import("@/contracts/reward").RewardDelete) =>
+      resolveAdminAction(() => remove.mutateAsync(value)),
     updateReward: (value: RewardUpdate) =>
       resolveAdminAction(() => update.mutateAsync(value)),
   };

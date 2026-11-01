@@ -110,3 +110,73 @@ test("reward updates preserve redemption history and cannot overwrite concurrent
     db.runTransaction = original;
   }
 });
+
+test("excluir brinde preserva resgates, recusa conflito de versão e não permite reativação", async () => {
+  if (!admin.apps.length)
+    admin.initializeApp({ projectId: "demo-rewards-tests" });
+  const { db } = await import("@/utils/db");
+  const { deleteReward, updateReward } = await import("./rewards");
+  const now = Timestamp.fromDate(new Date("2026-10-25T12:00:00Z")),
+    path = `${getFirestoreCollectionName("rewards")}/${input.id}`;
+  const records = new Map<string, Record<string, unknown>>([
+    [
+      path,
+      { ...fields, eventId: CURRENT_EVENT_ID, createdAt: now, updatedAt: now },
+    ],
+    [
+      `rewardRedemptions/history`,
+      { rewardId: input.id, quantity: 3, ticketsSpent: 10 },
+    ],
+  ]);
+  let writes = 0;
+  const transaction = {
+    get: async (ref: DocumentReference) => ({
+      id: ref.id,
+      exists: records.has(ref.path),
+      data: () => records.get(ref.path),
+    }),
+    update: (ref: DocumentReference, value: Record<string, unknown>) => {
+      writes++;
+      records.set(ref.path, { ...records.get(ref.path), ...value });
+    },
+  } as unknown as Transaction;
+  const original = db.runTransaction;
+  db.runTransaction = async <T>(fn: (tx: Transaction) => Promise<T>) =>
+    fn(transaction);
+  try {
+    await assert.rejects(
+      deleteReward(
+        { id: input.id, expectedUpdatedAt: "2026-10-24T00:00:00.000Z" },
+        "operator",
+      ),
+      /Recarregue/,
+    );
+    assert.equal(writes, 0);
+    await deleteReward(
+      { id: input.id, expectedUpdatedAt: now.toDate().toISOString() },
+      "operator",
+    );
+    assert.equal(records.get(path)?.active, false);
+    assert.equal(records.get(path)?.deletedBy, "operator");
+    assert.equal(records.get(`rewardRedemptions/history`)?.quantity, 3);
+    await deleteReward(
+      { id: input.id, expectedUpdatedAt: now.toDate().toISOString() },
+      "operator",
+    );
+    assert.equal(writes, 1);
+    await assert.rejects(
+      updateReward({ ...input, expectedUpdatedAt: now.toDate().toISOString() }),
+      /neste evento/,
+    );
+    records.set(path, { ...records.get(path), eventId: "another" });
+    await assert.rejects(
+      deleteReward(
+        { id: input.id, expectedUpdatedAt: now.toDate().toISOString() },
+        "operator",
+      ),
+      /neste evento/,
+    );
+  } finally {
+    db.runTransaction = original;
+  }
+});

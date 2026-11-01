@@ -26,6 +26,7 @@ import {
 } from "@/assets/components/ui/alert-dialog";
 import {
   AdminPageHeader,
+  AdminSortButton,
   AdminLoadingState,
   AdminErrorState,
   AdminEmptyState,
@@ -131,7 +132,15 @@ export default function NoticesPage() {
       .toLocaleLowerCase("pt-BR")
       .includes(list.search.toLocaleLowerCase("pt-BR")),
   );
-  const pagination = list.paginate(filtered);
+  const pagination = list.paginate(
+    list.sortItems(filtered, {
+      name: (item) => item.title,
+      body: (item) => item.body,
+      link: (item) => item.link,
+      createdAt: (item) => new Date(item.createdAt).getTime(),
+      push: (item) => statusLabels[item.pushStatus],
+    }),
+  );
   const error = query.error || mutation.error || remove.error;
   return (
     <main className="space-y-6 p-4 sm:p-6">
@@ -270,11 +279,46 @@ export default function NoticesPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Título</TableHead>
-                  <TableHead>Mensagem</TableHead>
-                  <TableHead>Destino</TableHead>
-                  <TableHead>Publicação</TableHead>
-                  <TableHead>Push</TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Título"
+                      active={list.sort === "name"}
+                      direction={list.direction}
+                      onClick={() => list.toggleSort("name")}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Mensagem"
+                      active={list.sort === "body"}
+                      direction={list.direction}
+                      onClick={() => list.toggleSort("body")}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Destino"
+                      active={list.sort === "link"}
+                      direction={list.direction}
+                      onClick={() => list.toggleSort("link")}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Publicação"
+                      active={list.sort === "createdAt"}
+                      direction={list.direction}
+                      onClick={() => list.toggleSort("createdAt")}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <AdminSortButton
+                      label="Push"
+                      active={list.sort === "push"}
+                      direction={list.direction}
+                      onClick={() => list.toggleSort("push")}
+                    />
+                  </TableHead>
                   <TableHead>Ações</TableHead>
                 </TableRow>
               </TableHeader>
