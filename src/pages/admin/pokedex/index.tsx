@@ -1,3 +1,4 @@
+import { ConnectionNetwork } from "@/components/admin/pokedex/connection-network";
 import { RewardDemand } from "@/components/admin/pokedex/reward-demand";
 import { DashboardReports } from "@/components/admin/pokedex/dashboard-reports";
 import { RatingAnalysis } from "@/components/admin/pokedex/rating-analysis";
@@ -34,6 +35,7 @@ const tabs = [
   "Visão geral",
   "Engajamento",
   "Jornada",
+  "Rede de conexões",
   "Empresas",
   "Brindes e tickets",
   "Demanda por brindes",
@@ -432,6 +434,9 @@ export default function PokedexDashboardPage() {
                   />
                 </Panel>
               </>
+            )}
+            {tab === "Rede de conexões" && (
+              <ConnectionNetwork data={data.network} filters={filters} />
             )}
             {tab === "Jornada" && <ParticipationJourney data={data.journey} />}
             {tab === "Empresas" && (

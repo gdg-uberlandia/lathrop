@@ -13,6 +13,8 @@ const fields: Record<string, string[]> = {
     "displayName",
     "email",
     "accessRoles",
+    "interests",
+    "skills",
     "createdAt",
     "onboardingCompleted",
     "xp",
