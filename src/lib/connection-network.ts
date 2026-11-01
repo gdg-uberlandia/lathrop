@@ -66,15 +66,8 @@ export function buildConnectionNetwork(c: DashboardContext, focusId = "") {
     .sort((a, b) => b.degree - a.degree || a.id.localeCompare(b.id));
   const focus = nodes.find((n) => n.id === focusId),
     selected = focus
-      ? [
-          focus,
-          ...nodes.filter((n) => adjacent.get(focus.id)!.has(n.id)),
-        ].slice(0, 60)
-      : nodes.slice(0, 60),
-    sample = new Set(selected.map((n) => n.id));
-  const visible = edges.filter(
-    (e) => sample.has(e.source) && sample.has(e.target),
-  );
+      ? [focus, ...nodes.filter((n) => adjacent.get(focus.id)!.has(n.id))]
+      : nodes.slice(0, 60);
   const connected = nodes.filter((n) => n.degree > 0).length;
   return {
     base: nodes.length,
@@ -95,9 +88,7 @@ export function buildConnectionNetwork(c: DashboardContext, focusId = "") {
     graph: {
       focusId: focus?.id ?? null,
       nodes: selected,
-      edges: visible.slice(0, 300),
       totalNodes: focus ? focus.degree + 1 : nodes.length,
-      totalEdges: visible.length,
     },
   };
 }

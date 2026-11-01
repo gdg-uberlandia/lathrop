@@ -28,19 +28,6 @@ export function ConnectionNetwork({
   });
   const network = focus ? (query.data ?? data) : data,
     graph = network.graph;
-  const points = new Map(
-    graph.nodes.map((node, i) => {
-      const center = graph.focusId === node.id,
-        angle = (i / Math.max(1, graph.nodes.length)) * Math.PI * 2;
-      return [
-        node.id,
-        {
-          x: center ? 320 : 320 + Math.cos(angle) * (190 + (i % 3) * 12),
-          y: center ? 230 : 230 + Math.sin(angle) * (175 + (i % 3) * 10),
-        },
-      ];
-    }),
-  );
   return (
     <div className="space-y-5">
       <Cards
@@ -74,115 +61,81 @@ export function ConnectionNetwork({
         ]}
       />
       <Panel
-        title="Mapa da rede"
-        description="Visualização limitada para manter a leitura. Os indicadores e o ranking usam toda a rede do recorte."
+        title="Participantes na rede"
+        description="Conexões reais entre participantes, apresentadas em listas e indicadores."
       >
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-xs text-slate-500">
-            {graph.nodes.length} de {graph.totalNodes} perfis ·{" "}
-            {graph.edges.length} de {graph.totalEdges} ligações entre os perfis
-            da amostra
-          </p>
-          <div className="flex gap-3">
-            <button
-              type="button"
-              className="text-sm text-blue-700 hover:underline"
-              onClick={() => setFocus("")}
-            >
-              Visão geral
-            </button>
-            <button
-              type="button"
-              className="text-sm text-blue-700 hover:underline"
-              onClick={() =>
-                explore({
-                  segment: "network",
-                  value: "isolated",
-                  title: "Sem conexões no recorte",
-                })
-              }
-            >
-              Ver pessoas sem conexões
-            </button>
-          </div>
+        <div className="flex flex-wrap gap-4">
+          <button
+            type="button"
+            className="text-sm text-blue-700 hover:underline"
+            onClick={() =>
+              explore({
+                segment: "network",
+                value: "connected",
+                title: "Participantes com conexões",
+              })
+            }
+          >
+            Ver participantes conectados
+          </button>
+          <button
+            type="button"
+            className="text-sm text-blue-700 hover:underline"
+            onClick={() =>
+              explore({
+                segment: "network",
+                value: "isolated",
+                title: "Participantes sem conexões",
+              })
+            }
+          >
+            Ver participantes sem conexões
+          </button>
         </div>
         {query.isFetching && focus && (
-          <p role="status" className="text-xs text-slate-500">
-            Carregando a rede selecionada…
+          <p role="status" className="mt-3 text-xs text-slate-500">
+            Carregando conexões…
           </p>
         )}
         {query.error && (
           <AdminErrorState
             message={getAdminApiErrorMessage(
               query.error,
-              "Erro ao carregar rede.",
+              "Erro ao carregar conexões.",
             )}
             onRetry={() => void query.refetch()}
           />
         )}
-        <svg
-          viewBox="0 0 640 460"
-          className="w-full rounded-xl bg-slate-50"
-          role="img"
-          aria-label="Mapa ilustrativo de conexões aceitas. Selecione uma pessoa para explorar sua rede."
-        >
-          {graph.edges.map((e) => {
-            const a = points.get(e.source)!,
-              b = points.get(e.target)!;
-            return (
-              <line
-                key={e.source + e.target}
-                x1={a.x}
-                y1={a.y}
-                x2={b.x}
-                y2={b.y}
-                stroke="#93c5fd"
-                strokeOpacity=".35"
-              />
-            );
-          })}
-          {graph.nodes.map((node) => {
-            const p = points.get(node.id)!;
-            return (
-              <circle
-                key={node.id}
-                cx={p.x}
-                cy={p.y}
-                r={
-                  graph.focusId === node.id
-                    ? 12
-                    : Math.min(10, 4 + Math.sqrt(node.degree) / 2)
-                }
-                fill={
-                  ["#2563eb", "#10b981", "#f59e0b", "#8b5cf6"][
-                    node.component % 4
-                  ]
-                }
-                tabIndex={0}
-                role="button"
-                aria-label={`${node.name}, ${node.degree} conexões. Explorar rede.`}
-                onClick={() => setFocus(node.id)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    setFocus(node.id);
-                  }
-                }}
-                className="cursor-pointer focus:stroke-slate-900 focus:stroke-2"
-              >
-                <title>
-                  {node.name} · {node.degree} conexões
-                </title>
-              </circle>
-            );
-          })}
-        </svg>
-        <p className="mt-3 text-xs text-slate-500">
-          Amostra de até 60 pessoas e 300 ligações. Na visão geral, inclui os
-          maiores graus; ao selecionar uma pessoa, mostra sua vizinhança.
-          Posições e distâncias são ilustrativas. Cores distinguem grupos
-          conectados, com reutilização de cores.
-        </p>
+        {focus && graph.focusId === focus && (
+          <div className="mt-4">
+            <h3 className="mb-3 font-medium">
+              Conexões de{" "}
+              {graph.nodes.find((n) => n.id === graph.focusId)?.name ??
+                "participante"}
+            </h3>
+            <DataTable
+              searchable
+              headers={["Participante", "Conexões no evento", "Estatísticas"]}
+              rows={graph.nodes
+                .filter((n) => n.id !== graph.focusId)
+                .map((n) => ({
+                  key: n.id,
+                  search: n.name,
+                  cells: [
+                    n.name,
+                    n.degree,
+                    <ParticipantAnalyticsLink key="profile" id={n.id}>
+                      Ver estatísticas
+                    </ParticipantAnalyticsLink>,
+                  ],
+                }))}
+            />
+            <p className="mt-2 text-xs text-slate-500">
+              Mostrando {Math.max(0, graph.nodes.length - 1)} de{" "}
+              {Math.max(0, graph.totalNodes - 1)} conexões desta pessoa.
+            </p>
+          </div>
+        )}
       </Panel>
       <Panel title="Participantes com mais conexões no recorte">
         <DataTable

@@ -1,6 +1,5 @@
 import type { ConnectionNetwork } from "./connection-network";
 import type { RewardDemand } from "./reward-demand";
-import type { DataQuality } from "./data-quality";
 import type { InterestAffinity } from "./interest-affinity";
 export type ResultSummaryInput = {
   base: { profiles: number };
@@ -17,7 +16,6 @@ export type ResultSummaryInput = {
   engagement: { topCount: number; topShare: number };
   network: ConnectionNetwork;
   rewardDemand: RewardDemand;
-  quality: DataQuality;
   affinity: InterestAffinity;
 };
 export type ResultInsight = {
@@ -128,23 +126,6 @@ export function buildResultSummary(d: ResultSummaryInput): ResultInsight[] {
       `Maior diferença absoluta entre os cruzamentos elegíveis. Grupos de ${n(affinity.people)} e ${n(affinity.comparisonPeople)} pessoas; mínimo 20 por grupo. Sem teste de significância ou inferência causal.`,
       "Afinidade",
       "attention",
-    );
-  if (d.quality.failed)
-    add(
-      "quality",
-      "Pontos de consistência para revisão",
-      `${n(d.quality.failed)} de ${n(d.quality.executed)} verificações apontaram ocorrências; ${n(d.quality.errors)} verificações possuem erros.`,
-      `Unidades variam por regra. Não somamos as ocorrências como pessoas e não executamos correções automáticas.`,
-      "Qualidade dos dados",
-      "attention",
-    );
-  else
-    add(
-      "quality",
-      "Conferências sem divergências",
-      `As ${n(d.quality.executed)} verificações executadas não encontraram divergências.`,
-      `Não é garantia sobre regras ou registros não verificados.`,
-      "Qualidade dos dados",
     );
   return facts;
 }

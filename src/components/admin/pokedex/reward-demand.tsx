@@ -113,7 +113,13 @@ export function RewardDemand({ data }: { data: Demand }) {
               r.ticketsSpent,
               r.averageTicketCost.toFixed(1),
               r.stock ?? "Indisponível",
-              r.stock === 0 ? "Sem estoque" : r.active ? "Ativo" : "Inativo",
+              r.deleted
+                ? "Excluído do catálogo"
+                : r.stock === 0
+                  ? "Sem estoque"
+                  : r.active
+                    ? "Ativo"
+                    : "Inativo",
             ],
           }))}
         />

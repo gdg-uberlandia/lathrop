@@ -1,6 +1,5 @@
-import { dashboardFiltersSchema } from "@/lib/dashboard-filter-schema";
+import { DASHBOARD_REPORT_TABS } from "@/lib/dashboard-report";
 import { ResultSummary } from "@/components/admin/pokedex/result-summary";
-import { DataQuality } from "@/components/admin/pokedex/data-quality";
 import { InterestAffinity } from "@/components/admin/pokedex/interest-affinity";
 import { ConnectionNetwork } from "@/components/admin/pokedex/connection-network";
 import { RewardDemand } from "@/components/admin/pokedex/reward-demand";
@@ -35,21 +34,7 @@ import { getAdminApiErrorMessage } from "@/lib/admin-api/errors";
 import type { PokedexDashboard } from "@/lib/pokedex-dashboard";
 import { dashboardCsv } from "@/lib/dashboard-csv";
 
-const tabs = [
-  "Visão geral",
-  "Resumo",
-  "Engajamento",
-  "Jornada",
-  "Rede de conexões",
-  "Afinidade",
-  "Qualidade dos dados",
-  "Empresas",
-  "Brindes e tickets",
-  "Demanda por brindes",
-  "Avaliações",
-  "Ganhadores",
-  "Relatórios",
-] as const;
+const tabs = [...DASHBOARD_REPORT_TABS, "Relatórios"] as const;
 const number = (n: number) => n.toLocaleString("pt-BR");
 const score = (n: number | null) =>
   n === null
@@ -105,42 +90,7 @@ export default function PokedexDashboardPage() {
       setTab(section as (typeof tabs)[number]);
     }
   }, [router.query.section]);
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
-  const [role, setRole] = useState("all");
-  const [filters, setFilters] = useState({ from: "", to: "", role: "all" });
-  useEffect(() => {
-    if (!router.isReady) return;
-    const parsed = dashboardFiltersSchema.safeParse({
-      from: router.query.from,
-      to: router.query.to,
-      role: router.query.role,
-    });
-    if (!parsed.success) return;
-    const next = {
-      from: parsed.data.from ?? "",
-      to: parsed.data.to ?? "",
-      role: parsed.data.role,
-    };
-    setFrom(next.from);
-    setTo(next.to);
-    setRole(next.role);
-    setFilters(next);
-  }, [router.isReady, router.query.from, router.query.to, router.query.role]);
-  function persistFilters(next: { from: string; to: string; role: string }) {
-    const query = { ...router.query };
-    delete query.from;
-    delete query.to;
-    delete query.role;
-    if (next.from) query.from = next.from;
-    if (next.to) query.to = next.to;
-    if (next.role !== "all") query.role = next.role;
-    void router.replace({ pathname: router.pathname, query }, undefined, {
-      shallow: true,
-      scroll: false,
-    });
-  }
-  const invalid = Boolean(from && to && from > to);
+  const filters = { role: "participant" as const };
   const query = useQuery({
     queryKey: ["admin", "pokedex-dashboard", filters],
     enabled: isAdmin,
@@ -148,8 +98,6 @@ export default function PokedexDashboardPage() {
       adminApiRequest<PokedexDashboard>("/api/v1/pokedex-dashboard", {
         signal,
         query: {
-          from: filters.from || undefined,
-          to: filters.to || undefined,
           role: filters.role,
         },
       }),
@@ -163,76 +111,10 @@ export default function PokedexDashboardPage() {
           description="Adesão, engajamento e resultados do evento."
           icon={BarChart3}
         />
-        <form
-          className="admin-surface flex flex-wrap items-end gap-3 rounded-xl p-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (!invalid) {
-              const next = { from, to, role };
-              setFilters(next);
-              persistFilters(next);
-            }
-          }}
-        >
-          <label className="space-y-1 text-sm text-slate-600">
-            <span className="block">De</span>
-            <input
-              className={inputClass}
-              type="date"
-              value={from}
-              onChange={(e) => setFrom(e.target.value)}
-              min="2026-10-31"
-              max={to || undefined}
-            />
-          </label>
-          <label className="space-y-1 text-sm text-slate-600">
-            <span className="block">Até</span>
-            <input
-              className={inputClass}
-              type="date"
-              value={to}
-              onChange={(e) => setTo(e.target.value)}
-              min={from && from > "2026-10-31" ? from : "2026-10-31"}
-            />
-          </label>
-          <label className="space-y-1 text-sm text-slate-600">
-            <span className="block">Papel</span>
-            <select
-              className={inputClass}
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-            >
-              {[
-                ["all", "Todos os papéis"],
-                ["participant", "Participantes"],
-                ["sponsor", "Patrocinadores"],
-                ["reviewer", "Revisores"],
-                ["staff", "Equipe"],
-                ["editor", "Editores"],
-                ["admin", "Administradores"],
-              ].map(([v, l]) => (
-                <option key={v} value={v}>
-                  {l}
-                </option>
-              ))}
-            </select>
-          </label>
-          <Button type="submit" disabled={invalid || query.isFetching}>
-            Aplicar filtros
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              setFrom("");
-              setTo("");
-              setRole("all");
-              setFilters({ from: "", to: "", role: "all" });
-              persistFilters({ from: "", to: "", role: "all" });
-            }}
-          >
-            Todo o evento
-          </Button>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-slate-500">
+            Dados dos participantes a partir da abertura oficial do evento.
+          </p>
           <Button
             type="button"
             variant="outline"
@@ -244,12 +126,7 @@ export default function PokedexDashboardPage() {
             />
             Atualizar
           </Button>
-          {invalid && (
-            <p role="alert" className="w-full text-sm text-red-700">
-              A data inicial deve ser anterior ou igual à final.
-            </p>
-          )}
-        </form>
+        </div>
         {data && (
           <p className="text-xs text-slate-500">
             {data.environment} · {data.eventId} · Dados consultados em{" "}
@@ -509,9 +386,6 @@ export default function PokedexDashboardPage() {
                 </Panel>
               </>
             )}
-            {tab === "Qualidade dos dados" && (
-              <DataQuality data={data.quality} />
-            )}
             {tab === "Afinidade" && <InterestAffinity data={data.affinity} />}
             {tab === "Rede de conexões" && (
               <ConnectionNetwork data={data.network} filters={filters} />
@@ -591,17 +465,19 @@ export default function PokedexDashboardPage() {
                       "Pessoas",
                       "Tickets gastos",
                     ]}
-                    rows={data.rewards.map((r) => ({
-                      key: r.id,
-                      cells: [
-                        r.name,
-                        r.active ? "Ativo" : "Inativo",
-                        number(r.stock),
-                        number(r.redeemed),
-                        number(r.redeemers),
-                        number(r.ticketsSpent),
-                      ],
-                    }))}
+                    rows={data.rewards
+                      .filter((r) => !r.deleted)
+                      .map((r) => ({
+                        key: r.id,
+                        cells: [
+                          r.name,
+                          r.active ? "Ativo" : "Inativo",
+                          number(r.stock),
+                          number(r.redeemed),
+                          number(r.redeemers),
+                          number(r.ticketsSpent),
+                        ],
+                      }))}
                   />
                 </Panel>
               </>

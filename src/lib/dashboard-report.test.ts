@@ -24,3 +24,56 @@ test("relatório de empresa respeita escopo e não exporta identidade de partici
   assert.equal(serialized.includes("Nome privado"), false);
   assert.throws(() => buildDashboardReport(data, "missing"));
 });
+
+test("relatórios têm uma seção por aba, gráficos locais e não incluem qualidade removida", () => {
+  const d = {
+    ...buildPokedexDashboard({ profiles: [] }),
+    eventId: "event",
+    environment: "Teste",
+    updatedAt: "2026-11-01T12:00:00Z",
+  };
+  const full = buildDashboardReport(d);
+  assert.equal(full.sections.length, 11);
+  assert.equal(
+    full.sections.some((s) => s.title === "Qualidade dos dados"),
+    false,
+  );
+  const demand = buildDashboardReport(d, "Demanda por brindes");
+  assert.equal(demand.sections.length, 1);
+  assert.equal(demand.sections[0].charts[0].type, "bar");
+  assert.equal(
+    buildDashboardReport(d, "Avaliações").sections[0].columns.includes(
+      "Avaliadores",
+    ),
+    true,
+  );
+  assert.equal(
+    buildDashboardReport(d, "Ganhadores").sections[0].columns.includes(
+      "E-mail",
+    ),
+    true,
+  );
+});
+
+test("relatório de brindes inclui catálogo atual e preserva excluídos apenas nos resgates históricos", () => {
+  const d = {
+    ...buildPokedexDashboard({
+      rewards: [
+        { id: "active", name: "Ativo", stock: 5, active: true },
+        {
+          id: "deleted",
+          name: "Arquivado",
+          stock: 5,
+          deletedAt: "2026-11-01T00:00:00Z",
+        },
+      ],
+    }),
+    eventId: "event",
+    environment: "Teste",
+    updatedAt: "2026-11-01T12:00:00Z",
+  };
+  const section = buildDashboardReport(d, "Brindes e tickets").sections[0];
+  assert.equal(section.tables?.[0].rows.length, 1);
+  assert.equal(section.tables?.[0].rows[0][0], "Ativo");
+  assert.equal(d.rewards.find((r) => r.id === "deleted")?.name, "Arquivado");
+});

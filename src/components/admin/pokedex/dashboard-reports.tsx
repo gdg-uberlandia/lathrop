@@ -2,13 +2,14 @@ import { useState } from "react";
 import { Button } from "@/assets/components/ui/button";
 import type { PokedexDashboard } from "@/lib/pokedex-dashboard";
 import {
+  DASHBOARD_REPORT_TABS,
   buildDashboardReport,
   dashboardReportCsv,
   downloadDashboardReportPdf,
 } from "@/lib/dashboard-report";
 import { Panel } from "./dashboard-ui";
 export function DashboardReports({ data }: { data: PokedexDashboard }) {
-  const [company, setCompany] = useState(""),
+  const [company, setCompany] = useState("all"),
     [pending, setPending] = useState(false),
     [error, setError] = useState("");
   async function download(format: "csv" | "pdf") {
@@ -25,9 +26,9 @@ export function DashboardReports({ data }: { data: PokedexDashboard }) {
         );
         const a = document.createElement("a");
         a.href = url;
-        a.download = company
+        a.download = company.startsWith("company:")
           ? "relatorio-empresa-pokedex.csv"
-          : "relatorio-evento-pokedex.csv";
+          : "relatorio-pokedex.csv";
         a.click();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       }
@@ -41,8 +42,8 @@ export function DashboardReports({ data }: { data: PokedexDashboard }) {
   }
   return (
     <Panel
-      title="Relatórios do evento e das empresas"
-      description="Exporte indicadores agregados em CSV ou PDF com o período, papel, ambiente e horário da consulta. Não inclui nomes nem e-mails de participantes."
+      title="Relatórios por aba do dashboard"
+      description="Exporte todas as abas ou uma análise específica em CSV ou PDF, com tabelas, gráficos e metodologia. A aba Ganhadores inclui nome e e-mail."
     >
       <label className="block text-sm text-slate-600">
         Conteúdo do relatório
@@ -51,9 +52,14 @@ export function DashboardReports({ data }: { data: PokedexDashboard }) {
           value={company}
           onChange={(e) => setCompany(e.target.value)}
         >
-          <option value="">Visão geral do evento</option>
+          <option value="all">Todas as abas</option>
+          {DASHBOARD_REPORT_TABS.map((tab) => (
+            <option key={tab} value={tab}>
+              {tab}
+            </option>
+          ))}
           {data.companyReach.companies.map((c) => (
-            <option key={c.id} value={c.id}>
+            <option key={c.id} value={`company:${c.id}`}>
               {c.name}
             </option>
           ))}
@@ -77,8 +83,8 @@ export function DashboardReports({ data }: { data: PokedexDashboard }) {
         </p>
       )}
       <p className="mt-4 text-xs text-slate-500">
-        O relatório usa os filtros já aplicados ao dashboard. Escolher uma
-        empresa restringe o conteúdo exportado, sem alterar os filtros da tela.
+        O relatório considera somente participantes, a partir da abertura
+        oficial. Cada aba tem sua seção, tabelas e gráficos correspondentes.
       </p>
     </Panel>
   );

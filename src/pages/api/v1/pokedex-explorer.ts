@@ -43,13 +43,13 @@ export default async function handler(
     return res.status(400).json({ error: "Confira os filtros da consulta." });
   try {
     const cached = await getPokedexDashboardSource();
-    const { segment, value, q, page, ...filters } = parsed.data;
+    const { segment, value, q, page } = parsed.data;
     return res
       .status(200)
       .json(
         exploreDashboardParticipants(
           cached.source,
-          filters,
+          { role: "participant" },
           segment,
           value,
           q,

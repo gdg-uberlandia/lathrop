@@ -34,3 +34,20 @@ test("rede deduplica pares, ignora autoconexão, separa componentes e limita o e
   assert.equal(d.crossInterestEdges, 1);
   assert.equal(buildConnectionNetwork(c, "b").graph.focusId, "b");
 });
+
+test("lista de conexões de um participante não perde vizinhos por um limite visual antigo", () => {
+  const profiles = Array.from({ length: 81 }, (_, i) => ({ id: String(i) }));
+  const neighbors = profiles.slice(1);
+  const c = selectDashboardContext({
+    profiles,
+    connections: neighbors.map((p) => ({
+      id: p.id,
+      participantIds: ["0", p.id],
+      status: "accepted",
+      acceptedAt: "2026-10-31T12:00:00Z",
+    })),
+  });
+  const d = buildConnectionNetwork(c, "0");
+  assert.equal(d.graph.nodes.length, 81);
+  assert.equal(d.graph.totalNodes, 81);
+});

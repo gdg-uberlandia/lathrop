@@ -34,7 +34,7 @@ export default async function handler(
       .status(200)
       .json(
         buildConnectionNetwork(
-          selectDashboardContext(source, filters),
+          selectDashboardContext(source, { role: "participant" }),
           focusId,
         ),
       );

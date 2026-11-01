@@ -34,7 +34,7 @@ export default async function handler(
   try {
     const { talkId, page, ...filters } = parsed.data;
     const { source } = await getPokedexDashboardSource();
-    const c = selectDashboardContext(source, filters);
+    const c = selectDashboardContext(source, { role: "participant" });
     const snapshot = await db
       .collection(getFirestoreCollectionName("talk-ratings"))
       .where("talkId", "==", talkId)

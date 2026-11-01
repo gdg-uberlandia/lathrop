@@ -1,5 +1,4 @@
 import { buildResultSummary } from "./result-summary";
-import { buildDataQuality } from "./data-quality";
 import { buildInterestAffinity } from "./interest-affinity";
 import { buildConnectionNetwork } from "./connection-network";
 import { buildRewardDemand } from "./reward-demand";
@@ -136,6 +135,7 @@ export function buildPokedexDashboard(
     return {
       id: r.id,
       name: text(r.name) || r.id,
+      deleted: Boolean(r.deletedAt),
       stock: num(r.stock),
       active: r.active === true,
       redeemed: periodExchanges.length,
@@ -226,7 +226,6 @@ export function buildPokedexDashboard(
   });
   const dashboard = {
     filters,
-    quality: buildDataQuality(context),
     affinity: buildInterestAffinity(context),
     network: buildConnectionNetwork(context),
     rewardDemand: buildRewardDemand(context),

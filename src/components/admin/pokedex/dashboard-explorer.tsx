@@ -77,7 +77,7 @@ export function DashboardExplorerProvider({
               </Dialog.Title>
               <Dialog.Description className="mt-2 text-sm text-slate-500">
                 Participantes do recorte selecionado. Os filtros de período e
-                papel do dashboard são mantidos.
+                papel do evento é mantida.
               </Dialog.Description>
               <Dialog.Close
                 aria-label="Fechar participantes"

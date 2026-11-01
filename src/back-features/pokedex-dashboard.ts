@@ -4,7 +4,6 @@ import { getFirestoreCollectionName } from "@/utils/db/collection-name";
 import {
   buildPokedexDashboard,
   type DashboardSource,
-  type DashboardFilters,
 } from "@/lib/pokedex-dashboard";
 
 // Project only analytics fields: comments, QR tokens and other profile data stay out.
@@ -51,19 +50,12 @@ const fields: Record<string, string[]> = {
     "createdAt",
   ],
   rewardRedemptions: ["participantId", "rewardId", "quantity", "ticketsSpent"],
-  rewards: ["name", "stock", "active"],
+  rewards: ["name", "stock", "active", "deletedAt"],
   companies: ["name"],
   missions: ["title", "name"],
   tags: ["name"],
   talks: ["title"],
   raffles: ["prizeName", "status", "winnerId", "winnerName", "drawnAt"],
-  participantSummaries: [
-    "participantId",
-    "connectionsCount",
-    "companiesVisitedCount",
-    "tagsDiscoveredCount",
-    "missionsCompletedCount",
-  ],
   missionAttempts: ["participantId", "outcome", "updatedAt"],
 };
 let cached:
@@ -108,10 +100,10 @@ export async function getPokedexDashboardSource() {
   }
   return cached;
 }
-export async function getPokedexDashboard(filters: DashboardFilters) {
+export async function getPokedexDashboard() {
   const cached = await getPokedexDashboardSource();
   return {
-    ...buildPokedexDashboard(cached.source, filters),
+    ...buildPokedexDashboard(cached.source, { role: "participant" }),
     updatedAt: cached.updatedAt,
     eventId: CURRENT_EVENT_ID,
     environment: getFirestoreCollectionName("profiles").startsWith("test_")

@@ -52,7 +52,12 @@ export function buildRewardDemand(c: DashboardContext) {
         averageTicketCost: rows.length ? spent / rows.length : 0,
         unitsPerHour: hours ? rows.length / hours : 0,
         maxPerPerson: maxBuyer,
-        stock: typeof r.stock === "number" ? r.stock : null,
+        stock: r.deletedAt
+          ? null
+          : typeof r.stock === "number"
+            ? r.stock
+            : null,
+        deleted: Boolean(r.deletedAt),
         active: r.active === true,
         hourly: [...byHour]
           .sort(([a], [b]) => a.localeCompare(b))
