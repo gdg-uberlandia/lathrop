@@ -1,6 +1,4 @@
-import type { ConnectionNetwork } from "./connection-network";
 import type { RewardDemand } from "./reward-demand";
-import type { InterestAffinity } from "./interest-affinity";
 export type ResultSummaryInput = {
   base: { profiles: number };
   metrics: {
@@ -14,9 +12,7 @@ export type ResultSummaryInput = {
     companies: { name: string; visitors: number; reach: number }[];
   };
   engagement: { topCount: number; topShare: number };
-  network: ConnectionNetwork;
   rewardDemand: RewardDemand;
-  affinity: InterestAffinity;
 };
 export type ResultInsight = {
   id: string;
@@ -89,43 +85,5 @@ export function buildResultSummary(d: ResultSummaryInput): ResultInsight[] {
     `Uma pessoa pode avaliar várias palestras. Notas não comprovam presença física.`,
     "Avaliações",
   );
-  add(
-    "network",
-    "Alcance do networking",
-    `${n(d.network.connected)} pessoas têm conexões no recorte; ${n(d.network.isolated)} não têm conexões dentro da base selecionada.`,
-    `${n(d.network.edges)} pares únicos entre perfis do papel selecionado; laços externos ficam fora da rede.`,
-    "Rede de conexões",
-  );
-  const candidates = d.affinity.interests
-    .filter((i) => i.people >= 20 && i.comparisonPeople >= 20)
-    .flatMap((i) =>
-      i.actions
-        .filter((a) => a.difference !== null && Math.abs(a.difference) >= 10)
-        .map((a) => ({
-          interest: i.label,
-          people: i.people,
-          comparisonPeople: i.comparisonPeople,
-          ...a,
-        })),
-    )
-    .sort((a, b) => Math.abs(b.difference!) - Math.abs(a.difference!));
-  const affinity = candidates[0],
-    kind: Record<string, string> = {
-      mission: "missões",
-      company: "visitas a empresas",
-      tag: "tags",
-      connection: "conexões",
-      rating: "avaliações",
-      redemption: "resgates",
-    };
-  if (affinity)
-    add(
-      "affinity",
-      "Diferença exploratória entre interesses",
-      `No grupo ${affinity.interest}, a taxa de ${kind[affinity.kind]} foi ${n(affinity.rate)}%, contra ${n(affinity.comparisonRate!)}% em outros interesses declarados.`,
-      `Maior diferença absoluta entre os cruzamentos elegíveis. Grupos de ${n(affinity.people)} e ${n(affinity.comparisonPeople)} pessoas; mínimo 20 por grupo. Sem teste de significância ou inferência causal.`,
-      "Afinidade",
-      "attention",
-    );
   return facts;
 }

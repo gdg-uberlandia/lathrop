@@ -1,6 +1,4 @@
 import { buildResultSummary } from "./result-summary";
-import { buildInterestAffinity } from "./interest-affinity";
-import { buildConnectionNetwork } from "./connection-network";
 import { buildRewardDemand } from "./reward-demand";
 import { buildRatingAnalysis } from "./rating-analysis";
 import { buildParticipationJourney } from "./participation-journey";
@@ -226,8 +224,6 @@ export function buildPokedexDashboard(
   });
   const dashboard = {
     filters,
-    affinity: buildInterestAffinity(context),
-    network: buildConnectionNetwork(context),
     rewardDemand: buildRewardDemand(context),
     journey: buildParticipationJourney(context),
     ratingAnalysis: buildRatingAnalysis(context),

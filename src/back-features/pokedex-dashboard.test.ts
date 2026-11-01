@@ -55,10 +55,8 @@ test("dashboard fixa a base em participantes e não retorna qualidade dos dados"
     assert.equal(result.base.profiles, 1);
     assert.equal(result.metrics.activities, 1);
     assert.equal("quality" in result, false);
-    assert.equal(
-      result.network.graph.nodes.some((n) => n.id === "admin"),
-      false,
-    );
+    assert.equal("network" in result, false);
+    assert.equal("affinity" in result, false);
   } finally {
     db.collection = original;
   }

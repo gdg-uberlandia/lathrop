@@ -5,6 +5,7 @@ import {
   DASHBOARD_REPORT_TABS,
   buildDashboardReport,
   dashboardReportCsv,
+  dashboardReportFilename,
   downloadDashboardReportPdf,
 } from "@/lib/dashboard-report";
 import { Panel } from "./dashboard-ui";
@@ -26,9 +27,7 @@ export function DashboardReports({ data }: { data: PokedexDashboard }) {
         );
         const a = document.createElement("a");
         a.href = url;
-        a.download = company.startsWith("company:")
-          ? "relatorio-empresa-pokedex.csv"
-          : "relatorio-pokedex.csv";
+        a.download = dashboardReportFilename(report, "csv");
         a.click();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       }

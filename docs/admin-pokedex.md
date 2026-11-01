@@ -11,13 +11,16 @@ brasileiros são comparados por valor, não pela representação textual. Imagen
 seleção e botões de ação não são critérios de ordenação. O mapa de calor é uma
 visualização cronológica e mantém seus eixos de horário fixos.
 
-A rede de conexões usa indicadores e listas de participantes, sem disposição
-espacial ilustrativa. Avaliações usam tabelas, distribuição por nota e comentários,
-sem gráfico de dispersão. A seção de qualidade dos dados foi removida.
+As abas Afinidade e Rede de conexões, seus endpoints e análises específicas foram
+removidos. Os totais de conexões e os históricos individuais permanecem. Avaliações
+usam tabelas, distribuição por nota e comentários, sem gráfico de dispersão. A seção
+de qualidade dos dados foi removida.
 
 Relatórios CSV/PDF podem conter uma aba, todas as abas ou uma empresa. Cada seção
 traz seus dados e sua metodologia; PDFs usam páginas A4 horizontais, tabelas com
-cabeçalhos repetidos, gráficos de barras e mapas de calor. A aba Ganhadores inclui
+cabeçalhos repetidos, gráficos de barras e mapas de calor. Cada aba inicia em folha
+separada; páginas de continuação também são A4 horizontais. Os nomes dos arquivos
+CSV/PDF acompanham o tipo da análise ou o nome da empresa. A aba Ganhadores inclui
 nome e e-mail, com acesso administrativo. O catálogo atual e os resgates históricos
 são tratados separadamente.
 

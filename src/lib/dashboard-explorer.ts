@@ -1,4 +1,3 @@
-import { analyticsInterests } from "./analytics-interests";
 import {
   selectDashboardContext,
   participantActions,
@@ -15,10 +14,8 @@ export type ExploreSegment =
   | "company"
   | "hour"
   | "journey"
-  | "interest"
   | "reward"
-  | "talk"
-  | "network";
+  | "talk";
 export type ExploreSelection = {
   segment: ExploreSegment;
   value?: string;
@@ -85,9 +82,6 @@ export function exploreDashboardParticipants(
       )
         add(r.participantId);
   }
-  if (segment === "interest")
-    for (const p of c.profiles)
-      if (analyticsInterests(p).includes(value)) add(p.id);
   if (segment === "reward") {
     const legacy = new Set(
       c
@@ -104,16 +98,6 @@ export function exploreDashboardParticipants(
   }
   if (segment === "talk")
     for (const r of c.ratings) if (r.talkId === value) add(r.participantId);
-  if (segment === "network") {
-    const connected = new Set(
-      c.connections
-        .flatMap((r) => analyticsIds(r.participantIds))
-        .filter((id) => c.allowed.has(id)),
-    );
-    for (const p of c.profiles)
-      if (value === "isolated" ? !connected.has(p.id) : connected.has(p.id))
-        add(p.id);
-  }
   if (segment === "journey") {
     if (value === "onboarded")
       for (const p of c.profiles) if (p.onboardingCompleted) add(p.id);

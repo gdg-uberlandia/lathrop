@@ -5,8 +5,6 @@ export const DASHBOARD_REPORT_TABS = [
   "Resumo",
   "Engajamento",
   "Jornada",
-  "Rede de conexões",
-  "Afinidade",
   "Empresas",
   "Brindes e tickets",
   "Demanda por brindes",
@@ -183,53 +181,6 @@ export function buildDashboardReport(
           "Participação por marco",
           "pessoas",
           d.journey.stages.map((s) => ({ label: s.label, value: s.people })),
-        ),
-      ],
-    ),
-    section(
-      "Rede de conexões",
-      "Rede entre participantes, sem disposição espacial ilustrativa. Pares repetidos são deduplicados.",
-      ["Indicador", "Valor"],
-      [
-        ["Pares únicos", d.network.edges],
-        ["Participantes conectados", d.network.connected],
-        ["Sem conexões", d.network.isolated],
-        ["Grupos conectados", d.network.components],
-        ["Maior grupo", d.network.largestComponent],
-        ["Média de conexões", n(d.network.averageDegree)],
-      ],
-      [
-        bar("Participação no networking", "pessoas", [
-          { label: "Com conexões", value: d.network.connected },
-          { label: "Sem conexões", value: d.network.isolated },
-        ]),
-      ],
-    ),
-    section(
-      "Afinidade",
-      "Interesses e habilidades declarados. Uma pessoa pode pertencer a vários grupos; associação não demonstra causa.",
-      [
-        "Interesse",
-        "Pessoas",
-        "Missões %",
-        "Empresas %",
-        "Tags %",
-        "Conexões %",
-        "Avaliações %",
-        "Brindes %",
-      ],
-      d.affinity.interests.map((i) => [
-        i.label,
-        i.people,
-        ...i.actions.map((a) => n(a.rate) + "%"),
-      ]),
-      [
-        bar(
-          "Interesses mais declarados (até 20)",
-          "pessoas",
-          d.affinity.interests
-            .slice(0, 20)
-            .map((i) => ({ label: i.label, value: i.people })),
         ),
       ],
     ),
@@ -427,7 +378,7 @@ export function dashboardReportCsv(report: DashboardReport) {
   }
   return dashboardCsv(rows);
 }
-export async function downloadDashboardReportPdf(report: DashboardReport) {
+export async function createDashboardReportPdf(report: DashboardReport) {
   const { jsPDF } = await import("jspdf");
   const pdf = new jsPDF({ unit: "mm", format: "a4", orientation: "landscape" });
   const W = 297,
@@ -459,7 +410,7 @@ export async function downloadDashboardReportPdf(report: DashboardReport) {
     }
   };
   const newPage = (title: string, subtitle?: string) => {
-    pdf.addPage();
+    pdf.addPage("a4", "landscape");
     heading(title, subtitle);
   };
   heading(report.title);
@@ -656,5 +607,22 @@ export async function downloadDashboardReportPdf(report: DashboardReport) {
     );
     pdf.text(`${page} / ${total}`, W - margin, H - 7, { align: "right" });
   }
-  pdf.save("relatorio-pokedex.pdf");
+  return pdf;
+}
+
+export function dashboardReportFilename(
+  report: DashboardReport,
+  format: "pdf" | "csv",
+) {
+  return `${report.title
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")}.${format}`;
+}
+export async function downloadDashboardReportPdf(report: DashboardReport) {
+  (await createDashboardReportPdf(report)).save(
+    dashboardReportFilename(report, "pdf"),
+  );
 }

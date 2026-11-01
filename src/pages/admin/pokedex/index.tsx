@@ -1,7 +1,5 @@
 import { DASHBOARD_REPORT_TABS } from "@/lib/dashboard-report";
 import { ResultSummary } from "@/components/admin/pokedex/result-summary";
-import { InterestAffinity } from "@/components/admin/pokedex/interest-affinity";
-import { ConnectionNetwork } from "@/components/admin/pokedex/connection-network";
 import { RewardDemand } from "@/components/admin/pokedex/reward-demand";
 import { DashboardReports } from "@/components/admin/pokedex/dashboard-reports";
 import { RatingAnalysis } from "@/components/admin/pokedex/rating-analysis";
@@ -385,10 +383,6 @@ export default function PokedexDashboardPage() {
                   />
                 </Panel>
               </>
-            )}
-            {tab === "Afinidade" && <InterestAffinity data={data.affinity} />}
-            {tab === "Rede de conexões" && (
-              <ConnectionNetwork data={data.network} filters={filters} />
             )}
             {tab === "Jornada" && <ParticipationJourney data={data.journey} />}
             {tab === "Empresas" && (
