@@ -1,3 +1,8 @@
+import {
+  buildActivityHeatmap,
+  type ActivityEvent,
+  type ActivityKind,
+} from "./activity-heatmap";
 export type DashboardRow = { id: string; [key: string]: unknown };
 export type DashboardSource = Record<string, DashboardRow[]>;
 export type DashboardFilters = { from?: string; to?: string; role?: string };
@@ -81,10 +86,16 @@ export function buildPokedexDashboard(
   const redemptions = rows("rewardRedemptions").filter(eligible);
   const active = new Set<string>();
   const timeline = new Map<string, { active: Set<string>; actions: number }>();
-  function record(value: unknown, people: string[]) {
+  const activityEvents: ActivityEvent[] = [];
+  function record(value: unknown, people: string[], kind: ActivityKind) {
     const ms = timestamp(value);
     if (!ms) return;
     const key = new Date(ms - 3 * 3600000).toISOString().slice(0, 13);
+    activityEvents.push({
+      hour: key,
+      kind,
+      people: people.filter((id) => allowed.has(id)),
+    });
     const bucket = timeline.get(key) ?? {
       active: new Set<string>(),
       actions: 0,
@@ -97,11 +108,17 @@ export function buildPokedexDashboard(
     bucket.actions++;
     timeline.set(key, bucket);
   }
-  for (const r of completions) record(r.completedAt, [text(r.participantId)]);
-  for (const r of connections) record(r.acceptedAt, ids(r.participantIds));
-  for (const r of ratings) record(r.completedAt, [text(r.participantId)]);
+  for (const r of completions) {
+    const kind = text(r.activityType);
+    if (kind === "mission" || kind === "company" || kind === "tag")
+      record(r.completedAt, [text(r.participantId)], kind);
+  }
+  for (const r of connections)
+    record(r.acceptedAt, ids(r.participantIds), "connection");
+  for (const r of ratings)
+    record(r.completedAt, [text(r.participantId)], "rating");
   for (const r of redemptionTransactions)
-    record(r.createdAt, [text(r.participantId)]);
+    record(r.createdAt, [text(r.participantId)], "redemption");
   const activityTypes = ["mission", "company", "tag"].map((type) => {
     const matching = completions.filter((r) => r.activityType === type);
     return { type, count: matching.length, participants: unique(matching) };
@@ -247,6 +264,7 @@ export function buildPokedexDashboard(
         actions: b.actions,
         active: b.active.size,
       })),
+    heatmap: buildActivityHeatmap(activityEvents),
     activityTypes,
     companies,
     activities,

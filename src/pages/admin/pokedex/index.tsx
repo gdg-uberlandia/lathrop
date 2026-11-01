@@ -1,3 +1,4 @@
+import { ActivityHeatmap } from "@/components/admin/pokedex/activity-heatmap";
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -417,6 +418,12 @@ export default function PokedexDashboardPage() {
                 resgatou brinde. Cadastro e login, sozinhos, não contam como
                 atividade. Esta métrica não indica quem está online agora.
               </p>
+              <Panel
+                title="Mapa de calor do evento"
+                description="Descubra os horários de maior participação por tipo de atividade."
+              >
+                <ActivityHeatmap data={data.heatmap} />
+              </Panel>
               <Panel
                 title="Atividade por hora"
                 description="Ações e pessoas únicas por hora com registros; uma pessoa pode aparecer em várias horas."
