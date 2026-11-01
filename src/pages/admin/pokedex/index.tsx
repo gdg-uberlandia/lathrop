@@ -1,3 +1,4 @@
+import { ResultSummary } from "@/components/admin/pokedex/result-summary";
 import { DataQuality } from "@/components/admin/pokedex/data-quality";
 import { InterestAffinity } from "@/components/admin/pokedex/interest-affinity";
 import { ConnectionNetwork } from "@/components/admin/pokedex/connection-network";
@@ -35,6 +36,7 @@ import { dashboardCsv } from "@/lib/dashboard-csv";
 
 const tabs = [
   "Visão geral",
+  "Resumo",
   "Engajamento",
   "Jornada",
   "Rede de conexões",
@@ -219,9 +221,34 @@ export default function PokedexDashboardPage() {
             às 08h.
           </p>
         )}
+        <label className="block text-sm text-slate-600 sm:hidden">
+          Escolher análise
+          <select
+            value={tab}
+            className="mt-2 h-10 w-full rounded-lg border border-slate-300 bg-white px-3"
+            onChange={(event) => {
+              const section = event.target.value as (typeof tabs)[number];
+              setTab(section);
+              void router.replace(
+                {
+                  pathname: router.pathname,
+                  query: { ...router.query, section },
+                },
+                undefined,
+                { shallow: true, scroll: false },
+              );
+            }}
+          >
+            {tabs.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+        </label>
         <nav
           aria-label="Seções do dashboard"
-          className="flex gap-2 overflow-x-auto border-b border-slate-200 pb-2"
+          className="hidden flex-wrap gap-2 border-b border-slate-200 pb-2 sm:flex"
         >
           {tabs.map((t) => (
             <button
@@ -259,6 +286,12 @@ export default function PokedexDashboardPage() {
         )}
         {data && (
           <>
+            {tab === "Resumo" && (
+              <ResultSummary
+                data={data.resultSummary}
+                updatedAt={data.updatedAt}
+              />
+            )}
             {tab === "Visão geral" && (
               <>
                 <Cards

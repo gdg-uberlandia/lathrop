@@ -120,6 +120,57 @@ export function buildDashboardReport(
         ]),
       },
       {
+        title: "Resumo calculado",
+        rows: data.resultSummary.map((i) => [
+          i.title,
+          `${i.text} Base: ${i.evidence}`,
+        ]),
+      },
+      {
+        title: "Rede de conexões",
+        rows: [
+          ["Pares únicos", n(data.network.edges)],
+          ["Pessoas conectadas", n(data.network.connected)],
+          ["Pessoas sem conexões", n(data.network.isolated)],
+          ["Grupos conectados", n(data.network.components)],
+        ],
+      },
+      {
+        title: "Demanda por brindes",
+        rows: data.rewardDemand.rewards.map((r) => [
+          r.name,
+          `${n(r.units)} unidades; ${n(r.people)} pessoas; ${n(r.unitsPerHour)} unidades/h na janela observada`,
+        ]),
+      },
+      {
+        title: "Jornada de participação",
+        rows: data.journey.stages.map((s) => [
+          s.label,
+          `${n(s.people)} pessoas (${n(s.percent)}% da base)`,
+        ]),
+      },
+      {
+        title: "Avaliações",
+        rows: data.ratingAnalysis.talks.map((t) => [
+          t.title,
+          `${n(t.reviewers)} avaliadores; ${n(t.count)} avaliações; médias: palestrante ${t.dimensions.speakerRating.mean === null ? "sem dados" : n(t.dimensions.speakerRating.mean)}, conteúdo ${t.dimensions.contentRating.mean === null ? "sem dados" : n(t.dimensions.contentRating.mean)}, compreensão ${t.dimensions.comprehensionRating.mean === null ? "sem dados" : n(t.dimensions.comprehensionRating.mean)}`,
+        ]),
+      },
+      {
+        title: "Afinidade entre interesses e ações",
+        rows: data.affinity.interests.map((i) => [
+          i.label,
+          `${n(i.people)} pessoas; comparação com ${n(i.comparisonPeople)} de outros interesses declarados. ${i.actions.map((a) => `${a.kind}: ${n(a.rate)}% no grupo${a.comparisonRate === null ? "; sem grupo de comparação" : ` vs. ${n(a.comparisonRate)}% na comparação`}`).join("; ")}`,
+        ]),
+      },
+      {
+        title: "Qualidade dos dados",
+        rows: data.quality.checks.map((q) => [
+          q.title,
+          `${q.count} ${q.unit}; escopo: ${q.scope}`,
+        ]),
+      },
+      {
         title: "Metodologia",
         rows: [
           [
@@ -149,8 +200,8 @@ export function buildDashboardReport(
 }
 export function dashboardReportCsv(report: DashboardReport) {
   return dashboardCsv([
-    ["Relatório", report.title],
-    ...report.metadata.map((m) => ["Contexto", m]),
+    ["Relatório", report.title, ""],
+    ...report.metadata.map((m) => ["Contexto", m, ""]),
     ["Seção", "Indicador", "Valor"],
     ...report.sections.flatMap((s) =>
       s.rows.map(([label, value]) => [s.title, label, value]),

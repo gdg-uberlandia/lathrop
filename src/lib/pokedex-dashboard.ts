@@ -1,3 +1,4 @@
+import { buildResultSummary } from "./result-summary";
 import { buildDataQuality } from "./data-quality";
 import { buildInterestAffinity } from "./interest-affinity";
 import { buildConnectionNetwork } from "./connection-network";
@@ -223,7 +224,7 @@ export function buildPokedexDashboard(
     delta: num(r.ticketDelta),
     date: timestamp(r.createdAt) ? day(timestamp(r.createdAt)) : null,
   });
-  return {
+  const dashboard = {
     filters,
     quality: buildDataQuality(context),
     affinity: buildInterestAffinity(context),
@@ -300,6 +301,7 @@ export function buildPokedexDashboard(
         )
       : null,
   };
+  return { ...dashboard, resultSummary: buildResultSummary(dashboard) };
 }
 export type PokedexDashboard = ReturnType<typeof buildPokedexDashboard> & {
   updatedAt: string;
