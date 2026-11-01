@@ -1,3 +1,4 @@
+import { RewardDemand } from "@/components/admin/pokedex/reward-demand";
 import { DashboardReports } from "@/components/admin/pokedex/dashboard-reports";
 import { RatingAnalysis } from "@/components/admin/pokedex/rating-analysis";
 import { ParticipationJourney } from "@/components/admin/pokedex/participation-journey";
@@ -35,6 +36,7 @@ const tabs = [
   "Jornada",
   "Empresas",
   "Brindes e tickets",
+  "Demanda por brindes",
   "Avaliações",
   "Ganhadores",
   "Relatórios",
@@ -572,6 +574,9 @@ export default function PokedexDashboardPage() {
                   />
                 </Panel>
               </>
+            )}
+            {tab === "Demanda por brindes" && (
+              <RewardDemand data={data.rewardDemand} />
             )}
             {tab === "Relatórios" && <DashboardReports data={data} />}
             {tab === "Ganhadores" && (

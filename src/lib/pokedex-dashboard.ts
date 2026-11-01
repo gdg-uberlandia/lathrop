@@ -1,3 +1,4 @@
+import { buildRewardDemand } from "./reward-demand";
 import { buildRatingAnalysis } from "./rating-analysis";
 import { buildParticipationJourney } from "./participation-journey";
 import { selectDashboardContext } from "./dashboard-context";
@@ -221,6 +222,7 @@ export function buildPokedexDashboard(
   });
   return {
     filters,
+    rewardDemand: buildRewardDemand(context),
     journey: buildParticipationJourney(context),
     ratingAnalysis: buildRatingAnalysis(context),
     ticketFlow: buildTicketFlow(
