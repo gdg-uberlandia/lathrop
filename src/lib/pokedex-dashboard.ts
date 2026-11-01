@@ -1,3 +1,4 @@
+import { buildTicketFlow, type TicketFlowTransaction } from "./ticket-flow";
 import { buildCompanyReach } from "./company-reach";
 import { buildEngagementDistribution } from "./engagement-distribution";
 import {
@@ -240,8 +241,20 @@ export function buildPokedexDashboard(
     count: profiles.filter((p) => num(p.xp) >= b.min && num(p.xp) <= b.max)
       .length,
   }));
+  const flowTransaction = (r: DashboardRow): TicketFlowTransaction => ({
+    participantId: text(r.participantId),
+    type: text(r.type),
+    referenceType: text(r.referenceType),
+    delta: num(r.ticketDelta),
+    date: timestamp(r.createdAt) ? day(timestamp(r.createdAt)) : null,
+  });
   return {
     filters,
+    ticketFlow: buildTicketFlow(
+      transactions.map(flowTransaction),
+      rows("ticketTransactions").filter(eligible).map(flowTransaction),
+      sum(profiles, "ticketBalance"),
+    ),
     base: {
       profiles: profiles.length,
       onboarded: profiles.filter((p) => p.onboardingCompleted).length,

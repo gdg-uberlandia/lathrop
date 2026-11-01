@@ -147,6 +147,14 @@ test("filtra por dia de Brasília e usa transações para resgates parciais", ()
   });
   assert.equal(result.metrics.activities, 1);
   assert.equal(result.metrics.active, 1);
+  assert.equal(result.heatmap.length, 1);
+  assert.equal(result.heatmap[0].day, "2026-10-31");
+  assert.equal(result.heatmap[0].people, 1);
+  assert.equal(result.heatmap[0].actions, 5);
+  assert.equal(result.engagement.profiles, 1);
+  assert.equal(result.engagement.totalParticipations, 5);
+  assert.equal(result.companyReach.reached, 1);
+  assert.equal(result.ticketFlow.outgoing, 5);
   assert.equal(result.metrics.connections, 1);
   assert.equal(result.rewards[0].redeemed, 1);
   assert.equal(result.rewards[0].ticketsSpent, 5);

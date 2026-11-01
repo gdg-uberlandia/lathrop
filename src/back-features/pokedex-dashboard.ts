@@ -38,6 +38,7 @@ const fields: Record<string, string[]> = {
     "type",
     "ticketDelta",
     "referenceId",
+    "referenceType",
     "createdAt",
   ],
   rewardRedemptions: ["participantId", "rewardId", "quantity", "ticketsSpent"],

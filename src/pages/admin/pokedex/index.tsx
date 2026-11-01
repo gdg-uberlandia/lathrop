@@ -1,3 +1,4 @@
+import { TicketFlow } from "@/components/admin/pokedex/ticket-flow";
 import { CompanyReach } from "@/components/admin/pokedex/company-reach";
 import { EngagementDistribution } from "@/components/admin/pokedex/engagement-distribution";
 import { ActivityHeatmap } from "@/components/admin/pokedex/activity-heatmap";
@@ -613,6 +614,12 @@ export default function PokedexDashboardPage() {
                   ],
                 ]}
               />
+              <Panel
+                title="Fluxo de tickets"
+                description="Origens e destinos dos tickets, com brindes e sorteios separados. Clique em uma categoria para explorar sua evolução."
+              >
+                <TicketFlow data={data.ticketFlow} />
+              </Panel>
               <Panel
                 title="Brindes"
                 description="Estoque e disponibilidade são atuais, conforme o CRUD de brindes. Resgates e tickets seguem os filtros; sem datas, exibem o histórico acumulado."
